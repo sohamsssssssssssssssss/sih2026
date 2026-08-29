@@ -4,3 +4,6 @@ __pycache__/
 trace.jsonl
 results.json
 .DS_Store
+data/raw/
+data/ladder/
+outputs/

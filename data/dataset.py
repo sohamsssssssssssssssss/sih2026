@@ -5,7 +5,7 @@ from typing import Any, Literal, TypedDict
 import numpy as np
 from numpy.typing import NDArray
 
-Sensor = Literal["S2", "S1", "cartosat", "risat", "dota", "synthetic"]
+Sensor = Literal["S2", "S1", "cartosat", "risat", "loveda", "dota", "synthetic"]
 
 
 class TileSample(TypedDict):
@@ -24,7 +24,15 @@ def validate_tile_sample(sample: TileSample) -> TileSample:
         raise ValueError("Tile sample is missing required field: gsd")
     if sample.get("sensor") is None:
         raise ValueError("Tile sample is missing required field: sensor")
-    if sample["sensor"] not in {"S2", "S1", "cartosat", "risat", "dota", "synthetic"}:
+    if sample["sensor"] not in {
+        "S2",
+        "S1",
+        "cartosat",
+        "risat",
+        "loveda",
+        "dota",
+        "synthetic",
+    }:
         raise ValueError(f"Unsupported sensor: {sample['sensor']}")
     if sample["optical"].dtype != np.float32 or sample["optical"].ndim != 3:
         raise ValueError("optical must be float32[C,H,W]")

@@ -4,3 +4,6 @@ numpy
 torch
 pillow
 rasterio
+scipy
+matplotlib
+gdown
