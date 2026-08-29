@@ -1,0 +1,7 @@
+model_name: mock
+backbone: tiny-linear
+lr: 0.05
+batch_size: 4
+max_steps: 50
+data_path: data/
+suite: proxy
