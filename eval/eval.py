@@ -40,13 +40,15 @@ def main() -> int:
     parser.add_argument("--model", required=True, choices=names())
     parser.add_argument("--suite", required=True, choices=SUITE_NAMES)
     parser.add_argument("--out", required=True, type=Path)
+    parser.add_argument("--limit", type=int, default=200)
+    parser.add_argument("--full", action="store_true")
     args = parser.parse_args()
 
     model = get(args.model)
     samples = (
         load_ladder_samples(ROOT / "data" / "ladder" / "manifest.jsonl")
         if args.suite == "ladder"
-        else load_suite(args.suite)
+        else load_suite(args.suite, limit=args.limit, full=args.full)
     )
     results = []
     correct = 0

@@ -30,3 +30,43 @@ streamlit run demo_gui/app.py --server.headless true
 ## Resolution ladder
 
 The ladder uses real LoveDA pixels and semantic masks; only spatial resolution and sensor noise are simulated. LoveDA is licensed for academic, non-commercial use. Download and extract Train+Val idempotently with `python3 data/download_ladder_data.py`, then generate up to 200 real source images at five rungs with `python3 eval/ladder.py --limit 200`. The degradation applies a Gaussian PSF, area-average decimation, and read plus shot noise while keeping `sensor: loveda`, never `synthetic`. Evaluate with `python3 eval/eval.py --model mock --suite ladder --out results.json` and plot with `python3 eval/plot_ladder.py results.json`. DOTA acquisition can be attempted with `python3 data/download_ladder_data.py --dataset dota`; Google Drive failures return promptly with manual-download instructions.
+
+## Frozen Qwen RSVQA-LR baseline
+
+`qwen2.5vl-3b` wraps the frozen `Qwen/Qwen2.5-VL-3B-Instruct` checkpoint with lazy loading, greedy decoding, and no training or fine-tuning. `python3 scripts/dry_run_rsvqa.py` downloads the complete official RSVQA-LR release and validates two real samples plus a mocked forward call without loading model weights. The eval CLI uses the official test split, defaults to 200 deterministically spaced samples across the split, accepts `--limit N`, and uses all 10,004 active test questions with `--full`.
+
+Push this repository to a public GitHub repository before using Kaggle, or upload it as a Kaggle dataset and copy it into `/kaggle/working/sih26167`. In a new Kaggle notebook with a T4 accelerator and Internet enabled, use these cells in order, replacing the repository URL:
+
+```python
+# Cell 1: fail before downloads if the T4 is not attached.
+import torch
+assert torch.cuda.is_available(), "Select a T4 accelerator in Kaggle settings"
+print(torch.__version__, torch.cuda.get_device_name(0))
+```
+
+```python
+# Cell 2: install Qwen2.5-VL runtime dependencies.
+%pip install -q "transformers>=4.49" qwen-vl-utils accelerate
+```
+
+```python
+# Cell 3: clone the pushed repository.
+REPO_URL = "https://github.com/YOUR_USERNAME/sih26167.git"
+!git clone "$REPO_URL" /kaggle/working/sih26167
+%cd /kaggle/working/sih26167
+```
+
+If GitHub access is unavailable, replace Cell 3 with `!cp -R /kaggle/input/YOUR_DATASET_SLUG/sih26167 /kaggle/working/sih26167` followed by `%cd /kaggle/working/sih26167`.
+
+```python
+# Cell 4: download RSVQA-LR and run the 200-sample frozen baseline.
+!python3 eval/eval.py --model qwen2.5vl-3b --suite rsvqa --out /kaggle/working/results.json
+```
+
+```python
+# Cell 5: print the metric; results.json remains a downloadable Kaggle output artifact.
+import json
+with open("/kaggle/working/results.json") as handle:
+    report = json.load(handle)
+print("accuracy:", report["accuracy"], "n_samples:", report["n_samples"])
+```

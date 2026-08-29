@@ -1,11 +1,15 @@
 """Small suite loader stubs with a stable sample contract."""
 
+from eval.suites.rsvqa import load_rsvqa_lr
+
 SUITE_NAMES = ("rsvqa", "vrsbench", "cdvqa", "ladder", "proxy")
 
 
-def load_suite(name: str) -> list[dict]:
+def load_suite(name: str, limit: int = 200, full: bool = False) -> list[dict]:
     if name not in SUITE_NAMES:
         raise ValueError(f"Unknown suite: {name}")
+    if name == "rsvqa":
+        return load_rsvqa_lr(limit=limit, full=full)
     question = f"placeholder question for {name}"
     return [
         {
