@@ -49,9 +49,10 @@ def degrade(
     source_gsd: float = SOURCE_GSD,
 ) -> tuple[np.ndarray, float]:
     """PSF blur, area-average decimation, then read and shot noise."""
-    sigma = blur_sigma(target_gsd, source_gsd)
     if target_gsd == source_gsd:
-        return rgb.copy(), sigma
+        # The native rung is the zero-degradation anchor: no blur, resize, or noise.
+        return rgb.copy(), 0.0
+    sigma = blur_sigma(target_gsd, source_gsd)
     blurred = gaussian_filter(rgb.astype(np.float32), sigma=(sigma, sigma, 0), mode="reflect")
     height, width = rgb.shape[:2]
     output_size = (
@@ -164,7 +165,7 @@ def generate_ladder(
     print(f"Example source: {pairs[0][0]} (pixels HxW={sanity_rows[0][3]})")
     for gsd, sigma, processing_applied, source_shape, output_shape in sanity_rows:
         print(
-            f"  gsd={gsd:.1f}m sigma_formula={sigma:.6f} "
+            f"  gsd={gsd:.1f}m sigma_used={sigma:.6f} "
             f"processing_applied={str(processing_applied).lower()} "
             f"source={source_shape[1]}x{source_shape[0]} output={output_shape[1]}x{output_shape[0]}"
         )
