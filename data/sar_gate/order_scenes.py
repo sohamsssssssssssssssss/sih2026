@@ -65,6 +65,17 @@ def require_earthdata_credentials() -> bool:
     return False
 
 
+def print_authentication_help() -> None:
+    print(
+        "Earthdata/ASF authentication failed. Check the credentials in ~/.netrc and "
+        "make sure the ASF Vertex account is linked to Earthdata.",
+        file=sys.stderr,
+    )
+    print("NASA Earthdata account: https://urs.earthdata.nasa.gov/", file=sys.stderr)
+    print("ASF Vertex account/linking: https://search.asf.alaska.edu/", file=sys.stderr)
+    print("Run: chmod 600 ~/.netrc", file=sys.stderr)
+
+
 def _acquisition_time(result: Any) -> datetime:
     value = result.properties.get("startTime") or result.properties.get("stopTime")
     if not value:
@@ -128,11 +139,16 @@ def main() -> int:
         return 0
 
     import hyp3_sdk
+    from hyp3_sdk.exceptions import AuthenticationError
 
     end = datetime.now(timezone.utc)
     start = end - timedelta(days=args.days)
     selected = select_scenes(start, end)
-    hyp3 = hyp3_sdk.HyP3()
+    try:
+        hyp3 = hyp3_sdk.HyP3()
+    except AuthenticationError:
+        print_authentication_help()
+        return 2
     payload: dict[str, Any] = {
         "created_at": datetime.now(timezone.utc).isoformat(),
         "search_start": start.isoformat(),
