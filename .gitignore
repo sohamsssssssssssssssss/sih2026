@@ -7,3 +7,6 @@ results.json
 data/raw/
 data/ladder/
 outputs/
+data/sar_gate/jobs.json
+data/sar_gate/raw/
+data/sar_gate/rendered/

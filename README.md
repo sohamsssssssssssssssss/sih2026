@@ -70,3 +70,7 @@ with open("/kaggle/working/results.json") as handle:
     report = json.load(handle)
 print("accuracy:", report["accuracy"], "n_samples:", report["n_samples"])
 ```
+
+## SAR reading gate
+
+The SAR gate submits five recent dual-polarization Sentinel-1 GRD scenes over diverse Indian landscapes for HyP3 gamma-0 RTC processing, then creates fixed-scale VV/VH/VV−VH false-color quicklooks for manual interpretation. Create a free [NASA Earthdata account](https://urs.earthdata.nasa.gov/users/new), link it in [ASF Vertex](https://search.asf.alaska.edu/), configure an Earthdata entry in `~/.netrc`, and run `pip3 install asf_search hyp3_sdk rasterio`. Run `python3 data/sar_gate/order_scenes.py`, wait for the jobs to succeed, then run `python3 data/sar_gate/process_scenes.py`. Rasterio is required for this gate even though the earlier MVP demo can run without it. Raw products, job IDs, and renders are intentionally ignored; only scripts and the blank manual annotation materials are versioned.

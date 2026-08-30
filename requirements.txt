@@ -10,3 +10,5 @@ gdown
 transformers>=4.49
 qwen-vl-utils
 accelerate
+asf_search
+hyp3_sdk
