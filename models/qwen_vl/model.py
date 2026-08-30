@@ -96,6 +96,7 @@ class QwenVLModel(Model):
         missing = [path for path in image_paths if not Path(path).is_file()]
         if missing:
             raise FileNotFoundError(f"Image paths do not exist: {missing}")
+        question = question + " Answer with a single word or number only. No explanation."
         answer = self._generate_answer(image_paths, question).strip()
         return {
             "answer": answer,

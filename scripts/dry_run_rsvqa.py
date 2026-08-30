@@ -28,6 +28,9 @@ def main() -> int:
     with patch.object(model, "_generate_answer", return_value="urban") as mocked_forward:
         prediction = model.infer(samples[0]["image_paths"], samples[0]["question"])
     mocked_forward.assert_called_once()
+    assert mocked_forward.call_args.args[1].endswith(
+        " Answer with a single word or number only. No explanation."
+    )
     assert prediction == {"answer": "urban", "confidence": 1.0, "evidence": []}
     assert model._model is None, "dry run unexpectedly loaded model weights"
     print("RSVQA LOCAL DRY RUN PASSED: real 256x256 sample, registry, mocked inference contract")

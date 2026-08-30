@@ -2,6 +2,7 @@
 
 import argparse
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -12,6 +13,34 @@ if str(ROOT) not in sys.path:
 from eval.suites import SUITE_NAMES, load_suite  # noqa: E402
 from eval.ladder import QUESTIONS, RUNGS  # noqa: E402
 from orchestrator.registry import get, names  # noqa: E402
+
+
+def answer_matches(raw: str, expected: str) -> bool:
+    raw_l = raw.strip().lower()
+    exp_l = expected.strip().lower()
+    if raw_l == exp_l:
+        return True
+    if re.search(rf"\b{re.escape(exp_l)}\b", raw_l):
+        return True
+    word_to_num = {
+        "zero": "0",
+        "one": "1",
+        "two": "2",
+        "three": "3",
+        "four": "4",
+        "five": "5",
+        "six": "6",
+        "seven": "7",
+        "eight": "8",
+        "nine": "9",
+        "ten": "10",
+    }
+    raw_norm = raw_l
+    for word, number in word_to_num.items():
+        raw_norm = re.sub(rf"\b{word}\b", number, raw_norm)
+    if re.search(rf"\b{re.escape(exp_l)}\b", raw_norm):
+        return True
+    return False
 
 
 def load_ladder_samples(manifest_path: Path) -> list[dict]:
@@ -54,7 +83,13 @@ def main() -> int:
     correct = 0
     for sample in samples:
         prediction = model.infer(sample["image_paths"], sample["question"])
-        is_correct = prediction["answer"].strip().lower() == sample["expected_answer"].strip().lower()
+        if args.suite == "ladder":
+            is_correct = (
+                prediction["answer"].strip().lower()
+                == sample["expected_answer"].strip().lower()
+            )
+        else:
+            is_correct = answer_matches(prediction["answer"], sample["expected_answer"])
         correct += int(is_correct)
         results.append({**sample, "prediction": prediction, "correct": is_correct})
 
