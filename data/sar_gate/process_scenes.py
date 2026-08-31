@@ -93,16 +93,72 @@ def normalize_fixed(image_db: np.ndarray) -> np.ndarray:
     return np.where(np.isfinite(normalized), normalized, 0.0).astype(np.float32)
 
 
-def read_power(path: Path, max_dimension: int) -> np.ndarray:
+def read_power(
+    path: Path,
+    max_dimension: int,
+    lon: float | None = None,
+    lat: float | None = None,
+    radius_km: float = 15.0,
+) -> np.ndarray:
     import rasterio
     from rasterio.enums import Resampling
+    from rasterio.warp import transform
+    from rasterio.windows import Window
+
+    if (lon is None) != (lat is None):
+        raise ValueError("lon and lat must be provided together")
+    if radius_km <= 0:
+        raise ValueError("radius_km must be positive")
 
     with rasterio.open(path) as dataset:
-        scale = min(1.0, max_dimension / max(dataset.height, dataset.width))
-        height = max(1, round(dataset.height * scale))
-        width = max(1, round(dataset.width * scale))
+        window = None
+        source_height = dataset.height
+        source_width = dataset.width
+        if lon is not None and lat is not None:
+            if dataset.crs is None:
+                raise ValueError(f"GeoTIFF has no CRS: {path}")
+            x_values, y_values = transform("EPSG:4326", dataset.crs, [lon], [lat])
+            column, row = ~dataset.transform * (x_values[0], y_values[0])
+            _, meters_per_crs_unit = dataset.crs.linear_units_factor
+            radius_crs_units = radius_km * 1000.0 / meters_per_crs_unit
+            radius_columns = radius_crs_units / abs(dataset.transform.a)
+            radius_rows = radius_crs_units / abs(dataset.transform.e)
+
+            column_start = int(np.floor(column - radius_columns))
+            column_stop = int(np.ceil(column + radius_columns))
+            row_start = int(np.floor(row - radius_rows))
+            row_stop = int(np.ceil(row + radius_rows))
+            requested_width = column_stop - column_start
+            requested_height = row_stop - row_start
+            clamped_column_start = max(0, column_start)
+            clamped_column_stop = min(dataset.width, column_stop)
+            clamped_row_start = max(0, row_start)
+            clamped_row_stop = min(dataset.height, row_stop)
+            source_width = clamped_column_stop - clamped_column_start
+            source_height = clamped_row_stop - clamped_row_start
+            minimum_fraction = 0.75
+            if (
+                source_width < requested_width * minimum_fraction
+                or source_height < requested_height * minimum_fraction
+            ):
+                raise ValueError(
+                    f"Target lon={lon}, lat={lat} is near or outside the footprint of {path}; "
+                    f"requested crop {requested_width}x{requested_height} pixels, "
+                    f"but only {source_width}x{source_height} pixels overlap"
+                )
+            window = Window(
+                clamped_column_start,
+                clamped_row_start,
+                source_width,
+                source_height,
+            )
+
+        scale = min(1.0, max_dimension / max(source_height, source_width))
+        height = max(1, round(source_height * scale))
+        width = max(1, round(source_width * scale))
         data = dataset.read(
             1,
+            window=window,
             out_shape=(height, width),
             resampling=Resampling.average,
             masked=True,
@@ -146,8 +202,12 @@ def render_job(record: dict[str, Any], product_root: Path, max_dimension: int) -
 
     vv_path = find_polarization_tif(product_root, "VV")
     vh_path = find_polarization_tif(product_root, "VH")
-    vv_power = read_power(vv_path, max_dimension)
-    vh_power = read_power(vh_path, max_dimension)
+    vv_power = read_power(
+        vv_path, max_dimension, lon=record["lon"], lat=record["lat"]
+    )
+    vh_power = read_power(
+        vh_path, max_dimension, lon=record["lon"], lat=record["lat"]
+    )
     if vv_power.shape != vh_power.shape:
         raise ValueError(f"VV/VH dimensions differ: {vv_power.shape} vs {vh_power.shape}")
     vv_db = lee_filter(gamma0_to_db(vv_power), size=7)
