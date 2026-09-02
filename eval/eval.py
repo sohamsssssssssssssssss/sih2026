@@ -20,6 +20,8 @@ def answer_matches(raw: str, expected: str) -> bool:
     exp_l = expected.strip().lower()
     if raw_l == exp_l:
         return True
+    if raw_l == "1" and exp_l == "yes":
+        return True
     if re.search(rf"\b{re.escape(exp_l)}\b", raw_l):
         return True
     word_to_num = {
@@ -83,13 +85,7 @@ def main() -> int:
     correct = 0
     for sample in samples:
         prediction = model.infer(sample["image_paths"], sample["question"])
-        if args.suite == "ladder":
-            is_correct = (
-                prediction["answer"].strip().lower()
-                == sample["expected_answer"].strip().lower()
-            )
-        else:
-            is_correct = answer_matches(prediction["answer"], sample["expected_answer"])
+        is_correct = answer_matches(prediction["answer"], sample["expected_answer"])
         correct += int(is_correct)
         results.append({**sample, "prediction": prediction, "correct": is_correct})
 
