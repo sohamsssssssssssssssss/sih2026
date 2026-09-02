@@ -3,7 +3,9 @@
 import argparse
 import json
 import re
+import subprocess
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -42,6 +44,12 @@ def answer_matches(raw: str, expected: str) -> bool:
         return True
     return False
 
+
+RESULTS_DIR = ROOT / "results"
+SUITE_SPLITS = {
+    "rsvqa": "official RSVQA-LR test split",
+    "ladder": "generated ladder manifest",
+}
 
 BINARY_ANSWERS = ("yes", "no")
 DEGENERATE_YES_RATE = 0.85
@@ -105,6 +113,25 @@ def degenerate(summary: dict) -> str | None:
     return None
 
 
+def git_sha() -> str:
+    """Short SHA of the tree that produced a result, or "nogit" if unavailable."""
+    try:
+        return subprocess.check_output(
+            ["git", "rev-parse", "--short", "HEAD"], cwd=ROOT, text=True
+        ).strip()
+    except (OSError, subprocess.SubprocessError):
+        return "nogit"
+
+
+def gpu_name() -> str:
+    """Name of the accelerator that produced a result, or "cpu"."""
+    try:
+        import torch
+    except ImportError:
+        return "unknown"
+    return torch.cuda.get_device_name(0) if torch.cuda.is_available() else "cpu"
+
+
 def load_ladder_samples(manifest_path: Path) -> list[dict]:
     if not manifest_path.exists():
         raise FileNotFoundError(
@@ -160,6 +187,16 @@ def main() -> int:
     report = {
         "model": args.model,
         "suite": args.suite,
+        "split": SUITE_SPLITS.get(args.suite, "placeholder"),
+        "config": {
+            "model": args.model,
+            "suite": args.suite,
+            "limit": args.limit,
+            "full": args.full,
+        },
+        "git_sha": git_sha(),
+        "gpu": gpu_name(),
+        "timestamp": datetime.now(timezone.utc).isoformat(),
         "accuracy": summary["accuracy"],
         "n_samples": summary["n"],
         "summary": summary,
@@ -176,8 +213,19 @@ def main() -> int:
                 "n": len(rung_results),
             }
         report["per_rung"] = per_rung
+    payload = json.dumps(report, indent=2) + "\n"
     args.out.parent.mkdir(parents=True, exist_ok=True)
-    args.out.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
+    args.out.write_text(payload, encoding="utf-8")
+
+    # A number that exists only under /kaggle/working dies with the session.
+    # The in-repo copy is the audit trail; it is what gets committed.
+    RESULTS_DIR.mkdir(parents=True, exist_ok=True)
+    stamp = report["timestamp"].replace("-", "").replace(":", "").split(".")[0]
+    archived = RESULTS_DIR / f"{args.model}__{args.suite}__{stamp}Z.json"
+    archived.write_text(payload, encoding="utf-8")
+    print(f"[saved] {args.out}")
+    print(f"[saved] {archived.relative_to(ROOT)}  <- commit this")
+
     if warning:
         print(f"WARNING: {warning}")
     return 0
