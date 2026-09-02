@@ -1,0 +1,20 @@
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.venv/
+venv/
+*.egg-info/
+
+# data and weights never go in git
+data/
+checkpoints/
+*.safetensors
+*.bin
+*.pt
+*.tif
+*.tar
+
+# results JSON DOES go in git — that is the audit trail
+!results/*.json
+results/_smoke_ckpt/
+runs/

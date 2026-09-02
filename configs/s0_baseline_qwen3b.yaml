@@ -1,0 +1,26 @@
+# Stage 0 — zero-shot baseline, Qwen2.5-VL-3B, no adaptation.
+# This is the bar. Every later run is compared against it.
+# Owner: A1.  Runs on: Kaggle T4 x2.
+
+extends: base
+
+name: s0_baseline_qwen3b
+stage: 0
+owner: A1
+
+model:
+  backbone: Qwen/Qwen2.5-VL-3B-Instruct
+  load_in_4bit: true
+
+lora:
+  enabled: false
+
+eval:
+  suites: [rsvqa]
+  limit: 500
+
+notes: |
+  No training. Measurement only.
+  Check pred_yes_rate_on_binary in the output — RSVQA is heavily yes/no
+  weighted, so a degenerate always-yes model scores ~60% and looks fine.
+  If that rate is above 0.85 the number is meaningless; fix prompting first.

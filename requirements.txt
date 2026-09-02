@@ -1,0 +1,49 @@
+# SIH26167 — pinned dependencies
+#
+# Target environment: Kaggle notebooks, GPU T4 x2, internet ON.
+# T4 is Turing (sm_75): fp16 tensor cores, NO bf16, NO FlashAttention-2.
+# Everything here is chosen to work on that constraint.
+#
+# When you move to the RTX Pro 6000 (Blackwell, sm_120) you will need a
+# DIFFERENT pinned file — see requirements-blackwell.txt. Do not reuse this one.
+#
+# Install:  pip install -q -r requirements.txt
+# Kaggle preinstalls older versions of several of these; the pins below
+# deliberately override them. If pip reports a resolver conflict, record the
+# full message and fix it HERE, not interactively in the notebook.
+
+# --- core ---
+torch==2.5.1
+torchvision==0.20.1
+
+# --- model stack ---
+# Qwen2.5-VL support landed in transformers 4.49; do not go below it.
+transformers==4.51.3
+accelerate==1.6.0
+peft==0.15.2
+bitsandbytes==0.45.5
+qwen-vl-utils==0.0.11
+sentencepiece==0.2.0
+safetensors==0.5.3
+
+# --- data ---
+datasets==3.5.0
+webdataset==0.2.100
+pillow==11.1.0
+numpy==1.26.4
+
+# --- geospatial ---
+# rasterio ships manylinux wheels; GDAL comes bundled. Do NOT pip install gdal.
+rasterio==1.4.3
+pyproj==3.7.1
+shapely==2.1.0
+
+# --- eval + config ---
+pyyaml==6.0.2
+scikit-learn==1.6.1
+scipy==1.15.2
+pandas==2.2.3
+
+# --- logging ---
+tqdm==4.67.1
+tensorboard==2.19.0
