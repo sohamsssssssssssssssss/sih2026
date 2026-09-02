@@ -49,9 +49,12 @@ train:
   max_grad_norm: 1.0         # fp16 needs this
 
 data:
-  tile_format_version: 1     # bump when B1 changes the schema
+  tile_format_version: 2     # bump when B1 changes the schema
+  ann_type: null             # null = all; caption|vqa|refexp filters the BEN.txt view
   image_size: 448
-  multiscale_gsd: []         # e.g. [0.3, 1.0, 2.0, 5.0, 10.0] — Stage 2 onward
+  # Stage 2 work, NOT deferrable to Stage 3: the resolution ladder is what the
+  # PS actually grades, and fusion tuned at one GSD does not transfer to five.
+  multiscale_gsd: []         # e.g. [0.3, 1.0, 2.0, 5.0, 10.0]
 
 eval:
   suites: [rsvqa]

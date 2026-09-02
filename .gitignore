@@ -6,8 +6,10 @@ venv/
 *.egg-info/
 
 # data and weights never go in git
-data/
-checkpoints/
+# Anchored with a leading slash: a bare `data/` also matches src/sih/data/,
+# which silently kept the whole data package out of git.
+/data/
+/checkpoints/
 *.safetensors
 *.bin
 *.pt
@@ -17,4 +19,4 @@ checkpoints/
 # results JSON DOES go in git — that is the audit trail
 !results/*.json
 results/_smoke_ckpt/
-runs/
+/runs/

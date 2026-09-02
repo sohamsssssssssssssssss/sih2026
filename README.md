@@ -61,10 +61,41 @@ results/          JSON results — committed, this is the audit trail
 | **20 Nov** | Four models beating baseline, integrated |
 | **~5 Dec** | Code freeze |
 
+## Data
+
+**Primary dataset: BigEarthNet.txt** (arXiv 2603.29630, CC-BY-4.0, distribution
+at `txt.bigearth.net`). 464,044 co-registered Sentinel-1 SAR + Sentinel-2
+multispectral pairs carrying 9.6M annotations in three types — captions
+(LULC classes, spatial relations, environmental context), VQA pairs, and
+referring-expression detection instructions with bounding boxes.
+
+One ingestion, four views: `data.ann_type` filters the same shard set into a
+captioning view (Stage 1), a VQA view (Stage 2a), and a grounding view
+(Stage 2b). See the schema v2 docstring in `src/sih/data/loader.py`.
+
+Two rules that are easy to get wrong:
+
+- **Subsample to ~50k, stratified** on annotation type, geography, LULC class
+  and season. 464k will not fit Kaggle's ~73 GB scratch, and random sampling
+  drops the rare complex LULC classes — the ones the paper reports VLMs
+  failing on. A random 50k flatters our own numbers by deleting the hard cases.
+- **The manually-verified benchmark split is never subsampled and never
+  trained on.** It is the only clean measurement surface we have.
+
+**A2 has no PS-provided data source.** BEN.txt is single-epoch, so it carries
+nothing bi-temporal; A2's change-VQA track needs a dataset that the problem
+statement does not supply, and CDVQA has no mirror on the HF Hub. This blocks
+A2's track, not just one suite — it needs resolving well before the 15 Oct
+baseline gate.
+
 ## Current status
 
 - [x] Repo scaffolded
-- [ ] Benchmark HF paths verified (`src/sih/data/suites.py` — all `<VERIFY>`)
+- [x] Benchmark HF paths verified (`src/sih/data/suites.py`) — rsvqa, hrvqa live;
+      vrsbench needs its 3.98 GB image zip; lrsvqa blocked on a 57 GB `.7z`
+- [ ] BEN.txt path resolved (`bentxt` is still `<VERIFY-txt.bigearth.net>`)
+- [ ] BEN.txt subsampled to ~50k, stratified
 - [ ] Stage 0 baseline number recorded
-- [ ] Tile format frozen (B1)
+- [ ] Tile format frozen (B1) — schema v2 drafted, `build_loader` still a stub
 - [ ] Stage 1 shared backbone (A1)
+- [ ] **A2 unblocked** — no bi-temporal source identified
