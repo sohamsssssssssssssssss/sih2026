@@ -5,14 +5,52 @@ CDVQA all have multiple community mirrors on HuggingFace with different field
 names. Run inspect_suite() first, look at the actual keys, then fix the
 adapter here — not in a notebook.
 
-Verification log (2026-09-02, `datasets==3.5.0`):
+SUITE STATUS TABLE — verified 2026-09-02 with `datasets==3.5.0`.
+Licences read from HuggingFace repo metadata, not from memory. Re-run
+inspect_suite() and re-check the licence tag before trusting any row.
 
-  rsvqa     dmarsili/RSVQA-LR-2k  validation  2000 rows  (question/answer/image)
-  hrvqa     dmarsili/HRVQA-2k     validation  2000 rows  (question/answer/image)
-  vrsbench  xiang709/VRSBench     JSON only, routed through ADAPTERS
-  lrsvqa    ll-13/LRS-VQA         BLOCKED, images ship as a 57 GB 13-part .7z
-  bentxt    unverified — PS-provided, distribution at txt.bigearth.net
-  cdvqa     unverified — not on the HF Hub at all
+suite     splits available   use         licence       status
+--------  -----------------  ----------  ------------  --------------------------
+bentxt    unknown            EVAL-ONLY   CC-BY-4.0     BLOCKED: path unresolved
+rsvqa     validation         eval-only   CC-BY-4.0     OK, loads
+hrvqa     validation         eval-only   CC-BY-NC-4.0  OK, loads
+vrsbench  n/a (JSON files)   trainable   CC-BY-4.0     BLOCKED: needs image zip
+lrsvqa    n/a (7z archive)   eval probe  CC-BY-NC-4.0  BLOCKED: 57 GB .7z
+cdvqa     unknown            unknown     unknown       BLOCKED: not on HF Hub
+
+Row detail — the parts that bite:
+
+  bentxt    PS-provided (BigEarthNet.txt, arXiv 2603.29630). Distribution at
+            txt.bigearth.net; no confirmed HF mirror, so the path is a
+            placeholder. Its manually-verified benchmark split is EVAL-ONLY in
+            the strongest sense: never subsampled, never trained on, by anyone.
+            The rest of the corpus IS the training data — see loader.py.
+
+  rsvqa     2000 rows, flat (question/answer/image), images decode to PIL.
+            Eval-only because this mirror is a 2k subset, not because of
+            licence. CC-BY-4.0 is permissive; safe to publish numbers from.
+
+  hrvqa     2000 rows, identical shape to rsvqa. CC-BY-NC-4.0 — NON-COMMERCIAL.
+            Fine for the hackathon and for the deck. If anything downstream
+            ever ships commercially, this suite has to come out.
+
+  vrsbench  Annotations are a flat JSON list (VRSBench_EVAL_vqa.json, 37409
+            rows); answer key is `ground_truth` and `image_id` is a FILENAME.
+            Pixels are in Images_val.zip (3.98 GB) which is NOT auto-downloaded.
+            Has both train and val archives, so it is the one non-BEN.txt suite
+            here that could be trained on. Routed through ADAPTERS, not SUITES.
+
+  lrsvqa    7333 QA pairs in LRS_VQA_merged.jsonl (question is `text` — with an
+            answer-format instruction already appended, which will collide with
+            eval.py's SYSTEM prompt; answer is `ground_truth`). Every image is a
+            path into LRS_VQA.7z.001-013 = 57 GB of 7z that `datasets` cannot
+            read. Needs a manual extraction step someone must decide to fund.
+            Value: it is NOT part of BEN.txt and is ultra-high-res (4000x4000+),
+            making it the only independent check that Stage 1 gains are real
+            rather than fitting BEN.txt's annotation style. CC-BY-NC-4.0.
+
+  cdvqa     No mirror on the HF Hub and no PS-provided source. This is A2's
+            entire bi-temporal change-VQA track, not just one missing suite.
 
 SPLIT NAMES ARE NOT NEGOTIABLE. `datasets.get_dataset_split_names` reports
 exactly ['validation'] for BOTH dmarsili mirrors — they are 2k eval-only
