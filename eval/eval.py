@@ -43,6 +43,68 @@ def answer_matches(raw: str, expected: str) -> bool:
     return False
 
 
+BINARY_ANSWERS = ("yes", "no")
+DEGENERATE_YES_RATE = 0.85
+
+
+def _is_binary_gold(expected: str) -> bool:
+    return expected.strip().lower() in BINARY_ANSWERS
+
+
+def summarise(results: list[dict]) -> dict:
+    """Aggregate per-sample results, reporting binary and open-ended separately.
+
+    RSVQA-LR is heavily yes/no weighted, so a model that answers "yes" to
+    everything scores respectably on the aggregate and looks like a working
+    baseline. The split, plus pred_yes_rate_on_binary, is how that gets
+    caught. Whether a prediction counts as "yes" is decided by
+    answer_matches, so the scorer and the guard can never disagree.
+    """
+    n = len(results)
+    binary = [result for result in results if _is_binary_gold(result["expected_answer"])]
+    openended = [
+        result for result in results if not _is_binary_gold(result["expected_answer"])
+    ]
+    yes_predictions = sum(
+        int(answer_matches(result["prediction"]["answer"], "yes")) for result in binary
+    )
+    return {
+        "n": n,
+        "accuracy": sum(int(result["correct"]) for result in results) / n if n else 0.0,
+        "binary_n": len(binary),
+        "binary_accuracy": (
+            sum(int(result["correct"]) for result in binary) / len(binary)
+            if binary
+            else 0.0
+        ),
+        "open_n": len(openended),
+        "open_accuracy": (
+            sum(int(result["correct"]) for result in openended) / len(openended)
+            if openended
+            else 0.0
+        ),
+        "pred_yes_rate_on_binary": (
+            yes_predictions / len(binary) if binary else 0.0
+        ),
+    }
+
+
+def degenerate(summary: dict) -> str | None:
+    """Return a warning string if the run is degenerate, else None.
+
+    A run that trips this is not a weak baseline, it is a non-measurement:
+    the accuracy reflects how often the model says "yes", not what it knows.
+    """
+    if summary["pred_yes_rate_on_binary"] > DEGENERATE_YES_RATE:
+        return (
+            f"Model answered 'yes' to {summary['pred_yes_rate_on_binary']:.0%} of "
+            f"{summary['binary_n']} binary questions "
+            f"(threshold {DEGENERATE_YES_RATE:.0%}). This accuracy measures "
+            "verbosity, not knowledge — fix prompting before recording it."
+        )
+    return None
+
+
 def load_ladder_samples(manifest_path: Path) -> list[dict]:
     if not manifest_path.exists():
         raise FileNotFoundError(
@@ -93,11 +155,15 @@ def main() -> int:
         correct += int(is_correct)
         results.append({**sample, "prediction": prediction, "correct": is_correct})
 
+    summary = summarise(results)
+    warning = degenerate(summary)
     report = {
         "model": args.model,
         "suite": args.suite,
-        "accuracy": correct / len(samples) if samples else 0.0,
-        "n_samples": len(samples),
+        "accuracy": summary["accuracy"],
+        "n_samples": summary["n"],
+        "summary": summary,
+        "warning": warning,
         "results": results,
     }
     if args.suite == "ladder":
@@ -112,6 +178,8 @@ def main() -> int:
         report["per_rung"] = per_rung
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
+    if warning:
+        print(f"WARNING: {warning}")
     return 0
 
 
