@@ -31,6 +31,23 @@ def has_loveda_images(root: Path) -> bool:
     )
 
 
+def find_kaggle_dataset(name: str) -> Path:
+    direct = Path("/kaggle/input") / name
+    if direct.is_dir():
+        return direct
+    slug = name.rsplit("/", 1)[-1]
+    versioned = [
+        path
+        for path in Path("/kaggle/input/datasets").glob(f"*/{slug}/versions/*")
+        if path.is_dir()
+    ]
+    if versioned:
+        return max(versioned, key=lambda path: int(path.name) if path.name.isdigit() else -1)
+    raise FileNotFoundError(
+        f"Kaggle Dataset input {name!r} was not found under /kaggle/input"
+    )
+
+
 def main() -> int:
     import torch
 
@@ -85,9 +102,7 @@ def main() -> int:
                     "Pass --dataset-name NAME for the Kaggle Dataset mounted at "
                     "/kaggle/input/NAME containing manifest.jsonl and rendered ladder tiles."
                 )
-            dataset_root = Path("/kaggle/input") / args.dataset_name
-            if not dataset_root.is_dir():
-                raise FileNotFoundError(f"Kaggle Dataset input not found: {dataset_root}")
+            dataset_root = find_kaggle_dataset(args.dataset_name)
             manifests = sorted(dataset_root.rglob("manifest.jsonl"))
             if len(manifests) != 1:
                 raise RuntimeError(
@@ -104,10 +119,9 @@ def main() -> int:
                         "for a Kaggle Dataset mounted at /kaggle/input/NAME containing the "
                         "extracted LoveDA Train/ and Val/ directories."
                     )
-                dataset_root = Path("/kaggle/input") / args.dataset_name
-                if not dataset_root.is_dir():
-                    raise FileNotFoundError(f"Kaggle Dataset input not found: {dataset_root}")
-                link_contents(dataset_root, raw_root)
+                dataset_root = find_kaggle_dataset(args.dataset_name)
+                raw_root.parent.mkdir(parents=True, exist_ok=True)
+                raw_root.symlink_to(dataset_root, target_is_directory=True)
             if not has_loveda_images(raw_root):
                 raise FileNotFoundError(
                     f"No extracted LoveDA images_png directories found under {raw_root}. "
