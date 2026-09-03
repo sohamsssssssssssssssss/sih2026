@@ -13,6 +13,9 @@ Measured on the frozen Qwen2.5-VL-3B baseline, same config, same matcher:
     binary_accuracy         0.699           0.6655
     open_accuracy           0.4227          0.1651
 
+Both columns were scored under the pre-daab09b matcher, so the comparison is
+like-for-like; open_accuracy is invariant under that change anyway.
+
 binary_accuracy moved 3 points. open_accuracy moved by a factor of 2.5, and
 the small-sample figure was optimistic in the direction that flatters us.
 
@@ -43,6 +46,8 @@ def answer_matches(raw: str, expected: str) -> bool:
     raw_l = raw.strip().lower()
     exp_l = expected.strip().lower()
     if raw_l == exp_l:
+        return True
+    if raw_l == "1" and exp_l == "yes":
         return True
     if re.search(rf"\b{re.escape(exp_l)}\b", raw_l):
         return True
@@ -214,13 +219,7 @@ def main() -> int:
     correct = 0
     for sample in samples:
         prediction = model.infer(sample["image_paths"], sample["question"])
-        if args.suite == "ladder":
-            is_correct = (
-                prediction["answer"].strip().lower()
-                == sample["expected_answer"].strip().lower()
-            )
-        else:
-            is_correct = answer_matches(prediction["answer"], sample["expected_answer"])
+        is_correct = answer_matches(prediction["answer"], sample["expected_answer"])
         correct += int(is_correct)
         results.append({**sample, "prediction": prediction, "correct": is_correct})
 

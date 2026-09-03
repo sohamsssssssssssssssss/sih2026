@@ -37,17 +37,19 @@ Stage 0, measured. Every later stage is judged against these numbers.
 
 | Metric | Value |
 |---|---|
-| accuracy | 0.5131 |
-| binary_accuracy | 0.6655 |
+| accuracy | 0.5142 |
+| binary_accuracy | 0.6671 |
 | **open_accuracy** | **0.1651** |
-| pred_yes_rate_on_binary | 0.3635 |
+| pred_yes_rate_on_binary | 0.3675 |
 | n | 10004 |
 | binary_n / open_n | 6957 / 3047 |
 
 - **Model:** frozen `Qwen/Qwen2.5-VL-3B-Instruct`, fp16, greedy decoding, no training or fine-tuning.
 - **Split:** official RSVQA-LR test split, all 10,004 active test questions (`--full`).
-- **Degeneracy check:** passed, no warning. A yes-rate of 0.3635 is well under the 0.85 threshold, so this is a real measurement rather than an always-yes artefact.
+- **Degeneracy check:** passed, no warning. A yes-rate of 0.3675 is well under the 0.85 threshold, so this is a real measurement rather than an always-yes artefact.
 - **Result:** `results/qwen2.5vl-3b__rsvqa__20260903T175900Z.json`
+- **Scoring:** figures above are under the current matcher. The JSON itself was scored before `daab09b` and reads 0.5131 / 0.6655; it is left exactly as measured. See [`results/RESCORE_NOTE.md`](results/RESCORE_NOTE.md) for the 11 samples that moved and why.
+- **`open_accuracy` is invariant under the `daab09b` matcher change**, so the headline metric is not sensitive to matcher revisions — unlike the aggregate, which moved when the definition of a correct answer did.
 
 **`open_accuracy` is the headline metric for this project.** Aggregate accuracy is dominated by the 6957 binary questions, where a coin-flip already scores near 0.5; it moves even when the model has learned nothing about the imagery. The open-ended stratum is what the problem statement actually asks for, and 0.1651 is the number Stages 1-3 have to beat. Report it alongside the aggregate, never instead of it.
 
@@ -61,6 +63,8 @@ The split is 6957 binary to 3047 open-ended, so `--limit` draws roughly 70/30 in
 |---|---|---|
 | binary_accuracy | 0.699 | 0.6655 |
 | open_accuracy | 0.4227 | 0.1651 |
+
+Both columns above were scored under the pre-`daab09b` matcher, so the comparison stays like-for-like. `open_accuracy` is unaffected by that matcher change in any case, so the conclusion holds unchanged; only the `binary_accuracy` figures would shift slightly (0.6655 -> 0.6671 on the full split).
 
 `binary_accuracy` moved 3 points. `open_accuracy` moved by a factor of 2.5 — and the small-sample figure was optimistic, in the direction that flatters us.
 
