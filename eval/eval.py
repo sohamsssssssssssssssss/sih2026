@@ -1,4 +1,26 @@
-"""Run a registered model against a named evaluation suite."""
+"""Run a registered model against a named evaluation suite.
+
+SAMPLE-SIZE WARNING — read before comparing two runs.
+
+The RSVQA-LR test split is 6957 binary (yes/no) questions to 3047 open-ended,
+so --limit draws roughly 70/30 in favour of binary. Open-ended questions are
+the minority stratum and small runs land on very few of them: --limit 200
+yields only ~61 open-ended questions.
+
+Measured on the frozen Qwen2.5-VL-3B baseline, same config, same matcher:
+
+    metric               --limit 200    full split (n=10004)
+    binary_accuracy         0.699           0.6655
+    open_accuracy           0.4227          0.1651
+
+binary_accuracy moved 3 points. open_accuracy moved by a factor of 2.5, and
+the small-sample figure was optimistic in the direction that flatters us.
+
+The rule: binary_accuracy is stable under small --limit runs. open_accuracy
+is NOT. Do not use --limit below ~2000 to compare open-ended performance
+between models or checkpoints — at that limit the run draws ~609 open-ended
+questions. Headline numbers use --full.
+"""
 
 import argparse
 import json
@@ -53,6 +75,9 @@ SUITE_SPLITS = {
 
 BINARY_ANSWERS = ("yes", "no")
 DEGENERATE_YES_RATE = 0.85
+# Below this many open-ended questions, open_accuracy is noise — see the
+# module docstring for the measured 2.5x swing that motivates the number.
+MIN_OPEN_SAMPLES = 500
 
 
 def _is_binary_gold(expected: str) -> bool:
@@ -168,6 +193,23 @@ def main() -> int:
         if args.suite == "ladder"
         else load_suite(args.suite, limit=args.limit, full=args.full)
     )
+    # Gold answers are known before any inference, so this is an exact count
+    # rather than a projection. Printed up front: a run too small to compare
+    # open-ended performance should be abandoned before it burns GPU time.
+    open_n = sum(
+        1 for sample in samples if not _is_binary_gold(sample["expected_answer"])
+    )
+    sampling_warning = None
+    if open_n < MIN_OPEN_SAMPLES:
+        sampling_warning = (
+            f"This run has only {open_n} open-ended questions "
+            f"(threshold {MIN_OPEN_SAMPLES}). binary_accuracy will be usable but "
+            "open_accuracy will not — it is the headline metric and it is "
+            "unstable at this sample size. Raise --limit (~2000 on RSVQA-LR) "
+            "or use --full before comparing open-ended performance."
+        )
+        print(f"WARNING: {sampling_warning}")
+
     results = []
     correct = 0
     for sample in samples:
@@ -201,6 +243,7 @@ def main() -> int:
         "n_samples": summary["n"],
         "summary": summary,
         "warning": warning,
+        "sampling_warning": sampling_warning,
         "results": results,
     }
     if args.suite == "ladder":
