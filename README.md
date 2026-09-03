@@ -31,6 +31,45 @@ streamlit run demo_gui/app.py --server.headless true
 
 The ladder uses real LoveDA pixels and semantic masks; only spatial resolution and sensor noise are simulated. LoveDA is licensed for academic, non-commercial use. Download and extract Train+Val idempotently with `python3 data/download_ladder_data.py`, then generate up to 200 real source images at five rungs with `python3 eval/ladder.py --limit 200`. The degradation applies a Gaussian PSF, area-average decimation, and read plus shot noise while keeping `sensor: loveda`, never `synthetic`. Evaluate with `python3 eval/eval.py --model mock --suite ladder --out results.json` and plot with `python3 eval/plot_ladder.py results.json`. DOTA acquisition can be attempted with `python3 data/download_ladder_data.py --dataset dota`; Google Drive failures return promptly with manual-download instructions.
 
+## Baseline
+
+Stage 0, measured. Every later stage is judged against these numbers.
+
+| Metric | Value |
+|---|---|
+| accuracy | 0.5142 |
+| binary_accuracy | 0.6671 |
+| **open_accuracy** | **0.1651** |
+| pred_yes_rate_on_binary | 0.3675 |
+| n | 10004 |
+| binary_n / open_n | 6957 / 3047 |
+
+- **Model:** frozen `Qwen/Qwen2.5-VL-3B-Instruct`, fp16, greedy decoding, no training or fine-tuning.
+- **Split:** official RSVQA-LR test split, all 10,004 active test questions (`--full`).
+- **Degeneracy check:** passed, no warning. A yes-rate of 0.3675 is well under the 0.85 threshold, so this is a real measurement rather than an always-yes artefact.
+- **Result:** `results/qwen2.5vl-3b__rsvqa__20260903T175900Z.json`
+- **Scoring:** figures above are under the current matcher. The JSON itself was scored before `daab09b` and reads 0.5131 / 0.6655; it is left exactly as measured. See [`results/RESCORE_NOTE.md`](results/RESCORE_NOTE.md) for the 11 samples that moved and why.
+- **`open_accuracy` is invariant under the `daab09b` matcher change**, so the headline metric is not sensitive to matcher revisions — unlike the aggregate, which moved when the definition of a correct answer did.
+
+**`open_accuracy` is the headline metric for this project.** Aggregate accuracy is dominated by the 6957 binary questions, where a coin-flip already scores near 0.5; it moves even when the model has learned nothing about the imagery. The open-ended stratum is what the problem statement actually asks for, and 0.1651 is the number Stages 1-3 have to beat. Report it alongside the aggregate, never instead of it.
+
+### Sample-size warning
+
+`binary_accuracy` is stable under small `--limit` runs. `open_accuracy` is **not**.
+
+The split is 6957 binary to 3047 open-ended, so `--limit` draws roughly 70/30 in favour of binary and the open-ended stratum stays small: `--limit 200` lands on only ~61 open-ended questions. Same config, same matcher, two runs:
+
+| Metric | `--limit 200` | full split (n=10004) |
+|---|---|---|
+| binary_accuracy | 0.699 | 0.6655 |
+| open_accuracy | 0.4227 | 0.1651 |
+
+Both columns above were scored under the pre-`daab09b` matcher, so the comparison stays like-for-like. `open_accuracy` is unaffected by that matcher change in any case, so the conclusion holds unchanged; only the `binary_accuracy` figures would shift slightly (0.6655 -> 0.6671 on the full split).
+
+`binary_accuracy` moved 3 points. `open_accuracy` moved by a factor of 2.5 — and the small-sample figure was optimistic, in the direction that flatters us.
+
+**Do not use `--limit` below ~2000 to compare open-ended performance between models or checkpoints** (~2000 draws ~609 open-ended questions). Headline numbers use `--full`. `eval/eval.py` prints a warning before inference starts when a run would land on fewer than 500 open-ended questions, and records it as `sampling_warning` in the results JSON.
+
 ## Frozen Qwen RSVQA-LR baseline
 
 `qwen2.5vl-3b` wraps the frozen `Qwen/Qwen2.5-VL-3B-Instruct` checkpoint with lazy loading, greedy decoding, and no training or fine-tuning. `python3 scripts/dry_run_rsvqa.py` downloads the complete official RSVQA-LR release and validates two real samples plus a mocked forward call without loading model weights. The eval CLI uses the official test split, defaults to 200 deterministically spaced samples across the split, accepts `--limit N`, and uses all 10,004 active test questions with `--full`.
