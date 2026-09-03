@@ -22,7 +22,7 @@ Contract-first scaffold for a multi-agent geospatial visual-question-answering s
 
 ```bash
 python3 eval/smoke.py --config configs/example.yaml
-python3 eval/eval.py --model mock --suite proxy --out results.json
+python3 eval/eval.py --model mock --suite resolution_proxy --out results.json
 python3 scripts/train.py --config configs/example.yaml
 streamlit run demo_gui/app.py --server.headless true
 ```

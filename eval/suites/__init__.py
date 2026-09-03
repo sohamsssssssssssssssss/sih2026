@@ -2,7 +2,7 @@
 
 from eval.suites.rsvqa import load_rsvqa_lr
 
-SUITE_NAMES = ("rsvqa", "vrsbench", "cdvqa", "ladder", "proxy")
+SUITE_NAMES = ("rsvqa", "vrsbench", "cdvqa", "ladder", "resolution_proxy")
 
 
 def load_suite(name: str, limit: int = 200, full: bool = False) -> list[dict]:
