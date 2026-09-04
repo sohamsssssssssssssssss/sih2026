@@ -79,7 +79,11 @@ SUITE_SPLITS = {
 }
 
 BINARY_ANSWERS = ("yes", "no")
+# The guard is two-sided. A model stuck on "no" is exactly as uninformative as
+# one stuck on "yes" — it just scores the complement of the prior instead of
+# the prior. Checking only the high side let a collapsed run pass silently.
 DEGENERATE_YES_RATE = 0.85
+DEGENERATE_NO_RATE = 0.15
 # Below this many open-ended questions, open_accuracy is noise — see the
 # module docstring for the measured 2.5x swing that motivates the number.
 MIN_OPEN_SAMPLES = 500
@@ -134,14 +138,32 @@ def degenerate(summary: dict) -> str | None:
     """Return a warning string if the run is degenerate, else None.
 
     A run that trips this is not a weak baseline, it is a non-measurement:
-    the accuracy reflects how often the model says "yes", not what it knows.
+    the accuracy reflects how often the model says one word, not what it knows.
+
+    Two-sided. A model that answers "no" to everything is as uninformative as
+    one that answers "yes" to everything; it simply scores the complement of
+    the answer prior. Note that a rate between the thresholds is NOT a
+    certificate of soundness — a merely biased model can still sit inside the
+    band while barely discriminating. This catches total collapse, not bias.
     """
-    if summary["pred_yes_rate_on_binary"] > DEGENERATE_YES_RATE:
+    rate = summary["pred_yes_rate_on_binary"]
+    # A run with no binary questions reports a rate of 0.0, which would trip
+    # the low side for free. Only judge a rate that has something behind it.
+    if summary["binary_n"] == 0:
+        return None
+    if rate > DEGENERATE_YES_RATE:
         return (
-            f"Model answered 'yes' to {summary['pred_yes_rate_on_binary']:.0%} of "
+            f"Model answered 'yes' to {rate:.0%} of "
             f"{summary['binary_n']} binary questions "
             f"(threshold {DEGENERATE_YES_RATE:.0%}). This accuracy measures "
             "verbosity, not knowledge — fix prompting before recording it."
+        )
+    if rate < DEGENERATE_NO_RATE:
+        return (
+            f"Model answered 'no' to {1 - rate:.0%} of "
+            f"{summary['binary_n']} binary questions "
+            f"(threshold {DEGENERATE_NO_RATE:.0%} yes-rate). This accuracy "
+            "measures refusal, not knowledge — fix prompting before recording it."
         )
     return None
 

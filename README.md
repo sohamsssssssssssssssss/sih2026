@@ -54,15 +54,23 @@ apparent recovery is the collapse landing on the base rate.
 **Read `open_accuracy`.** It falls 0.335 → 0.245 across the honest rungs and is
 the only curve here that measures resolution sensitivity.
 
-**A known limitation, found by trying to refute the above.** The guard is
-one-sided: it only detects collapse toward "yes". At 2 m this model collapses
-the *other* way — yes-rate 0.315, 137 "No" answers — scoring 0.575, which is
-12.5 points *below* the 0.70 prior. That rung is equally uninformative and is
-**not** flagged. Read the yes-rate column directly; a value far from the gold
-prior in either direction means the binary answer has stopped tracking the
-image. Widening the guard to two-sided is an open item, deliberately not done
-here because `degenerate()` is shared with the RSVQA baseline and changing it
-would restate that number too.
+**The guard is two-sided.** It flags a yes-rate above 0.85 *or* below 0.15,
+because a model stuck on "no" is exactly as uninformative as one stuck on
+"yes" — it just scores the complement of the prior. (The RSVQA baseline sits
+at 0.3675 and is unaffected; its accuracy is unchanged at 0.514194.)
+
+**What the guard does not catch, and why 2 m still passes.** At 2 m this model
+leans hard toward "no" — yes-rate 0.315, 137 "No" answers — and scores 0.575,
+which is 12.5 points *below* what always-answering-yes would score. That looks
+like it ought to be flagged. It is not, and it should not be: 0.315 is nowhere
+near the 0.15 floor, and the rung still discriminates, with **MCC 0.350** on
+59 true positives and 56 true negatives out of 200. Compare 5 m (MCC −0.035)
+and 10 m (no negative predictions at all).
+
+The distinction is worth holding onto: **the guard catches collapse, not
+bias.** A rate inside the band is not a certificate that a rung is sound. Read
+the yes-rate against the gold prior — 2 m is a real measurement made by a
+badly calibrated model, which is a different problem with a different fix.
 
 Also note 11 binary predictions at 0.3 m are the bare string `0`, which matches
 neither yes nor no and always scores incorrect — a prompting wart that slightly

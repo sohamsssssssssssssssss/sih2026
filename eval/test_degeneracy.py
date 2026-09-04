@@ -88,6 +88,47 @@ class DegenerateTest(unittest.TestCase):
         self.assertEqual(summary["pred_yes_rate_on_binary"], 0.5)
         self.assertIsNone(degenerate(summary))
 
+    def test_always_no_model_is_flagged(self) -> None:
+        # The mirror of the always-yes case. Answering "no" to everything is
+        # exactly as uninformative; it scores the complement of the prior.
+        results = [_result("no", "no") for _ in range(9)]
+        results += [_result("yes", "no") for _ in range(9)]
+        results += [_result("urban", "no"), _result("2", "no")]
+        summary = summarise(results)
+        self.assertEqual(summary["pred_yes_rate_on_binary"], 0.0)
+        warning = degenerate(summary)
+        self.assertIsNotNone(warning)
+        self.assertIn("refusal", warning)
+
+    def test_both_collapse_directions_are_caught(self) -> None:
+        all_yes = summarise([_result("yes", "yes")] * 10 + [_result("no", "yes")] * 10)
+        all_no = summarise([_result("yes", "no")] * 10 + [_result("no", "no")] * 10)
+        self.assertEqual(all_yes["pred_yes_rate_on_binary"], 1.0)
+        self.assertEqual(all_no["pred_yes_rate_on_binary"], 0.0)
+        self.assertIsNotNone(degenerate(all_yes))
+        self.assertIsNotNone(degenerate(all_no))
+
+    def test_low_threshold_is_strictly_less_than(self) -> None:
+        # Exactly 0.15 is not degenerate; 0.10 is.
+        at = [_result("yes", "yes") for _ in range(3)]
+        at += [_result("no", "no") for _ in range(17)]
+        self.assertEqual(summarise(at)["pred_yes_rate_on_binary"], 0.15)
+        self.assertIsNone(degenerate(summarise(at)))
+
+        under = [_result("yes", "yes") for _ in range(2)]
+        under += [_result("no", "no") for _ in range(18)]
+        self.assertEqual(summarise(under)["pred_yes_rate_on_binary"], 0.10)
+        self.assertIsNotNone(degenerate(summarise(under)))
+
+    def test_open_only_run_is_not_flagged_by_the_low_side(self) -> None:
+        # summarise() reports a yes-rate of 0.0 when there are no binary
+        # questions at all. That is an absence of evidence, not a collapse,
+        # and must not trip the low threshold for free.
+        summary = summarise([_result("urban", "urban"), _result("2", "2")])
+        self.assertEqual(summary["binary_n"], 0)
+        self.assertEqual(summary["pred_yes_rate_on_binary"], 0.0)
+        self.assertIsNone(degenerate(summary))
+
     def test_threshold_is_strictly_greater_than(self) -> None:
         # Exactly 0.85 is not degenerate; 0.90 is.
         at_threshold = [_result("yes", "yes") for _ in range(17)]

@@ -8,7 +8,9 @@ whole-run yes-rate can sit well under the threshold while individual rungs
 are pure noise, so the guard has to run per rung.
 """
 
+import json
 import unittest
+from pathlib import Path
 
 from eval.eval import answer_matches, degenerate, summarise
 
@@ -151,3 +153,67 @@ class PlotLadderTest(unittest.TestCase):
                 "binary_accuracy": 0.7, "open_n": 200, "binary_n": 200,
                 "pred_yes_rate_on_binary": 1.0, "warning": "degenerate"}
         self._plot([self._report({f"{g:.1f}": dict(full) for g in RUNGS})])
+
+
+class RealLadderRungTest(unittest.TestCase):
+    """Pins what the guard does to the actual committed ladder measurement.
+
+    Specifically the 2 m rung, which is the one people expect to be flagged and
+    which is NOT. It is worth a test rather than a comment, because the next
+    person to look at the curve will ask the same question.
+    """
+
+    LADDER_JSON = (
+        Path(__file__).resolve().parents[1]
+        / "results"
+        / "qwen2.5vl-3b__ladder__rescored__20260904.json"
+    )
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.records = [
+            {**r, "correct": answer_matches(r["prediction"]["answer"], r["expected_answer"])}
+            for r in json.loads(cls.LADDER_JSON.read_text(encoding="utf-8"))["results"]
+        ]
+
+    def _summary(self, gsd: float) -> dict:
+        return summarise([r for r in self.records if r["gsd"] == gsd])
+
+    def test_coarse_rungs_are_flagged_for_yes_collapse(self) -> None:
+        for gsd in (5.0, 10.0):
+            summary = self._summary(gsd)
+            self.assertGreater(summary["pred_yes_rate_on_binary"], 0.85)
+            self.assertIsNotNone(degenerate(summary), f"{gsd}m should be flagged")
+
+    def test_two_metre_rung_is_biased_but_not_degenerate(self) -> None:
+        # This rung leans hard toward "no" — 0.315 yes-rate against a 0.70 gold
+        # prior, scoring BELOW an always-yes baseline. It is still not flagged,
+        # and should not be: 0.315 is nowhere near the 0.15 floor, and the rung
+        # retains real discrimination (MCC 0.35, 59 true positives and 56 true
+        # negatives out of 200). The guard catches collapse, not bias.
+        summary = self._summary(2.0)
+        self.assertAlmostEqual(summary["pred_yes_rate_on_binary"], 0.315, places=3)
+        self.assertGreater(summary["pred_yes_rate_on_binary"], 0.15)
+        self.assertIsNone(degenerate(summary))
+        # Scoring below the always-yes baseline is the symptom a reader sees.
+        self.assertLess(summary["binary_accuracy"], 0.70)
+
+    def test_honest_rungs_are_not_flagged(self) -> None:
+        for gsd in (0.3, 1.0, 2.0):
+            self.assertIsNone(degenerate(self._summary(gsd)), f"{gsd}m should pass")
+
+    def test_a_no_collapsed_rung_would_now_be_caught(self) -> None:
+        # Same rung, with every binary answer forced to "no": the case the
+        # one-sided guard used to miss entirely.
+        collapsed = [
+            {**r, "prediction": {**r["prediction"], "answer": "No"}}
+            if r["expected_answer"].strip().lower() in ("yes", "no")
+            else r
+            for r in self.records
+            if r["gsd"] == 2.0
+        ]
+        summary = summarise(collapsed)
+        self.assertEqual(summary["pred_yes_rate_on_binary"], 0.0)
+        warning = degenerate(summary)
+        self.assertIsNotNone(warning)
+        self.assertIn("refusal", warning)
