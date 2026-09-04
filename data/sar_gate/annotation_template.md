@@ -86,10 +86,57 @@ Urban/built-up:
   context, not independently verified.
 
 Vegetation:
+- Scene: maharashtra_farmland
+  Feature: Cropland / low-vegetation mosaic
+  Location in frame: Across most of the frame outside the isolated dark water
+  bodies and bright clustered patches, especially throughout the upper half and
+  between the central and lower built-up clusters.
+  Brightness/texture: Predominantly medium violet/lavender with fine granular
+  mottling and broad, subtle changes in tone. The texture is less uniformly
+  dense and continuous than the canopy signature in the Western Ghats scene.
+  Shape: Irregular to weakly rectilinear patchwork with faint parcel-like
+  boundaries and elongated field-scale patches, rather than one continuous
+  forest canopy.
+  Mechanism: A mixture of surface scattering from soil and volume scattering
+  from low vegetation. Differences in surface roughness, moisture, vegetation
+  structure, and field orientation can all alter the return; this composite
+  does not support assigning those causes to individual parcels or identifying
+  a crop species.
+  Confidence: Medium — the repeated parcel-scale pattern supports managed
+  fields or low vegetation, but planted vegetation and exposed soil are not
+  reliably separable everywhere in this render.
 
 Terrain artifacts (layover/foreshortening/shadow):
+- Scene: maharashtra_farmland
+  Feature: No confidently identifiable layover, foreshortening, or radar shadow
+  Location in frame: No discrete terrain-artifact region is identifiable across
+  the frame.
+  Brightness/texture: There are no clear adjacent bright compressed slopes and
+  directionally consistent dark shadow zones. The isolated solid dark patches
+  are rounded or irregular and fit the visible water signature more closely
+  than terrain shadow.
+  Shape: No repeated ridge/valley banding, slope compression, or paired
+  bright-side/dark-side geometry is resolved strongly enough to make a terrain
+  call.
+  Mechanism: Layover, foreshortening, and radar shadow depend on slope and radar
+  look direction; the required geometric relationships are not evident here.
+  RTC processing does not by itself remove those distortions, so their absence
+  from this annotation means only that they cannot be confidently identified
+  in this crop.
+  Confidence: Medium-high that no artifact is identifiable, not that geometric
+  distortion is physically absent.
 
 Why it looks this way:
+The scene is dominated by a field-scale mosaic whose varying medium
+backscatter is consistent with changing surface roughness, moisture, soil
+exposure, vegetation structure, and field orientation; the SAR image alone
+does not distinguish those factors parcel by parcel or identify crop species.
+Bright, heterogeneous magenta clusters are consistent with strong returns from
+hard structures and wall-ground double bounce, while the isolated smooth
+dark-navy ponds return little energy because calm water reflects it away from
+the sensor. Fine granular variation across the scene is also consistent with
+SAR speckle. No additional brightness pattern is sufficiently tied to slope
+and look geometry to justify a layover, foreshortening, or radar-shadow claim.
 
 ## Western Ghats forest
 
