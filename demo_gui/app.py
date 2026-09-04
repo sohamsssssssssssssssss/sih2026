@@ -21,6 +21,7 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+from demo_gui import golden_assets  # noqa: E402
 from orchestrator.registry import get  # noqa: E402
 from orchestrator.router import route  # noqa: E402
 from orchestrator.trace import append_record, verify_chain  # noqa: E402
@@ -78,15 +79,6 @@ def find_cached_result(
         ),
         None,
     )
-
-
-def local_golden_image(scene_id: str) -> Path | None:
-    local_id = scene_id.replace(
-        "loveda_LoveDA_images_png_", "loveda_Train_Rural_images_png_"
-    )
-    gsd = scene_id.rsplit("_gsd", 1)[-1]
-    candidate = ROOT / "data" / "ladder" / gsd / f"{local_id}.png"
-    return candidate if candidate.is_file() else None
 
 
 def cached_response(
@@ -203,7 +195,7 @@ with ask_tab:
         scene_id = cached_golden["tile_id"]
         sensor = "LoveDA"
         question = st.text_input("Question", value=cached_golden["question"], disabled=True)
-        image_path = local_golden_image(scene_id)
+        image_path = golden_assets.local_golden_image(scene_id, ROOT)
         st.code(scene_id, language=None)
         if image_path is not None:
             st.image(str(image_path), caption=f"Golden scene: {scene_id}", width=520)
