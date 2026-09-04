@@ -1,4 +1,9 @@
-"""Small suite loader stubs with a stable sample contract."""
+"""Small suite loader stubs with a stable sample contract.
+
+Before wiring up or switching a suite, read RECON.md in this directory:
+it records per-suite splits, licences (two are non-commercial), and what
+is currently blocking each unwired suite.
+"""
 
 from eval.suites.rsvqa import load_rsvqa_lr
 
