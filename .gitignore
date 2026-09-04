@@ -10,7 +10,10 @@ trace.jsonl
 # Anchored to the repo root. A bare `data/raw/` also matches any nested
 # data/raw at any depth — the unanchored-pattern bug that twice hid real work.
 /data/raw/
-/data/ladder/
+/data/ladder/*
+!/data/ladder/0.3/
+/data/ladder/0.3/*
+!/data/ladder/0.3/loveda_Train_Rural_images_png_0_gsd0.3.png
 /data/sar_gate/jobs.json
 /data/sar_gate/raw/
 /data/sar_gate/rendered/
