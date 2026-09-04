@@ -19,7 +19,7 @@ Licences were read from HuggingFace repo metadata and the Zenodo record, on
 | `proxy` | yes | n/a | smoke only | n/a | placeholder samples, not a real suite |
 | `vrsbench` | name only | train + val archives | **trainable** | CC-BY-4.0 | BLOCKED: needs a ~4 GB image zip |
 | `cdvqa` | name only | unknown | unknown | unknown | **BLOCKED: not on the HF Hub at all** |
-| `bentxt` | no | unknown | **eval-only** benchmark split | CC-BY-4.0 | BLOCKED: distribution path unresolved |
+| `bentxt` | no | `split` column: train/val/test/**bench** | **eval-only** bench split | **CDLA-Permissive-1.0** | BLOCKED: 118 GB imagery, separate download |
 | `hrvqa` | no | validation only (2k mirror) | eval | **CC-BY-NC-4.0** | loads, but non-commercial |
 | `lrsvqa` | no | n/a (7z archive) | eval probe | **CC-BY-NC-4.0** | BLOCKED: 57 GB `.7z` |
 
@@ -89,8 +89,14 @@ currently exist for us.
 ### bentxt — PS-provided, path unresolved
 
 BigEarthNet.txt (arXiv 2603.29630): 464,044 co-registered Sentinel-1 + Sentinel-2
-pairs, 9.6M annotations. Distribution is at `txt.bigearth.net`; no confirmed HF
-mirror, so there is no path to hardcode yet. **Do not guess one.**
+pairs, **9,553,962** annotations. Now resolved: the annotations are a 467 MB
+parquet at HF `BIFOLD-BigEarthNetv2-0/BigEarthNet.txt`, public and not gated.
+**Licence CDLA-Permissive-1.0, not CC-BY-4.0.**
+
+It ships **no imagery**. The pixels are a separate 118 GB download from Zenodo
+10891137 as monolithic `.tar.zst` with no per-patch fetch, which cannot be
+subsampled on Kaggle's ~73 GB scratch. See `data/BEN_TXT_FACTS.md` on main for
+the full reconnaissance.
 
 Its manually-verified benchmark split is eval-only in the strongest sense:
 **never subsampled, never trained on, by anyone.** The rest of the corpus is
@@ -102,7 +108,9 @@ the ones the paper reports VLMs failing on.
 ## Licence summary
 
 Two suites are **CC-BY-NC-4.0** — non-commercial: **`hrvqa`** and **`lrsvqa`**.
-Everything else currently in use (`rsvqa`, `vrsbench`, `bentxt`) is CC-BY-4.0,
+`rsvqa` and `vrsbench` are CC-BY-4.0; **`bentxt` is CDLA-Permissive-1.0**
+(verified at both txt.bigearth.net and Zenodo 10891137 — an earlier draft of
+this table said CC-BY-4.0, which was wrong),
 and the `ladder` suite's source imagery (LoveDA) is academic/non-commercial.
 
 Nothing here blocks hackathon use. It matters the moment anything ships.
