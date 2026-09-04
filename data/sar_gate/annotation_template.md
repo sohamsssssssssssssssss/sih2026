@@ -49,8 +49,41 @@ distinguish these dark features from each other; shape and context
 ![Maharashtra farmland RTC false color](rendered/maharashtra_farmland.png)
 
 Water areas:
+- Scene: maharashtra_farmland
+  Feature: Water area (pond)
+  Location in frame: mid-left, isolated in open farmland texture, not touching the
+  built-up/pink cluster
+  Brightness/texture: Solid, flat, uniform dark navy tone. No internal speckle or
+  mottling — matches the calm-water signature seen in the Mumbai coastal scene.
+  Shape: Rounded/irregular blob outline. No straight edges detected — rules out
+  canal, bund, or engineered irrigation tank.
+  Mechanism: Specular reflection off calm open water (SAR returns very low backscatter
+  from flat water surfaces, appearing dark). Natural farm pond / seasonal puddle,
+  not a constructed water feature, based on absence of straight boundaries.
+  Confidence: High — texture and shape both consistent with natural still water,
+  same mechanism as prior Mumbai water annotation.
 
 Urban/built-up:
+- Scene: maharashtra_farmland
+  Feature: Urban/built-up area (settlement, uneven density)
+  Location in frame: Central-left region, spanning from middle-left down to bottom-left
+  Brightness/texture: Bright pink/magenta with rough, speckled internal texture,
+  including scattered near-saturated bright specks — consistent with strong
+  double-bounce backscatter off buildings and hard structures. Density is uneven:
+  the middle-left portion is bright-dominant (dense core), while the bottom-left
+  portion is dark-dominant with only sparse bright pixels (thinning periphery).
+  Shape: Irregular clustered patches loosely following a linear road/path feature
+  visible running through the region, rather than a dense block or planned grid —
+  consistent with a rural settlement strung along a road, with density fading
+  outward into scattered structures.
+  Mechanism: Double-bounce scattering (ground-to-wall-to-sensor) off buildings and
+  vertical hard structures. Note: brightness/roughness alone cannot distinguish
+  settlement from other hard-surface features (e.g. rock outcrops, industrial
+  structures) from SAR signature alone — this interpretation is based on pattern
+  and rural context, not confirmed against optical imagery or map data.
+  Confidence: Medium — texture and mechanism are consistent with built-up area, but
+  identification as settlement (vs. other hard-surface feature) is inferred from
+  context, not independently verified.
 
 Vegetation:
 
