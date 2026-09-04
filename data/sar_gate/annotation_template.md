@@ -96,14 +96,68 @@ Why it looks this way:
 ![Western Ghats forest RTC false color](rendered/western_ghats_forest.png)
 
 Water areas:
+- Region: sinuous, narrow dark-navy channel running through the upper-central
+  portion of the frame, branching into smaller tributaries
+  Class: water (river/stream)
+  Reasoning: near-zero backscatter following a continuous dendritic path is
+  consistent with specular reflection off a flowing water surface; the
+  branching, drainage-shaped geometry (not a straight line, not adjacent to
+  an implied steep slope) argues for a stream channel rather than radar
+  shadow. Confidence: High.
+- Region: irregular, branching dark-navy blob in the lower-left of the frame
+  Class: water (pond/reservoir)
+  Reasoning: same near-zero backscatter and specular signature as the
+  channel above, but as an enclosed blob rather than a linear feature —
+  consistent with a small reservoir or natural pool rather than a river.
+  Confidence: Medium-high — shape is consistent with standing water, but a
+  dammed reservoir vs. a natural pool can't be distinguished from SAR alone.
+- Several smaller isolated dark patches scattered through the frame, each a
+  few pixels wide, generally aligned along the same drainage pattern as the
+  main channel. Likely minor tributaries or seasonal pools. Confidence: Low
+  — too small to rule out speckle/shadow at this scale.
 
 Urban/built-up:
+- No confidently identifiable urban cluster. A handful of faint, isolated
+  brighter pixels sit along what may be trail or ridge lines, but they are
+  sparse, unclustered, and equally consistent with small exposed rock
+  outcrops or isolated structures. SAR alone does not disambiguate these at
+  this resolution — genuinely uncertain, not forcing a settlement call.
 
 Vegetation:
+- Region: dominates essentially the entire valid-data portion of the frame
+  (left ~55%; the black region on the right is the scene's nodata/swath
+  edge, not a land-cover class)
+  Class: forest / dense vegetation
+  Reasoning: uniform, moderately bright, finely mottled texture across the
+  whole scene, consistent with volume scattering from a multi-layered
+  canopy (branches, trunks, leaf structure) rather than the flatter,
+  boundary-defined patterning seen in the Maharashtra farmland scene.
+  Confidence: High — this is the dominant, unambiguous signature here.
 
 Terrain artifacts (layover/foreshortening/shadow):
+- No confidently paired bright-slope/dark-slope pattern is identified in
+  this crop — i.e., no region where a bright compressed slope sits directly
+  beside a corresponding dark shadow zone in a way that clearly indicates
+  foreshortening or layover. There is subtle, gradual tonal variation
+  across the canopy that could reflect underlying topography modulating
+  local incidence angle, but it is not distinct or systematic enough here
+  to confidently call out as a discrete terrain artifact. If a wider or
+  differently-cropped render of this scene shows clearer ridge/valley
+  banding, that should be re-assessed against this note rather than
+  assumed present.
 
 Why it looks this way:
+The scene is overwhelmingly forest canopy under volume scattering, which
+produces the uniform mottled backscatter across nearly the whole valid
+swath. Water stands out sharply against this because specular reflection
+from calm channels and ponds returns almost no energy to the sensor,
+producing near-zero backscatter regardless of the surrounding vegetation
+signature. The absence of a clear double-bounce/urban signature is
+consistent with a forested, sparsely settled landscape rather than any
+claim that no settlement exists — SAR alone can't confirm absence, only
+that no strong signature is present in this crop. The black region on the
+right is a data-coverage boundary (end of the SAR swath), not a physical
+land-cover feature, and should not be read as radar shadow.
 
 ## Konkan coast
 
