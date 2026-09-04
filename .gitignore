@@ -7,8 +7,18 @@ trace.jsonl
 /results.json
 /outputs/
 .DS_Store
-data/raw/
-data/ladder/
-data/sar_gate/jobs.json
-data/sar_gate/raw/
-data/sar_gate/rendered/
+# Anchored to the repo root. A bare `data/raw/` also matches any nested
+# data/raw at any depth — the unanchored-pattern bug that twice hid real work.
+/data/raw/
+/data/ladder/
+/data/sar_gate/jobs.json
+/data/sar_gate/raw/
+/data/sar_gate/rendered/
+
+# Datasets never go in git. The BigEarthNet.txt parquet (467 MB) lives at
+# ~/data/bigearthnet_txt/ — outside the repo entirely, which is what actually
+# keeps it out. This is the belt-and-braces guard for a stray copy.
+# NOTE: do NOT write `/data/` here. The repo's own data/ package is tracked
+# source (dataset.py, download_ladder_data.py, sar_gate/, BEN_TXT_FACTS.md);
+# ignoring it would hide real files, which is the exact bug this repo has hit.
+*.parquet

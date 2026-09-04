@@ -31,6 +31,99 @@ streamlit run demo_gui/app.py --server.headless true
 
 The ladder uses real LoveDA pixels and semantic masks; only spatial resolution and sensor noise are simulated. LoveDA is licensed for academic, non-commercial use. Download and extract Train+Val idempotently with `python3 data/download_ladder_data.py`, then generate up to 200 real source images at five rungs with `python3 eval/ladder.py --limit 200`. The degradation applies a Gaussian PSF, area-average decimation, and read plus shot noise while keeping `sensor: loveda`, never `synthetic`. Evaluate with `python3 eval/eval.py --model mock --suite ladder --out results.json` and plot with `python3 eval/plot_ladder.py results.json`. DOTA acquisition can be attempted with `python3 data/download_ladder_data.py --dataset dota`; Google Drive failures return promptly with manual-download instructions.
 
+### Ladder results — read the stratified curve, not the aggregate
+
+![Resolution ladder](results/ladder_curve_qwen_stratified.png)
+
+Frozen Qwen2.5-VL-3B, 200 real LoveDA sources at five rungs, 2,000 samples:
+
+| GSD | aggregate | open-ended | binary | yes-rate | verdict |
+|---|---|---|---|---|---|
+| 0.3 m | 0.5625 | 0.3350 | 0.7900 | 0.640 | ok |
+| 1 m | 0.5050 | 0.2900 | 0.7200 | 0.500 | ok |
+| 2 m | 0.4250 | 0.2750 | 0.5750 | 0.315 | ok |
+| 5 m | 0.4650 | 0.2450 | 0.6850 | 0.975 | **degenerate** |
+| 10 m | 0.4850 | 0.2700 | 0.7000 | 1.000 | **degenerate** |
+
+**The aggregate curve rises from 2 m to 10 m.** A model cannot see better
+through more blur. What actually happens is that the model stops answering the
+binary question and says "yes" to everything: at 10 m the yes-rate is 1.000 and
+binary accuracy is 0.7000, which is *exactly* the gold yes-prior of 0.70. The
+apparent recovery is the collapse landing on the base rate.
+
+**Read `open_accuracy`.** It falls 0.335 → 0.245 across the honest rungs and is
+the only curve here that measures resolution sensitivity.
+
+**A known limitation, found by trying to refute the above.** The guard is
+one-sided: it only detects collapse toward "yes". At 2 m this model collapses
+the *other* way — yes-rate 0.315, 137 "No" answers — scoring 0.575, which is
+12.5 points *below* the 0.70 prior. That rung is equally uninformative and is
+**not** flagged. Read the yes-rate column directly; a value far from the gold
+prior in either direction means the binary answer has stopped tracking the
+image. Widening the guard to two-sided is an open item, deliberately not done
+here because `degenerate()` is shared with the RSVQA baseline and changing it
+would restate that number too.
+
+Also note 11 binary predictions at 0.3 m are the bare string `0`, which matches
+neither yes nor no and always scores incorrect — a prompting wart that slightly
+depresses that rung, independent of the collapse above.
+
+The whole-run guard does not catch this — the run-level yes-rate is 0.686, well
+under the 0.85 threshold, because three honest rungs dilute two degenerate ones.
+`eval.py` therefore applies the guard **per rung**, lists offenders in
+`degenerate_rungs`, and `plot_ladder.py` draws them hollow so a non-measurement
+can never be mistaken for a measurement.
+
+### Running the ladder on a Kaggle T4
+
+Settings → Accelerator **GPU T4 x2** · Internet **On**. LoveDA is ~6.5 GB, so
+mount it as a Kaggle Dataset rather than re-downloading it each session.
+
+```python
+# Cell 1 — fail before anything expensive if the GPU is absent.
+import torch
+assert torch.cuda.is_available(), "Enable a T4 accelerator first"
+print(torch.__version__, torch.cuda.get_device_name(0))
+```
+
+```python
+# Cell 2 — dependencies.
+%pip install -q "transformers>=4.49" qwen-vl-utils accelerate matplotlib
+```
+
+```python
+# Cell 3 — the repo.
+!git clone https://github.com/sohamsssssssssssssssss/sih2026.git /kaggle/working/sih26167
+%cd /kaggle/working/sih26167
+```
+
+```python
+# Cell 4 — generate the ladder from mounted LoveDA, then evaluate and plot.
+# Replace LOVEDA_SLUG with the Kaggle Dataset holding extracted LoveDA
+# (Train/ and Val/ with images_png and masks_png inside).
+!python3 kaggle/run_ladder_baseline.py \
+    --ladder-source regenerate \
+    --dataset-name LOVEDA_SLUG \
+    --limit 200
+```
+
+```python
+# Cell 5 — read the numbers, and check for degenerate rungs before quoting any.
+import json
+report = json.load(open("/kaggle/working/results_ladder.json"))
+for gsd, v in sorted(report["per_rung"].items(), key=lambda kv: float(kv[0])):
+    flag = "  <-- DEGENERATE" if v.get("warning") else ""
+    print(f"{gsd:>5} m  open={v['open_accuracy']:.4f}  binary={v['binary_accuracy']:.4f}"
+          f"  yes_rate={v['pred_yes_rate_on_binary']:.4f}{flag}")
+print("degenerate rungs:", report.get("degenerate_rungs"))
+```
+
+Cell 4 writes `/kaggle/working/results_ladder.json` and `ladder_curve.png` as
+downloadable Kaggle artifacts. **Commit the JSON into `results/`** — a number
+that exists only in a Kaggle session does not exist. If `degenerate_rungs` is
+non-empty, fix prompting before quoting anything from those rungs.
+
+
 ## Baseline
 
 Stage 0, measured. Every later stage is judged against these numbers.

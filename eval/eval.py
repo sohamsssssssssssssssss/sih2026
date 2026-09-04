@@ -83,6 +83,9 @@ DEGENERATE_YES_RATE = 0.85
 # Below this many open-ended questions, open_accuracy is noise — see the
 # module docstring for the measured 2.5x swing that motivates the number.
 MIN_OPEN_SAMPLES = 500
+# A rung needs at least this many binary questions before its yes-rate is
+# meaningful enough to call degenerate. The real ladder has 200 per rung.
+MIN_BINARY_FOR_RUNG_GUARD = 30
 
 
 def _is_binary_gold(expected: str) -> bool:
@@ -246,15 +249,39 @@ def main() -> int:
         "results": results,
     }
     if args.suite == "ladder":
+        # Per-rung stratification matters more here than anywhere else. A model
+        # that collapses to always-"yes" at coarse GSD scores the binary base
+        # rate, which reads on an aggregate curve as accuracy RECOVERING at
+        # lower resolution — physically impossible, and the artefact that makes
+        # a ladder plot lie. Running the same guard per rung catches it; running
+        # it only over the whole run does not, because the good rungs dilute the
+        # degenerate ones.
         per_rung = {}
         for rung in RUNGS:
             rung_results = [result for result in results if result["gsd"] == rung]
-            rung_correct = sum(int(result["correct"]) for result in rung_results)
-            per_rung[f"{rung:.1f}"] = {
-                "accuracy": rung_correct / len(rung_results) if rung_results else 0.0,
-                "n": len(rung_results),
-            }
+            if not rung_results:
+                per_rung[f"{rung:.1f}"] = {"accuracy": 0.0, "n": 0}
+                continue
+            rung_summary = summarise(rung_results)
+            # A yes-rate over a handful of questions is noise, not evidence of
+            # collapse; require a floor before calling a rung degenerate.
+            rung_warning = (
+                degenerate(rung_summary)
+                if rung_summary["binary_n"] >= MIN_BINARY_FOR_RUNG_GUARD
+                else None
+            )
+            per_rung[f"{rung:.1f}"] = {**rung_summary, "warning": rung_warning}
         report["per_rung"] = per_rung
+        degenerate_rungs = [g for g, v in per_rung.items() if v.get("warning")]
+        report["degenerate_rungs"] = degenerate_rungs
+        if degenerate_rungs:
+            print(
+                "WARNING: rungs "
+                + ", ".join(f"{g}m" for g in degenerate_rungs)
+                + " are degenerate (always-yes on binary questions). Their "
+                "accuracy reflects the answer prior, not resolution. Do not "
+                "read the aggregate curve across these points."
+            )
     payload = json.dumps(report, indent=2) + "\n"
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(payload, encoding="utf-8")

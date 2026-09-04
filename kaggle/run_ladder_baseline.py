@@ -162,7 +162,24 @@ def main() -> int:
     report = json.loads(output.read_text(encoding="utf-8"))
     print("Resolution ladder summary:")
     for rung, values in sorted(report["per_rung"].items(), key=lambda item: float(item[0])):
-        print(f"  {rung} m/pixel: accuracy={values['accuracy']:.6f}; n={values['n']}")
+        line = f"  {rung} m/pixel: accuracy={values['accuracy']:.6f}; n={values['n']}"
+        # Present when the run came from a guard-aware eval.py.
+        if "open_accuracy" in values:
+            line += (
+                f"; open={values['open_accuracy']:.6f}"
+                f"; binary={values['binary_accuracy']:.6f}"
+                f"; yes_rate={values['pred_yes_rate_on_binary']:.6f}"
+            )
+        if values.get("warning"):
+            line += "   <-- DEGENERATE, not a measurement"
+        print(line)
+    if report.get("degenerate_rungs"):
+        print(
+            "WARNING: degenerate rungs "
+            + ", ".join(f"{g}m" for g in report["degenerate_rungs"])
+            + " — the model answers yes to nearly every binary question there, so "
+            "its accuracy tracks the answer prior rather than resolution."
+        )
     print(f"Kaggle output artifacts: {output}, {curve}")
     return 0
 
