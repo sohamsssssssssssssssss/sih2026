@@ -3,6 +3,8 @@
 import unittest
 from pathlib import Path
 from unittest.mock import patch
+import tempfile
+from PIL import Image
 
 import streamlit as st
 from streamlit.testing.v1 import AppTest
@@ -58,10 +60,23 @@ class SARTabTests(unittest.TestCase):
         self.assertNotIn("HUMAN SAR VALIDATION — NOT AI MODEL OUTPUT", [i.value for i in expander.info])
 
     def test_missing_image_keeps_annotation_available(self) -> None:
-        self.assertEqual(len(image_elements(self.sar_tab())), 1)
-        original = Path.is_file
-        with patch.object(Path, "is_file", lambda path: False if path == IMAGE_PATH else original(path)):
-            tab = self.sar_tab()
+        synthetic = Path(tempfile.mktemp(suffix=".png"))
+        Image.new("RGB", (100, 100)).save(synthetic)
+
+        original_bytes = IMAGE_PATH.read_bytes() if IMAGE_PATH.is_file() else None
+        try:
+            synthetic.replace(IMAGE_PATH)
+            self.assertEqual(len(image_elements(self.sar_tab())), 1)
+
+            original = Path.is_file
+            with patch.object(Path, "is_file", lambda path: False if path == IMAGE_PATH else original(path)):
+                tab = self.sar_tab()
+        finally:
+            if original_bytes is not None:
+                IMAGE_PATH.write_bytes(original_bytes)
+            else:
+                IMAGE_PATH.unlink(missing=True)
+
         self.assertIn(
             "The local processed Mumbai SAR render is unavailable on this machine.",
             [i.value for i in tab.info],
