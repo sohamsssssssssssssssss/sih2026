@@ -211,14 +211,109 @@ land-cover feature, and should not be read as radar shadow.
 ![Konkan coast RTC false color](rendered/konkan_coast.png)
 
 Water areas:
+- Scene: konkan_coast
+  Feature: Open coastal water
+  Location in frame: Broad continuous area covering approximately the left half
+  of the frame, bounded on the right by the irregular coastline.
+  Brightness/texture: Predominantly dark violet/navy with low internal contrast
+  and only subtle broad mottling; markedly smoother and lower-return than the
+  adjoining land.
+  Shape: Large continuous region with an irregular land-water boundary rather
+  than an enclosed blob, straight paved strip, or data-coverage edge.
+  Mechanism: Specular reflection from a comparatively smooth open-water surface
+  directs most radar energy away from the sensor. The small tonal variations can
+  reflect changes in surface roughness, but this render does not support assigning
+  a specific cause to them.
+  Confidence: High — the extent, low-return texture, and connected coastline
+  geometry support open coastal water.
+- Scene: konkan_coast
+  Feature: Estuary/inlet and connected river channels
+  Location in frame: A narrow, sinuous dark channel enters from the upper-center
+  coast and winds across the upper-right land area; a second branching dark
+  channel system meets the coast near the lower-center and extends into the
+  lower-right.
+  Brightness/texture: Dark navy to violet and relatively uniform within the
+  channels, with substantially less granular backscatter than the surrounding
+  land.
+  Shape: Meandering, branching paths that remain continuous with the broad
+  coastal water. Their drainage-like geometry argues against smooth pavement,
+  isolated nodata, or a terrain shadow unrelated to the shoreline.
+  Mechanism: Low backscatter is consistent with specular reflection from smooth
+  water in tidal inlets, an estuary, or river channels.
+  Confidence: High that the connected dark features are water; Medium-high on
+  the more specific estuary/inlet interpretation because flow direction and
+  tidal state are not recoverable from this image alone.
 
 Urban/built-up:
+- Scene: konkan_coast
+  Feature: Sparse possible built structures or other hard-surface returns; no
+  confidently identifiable dense urban cluster
+  Location in frame: Small isolated bright pink-to-white specks occur on the
+  land side, including near the lower-central inlet and at scattered inland
+  locations to the right.
+  Brightness/texture: A few high-return pixels and tiny rough patches are visible,
+  but they do not form the broad, bright, heterogeneous texture seen in the
+  Mumbai urban area.
+  Shape: Sparse and weakly clustered, without a resolved street grid, dense block,
+  or sufficiently continuous angular pattern. Individual returns could equally
+  arise from exposed rock, rough ground, or isolated hard structures.
+  Mechanism: Strong local returns can be produced by wall-ground double bounce
+  or corner-like reflectors, but brightness alone is not enough to identify a
+  building in this scene.
+  Confidence: Low for identifying the scattered returns as built-up; High that
+  no dense urban signature is confidently resolved in this crop.
 
 Vegetation:
+- Scene: konkan_coast
+  Feature: Vegetated or rough land-cover mosaic
+  Location in frame: Most of the land east of the coastline, including the
+  peninsula-like area between the upper channel and the sea and the inland areas
+  between the branching waterways.
+  Brightness/texture: Mainly medium lavender/violet with fine mottling and broad
+  patch-to-patch tonal variation. It is more textured and higher-return than the
+  adjacent water but is not uniformly bright or continuous enough to assign the
+  entire land area to dense forest.
+  Shape: Irregular, contiguous patches following the land-water boundary, with
+  some weak internal patchiness but no consistently resolved row pattern or
+  parcel geometry across the scene.
+  Mechanism: The land return is consistent with a mixture of volume scattering
+  from vegetation and surface scattering controlled by roughness and moisture.
+  This composite cannot separate those contributions for individual patches or
+  identify vegetation type or crop species.
+  Confidence: Medium that vegetation contributes substantially to the mottled
+  land signature; Low for distinguishing continuous canopy, low vegetation, and
+  exposed soil within individual patches.
 
 Terrain artifacts (layover/foreshortening/shadow):
+- Scene: konkan_coast
+  Feature: No confidently identifiable layover, foreshortening, or radar shadow
+  Location in frame: No discrete terrain-artifact region is resolved across the
+  coastal land or along the inland channel systems.
+  Brightness/texture: The scene lacks a systematic pairing of compressed bright
+  slopes with adjacent, directionally consistent dark shadow zones. Narrow dark
+  segments near the coast and channels are continuous with plausible water
+  geometry and are not independently diagnostic of terrain shadow.
+  Shape: No repeated ridge-aligned bands, slope reversals, or bright-side/dark-side
+  pairs are clear enough to tie to radar look direction.
+  Mechanism: Coastal relief could modulate local incidence angle and backscatter,
+  but the necessary viewing-geometry relationship is not identifiable here. RTC
+  does not remove layover or foreshortening, so this is an identifiability finding,
+  not a claim that geometric distortion is physically absent.
+  Confidence: Medium-high that no discrete terrain artifact can be confidently
+  identified in this render.
 
 Why it looks this way:
+The broad coastal water and connected sinuous channels are dark because smooth
+water produces predominantly specular reflection, directing little energy back
+to the side-looking radar. The land is brighter and finely mottled because
+vegetation volume scattering, surface roughness, moisture, and coherent speckle
+all contribute to spatially variable backscatter; the image does not isolate
+those causes patch by patch. Sparse very bright returns may come from isolated
+hard structures and double-bounce geometry, but their limited extent and
+ambiguous shape do not support a dense urban classification. Although coastal
+relief may affect local incidence angle, no brightness-darkness pattern is tied
+strongly enough to slope and look direction to label layover, foreshortening, or
+radar shadow in this crop.
 
 ## Flat inland plain
 
