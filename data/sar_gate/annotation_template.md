@@ -320,11 +320,99 @@ radar shadow in this crop.
 ![Flat inland plain RTC false color](rendered/flat_inland_plain.png)
 
 Water areas:
+- Scene: flat_inland_plain
+  Feature: Possible narrow drainage channel and small ponds
+  Location in frame: A narrow, meandering dark line runs near the lower edge
+  through the rectilinear parcel area; several compact dark-navy patches are
+  scattered across the central and right-hand portions of the frame.
+  Brightness/texture: The candidate features have low backscatter and little
+  visible internal mottling compared with the surrounding land. Some of the
+  smallest patches approach the scale of local speckle and cannot be classified
+  from tone alone.
+  Shape: The lower feature follows a continuous curved path compatible with a
+  small channel, while the compact candidates have irregular or rounded outlines
+  compatible with ponds. In contrast, the large dark blocks at the upper-left
+  and lower-right have straight parcel boundaries and internal linework, so they
+  are not treated as open water solely because they are dark.
+  Mechanism: Smooth water can return little energy through specular reflection.
+  Smooth soil, pavement, or other low-roughness surfaces can also appear dark,
+  while radar shadow is less plausible without an associated slope geometry.
+  Confidence: Medium for the meandering feature as a water channel; Low-to-medium
+  for the isolated pond candidates because their small size and ambiguous context
+  do not rule out smooth land surfaces or speckle.
 
 Urban/built-up:
+- Scene: flat_inland_plain
+  Feature: Sparse candidate built-up clusters or other hard-surface features
+  Location in frame: Bright pink-to-white speckled clusters occur along a loose
+  diagonal from the lower-left toward the central portion of the frame, with
+  smaller clusters and isolated bright returns farther right and toward the
+  upper-middle.
+  Brightness/texture: The strongest areas are locally bright and heterogeneous,
+  containing near-saturated specks within rough patches. They are separated by
+  broad areas of lower-return field texture rather than forming one continuous
+  urban mass.
+  Shape: Small irregular clusters, some loosely aligned with narrow linear
+  features. The pattern is compatible with dispersed structures, but isolated
+  bright pixels and short bright lines do not resolve individual buildings or a
+  street grid.
+  Mechanism: Wall-ground double bounce and corner-like reflections from hard
+  structures can produce these strong returns. Exposed rock, rough bare ground,
+  or other hard surfaces remain alternatives where the returns are isolated.
+  Confidence: Medium for built-up or hard structures in the brightest clustered
+  areas; Low for assigning the scattered individual returns specifically to
+  buildings.
 
 Vegetation:
+- Scene: flat_inland_plain
+  Feature: Field and low-vegetation mosaic
+  Location in frame: Dominates most of the frame outside the bright candidate
+  structural clusters and the small dark features, with especially clear
+  rectilinear blocks in the upper-left and lower-right and finer patchwork across
+  the center.
+  Brightness/texture: Mostly medium lavender/violet with fine mottling and broad
+  parcel-to-parcel changes in tone. Some large parcels are smoother and darker,
+  while others are brighter or more granular; no uniformly textured continuous
+  canopy dominates the scene.
+  Shape: Repeated rectangular and elongated boundaries, internal parallel lines,
+  and adjoining irregular patches form a managed field-scale pattern rather than
+  a single uninterrupted forest signature.
+  Mechanism: A varying mixture of surface scattering from soil and volume
+  scattering from low vegetation can explain the parcel-scale contrast. Surface
+  roughness, moisture, vegetation structure, and field orientation may each
+  affect the return, but this image cannot assign a cause to every parcel or
+  identify crop species.
+  Confidence: Medium-high that the repeated boundary-defined pattern is a field
+  or low-vegetation mosaic; Low for separating vegetation from exposed soil
+  within individual parcels.
 
 Terrain artifacts (layover/foreshortening/shadow):
+- Scene: flat_inland_plain
+  Feature: No confidently identifiable layover, foreshortening, or radar shadow
+  Location in frame: No discrete terrain-artifact region is identifiable across
+  the frame.
+  Brightness/texture: There are no adjacent compressed bright slopes and
+  directionally consistent dark shadow zones. Dark regions are instead compact,
+  channel-like, or bounded by the rectilinear land-cover pattern.
+  Shape: No repeated ridge-aligned bands, displaced slope features, or paired
+  bright-side/dark-side geometry is resolved strongly enough to establish a
+  terrain effect tied to radar look direction.
+  Mechanism: Layover, foreshortening, and radar shadow require slope and viewing
+  geometry that are not evident in this render. RTC does not remove layover or
+  foreshortening, so this annotation means only that no artifact can be
+  confidently identified, not that geometric distortion is physically absent.
+  Confidence: High that no discrete terrain artifact is identifiable in this
+  crop.
 
 Why it looks this way:
+The scene is dominated by a boundary-defined field mosaic whose varying medium
+backscatter is consistent with changing surface roughness, moisture, exposed
+soil, low vegetation structure, and field orientation. Smooth, dark parcels are
+not automatically water because their straight boundaries and internal linework
+also support managed land surfaces; only the meandering and compact low-return
+features have plausible channel or pond geometry, and the smaller candidates
+remain uncertain. Bright heterogeneous clusters may reflect strong returns from
+hard structures and wall-ground double bounce, whereas isolated bright pixels
+are not diagnostic by themselves. Fine granular variation is consistent with
+SAR speckle. No systematic bright-slope/dark-shadow relationship is visible, so
+the image does not support a layover, foreshortening, or radar-shadow call.
