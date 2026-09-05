@@ -30,6 +30,18 @@ MODEL_NAME = "qwen2.5vl-3b"
 RESULTS_PATH = ROOT / "results" / "qwen2.5vl-3b__ladder__rescored__20260904.json"
 SAR_IMAGE_PATH = ROOT / "data" / "sar_gate" / "rendered" / "mumbai_coastal.png"
 SAR_ANNOTATION_PATH = ROOT / "data" / "sar_gate" / "annotation_template.md"
+AVAILABLE_CAPABILITIES = (
+    "Single-image VQA",
+    "Resolution robustness evaluation",
+    "Execution audit trace",
+    "SAR preprocessing / analyst validation",
+)
+IN_DEVELOPMENT_CAPABILITIES = (
+    "Grounding",
+    "Bi-temporal Change-VQA",
+    "Optical-SAR fusion",
+    "RS fine-tuning",
+)
 
 
 @st.cache_data
@@ -174,6 +186,16 @@ def clear_last_response() -> None:
 st.set_page_config(page_title="Geospatial VQA", page_icon="🛰️", layout="wide")
 st.title("Multi-sensor Geospatial VQA")
 st.caption("Real Qwen inference when locally available; verified cached evidence otherwise.")
+
+with st.container(border=True):
+    st.caption("CAPABILITY STATUS")
+    available_column, development_column = st.columns(2)
+    with available_column:
+        st.markdown("**AVAILABLE NOW**")
+        st.caption(" · ".join(AVAILABLE_CAPABILITIES))
+    with development_column:
+        st.markdown("**IN DEVELOPMENT**")
+        st.caption(" · ".join(IN_DEVELOPMENT_CAPABILITIES))
 
 try:
     ladder_report = load_results(RESULTS_PATH)

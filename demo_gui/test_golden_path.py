@@ -139,7 +139,8 @@ class GoldenPathTests(unittest.TestCase):
         with patch.object(golden_assets, "local_golden_image", return_value=self.golden_path):
             app = AppTest.from_file(str(APP_PATH)).run(timeout=30)
             self.assertFalse(list(app.exception))
-            left, right = app.get("column")
+            ask = next(tab for tab in app.tabs if tab.label == "Ask Qwen")
+            left, right = ask.get("column")
             self.assertIn("GSD: 0.3 m", [item.value for item in left.caption])
             self.assertIn("Sensor: LoveDA", [item.value for item in left.caption])
             self.assertEqual(len(image_elements(left)), 1)
@@ -166,7 +167,8 @@ class GoldenPathTests(unittest.TestCase):
 
             app.radio[0].set_value("Upload a scene").run(timeout=30)
             self.assertFalse(list(app.exception))
-            left, right = app.get("column")
+            ask = next(tab for tab in app.tabs if tab.label == "Ask Qwen")
+            left, right = ask.get("column")
             self.assertIn("GSD: unknown", [item.value for item in left.caption])
             self.assertEqual(len(image_elements(left)), 0)
 
@@ -175,7 +177,8 @@ class GoldenPathTests(unittest.TestCase):
             with patch("streamlit.file_uploader", return_value=uploaded):
                 app.run(timeout=30)
             self.assertFalse(list(app.exception))
-            left, right = app.get("column")
+            ask = next(tab for tab in app.tabs if tab.label == "Ask Qwen")
+            left, right = ask.get("column")
             self.assertIn("GSD: unknown", [item.value for item in left.caption])
             self.assertIn("uploaded_scene.png", [item.value for item in left.code])
             self.assertEqual(len(image_elements(left)), 1)
