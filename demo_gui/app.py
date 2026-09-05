@@ -40,9 +40,14 @@ def load_results(path: Path) -> dict[str, Any]:
 @st.cache_data
 def load_mumbai_interpretation(path: Path) -> str:
     document = path.read_text(encoding="utf-8")
-    section = document.split("## Mumbai coastal", 1)[1].split(
-        "## Maharashtra farmland", 1
-    )[0]
+    try:
+        section = document.split("## Mumbai coastal", 1)[1].split(
+            "## Maharashtra farmland", 1
+        )[0]
+    except IndexError as exc:
+        raise ValueError(
+            "The Mumbai coastal annotation section is missing or incomplete."
+        ) from exc
     lines = [line for line in section.strip().splitlines() if not line.startswith("![")]
     return "\n".join(lines).strip()
 
@@ -159,6 +164,13 @@ def evidence_fields(trace: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def clear_last_response() -> None:
+    """Discard answer/provenance state when the displayed query source changes."""
+    st.session_state.pop("last_response", None)
+    st.session_state.pop("last_notice", None)
+    st.session_state.pop("last_notice_error", None)
+
+
 st.set_page_config(page_title="Geospatial VQA", page_icon="🛰️", layout="wide")
 st.title("Multi-sensor Geospatial VQA")
 st.caption("Real Qwen inference when locally available; verified cached evidence otherwise.")
@@ -178,6 +190,7 @@ with ask_tab:
         "Query source",
         ["Verified golden scene", "Upload a scene"],
         horizontal=True,
+        on_change=clear_last_response,
     )
     input_column, answer_column = st.columns(2)
     with input_column:
@@ -268,56 +281,58 @@ with ask_tab:
             st.caption("Confidence calibration pending")
 
     if response:
-        with st.expander("Evidence and execution trace"):
-            evidence = evidence_fields(response["trace"])
-            st.caption("Identity")
-            model_card, scene_card = st.columns(2)
-            with model_card.container(border=True):
-                st.metric("Model", evidence.get("model_name", "Not recorded"))
-                st.caption("Model version")
-                st.code(evidence.get("model_version", "Not recorded"), language=None)
-            with scene_card.container(border=True):
-                st.metric("Sensor", evidence.get("sensor", "Not recorded"))
-                st.caption("Scene ID")
-                st.code(evidence.get("scene_id", "Not recorded"), language=None)
+        st.subheader("Evidence and execution trace")
+        evidence = evidence_fields(response["trace"])
 
-            st.caption("Execution")
-            mode_card, time_card = st.columns(2)
-            with mode_card.container(border=True):
-                st.metric("Execution mode", evidence.get("execution_mode", "Not recorded"))
-            with time_card.container(border=True):
-                st.caption("Timestamp")
-                st.code(evidence.get("timestamp", "Not recorded"), language=None)
-            if "results_artifact" in evidence:
-                st.caption("Results artifact")
-                st.code(evidence["results_artifact"], language=None)
+        st.caption("Identity")
+        scene_card, sensor_card = st.columns(2)
+        with scene_card.container(border=True):
+            st.caption("Scene ID")
+            st.code(evidence.get("scene_id", "Not recorded"), language=None)
+        with sensor_card.container(border=True):
+            st.metric("Sensor", evidence.get("sensor", "Not recorded"))
 
-            st.caption("Question")
-            st.text(evidence.get("question", "Not recorded"))
+        st.caption("Execution")
+        model_card, version_card, mode_card = st.columns(3)
+        with model_card.container(border=True):
+            st.metric("Model", evidence.get("model_name", "Not recorded"))
+        with version_card.container(border=True):
+            st.caption("Model version")
+            st.code(evidence.get("model_version", "Not recorded"), language=None)
+        with mode_card.container(border=True):
+            st.metric("Execution mode", evidence.get("execution_mode", "Not recorded"))
+        st.caption("Timestamp")
+        st.code(evidence.get("timestamp", "Not recorded"), language=None)
+        if "results_artifact" in evidence:
+            st.caption("Results artifact")
+            st.code(evidence["results_artifact"], language=None)
 
-            st.caption("Integrity — hover over the help icons for full hash values")
-            hash_cards = st.columns(2)
-            for card, key, label in zip(
-                hash_cards, ("record_hash", "prev_hash"), ("Record hash", "Previous hash")
-            ):
-                full_hash = evidence.get(key)
-                if full_hash is None:
-                    display_hash = "Not recorded"
-                    hash_help = "No hash value was recorded."
-                elif full_hash == "":
-                    display_hash = "First record"
-                    hash_help = 'Full value: "" (empty string; no previous record).'
-                else:
-                    display_hash = (
-                        f"{full_hash[:8]}...{full_hash[-8:]}"
-                        if len(full_hash) > 16 else full_hash
-                    )
-                    hash_help = f"Full value: {full_hash}"
-                with card.container(border=True):
-                    st.metric(label, display_hash, help=hash_help)
+        st.caption("Question")
+        st.text(evidence.get("question", "Not recorded"))
 
-            with st.expander("Raw evidence JSON", expanded=False):
-                st.json(evidence)
+        st.caption("Integrity — hover over the help icons for full hash values")
+        hash_cards = st.columns(2)
+        for card, key, label in zip(
+            hash_cards, ("record_hash", "prev_hash"), ("Record hash", "Previous hash")
+        ):
+            full_hash = evidence.get(key)
+            if full_hash is None:
+                display_hash = "Not recorded"
+                hash_help = "No hash value was recorded."
+            elif full_hash == "":
+                display_hash = "First record"
+                hash_help = 'Full value: "" (empty string; no previous record).'
+            else:
+                display_hash = (
+                    f"{full_hash[:8]}...{full_hash[-8:]}"
+                    if len(full_hash) > 16 else full_hash
+                )
+                hash_help = f"Full value: {full_hash}"
+            with card.container(border=True):
+                st.metric(label, display_hash, help=hash_help)
+
+        with st.expander("Raw evidence JSON", expanded=False):
+            st.json(evidence)
 
     st.caption(
         "Every model/tool invocation is chained to the previous execution record. "
@@ -359,14 +374,18 @@ with robustness_tab:
         label="Aggregate accuracy (answer-collapse sensitive)",
     )
     flagged = [(float(gsd), metrics) for gsd, metrics in rung_items if gsd in degenerate_rungs]
-    axis.scatter(
-        [gsd for gsd, _ in flagged], [metrics["open_accuracy"] for _, metrics in flagged],
-        marker="X", s=90, color="darkorange", zorder=3, label="Flagged degenerate rung",
-    )
-    axis.scatter(
-        [gsd for gsd, _ in flagged], [metrics["accuracy"] for _, metrics in flagged],
-        marker="X", s=90, color="darkorange", zorder=3,
-    )
+    if flagged:
+        axis.scatter(
+            [gsd for gsd, _ in flagged],
+            [metrics["open_accuracy"] for _, metrics in flagged],
+            marker="X", s=90, color="darkorange", zorder=3,
+            label="Flagged degenerate rung",
+        )
+        axis.scatter(
+            [gsd for gsd, _ in flagged],
+            [metrics["accuracy"] for _, metrics in flagged],
+            marker="X", s=90, color="darkorange", zorder=3,
+        )
     axis.set_xlabel("Ground sample distance (m)")
     axis.set_ylabel("Accuracy")
     axis.set_xticks(
@@ -378,7 +397,10 @@ with robustness_tab:
     axis.legend(loc="upper right", fontsize=8)
     st.pyplot(figure)
     plt.close(figure)
-    st.caption("* and orange X markers identify degenerate rungs flagged in the committed artifact.")
+    if flagged:
+        st.caption(
+            "* and orange X markers identify degenerate rungs flagged in the committed artifact."
+        )
     st.dataframe(
         [
             {
@@ -417,7 +439,7 @@ with sar_tab:
     st.subheader("Analyst interpretation")
     try:
         annotation = load_mumbai_interpretation(SAR_ANNOTATION_PATH)
-    except (OSError, IndexError) as exc:
+    except (OSError, ValueError) as exc:
         st.error(f"Analyst interpretation could not be loaded: {exc}")
     else:
         categories = (

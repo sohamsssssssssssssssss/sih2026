@@ -8,6 +8,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 from demo_gui import golden_assets
+from demo_gui.test_support import image_elements
 from models.qwen_vl.model import QwenVLModel
 from orchestrator import trace
 from PIL import Image
@@ -141,14 +142,33 @@ class GoldenPathTests(unittest.TestCase):
             left, right = app.get("column")
             self.assertIn("GSD: 0.3 m", [item.value for item in left.caption])
             self.assertIn("Sensor: LoveDA", [item.value for item in left.caption])
-            self.assertEqual(len(left.get("imgs")), 1)
+            self.assertEqual(len(image_elements(left)), 1)
             self.assertEqual(right.text_input[0].label, "Question")
+
+    def test_switching_query_source_clears_stale_answer_and_provenance(self) -> None:
+        with patch.object(golden_assets, "local_golden_image", return_value=None):
+            app = AppTest.from_file(str(APP_PATH)).run(timeout=30)
+            next(button for button in app.button if button.label == "Ask").click()
+            app.run(timeout=30)
+            self.assertIn("Answer", [item.value for item in app.subheader])
+            self.assertIn("VERIFIED CACHED RESULT", [item.value for item in app.info])
+
+            app.radio[0].set_value("Upload a scene").run(timeout=30)
+            self.assertFalse(list(app.exception))
+            self.assertNotIn("Answer", [item.value for item in app.subheader])
+            self.assertNotIn("VERIFIED CACHED RESULT", [item.value for item in app.info])
+            self.assertNotIn("LIVE INFERENCE", [item.value for item in app.success])
+            self.assertNotIn(
+                "Evidence and execution trace", [item.value for item in app.subheader]
+            )
+            self.assertNotIn("last_response", app.session_state)
+            self.assertNotIn("last_notice", app.session_state)
 
             app.radio[0].set_value("Upload a scene").run(timeout=30)
             self.assertFalse(list(app.exception))
             left, right = app.get("column")
             self.assertIn("GSD: unknown", [item.value for item in left.caption])
-            self.assertEqual(len(left.get("imgs")), 0)
+            self.assertEqual(len(image_elements(left)), 0)
 
             uploaded = BytesIO(self.golden_path.read_bytes())
             uploaded.name = "uploaded_scene.png"
@@ -158,7 +178,7 @@ class GoldenPathTests(unittest.TestCase):
             left, right = app.get("column")
             self.assertIn("GSD: unknown", [item.value for item in left.caption])
             self.assertIn("uploaded_scene.png", [item.value for item in left.code])
-            self.assertEqual(len(left.get("imgs")), 1)
+            self.assertEqual(len(image_elements(left)), 1)
             self.assertEqual(right.text_input[0].label, "Question")
 
     def test_evidence_cards_preserve_full_hashes_and_raw_fields(self) -> None:
@@ -201,8 +221,48 @@ class GoldenPathTests(unittest.TestCase):
                 }
                 app.run(timeout=30)
                 self.assertFalse(list(app.exception))
-                section = next(e for e in app.expander if e.label == "Evidence and execution trace")
-                metrics = {m.label: m for m in section.metric}
+                ask = next(tab for tab in app.tabs if tab.label == "Ask Qwen")
+                self.assertIn(
+                    "Evidence and execution trace", [item.value for item in ask.subheader]
+                )
+                self.assertNotIn(
+                    "Evidence and execution trace", [item.label for item in ask.expander]
+                )
+                for group in ("Identity", "Execution", "Question"):
+                    self.assertIn(group, [item.value for item in ask.caption])
+                self.assertTrue(
+                    any(item.value.startswith("Integrity") for item in ask.caption)
+                )
+                # Check rendered order/ancestry, not just field presence anywhere.
+                elements = list(ask)
+                boundaries = [
+                    next(i for i, item in enumerate(elements)
+                         if item.type == "caption" and item.value == label)
+                    for label in ("Identity", "Execution", "Question")
+                ]
+                identity = elements[boundaries[0]:boundaries[1]]
+                execution = elements[boundaries[1]:boundaries[2]]
+                self.assertEqual(
+                    [item.label for item in identity if item.type == "metric"],
+                    ["Sensor"],
+                )
+                self.assertEqual(
+                    [item.value for item in identity if item.type == "code"],
+                    [expected["scene_id"]],
+                )
+                self.assertEqual(
+                    [item.label for item in execution if item.type == "metric"],
+                    ["Model", "Execution mode"],
+                )
+                for key in ("model_version", "timestamp", "results_artifact"):
+                    self.assertIn(expected[key], [item.value for item in execution
+                                                 if item.type == "code"])
+                # Group labels must be direct tab children, outside expanders/columns.
+                direct_captions = [item.value for item in ask.children.values()
+                                   if item.type == "caption"]
+                for label in ("Identity", "Execution", "Question"):
+                    self.assertIn(label, direct_captions)
+                metrics = {m.label: m for m in ask.metric}
                 self.assertEqual(metrics["Model"].value, expected["model_name"])
                 self.assertEqual(metrics["Sensor"].value, expected["sensor"])
                 self.assertEqual(metrics["Execution mode"].value, "cached_result")
@@ -214,9 +274,9 @@ class GoldenPathTests(unittest.TestCase):
                     elif value == "":
                         self.assertIn('Full value: ""', metrics[label].proto.help)
                 for key in ("model_version", "scene_id", "timestamp", "results_artifact"):
-                    self.assertIn(expected[key], [c.value for c in section.code])
-                self.assertIn(expected["question"], [t.value for t in section.text])
-                raw = next(e for e in section.expander if e.label == "Raw evidence JSON")
+                    self.assertIn(expected[key], [c.value for c in ask.code])
+                self.assertIn(expected["question"], [t.value for t in ask.text])
+                raw = next(e for e in ask.expander if e.label == "Raw evidence JSON")
                 self.assertFalse(raw.proto.expanded)
                 self.assertEqual(json.loads(raw.json[0].value), expected)
                 explainer = (
@@ -224,7 +284,17 @@ class GoldenPathTests(unittest.TestCase):
                     "Altering an earlier record invalidates verification."
                 )
                 self.assertIn(explainer, [c.value for c in app.caption])
-                self.assertNotIn(explainer, [c.value for c in section.caption])
+                rendered_text = "\n".join(
+                    item.value
+                    for collection in (
+                        app.caption, app.header, app.markdown, app.subheader, app.text
+                    )
+                    for item in collection
+                ).lower()
+                for forbidden in (
+                    "chain-of-thought", "model reasoning", "hidden reasoning"
+                ):
+                    self.assertNotIn(forbidden, rendered_text)
 
     def test_missing_local_pixels_uses_verified_cached_result(self) -> None:
         with patch.object(golden_assets, "local_golden_image", return_value=None):
