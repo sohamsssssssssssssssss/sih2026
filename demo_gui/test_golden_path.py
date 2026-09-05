@@ -146,6 +146,78 @@ class GoldenPathTests(unittest.TestCase):
             self.assertEqual(len(image_elements(left)), 1)
             self.assertEqual(right.text_input[0].label, "Question")
 
+    def test_golden_gsd_display_is_derived_from_selected_row(self) -> None:
+        selected = {
+            "tile_id": golden_assets.GOLDEN_SCENE_ID,
+            "question": golden_assets.GOLDEN_QUESTION,
+            "gsd": 1.25,
+        }
+        with (
+            patch.object(golden_assets, "golden_result", return_value=selected),
+            patch.object(golden_assets, "local_golden_image", return_value=None),
+        ):
+            app = AppTest.from_file(str(APP_PATH)).run(timeout=30)
+        self.assertFalse(list(app.exception))
+        ask = next(tab for tab in app.tabs if tab.label == "Ask Qwen")
+        left, _ = ask.get("column")
+        self.assertIn("GSD: 1.25 m", [item.value for item in left.caption])
+
+    def test_uploaded_ask_routes_temp_image_and_removes_it_afterward(self) -> None:
+        uploaded = BytesIO(self.golden_path.read_bytes())
+        uploaded.name = "unique-upload.png"
+        routed_paths: list[str] = []
+
+        def infer(image_paths: list[str], question: str) -> dict:
+            self.assertEqual(question, "Is this an uploaded scene?")
+            self.assertEqual(len(image_paths), 1)
+            self.assertTrue(Path(image_paths[0]).is_file())
+            routed_paths.extend(image_paths)
+            return {"answer": "Yes", "evidence": []}
+
+        with (
+            patch("streamlit.file_uploader", return_value=uploaded),
+            patch.object(QwenVLModel, "infer", side_effect=infer),
+        ):
+            app = AppTest.from_file(str(APP_PATH)).run(timeout=30)
+            app.radio[0].set_value("Upload a scene").run(timeout=30)
+            app.text_input[0].input("Is this an uploaded scene?").run(timeout=30)
+            next(button for button in app.button if button.label == "Ask").click()
+            app.run(timeout=30)
+
+        self.assertFalse(list(app.exception))
+        self.assertEqual(len(routed_paths), 1)
+        self.assertFalse(Path(routed_paths[0]).exists())
+        self.assertIn("LIVE INFERENCE", [item.value for item in app.success])
+        self.assertIn("Yes", [item.value for item in app.markdown])
+
+    def test_answer_is_right_and_evidence_and_verification_are_below_columns(self) -> None:
+        with patch.object(golden_assets, "local_golden_image", return_value=None):
+            app = AppTest.from_file(str(APP_PATH)).run(timeout=30)
+            next(button for button in app.button if button.label == "Ask").click()
+            app.run(timeout=30)
+
+        self.assertFalse(list(app.exception))
+        ask = next(tab for tab in app.tabs if tab.label == "Ask Qwen")
+        left, right = ask.get("column")[:2]
+        self.assertNotIn("Answer", [item.value for item in left.subheader])
+        self.assertIn("Answer", [item.value for item in right.subheader])
+        self.assertIn("Model: qwen2.5vl-3b", [item.value for item in right.caption])
+
+        direct_subheaders = [
+            item.value for item in ask.children.values() if item.type == "subheader"
+        ]
+        direct_buttons = [
+            item.label for item in ask.children.values() if item.type == "button"
+        ]
+        self.assertIn("Evidence and execution trace", direct_subheaders)
+        self.assertIn("Verify trace", direct_buttons)
+        for column in (left, right):
+            self.assertNotIn(
+                "Evidence and execution trace",
+                [item.value for item in column.subheader],
+            )
+            self.assertNotIn("Verify trace", [item.label for item in column.button])
+
     def test_switching_query_source_clears_stale_answer_and_provenance(self) -> None:
         with patch.object(golden_assets, "local_golden_image", return_value=None):
             app = AppTest.from_file(str(APP_PATH)).run(timeout=30)
