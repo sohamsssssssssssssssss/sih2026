@@ -27,6 +27,29 @@ python3 scripts/train.py --config configs/example.yaml
 streamlit run demo_gui/app.py --server.headless true
 ```
 
+### Offline Streamlit demo
+
+The command above is the supported launch path. The app forces Hugging Face Hub
+and Transformers offline mode before importing the model registry, so it never
+downloads weights at runtime. Live inference can use an already-cached local
+Qwen checkpoint; if the checkpoint or a CUDA GPU is unavailable, the pinned
+golden query falls back to its verified committed result.
+
+The cached golden path has these local requirements:
+
+- `results/qwen2.5vl-3b__ladder__rescored__20260904.json` must exist and contain
+  the pinned scene/question row. This is the only required data artifact.
+- The repository root must be writable if a cached answer is requested, because
+  the audit chain is appended to the ignored `trace.jsonl` file there.
+- `data/ladder/0.3/loveda_Train_Rural_images_png_0_gsd0.3.png` is optional. When
+  absent, the verified cached answer remains usable without scene pixels.
+- `data/sar_gate/annotation_template.md` and
+  `data/sar_gate/rendered/mumbai_coastal.png` belong to the SAR tab, not the
+  cached golden path. The render is optional; a missing render is reported in
+  the UI. A missing annotation disables only the analyst interpretation.
+
+Cached golden execution needs neither internet access nor local model weights.
+
 ## Resolution ladder
 
 The ladder uses real LoveDA pixels and semantic masks; only spatial resolution and sensor noise are simulated. LoveDA is licensed for academic, non-commercial use. Download and extract Train+Val idempotently with `python3 data/download_ladder_data.py`, then generate up to 200 real source images at five rungs with `python3 eval/ladder.py --limit 200`. The degradation applies a Gaussian PSF, area-average decimation, and read plus shot noise while keeping `sensor: loveda`, never `synthetic`. Evaluate with `python3 eval/eval.py --model mock --suite ladder --out results.json` and plot with `python3 eval/plot_ladder.py results.json`. DOTA acquisition can be attempted with `python3 data/download_ladder_data.py --dataset dota`; Google Drive failures return promptly with manual-download instructions.
