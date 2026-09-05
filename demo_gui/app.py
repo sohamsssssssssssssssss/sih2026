@@ -30,7 +30,6 @@ MODEL_NAME = "qwen2.5vl-3b"
 RESULTS_PATH = ROOT / "results" / "qwen2.5vl-3b__ladder__rescored__20260904.json"
 SAR_IMAGE_PATH = ROOT / "data" / "sar_gate" / "rendered" / "mumbai_coastal.png"
 SAR_ANNOTATION_PATH = ROOT / "data" / "sar_gate" / "annotation_template.md"
-GOLDEN_QUESTION = "Is there a building in this image?"
 
 
 @st.cache_data
@@ -46,17 +45,6 @@ def load_mumbai_interpretation(path: Path) -> str:
     )[0]
     lines = [line for line in section.strip().splitlines() if not line.startswith("![")]
     return "\n".join(lines).strip()
-
-
-def golden_result(report: dict[str, Any]) -> dict[str, Any]:
-    for row in report["results"]:
-        if (
-            float(row["gsd"]) == 0.3
-            and row["question"] == GOLDEN_QUESTION
-            and bool(row["correct"])
-        ):
-            return row
-    raise ValueError("The committed ladder artifact has no correct 0.3 m golden query")
 
 
 def normalize_scene_id(scene_id: str) -> str:
@@ -156,6 +144,8 @@ def evidence_fields(trace: dict[str, Any]) -> dict[str, Any]:
         "question": input_summary.get("question"),
         "scene_id": params.get("scene_id"),
         "sensor": params.get("sensor"),
+        "execution_mode": params.get("execution_mode"),
+        "results_artifact": params.get("results_artifact"),
         "model_name": trace.get("model_name"),
         "model_version": trace.get("model_version"),
         "timestamp": trace.get("timestamp_iso"),
@@ -189,70 +179,150 @@ with ask_tab:
         ["Verified golden scene", "Upload a scene"],
         horizontal=True,
     )
-    temporary_path: Path | None = None
-    if source_mode == "Verified golden scene":
-        cached_golden = golden_result(ladder_report)
-        scene_id = cached_golden["tile_id"]
-        sensor = "LoveDA"
-        question = st.text_input("Question", value=cached_golden["question"], disabled=True)
-        image_path = golden_assets.local_golden_image(scene_id, ROOT)
-        st.code(scene_id, language=None)
-        if image_path is not None:
-            st.image(str(image_path), caption=f"Golden scene: {scene_id}", width=520)
+    input_column, answer_column = st.columns(2)
+    with input_column:
+        temporary_path: Path | None = None
+        if source_mode == "Verified golden scene":
+            cached_golden = golden_assets.golden_result(ladder_report)
+            scene_id = cached_golden["tile_id"]
+            sensor = "LoveDA"
+            question = answer_column.text_input("Question", value=cached_golden["question"], disabled=True)
+            gsd_label = f"{cached_golden['gsd']} m"
+            image_path = golden_assets.local_golden_image(scene_id, ROOT)
+            if image_path is not None:
+                st.image(str(image_path), caption=f"Golden scene: {scene_id}", width="stretch")
+            else:
+                st.info("Local golden pixels are absent; the committed cached result remains available.")
         else:
-            st.info("Local golden pixels are absent; the committed cached result remains available.")
-    else:
-        uploaded = st.file_uploader(
-            "Upload a tile image", type=["png", "jpg", "jpeg", "tif", "tiff"]
-        )
-        question = st.text_input("Question")
-        sensor_choice = st.selectbox("Sensor/source", ["Unspecified", "LoveDA", "SAR"])
-        sensor = "" if sensor_choice == "Unspecified" else sensor_choice
-        scene_id = uploaded.name if uploaded is not None else ""
-        image_path = None
+            uploaded = st.file_uploader(
+                "Upload a tile image", type=["png", "jpg", "jpeg", "tif", "tiff"]
+            )
+            if uploaded is not None:
+                st.image(uploaded.getvalue(), caption=f"Uploaded scene: {uploaded.name}", width="stretch")
+            question = answer_column.text_input("Question")
+            sensor_choice = st.selectbox("Sensor/source", ["Unspecified", "LoveDA", "SAR"])
+            sensor = "" if sensor_choice == "Unspecified" else sensor_choice
+            scene_id = uploaded.name if uploaded is not None else ""
+            image_path = None
+            gsd_label = "unknown"
+        st.caption("Scene ID")
+        st.code(scene_id or "No scene uploaded", language=None)
+        st.caption(f"Sensor: {sensor or 'Unspecified'}")
+        st.caption(f"GSD: {gsd_label}")
 
-    if st.button("Ask", type="primary"):
-        st.session_state.pop("last_response", None)
-        st.session_state.pop("last_notice", None)
-        st.session_state.pop("last_notice_error", None)
-        if not question.strip():
-            st.error("Enter a question.")
-        elif source_mode == "Upload a scene" and uploaded is None:
-            st.error("Upload an image.")
-        else:
-            try:
-                if source_mode == "Upload a scene" and uploaded is not None:
-                    suffix = Path(uploaded.name).suffix
-                    with tempfile.NamedTemporaryFile(suffix=suffix, delete=False) as handle:
-                        handle.write(uploaded.getbuffer())
-                        temporary_path = Path(handle.name)
-                    image_path = temporary_path
-                response, notice, is_error = execute_query(
-                    image_path, scene_id, sensor, question, ladder_report
-                )
-                st.session_state["last_response"] = response
-                st.session_state["last_notice"] = notice
-                st.session_state["last_notice_error"] = is_error
-            finally:
-                if temporary_path is not None:
-                    temporary_path.unlink(missing_ok=True)
+    with answer_column:
+        if st.button("Ask", type="primary"):
+            st.session_state.pop("last_response", None)
+            st.session_state.pop("last_notice", None)
+            st.session_state.pop("last_notice_error", None)
+            if not question.strip():
+                st.error("Enter a question.")
+            elif source_mode == "Upload a scene" and uploaded is None:
+                st.error("Upload an image.")
+            else:
+                try:
+                    if source_mode == "Upload a scene" and uploaded is not None:
+                        suffix = Path(uploaded.name).suffix
+                        with tempfile.NamedTemporaryFile(suffix=suffix, delete=False) as handle:
+                            handle.write(uploaded.getbuffer())
+                            temporary_path = Path(handle.name)
+                        image_path = temporary_path
+                    response, notice, is_error = execute_query(
+                        image_path, scene_id, sensor, question, ladder_report
+                    )
+                    st.session_state["last_response"] = response
+                    st.session_state["last_notice"] = notice
+                    st.session_state["last_notice_error"] = is_error
+                finally:
+                    if temporary_path is not None:
+                        temporary_path.unlink(missing_ok=True)
 
-    response = st.session_state.get("last_response")
-    notice = st.session_state.get("last_notice")
-    if notice:
-        if st.session_state.get("last_notice_error"):
-            st.error(notice)
-        elif notice.startswith("Live Qwen inference unavailable"):
-            st.warning(notice)
-        else:
-            st.success(notice)
+        response = st.session_state.get("last_response")
+        notice = st.session_state.get("last_notice")
+        params = response.get("trace", {}).get("params", {}) if response else {}
+        execution_mode = params.get("execution_mode")
+        if notice:
+            if st.session_state.get("last_notice_error"):
+                st.error(notice)
+            elif execution_mode == "cached_result":
+                st.warning(notice)
+            elif execution_mode == "live":
+                st.success(notice)
+            else:
+                st.error(notice)
+        if response:
+            st.subheader("Answer")
+            if execution_mode == "live":
+                st.success("LIVE INFERENCE")
+            elif execution_mode == "cached_result":
+                st.info("VERIFIED CACHED RESULT")
+                if params.get("results_artifact"):
+                    st.caption("Committed results artifact")
+                    st.code(params["results_artifact"], language=None)
+                else:
+                    st.error("Cached result is missing its results_artifact provenance.")
+            else:
+                st.error(f"Missing or unrecognized execution_mode in response trace: {execution_mode!r}")
+            st.caption(f"Model: {MODEL_NAME}")
+            st.write(response["answer"])
+            st.caption("Confidence calibration pending")
+
     if response:
-        st.subheader("Answer")
-        st.write(response["answer"])
-        st.caption("Confidence calibration pending")
         with st.expander("Evidence and execution trace"):
-            st.json(evidence_fields(response["trace"]))
+            evidence = evidence_fields(response["trace"])
+            st.caption("Identity")
+            model_card, scene_card = st.columns(2)
+            with model_card.container(border=True):
+                st.metric("Model", evidence.get("model_name", "Not recorded"))
+                st.caption("Model version")
+                st.code(evidence.get("model_version", "Not recorded"), language=None)
+            with scene_card.container(border=True):
+                st.metric("Sensor", evidence.get("sensor", "Not recorded"))
+                st.caption("Scene ID")
+                st.code(evidence.get("scene_id", "Not recorded"), language=None)
 
+            st.caption("Execution")
+            mode_card, time_card = st.columns(2)
+            with mode_card.container(border=True):
+                st.metric("Execution mode", evidence.get("execution_mode", "Not recorded"))
+            with time_card.container(border=True):
+                st.caption("Timestamp")
+                st.code(evidence.get("timestamp", "Not recorded"), language=None)
+            if "results_artifact" in evidence:
+                st.caption("Results artifact")
+                st.code(evidence["results_artifact"], language=None)
+
+            st.caption("Question")
+            st.text(evidence.get("question", "Not recorded"))
+
+            st.caption("Integrity — hover over the help icons for full hash values")
+            hash_cards = st.columns(2)
+            for card, key, label in zip(
+                hash_cards, ("record_hash", "prev_hash"), ("Record hash", "Previous hash")
+            ):
+                full_hash = evidence.get(key)
+                if full_hash is None:
+                    display_hash = "Not recorded"
+                    hash_help = "No hash value was recorded."
+                elif full_hash == "":
+                    display_hash = "First record"
+                    hash_help = 'Full value: "" (empty string; no previous record).'
+                else:
+                    display_hash = (
+                        f"{full_hash[:8]}...{full_hash[-8:]}"
+                        if len(full_hash) > 16 else full_hash
+                    )
+                    hash_help = f"Full value: {full_hash}"
+                with card.container(border=True):
+                    st.metric(label, display_hash, help=hash_help)
+
+            with st.expander("Raw evidence JSON", expanded=False):
+                st.json(evidence)
+
+    st.caption(
+        "Every model/tool invocation is chained to the previous execution record. "
+        "Altering an earlier record invalidates verification."
+    )
     if st.button("Verify trace"):
         verified, message = verify_chain()
         if verified:
@@ -268,29 +338,63 @@ with robustness_tab:
         f"Run: {ladder_report['timestamp']}"
     )
     rung_items = sorted(
-        ((float(gsd), metrics) for gsd, metrics in ladder_report["per_rung"].items()),
-        key=lambda item: item[0],
+        ladder_report["per_rung"].items(),
+        key=lambda item: float(item[0]),
     )
-    gsds = [gsd for gsd, _ in rung_items]
+    degenerate_rungs = set(ladder_report["degenerate_rungs"])
+    gsds = [float(gsd) for gsd, _ in rung_items]
+    open_accuracies = [metrics["open_accuracy"] for _, metrics in rung_items]
     accuracies = [metrics["accuracy"] for _, metrics in rung_items]
+    st.caption(
+        "Aggregate accuracy can look healthy even when the model collapses to one binary "
+        "answer class. SatQuery explicitly detects and flags this failure mode."
+    )
     figure, axis = plt.subplots(figsize=(8, 4))
-    axis.plot(gsds, accuracies, marker="o", linewidth=2)
+    axis.plot(
+        gsds, open_accuracies, marker="o", linewidth=3, color="tab:blue",
+        label="Open-question accuracy",
+    )
+    axis.plot(
+        gsds, accuracies, linestyle="--", linewidth=1.2, color="gray",
+        label="Aggregate accuracy (answer-collapse sensitive)",
+    )
+    flagged = [(float(gsd), metrics) for gsd, metrics in rung_items if gsd in degenerate_rungs]
+    axis.scatter(
+        [gsd for gsd, _ in flagged], [metrics["open_accuracy"] for _, metrics in flagged],
+        marker="X", s=90, color="darkorange", zorder=3, label="Flagged degenerate rung",
+    )
+    axis.scatter(
+        [gsd for gsd, _ in flagged], [metrics["accuracy"] for _, metrics in flagged],
+        marker="X", s=90, color="darkorange", zorder=3,
+    )
     axis.set_xlabel("Ground sample distance (m)")
     axis.set_ylabel("Accuracy")
-    axis.set_xticks(gsds)
+    axis.set_xticks(
+        gsds,
+        [f"{float(gsd):g}{'*' if gsd in degenerate_rungs else ''}" for gsd, _ in rung_items],
+    )
     axis.set_ylim(0, 1)
     axis.grid(alpha=0.25)
+    axis.legend(loc="upper right", fontsize=8)
     st.pyplot(figure)
     plt.close(figure)
+    st.caption("* and orange X markers identify degenerate rungs flagged in the committed artifact.")
     st.dataframe(
         [
             {
-                "GSD (m)": gsd,
+                "GSD (m)": float(gsd),
+                "Status": "⚠ Degenerate" if gsd in degenerate_rungs else "Not flagged",
+                "Open-question accuracy": metrics["open_accuracy"],
                 "Accuracy": metrics["accuracy"],
                 "Binary predicted-yes rate": metrics["pred_yes_rate_on_binary"],
             }
             for gsd, metrics in rung_items
         ],
+        column_config={
+            "Open-question accuracy": st.column_config.NumberColumn(format="%.4f"),
+            "Accuracy": st.column_config.NumberColumn("Aggregate accuracy", format="%.4f"),
+            "Binary predicted-yes rate": st.column_config.NumberColumn(format="%.4f"),
+        },
         hide_index=True,
         width="stretch",
     )
@@ -301,6 +405,7 @@ with robustness_tab:
 
 with sar_tab:
     st.header("Mumbai coastal SAR")
+    st.info("HUMAN SAR VALIDATION — NOT AI MODEL OUTPUT")
     if SAR_IMAGE_PATH.is_file():
         st.image(
             str(SAR_IMAGE_PATH),
@@ -311,6 +416,46 @@ with sar_tab:
         st.info("The local processed Mumbai SAR render is unavailable on this machine.")
     st.subheader("Analyst interpretation")
     try:
-        st.markdown(load_mumbai_interpretation(SAR_ANNOTATION_PATH))
+        annotation = load_mumbai_interpretation(SAR_ANNOTATION_PATH)
     except (OSError, IndexError) as exc:
         st.error(f"Analyst interpretation could not be loaded: {exc}")
+    else:
+        categories = (
+            ("Water areas:", "Water"),
+            ("Urban/built-up:", "Built-up"),
+            ("Vegetation:", "Vegetation"),
+            ("Terrain artifacts (layover/foreshortening/shadow):", "Terrain"),
+        )
+        try:
+            lines = annotation.splitlines()
+            headings = [heading for heading, _ in categories] + ["Why it looks this way:"]
+            for heading in headings:
+                if lines.count(heading) != 1:
+                    raise ValueError(f"Expected one '{heading}' heading.")
+            positions = [lines.index(heading) for heading in headings]
+            if positions != sorted(positions):
+                raise ValueError("Category headings are out of order.")
+            summaries = []
+            for index, (_, label) in enumerate(categories):
+                bucket = lines[positions[index] + 1:positions[index + 1]]
+                identity_lines = [
+                    line for line in bucket
+                    if line.lstrip().startswith(("- Region:", "Class:"))
+                ]
+                if identity_lines:
+                    excerpt = "\n".join(identity_lines)
+                else:
+                    first_sentence, period, _ = "\n".join(bucket).strip().partition(".")
+                    excerpt = first_sentence + period
+                if not excerpt.strip():
+                    raise ValueError(f"The {label} category is empty.")
+                summaries.append((label, excerpt))
+        except ValueError as exc:
+            st.error(f"Category summaries unavailable: {exc} View the full annotation below.")
+        else:
+            for label, excerpt in summaries:
+                with st.container(border=True):
+                    st.subheader(label)
+                    st.markdown(excerpt)
+        with st.expander("View full analyst annotation"):
+            st.markdown(annotation)
