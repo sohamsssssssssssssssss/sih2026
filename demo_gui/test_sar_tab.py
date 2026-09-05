@@ -61,7 +61,7 @@ class SARTabTests(unittest.TestCase):
     def sar_tab(self):
         app = AppTest.from_file(str(ROOT / "demo_gui/app.py")).run(timeout=30)
         self.assertFalse(list(app.exception))
-        return next(tab for tab in app.tabs if tab.label == "SAR interpretation")
+        return next(tab for tab in app.tabs if tab.label == "SAR Validation")
 
     def test_real_annotation_has_verbatim_summaries_and_full_text(self) -> None:
         tab = self.sar_tab()

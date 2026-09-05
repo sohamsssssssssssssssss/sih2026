@@ -183,11 +183,75 @@ def clear_last_response() -> None:
     st.session_state.pop("last_notice_error", None)
 
 
-st.set_page_config(page_title="Geospatial VQA", page_icon="🛰️", layout="wide")
-st.title("Multi-sensor Geospatial VQA")
-st.caption("Real Qwen inference when locally available; verified cached evidence otherwise.")
+def render_trace_verification() -> None:
+    """Render the unchanged audit-chain action in its current visual context."""
+    if st.button("Verify trace"):
+        verified, message = verify_chain()
+        if verified:
+            st.success("✓ Chain verified")
+            st.caption(message)
+        else:
+            st.error(f"Trace verification failed: {message}")
 
-with st.container(border=True):
+
+st.set_page_config(page_title="SatQuery AI", page_icon="🛰️", layout="wide")
+st.markdown(
+    """
+    <style>
+    :root { --sat-accent: #35c6d0; --sat-surface: #0e1b28; --sat-border: #23384a; }
+    .stApp { background-color: #07111b; }
+    [data-testid="stHeader"] { background-color: rgba(7, 17, 27, 0.92); }
+    [data-testid="stMainBlockContainer"] { padding-top: 2.25rem; padding-bottom: 3rem; }
+    div[data-testid="stVerticalBlockBorderWrapper"] {
+        border-color: var(--sat-border);
+        border-radius: 9px;
+        background-color: rgba(14, 27, 40, 0.58);
+    }
+    .st-key-capability-status { border-left: 3px solid var(--sat-accent); }
+    .st-key-answer-value p {
+        color: #f4fbfc;
+        font-size: clamp(2.25rem, 5vw, 4rem);
+        font-weight: 750;
+        letter-spacing: -0.035em;
+        line-height: 1.05;
+        margin: 0.15rem 0 0.45rem;
+    }
+    .sat-status-row { display: flex; justify-content: flex-end; gap: 0.45rem; flex-wrap: wrap; }
+    .sat-chip {
+        border: 1px solid #2b8790;
+        border-radius: 999px;
+        color: #a8f0f3;
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        padding: 0.35rem 0.65rem;
+        white-space: nowrap;
+    }
+    [data-testid="stCode"] { font-size: 0.78rem; }
+    .stTabs [data-baseweb="tab-list"] { gap: 0.4rem; border-bottom: 1px solid var(--sat-border); }
+    .stTabs [data-baseweb="tab"] { font-weight: 650; letter-spacing: 0.015em; }
+    .stButton > button[kind="primary"] { font-weight: 750; letter-spacing: 0.035em; }
+    @media (max-width: 700px) {
+        [data-testid="stMainBlockContainer"] { padding-top: 1.25rem; }
+        .sat-status-row { justify-content: flex-start; }
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+brand_column, system_column = st.columns([4, 2], vertical_alignment="center")
+with brand_column:
+    st.title("SATQUERY AI")
+    st.caption("Evidence-backed geospatial intelligence")
+with system_column:
+    st.markdown(
+        '<div class="sat-status-row"><span class="sat-chip">OFFLINE READY</span>'
+        '<span class="sat-chip">AUDITABLE</span></div>',
+        unsafe_allow_html=True,
+    )
+
+with st.container(border=True, key="capability-status"):
     st.caption("CAPABILITY STATUS")
     available_column, development_column = st.columns(2)
     with available_column:
@@ -204,7 +268,7 @@ except (OSError, json.JSONDecodeError) as exc:
     st.stop()
 
 ask_tab, robustness_tab, sar_tab = st.tabs(
-    ["Ask Qwen", "Resolution robustness", "SAR interpretation"]
+    ["Ask SatQuery", "Resolution Robustness", "SAR Validation"]
 )
 
 with ask_tab:
@@ -214,7 +278,7 @@ with ask_tab:
         horizontal=True,
         on_change=clear_last_response,
     )
-    input_column, answer_column = st.columns(2)
+    input_column, answer_column = st.columns([3, 2], gap="large")
     with input_column:
         temporary_path: Path | None = None
         if source_mode == "Verified golden scene":
@@ -299,74 +363,67 @@ with ask_tab:
             else:
                 st.error(f"Missing or unrecognized execution_mode in response trace: {execution_mode!r}")
             st.caption(f"Model: {MODEL_NAME}")
-            st.write(response["answer"])
+            with st.container(key="answer-value"):
+                st.write(response["answer"])
             st.caption("Confidence calibration pending")
 
     if response:
         st.subheader("Evidence and execution trace")
         evidence = evidence_fields(response["trace"])
 
-        st.caption("Identity")
-        scene_card, sensor_card = st.columns(2)
-        with scene_card.container(border=True):
+        record_hash = evidence.get("record_hash")
+        prev_hash = evidence.get("prev_hash")
+
+        def hash_presentation(full_hash: str | None) -> tuple[str, str]:
+            if full_hash is None:
+                return "Not recorded", "No hash value was recorded."
+            if full_hash == "":
+                return "First record", 'Full value: "" (empty string; no previous record).'
+            display = (
+                f"{full_hash[:8]}...{full_hash[-8:]}"
+                if len(full_hash) > 16 else full_hash
+            )
+            return display, f"Full value: {full_hash}"
+
+        record_display, record_help = hash_presentation(record_hash)
+        prev_display, prev_help = hash_presentation(prev_hash)
+        identity_card, execution_card, question_card, integrity_card = st.columns(
+            4, gap="medium"
+        )
+        with identity_card.container(border=True):
+            st.caption("Identity")
             st.caption("Scene ID")
             st.code(evidence.get("scene_id", "Not recorded"), language=None)
-        with sensor_card.container(border=True):
             st.metric("Sensor", evidence.get("sensor", "Not recorded"))
-
-        st.caption("Execution")
-        model_card, version_card, mode_card = st.columns(3)
-        with model_card.container(border=True):
+        with execution_card.container(border=True):
+            st.caption("Execution")
             st.metric("Model", evidence.get("model_name", "Not recorded"))
-        with version_card.container(border=True):
             st.caption("Model version")
             st.code(evidence.get("model_version", "Not recorded"), language=None)
-        with mode_card.container(border=True):
             st.metric("Execution mode", evidence.get("execution_mode", "Not recorded"))
-        st.caption("Timestamp")
-        st.code(evidence.get("timestamp", "Not recorded"), language=None)
-        if "results_artifact" in evidence:
-            st.caption("Results artifact")
-            st.code(evidence["results_artifact"], language=None)
-
-        st.caption("Question")
-        st.text(evidence.get("question", "Not recorded"))
-
-        st.caption("Integrity — hover over the help icons for full hash values")
-        hash_cards = st.columns(2)
-        for card, key, label in zip(
-            hash_cards, ("record_hash", "prev_hash"), ("Record hash", "Previous hash")
-        ):
-            full_hash = evidence.get(key)
-            if full_hash is None:
-                display_hash = "Not recorded"
-                hash_help = "No hash value was recorded."
-            elif full_hash == "":
-                display_hash = "First record"
-                hash_help = 'Full value: "" (empty string; no previous record).'
-            else:
-                display_hash = (
-                    f"{full_hash[:8]}...{full_hash[-8:]}"
-                    if len(full_hash) > 16 else full_hash
-                )
-                hash_help = f"Full value: {full_hash}"
-            with card.container(border=True):
-                st.metric(label, display_hash, help=hash_help)
+            st.caption("Timestamp")
+            st.code(evidence.get("timestamp", "Not recorded"), language=None)
+            if "results_artifact" in evidence:
+                st.caption("Results artifact")
+                st.code(evidence["results_artifact"], language=None)
+        with question_card.container(border=True):
+            st.caption("Question")
+            st.text(evidence.get("question", "Not recorded"))
+        with integrity_card.container(border=True):
+            st.caption("Integrity — full hashes available from help icons")
+            st.metric("Record hash", record_display, help=record_help)
+            st.metric("Previous hash", prev_display, help=prev_help)
+            render_trace_verification()
 
         with st.expander("Raw evidence JSON", expanded=False):
             st.json(evidence)
+    else:
+        render_trace_verification()
 
     st.caption(
         "Every model/tool invocation is chained to the previous execution record. "
         "Altering an earlier record invalidates verification."
     )
-    if st.button("Verify trace"):
-        verified, message = verify_chain()
-        if verified:
-            st.success("✓ Chain verified")
-            st.caption(message)
-        else:
-            st.error(f"Trace verification failed: {message}")
 
 with robustness_tab:
     st.header("Resolution robustness")
@@ -387,12 +444,14 @@ with robustness_tab:
         "answer class. SatQuery explicitly detects and flags this failure mode."
     )
     figure, axis = plt.subplots(figsize=(8, 4))
+    figure.patch.set_facecolor("#07111b")
+    axis.set_facecolor("#0e1b28")
     axis.plot(
-        gsds, open_accuracies, marker="o", linewidth=3, color="tab:blue",
+        gsds, open_accuracies, marker="o", linewidth=3, color="#35c6d0",
         label="Open-question accuracy",
     )
     axis.plot(
-        gsds, accuracies, linestyle="--", linewidth=1.2, color="gray",
+        gsds, accuracies, linestyle="--", linewidth=1.2, color="#8da2b5",
         label="Aggregate accuracy (answer-collapse sensitive)",
     )
     flagged = [(float(gsd), metrics) for gsd, metrics in rung_items if gsd in degenerate_rungs]
@@ -400,13 +459,13 @@ with robustness_tab:
         axis.scatter(
             [gsd for gsd, _ in flagged],
             [metrics["open_accuracy"] for _, metrics in flagged],
-            marker="X", s=90, color="darkorange", zorder=3,
+            marker="X", s=90, color="#f0aa3c", zorder=3,
             label="Flagged degenerate rung",
         )
         axis.scatter(
             [gsd for gsd, _ in flagged],
             [metrics["accuracy"] for _, metrics in flagged],
-            marker="X", s=90, color="darkorange", zorder=3,
+            marker="X", s=90, color="#f0aa3c", zorder=3,
         )
     axis.set_xlabel("Ground sample distance (m)")
     axis.set_ylabel("Accuracy")
@@ -415,8 +474,17 @@ with robustness_tab:
         [f"{float(gsd):g}{'*' if gsd in degenerate_rungs else ''}" for gsd, _ in rung_items],
     )
     axis.set_ylim(0, 1)
-    axis.grid(alpha=0.25)
-    axis.legend(loc="upper right", fontsize=8)
+    axis.tick_params(colors="#c8d5df")
+    axis.xaxis.label.set_color("#c8d5df")
+    axis.yaxis.label.set_color("#c8d5df")
+    for spine in axis.spines.values():
+        spine.set_color("#2a4052")
+    axis.grid(color="#2a4052", alpha=0.55)
+    legend = axis.legend(loc="upper right", fontsize=8)
+    legend.get_frame().set_facecolor("#0e1b28")
+    legend.get_frame().set_edgecolor("#2a4052")
+    for label in legend.get_texts():
+        label.set_color("#dce7ee")
     st.pyplot(figure)
     plt.close(figure)
     if flagged:
@@ -450,6 +518,7 @@ with robustness_tab:
 with sar_tab:
     st.header("Mumbai coastal SAR")
     st.info("HUMAN SAR VALIDATION — NOT AI MODEL OUTPUT")
+    st.caption("Optical–SAR fusion is in development; this tab shows analyst validation only.")
     if SAR_IMAGE_PATH.is_file():
         st.image(
             str(SAR_IMAGE_PATH),
@@ -497,8 +566,9 @@ with sar_tab:
         except ValueError as exc:
             st.error(f"Category summaries unavailable: {exc} View the full annotation below.")
         else:
-            for label, excerpt in summaries:
-                with st.container(border=True):
+            summary_columns = st.columns(4, gap="medium")
+            for column, (label, excerpt) in zip(summary_columns, summaries):
+                with column.container(border=True):
                     st.subheader(label)
                     st.markdown(excerpt)
         with st.expander("View full analyst annotation"):

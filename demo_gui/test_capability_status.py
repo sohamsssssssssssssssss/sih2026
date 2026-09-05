@@ -28,7 +28,8 @@ class CapabilityStatusTests(unittest.TestCase):
         self.assertFalse(list(app.exception))
         self.assertIn("CAPABILITY STATUS", [item.value for item in app.caption])
 
-        available_column, development_column = app.get("column")[:2]
+        # Header columns precede the two capability-status columns.
+        available_column, development_column = app.get("column")[2:4]
         self.assertIn(
             "**AVAILABLE NOW**", [item.value for item in available_column.markdown]
         )

@@ -28,7 +28,7 @@ class RobustnessTabTests(unittest.TestCase):
         with patch("streamlit.pyplot", wraps=st.pyplot) as pyplot:
             app = AppTest.from_file(str(APP_PATH)).run(timeout=30)
         self.assertFalse(list(app.exception))
-        tab = next(t for t in app.tabs if t.label == "Resolution robustness")
+        tab = next(t for t in app.tabs if t.label == "Resolution Robustness")
         table = tab.dataframe[0].value
         self.assertEqual(table["GSD (m)"].tolist(), [float(r) for r in rungs])
         for column, field in (
@@ -83,7 +83,7 @@ class RobustnessTabTests(unittest.TestCase):
             app = AppTest.from_file(str(APP_PATH)).run(timeout=30)
 
         self.assertFalse(list(app.exception))
-        tab = next(t for t in app.tabs if t.label == "Resolution robustness")
+        tab = next(t for t in app.tabs if t.label == "Resolution Robustness")
         table = tab.dataframe[0].value
         self.assertEqual(table["Status"].tolist(), ["Not flagged"] * len(report["per_rung"]))
         self.assertEqual(list(tab.warning), [])

@@ -139,7 +139,7 @@ class GoldenPathTests(unittest.TestCase):
         with patch.object(golden_assets, "local_golden_image", return_value=self.golden_path):
             app = AppTest.from_file(str(APP_PATH)).run(timeout=30)
             self.assertFalse(list(app.exception))
-            ask = next(tab for tab in app.tabs if tab.label == "Ask Qwen")
+            ask = next(tab for tab in app.tabs if tab.label == "Ask SatQuery")
             left, right = ask.get("column")
             self.assertIn("GSD: 0.3 m", [item.value for item in left.caption])
             self.assertIn("Sensor: LoveDA", [item.value for item in left.caption])
@@ -158,7 +158,7 @@ class GoldenPathTests(unittest.TestCase):
         ):
             app = AppTest.from_file(str(APP_PATH)).run(timeout=30)
         self.assertFalse(list(app.exception))
-        ask = next(tab for tab in app.tabs if tab.label == "Ask Qwen")
+        ask = next(tab for tab in app.tabs if tab.label == "Ask SatQuery")
         left, _ = ask.get("column")
         self.assertIn("GSD: 1.25 m", [item.value for item in left.caption])
 
@@ -197,7 +197,7 @@ class GoldenPathTests(unittest.TestCase):
             app.run(timeout=30)
 
         self.assertFalse(list(app.exception))
-        ask = next(tab for tab in app.tabs if tab.label == "Ask Qwen")
+        ask = next(tab for tab in app.tabs if tab.label == "Ask SatQuery")
         left, right = ask.get("column")[:2]
         self.assertNotIn("Answer", [item.value for item in left.subheader])
         self.assertIn("Answer", [item.value for item in right.subheader])
@@ -206,11 +206,8 @@ class GoldenPathTests(unittest.TestCase):
         direct_subheaders = [
             item.value for item in ask.children.values() if item.type == "subheader"
         ]
-        direct_buttons = [
-            item.label for item in ask.children.values() if item.type == "button"
-        ]
         self.assertIn("Evidence and execution trace", direct_subheaders)
-        self.assertIn("Verify trace", direct_buttons)
+        self.assertIn("Verify trace", [item.label for item in ask.button])
         for column in (left, right):
             self.assertNotIn(
                 "Evidence and execution trace",
@@ -239,7 +236,7 @@ class GoldenPathTests(unittest.TestCase):
 
             app.radio[0].set_value("Upload a scene").run(timeout=30)
             self.assertFalse(list(app.exception))
-            ask = next(tab for tab in app.tabs if tab.label == "Ask Qwen")
+            ask = next(tab for tab in app.tabs if tab.label == "Ask SatQuery")
             left, right = ask.get("column")
             self.assertIn("GSD: unknown", [item.value for item in left.caption])
             self.assertEqual(len(image_elements(left)), 0)
@@ -249,7 +246,7 @@ class GoldenPathTests(unittest.TestCase):
             with patch("streamlit.file_uploader", return_value=uploaded):
                 app.run(timeout=30)
             self.assertFalse(list(app.exception))
-            ask = next(tab for tab in app.tabs if tab.label == "Ask Qwen")
+            ask = next(tab for tab in app.tabs if tab.label == "Ask SatQuery")
             left, right = ask.get("column")
             self.assertIn("GSD: unknown", [item.value for item in left.caption])
             self.assertIn("uploaded_scene.png", [item.value for item in left.code])
@@ -296,7 +293,7 @@ class GoldenPathTests(unittest.TestCase):
                 }
                 app.run(timeout=30)
                 self.assertFalse(list(app.exception))
-                ask = next(tab for tab in app.tabs if tab.label == "Ask Qwen")
+                ask = next(tab for tab in app.tabs if tab.label == "Ask SatQuery")
                 self.assertIn(
                     "Evidence and execution trace", [item.value for item in ask.subheader]
                 )
@@ -332,11 +329,17 @@ class GoldenPathTests(unittest.TestCase):
                 for key in ("model_version", "timestamp", "results_artifact"):
                     self.assertIn(expected[key], [item.value for item in execution
                                                  if item.type == "code"])
-                # Group labels must be direct tab children, outside expanders/columns.
-                direct_captions = [item.value for item in ask.children.values()
-                                   if item.type == "caption"]
-                for label in ("Identity", "Execution", "Question"):
-                    self.assertIn(label, direct_captions)
+                # Each group label belongs to its own always-visible evidence card.
+                evidence_columns = ask.get("column")[2:6]
+                for column, label in zip(
+                    evidence_columns,
+                    ("Identity", "Execution", "Question", "Integrity"),
+                ):
+                    captions = [item.value for item in column.caption]
+                    if label == "Integrity":
+                        self.assertTrue(any(value.startswith(label) for value in captions))
+                    else:
+                        self.assertIn(label, captions)
                 metrics = {m.label: m for m in ask.metric}
                 self.assertEqual(metrics["Model"].value, expected["model_name"])
                 self.assertEqual(metrics["Sensor"].value, expected["sensor"])
