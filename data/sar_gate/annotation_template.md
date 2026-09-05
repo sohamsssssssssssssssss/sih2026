@@ -19,7 +19,7 @@ Urban/built-up:
   Class: urban/built-up
   Reasoning: dense construction creates double-bounce geometry — radar energy strikes vertical walls and horizontal ground/streets at right angles (corner reflector effect), returning a large portion of energy back to the sensor. The speckled/textured appearance reflects varying building heights, orientations, and street canyons.
 - Region: dark X-shaped feature in the center of the bright urban area
-  Class: airport runway (Chhatrapati Shivaji Maharaj International Airport)
+  Class: Intersecting dark strips consistent with a runway pattern
   Reasoning: runways are large, flat, smooth paved surfaces that act as specular reflectors (similar to calm water). Radar energy hits them and deflects away from the sensor rather than back to it, producing very low backscatter and rendering them distinctly dark despite being situated in the middle of a high-backscatter urban area.
 
 Vegetation:
@@ -29,16 +29,17 @@ the scene; if parks or tree cover are present, they aren't separable
 from the surrounding built-up backscatter at this resolution/composite.
 
 Terrain artifacts (layover/foreshortening/shadow):
-None observed. Mumbai's coastal terrain is largely flat, so there is no
-steep-slope geometry to produce layover, foreshortening, or radar
-shadow.
+No layover, foreshortening, or radar shadow is confidently identifiable in
+this render. This does not establish that the terrain is physically flat or
+that geometric distortion is absent; the render alone does not provide that
+information.
 
 Why it looks this way:
 The scene splits into three backscatter regimes driven by surface
 roughness and geometry, not color: calm sea/creek water (specular,
 dark), dense urban fabric (double-bounce, bright and heterogeneous),
-and isolated smooth features — the airport runway and an inland lake
-(Powai/Vihar) — that both read dark like open water despite sitting
+and isolated smooth features — the runway-like strips and an enclosed
+dark-water candidate — that both read dark like open water despite sitting
 inside or beside the urban mass, because they're flat surfaces that
 reflect radar energy away from the sensor. Brightness alone doesn't
 distinguish these dark features from each other; shape and context
@@ -55,13 +56,11 @@ Water areas:
   built-up/pink cluster
   Brightness/texture: Solid, flat, uniform dark navy tone. No internal speckle or
   mottling — matches the calm-water signature seen in the Mumbai coastal scene.
-  Shape: Rounded/irregular blob outline. No straight edges detected — rules out
-  canal, bund, or engineered irrigation tank.
+  Shape: Rounded/irregular blob outline consistent with pond-like geometry.
   Mechanism: Specular reflection off calm open water (SAR returns very low backscatter
-  from flat water surfaces, appearing dark). Natural farm pond / seasonal puddle,
-  not a constructed water feature, based on absence of straight boundaries.
-  Confidence: High — texture and shape both consistent with natural still water,
-  same mechanism as prior Mumbai water annotation.
+  from flat water surfaces, appearing dark). The enclosed dark patch has pond-like geometry.
+  Confidence: Medium — texture and shape support a water interpretation, but
+  do not conclusively distinguish water from other low-return surfaces.
 
 Urban/built-up:
 - Scene: maharashtra_farmland
@@ -146,8 +145,8 @@ Water areas:
 - Region: sinuous, narrow dark-navy channel running through the upper-central
   portion of the frame, branching into smaller tributaries
   Class: water (river/stream)
-  Reasoning: near-zero backscatter following a continuous dendritic path is
-  consistent with specular reflection off a flowing water surface; the
+  Reasoning: The dark, sinuous, channel-like feature is consistent with water;
+  flow state is not determinable from a single static render; the
   branching, drainage-shaped geometry (not a straight line, not adjacent to
   an implied steep slope) argues for a stream channel rather than radar
   shadow. Confidence: High.
@@ -160,7 +159,7 @@ Water areas:
   dammed reservoir vs. a natural pool can't be distinguished from SAR alone.
 - Several smaller isolated dark patches scattered through the frame, each a
   few pixels wide, generally aligned along the same drainage pattern as the
-  main channel. Likely minor tributaries or seasonal pools. Confidence: Low
+  main channel. Possible minor tributaries or small water candidates. Confidence: Low
   — too small to rule out speckle/shadow at this scale.
 
 Urban/built-up:
@@ -172,8 +171,8 @@ Urban/built-up:
 
 Vegetation:
 - Region: dominates essentially the entire valid-data portion of the frame
-  (left ~55%; the black region on the right is the scene's nodata/swath
-  edge, not a land-cover class)
+  (left ~55%; the black region on the right is the scene's nodata/no-coverage
+  region, not a land-cover class)
   Class: forest / dense vegetation
   Reasoning: uniform, moderately bright, finely mottled texture across the
   whole scene, consistent with volume scattering from a multi-layered
@@ -203,7 +202,7 @@ signature. The absence of a clear double-bounce/urban signature is
 consistent with a forested, sparsely settled landscape rather than any
 claim that no settlement exists — SAR alone can't confirm absence, only
 that no strong signature is present in this crop. The black region on the
-right is a data-coverage boundary (end of the SAR swath), not a physical
+right is a nodata/no-coverage region, not a physical
 land-cover feature, and should not be read as radar shadow.
 
 ## Konkan coast
