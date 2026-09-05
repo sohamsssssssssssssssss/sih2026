@@ -9,8 +9,8 @@ from pathlib import Path
 from typing import Any
 
 # The gate demo must never depend on Wi-Fi. A cached local model may still run.
-os.environ.setdefault("HF_HUB_OFFLINE", "1")
-os.environ.setdefault("TRANSFORMERS_OFFLINE", "1")
+os.environ["HF_HUB_OFFLINE"] = "1"
+os.environ["TRANSFORMERS_OFFLINE"] = "1"
 os.environ.setdefault("MPLCONFIGDIR", str(Path(tempfile.gettempdir()) / "sih26167-mpl"))
 os.environ.setdefault("XDG_CACHE_HOME", str(Path(tempfile.gettempdir()) / "sih26167-cache"))
 
