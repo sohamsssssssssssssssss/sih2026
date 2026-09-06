@@ -29,3 +29,4 @@ trace.jsonl
 # source (dataset.py, download_ladder_data.py, sar_gate/, BEN_TXT_FACTS.md);
 # ignoring it would hide real files, which is the exact bug this repo has hit.
 *.parquet
+frontend/public/videos/satquery-intro-original.mp4

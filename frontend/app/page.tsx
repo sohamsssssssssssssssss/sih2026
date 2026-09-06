@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { CinematicExperience } from "@/components/cinematic/CinematicExperience";
+import { CinematicIntro } from "@/components/cinematic/CinematicIntro";
 
 export const metadata: Metadata = {
   title: "Ask Earth a Question",
@@ -7,5 +7,5 @@ export const metadata: Metadata = {
 };
 
 export default function Home() {
-  return <CinematicExperience />;
+  return <CinematicIntro />;
 }
