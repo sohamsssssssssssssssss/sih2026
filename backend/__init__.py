@@ -1,0 +1,1 @@
+"""SatQuery AI HTTP API."""

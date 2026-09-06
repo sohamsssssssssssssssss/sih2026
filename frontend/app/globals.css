@@ -1,0 +1,43 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root { color-scheme: dark; }
+
+* { box-sizing: border-box; }
+
+html { background: #071019; }
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(circle at 80% -10%, rgba(71, 215, 221, 0.08), transparent 28rem),
+    #071019;
+  color: #e8f1f5;
+}
+
+::selection { background: rgba(71, 215, 221, 0.28); }
+
+button, input, select, textarea { font: inherit; }
+
+.panel {
+  @apply rounded-xl border border-border bg-surface shadow-panel;
+}
+
+.eyebrow {
+  @apply text-[0.68rem] font-bold uppercase tracking-[0.18em] text-accent;
+}
+
+.muted { @apply text-sm leading-relaxed text-slate-400; }
+
+.grid-overlay {
+  background-image:
+    linear-gradient(rgba(71, 215, 221, 0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(71, 215, 221, 0.055) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+.maplibregl-control-container { display: none; }
+
+.prose-annotation p { margin: 0.65rem 0; }
+.prose-annotation strong { color: #dffcff; }
