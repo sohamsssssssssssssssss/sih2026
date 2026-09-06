@@ -1,6 +1,9 @@
 __pycache__/
 *.py[cod]
 .venv/
+node_modules/
+.next/
+/frontend/.env.local
 trace.jsonl
 # Anchored: a bare `results.json` also matches results/results.json and
 # would silently swallow the committed audit trail in results/.
