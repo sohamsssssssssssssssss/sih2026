@@ -36,6 +36,41 @@ def _md5(path: Path) -> str:
     return digest.hexdigest()
 
 
+def _curl_resume(url: str, partial: Path) -> None:
+    """Resume `partial` from wherever it stopped, aborting a stalled connection.
+
+    A flaky link (mobile hotspot, captive portal) can leave a TCP connection open
+    but delivering nothing. Without --speed-time curl waits on it forever and
+    --retry never fires, so the download hangs instead of failing and resuming.
+    """
+    curl = shutil.which("curl")
+    if curl is None:
+        raise RuntimeError("Download failed and curl is unavailable")
+    subprocess.run(
+        [
+            curl,
+            "--fail",
+            "--location",
+            "--continue-at",
+            "-",
+            # Treat <1 KB/s for 30s as dead and let --retry resume from the .part.
+            "--speed-limit",
+            "1024",
+            "--speed-time",
+            "30",
+            "--retry",
+            "10",
+            "--retry-delay",
+            "2",
+            "--retry-all-errors",
+            "--output",
+            str(partial),
+            url,
+        ],
+        check=True,
+    )
+
+
 def _download(filename: str, destination: Path) -> None:
     expected_size, expected_md5 = FILES[filename]
     if destination.is_file():
@@ -46,29 +81,17 @@ def _download(filename: str, destination: Path) -> None:
     url = f"https://zenodo.org/api/records/{ZENODO_RECORD}/files/{filename}/content"
     partial = destination.with_suffix(destination.suffix + ".part")
     request = urllib.request.Request(url, headers={"User-Agent": "sih26167-rsvqa/1.0"})
-    try:
-        with urllib.request.urlopen(request, timeout=60) as response:  # noqa: S310
-            with partial.open("wb") as output:
-                shutil.copyfileobj(response, output, length=8 * 1024 * 1024)
-    except (OSError, urllib.error.URLError) as exc:
-        curl = shutil.which("curl")
-        if curl is None:
-            raise RuntimeError(f"Download failed and curl is unavailable: {exc}") from exc
-        subprocess.run(
-            [
-                curl,
-                "--fail",
-                "--location",
-                "--retry",
-                "3",
-                "--continue-at",
-                "-",
-                "--output",
-                str(partial),
-                url,
-            ],
-            check=True,
-        )
+    # A non-empty .part is progress from an interrupted run. urlopen writes with
+    # "wb", which would truncate it and restart from zero, so resume via curl.
+    if partial.is_file() and partial.stat().st_size > 0:
+        _curl_resume(url, partial)
+    else:
+        try:
+            with urllib.request.urlopen(request, timeout=60) as response:  # noqa: S310
+                with partial.open("wb") as output:
+                    shutil.copyfileobj(response, output, length=8 * 1024 * 1024)
+        except (OSError, urllib.error.URLError):
+            _curl_resume(url, partial)
     if partial.stat().st_size != expected_size or _md5(partial) != expected_md5:
         raise RuntimeError(f"Downloaded file failed integrity validation: {filename}")
     partial.replace(destination)
