@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 
 import pytest
@@ -11,9 +12,11 @@ from backend.main import app
 @pytest.fixture(autouse=True)
 def isolated_trace(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
     trace_store._TRACE.clear()
+    trace_store._LOADED_PATH = None
     monkeypatch.setattr(trace_store, "TRACE_PATH", tmp_path / "trace.jsonl")
     yield
     trace_store._TRACE.clear()
+    trace_store._LOADED_PATH = None
 
 
 @pytest.fixture
@@ -83,3 +86,57 @@ def test_trace_history_and_verification(client: TestClient, monkeypatch: pytest.
     assert history["count"] == 1
     verification = client.post("/api/traces/verify").json()
     assert verification == {"verified": True, "message": "Chain verified (1 records)"}
+
+
+@pytest.mark.parametrize("endpoint", [("get", "/api/traces"), ("post", "/api/traces/verify")])
+def test_corrupt_trace_returns_sanitized_503(
+    client: TestClient, endpoint: tuple[str, str]
+) -> None:
+    corrupt_payload = "private-corrupt-payload"
+    trace_store.TRACE_PATH.write_text(corrupt_payload + "\n", encoding="utf-8")
+
+    method, url = endpoint
+    response = getattr(client, method)(url)
+    body = response.text
+
+    assert response.status_code == 503
+    assert response.json() == {
+        "detail": (
+            "Execution trace is temporarily unavailable because persisted trace "
+            "integrity could not be verified."
+        )
+    }
+    assert str(trace_store.TRACE_PATH) not in body
+    assert corrupt_payload not in body
+    assert "TraceIntegrityError" not in body
+    assert "Traceback" not in body
+
+
+@pytest.mark.parametrize("endpoint", [("get", "/api/traces"), ("post", "/api/traces/verify")])
+def test_non_ascii_record_hash_returns_sanitized_503(
+    client: TestClient, endpoint: tuple[str, str]
+) -> None:
+    corrupt_hash = "é"
+    trace_store.TRACE_PATH.write_text(
+        json.dumps(
+            {"prev_hash": "", "record_hash": corrupt_hash}, ensure_ascii=False
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+
+    method, url = endpoint
+    response = getattr(client, method)(url)
+    body = response.text
+
+    assert response.status_code == 503
+    assert response.json() == {
+        "detail": (
+            "Execution trace is temporarily unavailable because persisted trace "
+            "integrity could not be verified."
+        )
+    }
+    assert str(trace_store.TRACE_PATH) not in body
+    assert corrupt_hash not in body
+    assert "TraceIntegrityError" not in body
+    assert "Traceback" not in body
