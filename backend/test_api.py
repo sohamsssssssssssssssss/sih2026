@@ -15,6 +15,7 @@ import orchestrator.trace as trace_store
 from backend.main import app
 from backend.routes import analyze as analyze_routes
 from backend.schemas import MAX_QUESTION_LENGTH
+from orchestrator import capabilities
 from orchestrator import router as model_router
 
 
@@ -662,3 +663,146 @@ def test_model_timeout_bounds_request_without_success_trace(
     assert response.json() == {"detail": "Live model inference is unavailable."}
     assert "late answer" not in response.text
     assert trace_store.records() == []
+
+
+def test_capability_resolution_maps_vqa_to_qwen() -> None:
+    resolved = capabilities.resolve_provider(capabilities.SINGLE_IMAGE_VQA)
+    assert resolved.provider_name == "qwen2.5vl-3b"
+    assert resolved.model_name == services.MODEL_NAME
+
+
+def test_provider_metadata_is_truthful() -> None:
+    resolved = capabilities.resolve_provider(capabilities.SINGLE_IMAGE_VQA)
+    model = model_router.get(resolved.model_name)
+    assert resolved.provider_name == model.name
+    assert resolved.model_version == model.version
+    status = {entry["name"]: entry for entry in capabilities.capabilities_status()}
+    assert status[capabilities.SINGLE_IMAGE_VQA] == {
+        "name": "single_image_vqa",
+        "available": True,
+        "provider": "qwen2.5vl-3b",
+    }
+
+
+def test_capabilities_endpoint_reports_truthful_availability(
+    client: TestClient,
+) -> None:
+    payload = client.get("/api/capabilities").json()
+    assert payload == {
+        "capabilities": [
+            {"name": "single_image_vqa", "available": True, "provider": "qwen2.5vl-3b"},
+            {"name": "grounding", "available": False, "provider": None},
+            {"name": "change_vqa", "available": False, "provider": None},
+            {"name": "optical_sar", "available": False, "provider": None},
+        ]
+    }
+
+
+def test_trace_records_requested_capability(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    created = upload(client, "scene.png", image_bytes("PNG")).json()
+    model = SimpleNamespace(
+        version="test", infer=lambda **_: {"answer": "Yes", "evidence": []}
+    )
+    monkeypatch.setattr(model_router, "get", lambda _: model)
+
+    response = client.post(
+        "/api/analyze",
+        json={"scene_id": created["scene_id"], "question": "What is visible?"},
+    )
+
+    assert response.status_code == 200
+    records = trace_store.records()
+    assert len(records) == 1
+    assert records[0]["params"]["capability"] == "single_image_vqa"
+    assert records[0]["model_name"] == "qwen2.5vl-3b"
+    assert records[0]["model_version"] == "test"
+    assert trace_store.verify_chain()[0] is True
+
+
+def test_unknown_capability_is_rejected_without_execution(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    def fail(**_: object) -> dict:
+        raise AssertionError("model must not run")
+
+    monkeypatch.setattr(services, "route", fail)
+    response = client.post(
+        "/api/analyze",
+        json={
+            "scene_id": services.GOLDEN_SCENE_ID,
+            "question": services.GOLDEN_QUESTION,
+            "capability": "time_travel",
+        },
+    )
+    assert response.status_code == 422
+    assert response.json() == {"detail": "Unknown capability: time_travel"}
+    assert trace_store.records() == []
+
+
+@pytest.mark.parametrize("capability", ["grounding", "change_vqa", "optical_sar"])
+def test_unavailable_capability_never_routes_to_vqa(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch, capability: str
+) -> None:
+    def fail(**_: object) -> dict:
+        raise AssertionError("model must not run")
+
+    monkeypatch.setattr(services, "route", fail)
+    monkeypatch.setattr(services, "find_cached_result", None)
+    response = client.post(
+        "/api/analyze",
+        json={
+            "scene_id": services.GOLDEN_SCENE_ID,
+            "question": services.GOLDEN_QUESTION,
+            "capability": capability,
+        },
+    )
+    assert response.status_code == 503
+    assert response.json() == {
+        "detail": f"No provider is registered for capability: {capability}"
+    }
+    assert trace_store.records() == []
+
+
+def test_golden_fallback_rejects_unsupported_capability(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    def fail(**_: object) -> dict:
+        raise AssertionError("model must not run")
+
+    monkeypatch.setattr(services, "route", fail)
+    response = client.post(
+        "/api/analyze",
+        json={
+            "scene_id": services.GOLDEN_SCENE_ID,
+            "question": services.GOLDEN_QUESTION,
+            "capability": "grounding",
+        },
+    )
+    assert response.status_code == 503
+    assert "showing the exact committed result" not in response.text
+    assert trace_store.records() == []
+
+
+def test_duplicate_provider_registration_is_deterministic() -> None:
+    from orchestrator.capabilities import Provider
+
+    provider = Provider(
+        name="duplicate-probe",
+        version="0.0.1",
+        capabilities=frozenset({"single_image_vqa"}),
+        model_name="qwen2.5vl-3b",
+    )
+    with pytest.raises(ValueError, match="already registered to another provider"):
+        capabilities.register_provider(provider)
+    resolved = capabilities.resolve_provider(capabilities.SINGLE_IMAGE_VQA)
+    assert resolved.provider_name == "qwen2.5vl-3b"
+
+
+def test_registry_inspection_does_not_expose_mutable_state() -> None:
+    status = capabilities.capabilities_status()
+    status.append({"name": "forged", "available": True, "provider": "x"})
+    again = capabilities.capabilities_status()
+    assert [entry["name"] for entry in again] == list(capabilities.KNOWN_CAPABILITIES)
+    assert all(entry["name"] != "forged" for entry in again)

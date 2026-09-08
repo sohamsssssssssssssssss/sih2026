@@ -4,6 +4,8 @@ from typing import Any, Literal
 
 from pydantic import BaseModel, Field
 
+from orchestrator.capabilities import SINGLE_IMAGE_VQA
+
 MAX_QUESTION_LENGTH = 2000
 
 
@@ -11,6 +13,10 @@ class AnalyzeRequest(BaseModel):
     scene_id: str = Field(min_length=1)
     question: str = Field(min_length=1, max_length=MAX_QUESTION_LENGTH)
     sensor: str | None = None
+    capability: str = Field(
+        default=SINGLE_IMAGE_VQA,
+        description="Requested capability; unsupported values are rejected, never faked.",
+    )
 
 
 class SceneUploadResponse(BaseModel):
@@ -42,3 +48,13 @@ class AnalyzeResponse(BaseModel):
 class TraceVerification(BaseModel):
     verified: bool
     message: str
+
+
+class CapabilityStatus(BaseModel):
+    name: str
+    available: bool
+    provider: str | None
+
+
+class CapabilitiesResponse(BaseModel):
+    capabilities: list[CapabilityStatus]

@@ -18,6 +18,12 @@ from PIL import Image, UnidentifiedImageError
 os.environ["HF_HUB_OFFLINE"] = "1"
 os.environ["TRANSFORMERS_OFFLINE"] = "1"
 
+from orchestrator.capabilities import (  # noqa: E402
+    CapabilityUnavailable,
+    KNOWN_CAPABILITIES,
+    SINGLE_IMAGE_VQA,
+    UnknownCapability,
+)
 from orchestrator.registry import get  # noqa: E402
 from orchestrator.router import (  # noqa: E402
     InvalidModelOutput,
@@ -35,6 +41,7 @@ SAR_ANNOTATION_PATH = ROOT / "data" / "sar_gate" / "annotation_template.md"
 SAR_RENDER_DIR = ROOT / "data" / "sar_gate" / "rendered"
 GOLDEN_SCENE_ID = "loveda_LoveDA_images_png_0_gsd0.3"
 GOLDEN_QUESTION = "Is there a building in this image?"
+GOLDEN_CAPABILITY = SINGLE_IMAGE_VQA
 INGESTED_SCENE_DIR = ROOT / "data" / "runtime" / "scenes"
 INGESTED_SCENE_ID = re.compile(r"scene_[0-9a-f]{32}")
 MODEL_EXECUTION_TIMEOUT_SECONDS = 120.0
@@ -78,7 +85,11 @@ def normalize_scene_id(scene_id: str) -> str:
     return value.replace("loveda_Train_Rural_images_png_", "loveda_LoveDA_images_png_")
 
 
-def find_cached_result(scene_id: str, question: str) -> dict[str, Any] | None:
+def find_cached_result(
+    scene_id: str, question: str, capability: str
+) -> dict[str, Any] | None:
+    if capability != GOLDEN_CAPABILITY:
+        return None
     if scene_id != GOLDEN_SCENE_ID or question != GOLDEN_QUESTION:
         return None
     return next(
@@ -180,6 +191,7 @@ def _cached_response(cached: dict[str, Any], sensor: str | None, reason: str) ->
                 "model_name": MODEL_NAME,
                 "model_version": model.version,
                 "params": {
+                    "capability": GOLDEN_CAPABILITY,
                     "execution_mode": "cached_result",
                     "results_artifact": RESULTS_RELATIVE_PATH,
                     "scene_id": cached["tile_id"],
@@ -229,11 +241,22 @@ def _live_response(result: Any) -> dict[str, Any]:
     }
 
 
-def analyze_scene(scene_id: str, question: str, sensor: str | None) -> dict[str, Any]:
+def analyze_scene(
+    scene_id: str,
+    question: str,
+    sensor: str | None,
+    capability: str = GOLDEN_CAPABILITY,
+) -> dict[str, Any]:
     question = question.strip()
     if not question:
         raise AnalysisUnavailable("A non-empty question is required. No answer was generated.")
-    cached = find_cached_result(scene_id, question)
+    if capability != GOLDEN_CAPABILITY:
+        if capability not in KNOWN_CAPABILITIES:
+            raise UnknownCapability(f"Unknown capability: {capability}")
+        raise CapabilityUnavailable(
+            f"No provider is registered for capability: {capability}"
+        )
+    cached = find_cached_result(scene_id, question, capability)
     image_path = local_scene_image(scene_id)
     if image_path is None:
         if cached is None:
@@ -244,7 +267,7 @@ def analyze_scene(scene_id: str, question: str, sensor: str | None) -> dict[str,
 
     try:
         result = route(
-            model_name=MODEL_NAME,
+            capability=capability,
             image_paths=[str(image_path)],
             question=question,
             params={
@@ -259,6 +282,8 @@ def analyze_scene(scene_id: str, question: str, sensor: str | None) -> dict[str,
         raise
     except InvalidModelOutput:
         raise
+    except (CapabilityUnavailable, UnknownCapability):
+        raise
     except ModelExecutionTimeout as exc:
         if cached is not None:
             return _cached_response(cached, sensor, "model execution timed out")
@@ -270,6 +295,14 @@ def analyze_scene(scene_id: str, question: str, sensor: str | None) -> dict[str,
             raise error from exc
         reason = "no CUDA GPU" if unavailable else "model execution failed"
         return _cached_response(cached, sensor, reason)
+
+
+def capabilities_overview() -> dict[str, Any]:
+    """Truthful availability snapshot backed by the provider registry."""
+    from orchestrator.capabilities import capabilities_status
+
+    return {"capabilities": capabilities_status()}
+
 
 def resolution_report() -> dict[str, Any]:
     report = load_results()
