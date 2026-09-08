@@ -25,6 +25,25 @@ def test_health(client: TestClient) -> None:
     assert client.get("/api/health").json() == {"status": "ready", "mode": "offline-first"}
 
 
+def test_known_golden_scene_serves_real_png(client: TestClient) -> None:
+    response = client.get(f"/api/scenes/{services.GOLDEN_SCENE_ID}/image")
+    assert response.status_code == 200
+    assert response.headers["content-type"] == "image/png"
+    assert len(response.content) > 0
+    assert response.content.startswith(b"\x89PNG\r\n\x1a\n")
+
+
+def test_scene_image_returns_clean_404_for_unknown_scene(client: TestClient) -> None:
+    response = client.get("/api/scenes/unknown-scene/image")
+    assert response.status_code == 404
+    assert response.json() == {"detail": "Local scene pixels are unavailable."}
+
+
+def test_scene_image_rejects_path_traversal(client: TestClient) -> None:
+    response = client.get("/api/scenes/..%2F..%2Fetc%2Fpasswd_gsd0.3/image")
+    assert response.status_code == 404
+
+
 def test_resolution_returns_committed_rungs(client: TestClient) -> None:
     response = client.get("/api/resolution")
     assert response.status_code == 200
