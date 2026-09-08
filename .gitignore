@@ -20,6 +20,7 @@ trace.jsonl
 /data/sar_gate/jobs.json
 /data/sar_gate/raw/
 /data/sar_gate/rendered/
+/data/runtime/
 
 # Datasets never go in git. The BigEarthNet.txt parquet (467 MB) lives at
 # ~/data/bigearthnet_txt/ — outside the repo entirely, which is what actually

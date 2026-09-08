@@ -8,7 +8,19 @@ from pydantic import BaseModel, Field
 class AnalyzeRequest(BaseModel):
     scene_id: str = Field(min_length=1)
     question: str = Field(min_length=1)
-    sensor: str = "LoveDA"
+    sensor: str | None = None
+
+
+class SceneUploadResponse(BaseModel):
+    scene_id: str
+    filename: str
+    format: Literal["PNG", "JPEG"]
+    width: int
+    height: int
+    sensor: None = None
+    gsd: None = None
+    location: None = None
+    acquisition_date: None = None
 
 
 class ModelInfo(BaseModel):

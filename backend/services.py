@@ -2,10 +2,16 @@
 
 import json
 import os
+import re
+import warnings
 from datetime import datetime, timezone
 from functools import lru_cache
+from io import BytesIO
 from pathlib import Path
 from typing import Any
+from uuid import uuid4
+
+from PIL import Image, UnidentifiedImageError
 
 # Keep model resolution offline before importing the model registry.
 os.environ["HF_HUB_OFFLINE"] = "1"
@@ -23,6 +29,8 @@ SAR_ANNOTATION_PATH = ROOT / "data" / "sar_gate" / "annotation_template.md"
 SAR_RENDER_DIR = ROOT / "data" / "sar_gate" / "rendered"
 GOLDEN_SCENE_ID = "loveda_LoveDA_images_png_0_gsd0.3"
 GOLDEN_QUESTION = "Is there a building in this image?"
+INGESTED_SCENE_DIR = ROOT / "data" / "runtime" / "scenes"
+INGESTED_SCENE_ID = re.compile(r"scene_[0-9a-f]{32}")
 
 
 class ArtifactError(RuntimeError):
@@ -31,6 +39,14 @@ class ArtifactError(RuntimeError):
 
 class AnalysisUnavailable(RuntimeError):
     """Raised when neither live inference nor an exact cached result is available."""
+
+
+class InvalidImageUpload(ValueError):
+    """Raised when uploaded bytes are not a supported safe image."""
+
+
+class SceneStorageError(RuntimeError):
+    """Raised when a validated scene cannot be stored."""
 
 
 @lru_cache(maxsize=1)
@@ -60,6 +76,11 @@ def find_cached_result(scene_id: str, question: str) -> dict[str, Any] | None:
 
 
 def local_scene_image(scene_id: str) -> Path | None:
+    if INGESTED_SCENE_ID.fullmatch(scene_id):
+        candidate = INGESTED_SCENE_DIR / f"{scene_id}.png"
+        return candidate if candidate.is_file() else None
+    if "/" in scene_id or "\\" in scene_id or ".." in scene_id:
+        return None
     normalized = normalize_scene_id(scene_id)
     if "_gsd" not in normalized:
         return None
@@ -69,7 +90,68 @@ def local_scene_image(scene_id: str) -> Path | None:
     return candidate if candidate.is_file() else None
 
 
-def _cached_response(cached: dict[str, Any], sensor: str, reason: str) -> dict[str, Any]:
+def ingest_scene(data: bytes, filename: str) -> dict[str, Any]:
+    if not data:
+        raise InvalidImageUpload("The uploaded image is empty.")
+    try:
+        with warnings.catch_warnings():
+            warnings.simplefilter("error", Image.DecompressionBombWarning)
+            with Image.open(BytesIO(data)) as source:
+                detected_format = source.format
+                if detected_format not in {"PNG", "JPEG"}:
+                    raise InvalidImageUpload("Only PNG and JPEG images are supported.")
+                source.verify()
+            with Image.open(BytesIO(data)) as source:
+                source.load()
+                width, height = source.size
+                if source.mode in {"L", "LA", "RGB", "RGBA"}:
+                    canonical = source.copy()
+                else:
+                    mode = "RGBA" if "transparency" in source.info else "RGB"
+                    canonical = source.convert(mode)
+    except InvalidImageUpload:
+        raise
+    except (
+        Image.DecompressionBombError,
+        Image.DecompressionBombWarning,
+        UnidentifiedImageError,
+        OSError,
+        SyntaxError,
+        ValueError,
+    ) as exc:
+        raise InvalidImageUpload("The uploaded file is not a safe, valid image.") from exc
+
+    scene_id = f"scene_{uuid4().hex}"
+    target = INGESTED_SCENE_DIR / f"{scene_id}.png"
+    temporary = INGESTED_SCENE_DIR / f".{scene_id}.tmp"
+    try:
+        INGESTED_SCENE_DIR.mkdir(parents=True, exist_ok=True)
+        canonical.save(temporary, format="PNG")
+        temporary.replace(target)
+    except OSError as exc:
+        raise SceneStorageError("The uploaded image could not be stored.") from exc
+    finally:
+        canonical.close()
+        try:
+            temporary.unlink(missing_ok=True)
+        except OSError:
+            pass
+
+    safe_filename = Path(filename.replace("\\", "/")).name or "upload"
+    return {
+        "scene_id": scene_id,
+        "filename": safe_filename,
+        "format": detected_format,
+        "width": width,
+        "height": height,
+        "sensor": None,
+        "gsd": None,
+        "location": None,
+        "acquisition_date": None,
+    }
+
+
+def _cached_response(cached: dict[str, Any], sensor: str | None, reason: str) -> dict[str, Any]:
     model = get(MODEL_NAME)
     trace = append_record(
         {
@@ -99,7 +181,7 @@ def _cached_response(cached: dict[str, Any], sensor: str, reason: str) -> dict[s
     }
 
 
-def analyze_scene(scene_id: str, question: str, sensor: str) -> dict[str, Any]:
+def analyze_scene(scene_id: str, question: str, sensor: str | None) -> dict[str, Any]:
     question = question.strip()
     if not question:
         raise AnalysisUnavailable("A non-empty question is required. No answer was generated.")
@@ -126,7 +208,8 @@ def analyze_scene(scene_id: str, question: str, sensor: str) -> dict[str, Any]:
     except (RuntimeError, OSError) as exc:
         if cached is None:
             raise AnalysisUnavailable(
-                f"Live inference is unavailable ({exc}) and no exact committed result matches. No answer was generated."
+                "Live inference is unavailable and no exact committed result matches. "
+                "No answer was generated."
             ) from exc
         reason = "no CUDA GPU" if "CUDA GPU" in str(exc) else str(exc)
         return _cached_response(cached, sensor, reason)
