@@ -4,10 +4,12 @@ from typing import Any, Literal
 
 from pydantic import BaseModel, Field
 
+MAX_QUESTION_LENGTH = 2000
+
 
 class AnalyzeRequest(BaseModel):
     scene_id: str = Field(min_length=1)
-    question: str = Field(min_length=1)
+    question: str = Field(min_length=1, max_length=MAX_QUESTION_LENGTH)
     sensor: str | None = None
 
 

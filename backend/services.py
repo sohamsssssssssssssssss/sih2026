@@ -4,6 +4,7 @@ import json
 import os
 import re
 import warnings
+from collections.abc import Mapping
 from datetime import datetime, timezone
 from functools import lru_cache
 from io import BytesIO
@@ -18,8 +19,13 @@ os.environ["HF_HUB_OFFLINE"] = "1"
 os.environ["TRANSFORMERS_OFFLINE"] = "1"
 
 from orchestrator.registry import get  # noqa: E402
-from orchestrator.router import route  # noqa: E402
-from orchestrator.trace import append_record  # noqa: E402
+from orchestrator.router import (  # noqa: E402
+    InvalidModelOutput,
+    ModelExecutionTimeout,
+    TracePersistenceError,
+    route,
+)
+from orchestrator.trace import TraceIntegrityError, append_record  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 MODEL_NAME = "qwen2.5vl-3b"
@@ -31,6 +37,7 @@ GOLDEN_SCENE_ID = "loveda_LoveDA_images_png_0_gsd0.3"
 GOLDEN_QUESTION = "Is there a building in this image?"
 INGESTED_SCENE_DIR = ROOT / "data" / "runtime" / "scenes"
 INGESTED_SCENE_ID = re.compile(r"scene_[0-9a-f]{32}")
+MODEL_EXECUTION_TIMEOUT_SECONDS = 120.0
 
 
 class ArtifactError(RuntimeError):
@@ -49,6 +56,14 @@ class SceneStorageError(RuntimeError):
     """Raised when a validated scene cannot be stored."""
 
 
+class ModelUnavailable(RuntimeError):
+    """Raised when required model runtime capabilities are unavailable."""
+
+
+class ModelExecutionError(RuntimeError):
+    """Raised when an available model fails during execution."""
+
+
 @lru_cache(maxsize=1)
 def load_results() -> dict[str, Any]:
     try:
@@ -64,12 +79,14 @@ def normalize_scene_id(scene_id: str) -> str:
 
 
 def find_cached_result(scene_id: str, question: str) -> dict[str, Any] | None:
-    normalized = normalize_scene_id(scene_id)
+    if scene_id != GOLDEN_SCENE_ID or question != GOLDEN_QUESTION:
+        return None
     return next(
         (
             row
             for row in load_results().get("results", [])
-            if row.get("tile_id") == normalized and row.get("question") == question
+            if row.get("tile_id") == GOLDEN_SCENE_ID
+            and row.get("question") == GOLDEN_QUESTION
         ),
         None,
     )
@@ -152,32 +169,63 @@ def ingest_scene(data: bytes, filename: str) -> dict[str, Any]:
 
 
 def _cached_response(cached: dict[str, Any], sensor: str | None, reason: str) -> dict[str, Any]:
+    prediction = cached.get("prediction")
+    answer = prediction.get("answer") if isinstance(prediction, dict) else None
+    if not isinstance(answer, str) or not answer.strip():
+        raise ArtifactError("The committed cached result is invalid.")
     model = get(MODEL_NAME)
-    trace = append_record(
-        {
-            "model_name": MODEL_NAME,
-            "model_version": model.version,
-            "params": {
-                "execution_mode": "cached_result",
-                "results_artifact": RESULTS_RELATIVE_PATH,
-                "scene_id": cached["tile_id"],
-                "sensor": sensor,
-            },
-            "input_summary": {
-                "image_paths": cached.get("image_paths", []),
-                "question": cached["question"],
-                "n_images": len(cached.get("image_paths", [])),
-            },
-            "timestamp_iso": datetime.now(timezone.utc).isoformat(),
-        }
-    )
+    try:
+        trace = append_record(
+            {
+                "model_name": MODEL_NAME,
+                "model_version": model.version,
+                "params": {
+                    "execution_mode": "cached_result",
+                    "results_artifact": RESULTS_RELATIVE_PATH,
+                    "scene_id": cached["tile_id"],
+                    "sensor": sensor,
+                },
+                "input_summary": {
+                    "image_paths": cached.get("image_paths", []),
+                    "question": cached["question"],
+                    "n_images": len(cached.get("image_paths", [])),
+                },
+                "timestamp_iso": datetime.now(timezone.utc).isoformat(),
+            }
+        )
+    except (TraceIntegrityError, OSError) as exc:
+        raise TracePersistenceError from exc
     return {
-        "answer": cached["prediction"]["answer"],
+        "answer": answer.strip(),
         "execution_mode": "cached_result",
         "results_artifact": RESULTS_RELATIVE_PATH,
         "model": {"name": MODEL_NAME, "version": model.version},
         "trace": trace,
         "notice": f"Live inference unavailable ({reason}); showing the exact committed result for this scene and question.",
+    }
+
+
+def _live_response(result: Any) -> dict[str, Any]:
+    if not isinstance(result, Mapping):
+        raise InvalidModelOutput
+    answer = result.get("answer")
+    trace = result.get("trace")
+    if not isinstance(answer, str) or not answer.strip() or not isinstance(trace, Mapping):
+        raise InvalidModelOutput
+    params = trace.get("params")
+    if not isinstance(params, Mapping) or params.get("execution_mode") != "live":
+        raise InvalidModelOutput
+    model_name = trace.get("model_name")
+    model_version = trace.get("model_version")
+    if not isinstance(model_name, str) or not isinstance(model_version, str):
+        raise InvalidModelOutput
+    return {
+        "answer": answer.strip(),
+        "execution_mode": "live",
+        "results_artifact": None,
+        "model": {"name": model_name, "version": model_version},
+        "trace": dict(trace),
+        "notice": "Live Qwen2.5-VL-3B inference completed.",
     }
 
 
@@ -204,31 +252,24 @@ def analyze_scene(scene_id: str, question: str, sensor: str | None) -> dict[str,
                 "sensor": sensor,
                 "execution_mode": "live",
             },
+            timeout_seconds=MODEL_EXECUTION_TIMEOUT_SECONDS,
         )
-    except (RuntimeError, OSError) as exc:
+        return _live_response(result)
+    except TracePersistenceError:
+        raise
+    except InvalidModelOutput:
+        raise
+    except ModelExecutionTimeout as exc:
+        if cached is not None:
+            return _cached_response(cached, sensor, "model execution timed out")
+        raise ModelUnavailable from exc
+    except Exception as exc:
+        unavailable = "CUDA GPU" in str(exc) or "requires transformers" in str(exc)
         if cached is None:
-            raise AnalysisUnavailable(
-                "Live inference is unavailable and no exact committed result matches. "
-                "No answer was generated."
-            ) from exc
-        reason = "no CUDA GPU" if "CUDA GPU" in str(exc) else str(exc)
+            error = ModelUnavailable if unavailable else ModelExecutionError
+            raise error from exc
+        reason = "no CUDA GPU" if unavailable else "model execution failed"
         return _cached_response(cached, sensor, reason)
-
-    params = result.get("trace", {}).get("params", {})
-    if params.get("execution_mode") != "live":
-        raise AnalysisUnavailable("Live response is missing valid execution-mode provenance. No answer was returned.")
-    return {
-        "answer": result["answer"],
-        "execution_mode": "live",
-        "results_artifact": None,
-        "model": {
-            "name": result["trace"]["model_name"],
-            "version": result["trace"]["model_version"],
-        },
-        "trace": result["trace"],
-        "notice": "Live Qwen2.5-VL-3B inference completed.",
-    }
-
 
 def resolution_report() -> dict[str, Any]:
     report = load_results()

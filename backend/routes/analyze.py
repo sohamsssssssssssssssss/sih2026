@@ -6,11 +6,14 @@ from backend.services import (
     AnalysisUnavailable,
     ArtifactError,
     InvalidImageUpload,
+    ModelExecutionError,
+    ModelUnavailable,
     SceneStorageError,
     analyze_scene,
     ingest_scene,
     local_scene_image,
 )
+from orchestrator.router import InvalidModelOutput, TracePersistenceError
 
 router = APIRouter(prefix="/api", tags=["analysis"])
 MAX_UPLOAD_BYTES = 20 * 1024 * 1024
@@ -38,9 +41,24 @@ def analyze(request: AnalyzeRequest) -> AnalyzeResponse:
             analyze_scene(request.scene_id, request.question, request.sensor)
         )
     except ArtifactError as exc:
-        raise HTTPException(status_code=503, detail=str(exc)) from exc
+        raise HTTPException(
+            status_code=503, detail="Required analysis artifacts are temporarily unavailable."
+        ) from exc
     except AnalysisUnavailable as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
+    except ModelUnavailable as exc:
+        raise HTTPException(status_code=503, detail="Live model inference is unavailable.") from exc
+    except ModelExecutionError as exc:
+        raise HTTPException(status_code=502, detail="Model execution failed.") from exc
+    except InvalidModelOutput as exc:
+        raise HTTPException(status_code=502, detail="Model returned an invalid response.") from exc
+    except TracePersistenceError as exc:
+        raise HTTPException(
+            status_code=503,
+            detail="Execution trace is temporarily unavailable.",
+        ) from exc
+    except Exception as exc:
+        raise HTTPException(status_code=502, detail="Model execution failed.") from exc
 
 
 @router.get("/scenes/{scene_id}/image")
