@@ -7,8 +7,11 @@ import unittest
 
 from orchestrator import capabilities
 from orchestrator.capabilities import (
+    CHANGE_VQA,
+    GROUNDING,
     CapabilityUnavailable,
     KNOWN_CAPABILITIES,
+    OPTICAL_SAR,
     Provider,
     SINGLE_IMAGE_VQA,
     UnknownCapability,
@@ -28,7 +31,7 @@ class CapabilityRegistryTests(unittest.TestCase):
     def test_known_vocabulary_matches_spec(self) -> None:
         self.assertEqual(
             KNOWN_CAPABILITIES,
-            ("single_image_vqa", "grounding", "change_vqa", "optical_sar"),
+            (SINGLE_IMAGE_VQA, GROUNDING, CHANGE_VQA, OPTICAL_SAR),
         )
         self.assertEqual(capabilities.IMPLEMENTED_CAPABILITIES, {SINGLE_IMAGE_VQA})
 

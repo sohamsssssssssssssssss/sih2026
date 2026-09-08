@@ -1,7 +1,13 @@
 from fastapi import APIRouter, File, HTTPException, UploadFile, status
 from fastapi.responses import FileResponse
 
-from backend.schemas import AnalyzeRequest, AnalyzeResponse, CapabilitiesResponse, SceneUploadResponse
+from backend.schemas import (
+    AnalyzeRequest,
+    AnalyzeResponse,
+    CapabilitiesResponse,
+    PlanResponse,
+    SceneUploadResponse,
+)
 from backend.services import (
     AnalysisUnavailable,
     ArtifactError,
@@ -13,8 +19,10 @@ from backend.services import (
     capabilities_overview,
     ingest_scene,
     local_scene_image,
+    plan_analysis,
 )
 from orchestrator.capabilities import CapabilityUnavailable, UnknownCapability
+from orchestrator.planner import InvalidPlanRequest
 from orchestrator.router import InvalidModelOutput, TracePersistenceError
 
 router = APIRouter(prefix="/api", tags=["analysis"])
@@ -41,6 +49,21 @@ def capabilities() -> CapabilitiesResponse:
     return CapabilitiesResponse.model_validate(capabilities_overview())
 
 
+@router.post("/plan", response_model=PlanResponse)
+def plan(request: AnalyzeRequest) -> PlanResponse:
+    try:
+        return PlanResponse.model_validate(
+            plan_analysis(
+                request.scene_id,
+                request.question,
+                request.sensor,
+                request.capability,
+            )
+        )
+    except (InvalidPlanRequest, UnknownCapability) as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+
+
 @router.post("/analyze", response_model=AnalyzeResponse)
 def analyze(request: AnalyzeRequest) -> AnalyzeResponse:
     try:
@@ -51,12 +74,15 @@ def analyze(request: AnalyzeRequest) -> AnalyzeResponse:
         raise HTTPException(
             status_code=503, detail="Required analysis artifacts are temporarily unavailable."
         ) from exc
-    except AnalysisUnavailable as exc:
+    except (AnalysisUnavailable, InvalidPlanRequest) as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
     except UnknownCapability as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
     except CapabilityUnavailable as exc:
-        raise HTTPException(status_code=503, detail=str(exc)) from exc
+        raise HTTPException(
+            status_code=503,
+            detail="Required capability is not currently available.",
+        ) from exc
     except ModelUnavailable as exc:
         raise HTTPException(status_code=503, detail="Live model inference is unavailable.") from exc
     except ModelExecutionError as exc:

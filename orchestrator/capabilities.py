@@ -15,15 +15,18 @@ from threading import Lock
 
 # Stable internal capability identifiers.
 SINGLE_IMAGE_VQA = "single_image_vqa"
+GROUNDING = "grounding"
+CHANGE_VQA = "change_vqa"
+OPTICAL_SAR = "optical_sar"
 
 # Capabilities with at least one registered provider.
 IMPLEMENTED_CAPABILITIES: frozenset[str] = frozenset({SINGLE_IMAGE_VQA})
 
 # Capabilities on the roadmap: known vocabulary, no provider, never resolvable.
 UNAVAILABLE_CAPABILITIES: tuple[str, ...] = (
-    "grounding",
-    "change_vqa",
-    "optical_sar",
+    GROUNDING,
+    CHANGE_VQA,
+    OPTICAL_SAR,
 )
 
 # The full advertised vocabulary: implemented capabilities first.
