@@ -1,7 +1,10 @@
 import json
 import re
+import time
 from io import BytesIO
 from pathlib import Path
+from threading import Event
+from types import SimpleNamespace
 
 import pytest
 from fastapi.testclient import TestClient
@@ -11,6 +14,8 @@ import backend.services as services
 import orchestrator.trace as trace_store
 from backend.main import app
 from backend.routes import analyze as analyze_routes
+from backend.schemas import MAX_QUESTION_LENGTH
+from orchestrator import router as model_router
 
 
 @pytest.fixture(autouse=True)
@@ -85,13 +90,22 @@ def test_golden_analysis_falls_back_to_exact_cache(client: TestClient, monkeypat
 
 
 def test_unmatched_query_never_fabricates(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setattr(services, "route", lambda **_: (_ for _ in ()).throw(RuntimeError("no GPU")))
+    monkeypatch.setattr(
+        services,
+        "route",
+        lambda **_: (_ for _ in ()).throw(
+            RuntimeError("CUDA GPU unavailable at /private/model secret-token")
+        ),
+    )
     response = client.post(
         "/api/analyze",
         json={"scene_id": services.GOLDEN_SCENE_ID, "question": "Invent an answer", "sensor": "LoveDA"},
     )
-    assert response.status_code == 422
-    assert "No answer was generated" in response.json()["detail"]
+    assert response.status_code == 503
+    assert response.json() == {"detail": "Live model inference is unavailable."}
+    assert "/private/model" not in response.text
+    assert "secret-token" not in response.text
+    assert "showing the exact committed result" not in response.text
 
 
 def test_trace_history_and_verification(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -329,8 +343,8 @@ def test_uploaded_scene_never_uses_golden_cached_result(
         },
     )
 
-    assert response.status_code == 422
-    assert "no exact committed result matches" in response.json()["detail"]
+    assert response.status_code == 502
+    assert response.json() == {"detail": "Model execution failed."}
     assert "showing the exact committed result" not in response.text
     assert "model unavailable" not in response.text
 
@@ -350,3 +364,301 @@ def test_failed_storage_leaves_no_scene(
     assert response.json() == {"detail": "The uploaded image could not be stored."}
     assert "private storage failure" not in response.text
     assert list(services.INGESTED_SCENE_DIR.iterdir()) == []
+
+
+def test_valid_model_output_returns_answer_and_one_trace(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    created = upload(client, "scene.png", image_bytes("PNG")).json()
+    model = SimpleNamespace(
+        version="test",
+        infer=lambda **_: {"answer": "  Yes  ", "evidence": []},
+    )
+    monkeypatch.setattr(model_router, "get", lambda _: model)
+
+    response = client.post(
+        "/api/analyze",
+        json={"scene_id": created["scene_id"], "question": "What is visible?"},
+    )
+
+    assert response.status_code == 200
+    assert response.json()["answer"] == "Yes"
+    assert response.json()["execution_mode"] == "live"
+    assert len(trace_store.records()) == 1
+    assert trace_store.verify_chain()[0] is True
+
+
+@pytest.mark.parametrize(
+    "model_output",
+    [
+        None,
+        [],
+        "answer",
+        {},
+        {"answer": ""},
+        {"answer": "   "},
+        {"answer": "Yes", "evidence": None},
+        {"answer": "Yes", "evidence": {}},
+    ],
+)
+def test_invalid_model_outputs_return_502_without_trace(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch, model_output: object
+) -> None:
+    created = upload(client, "scene.png", image_bytes("PNG")).json()
+    model = SimpleNamespace(version="test", infer=lambda **_: model_output)
+    monkeypatch.setattr(model_router, "get", lambda _: model)
+
+    response = client.post(
+        "/api/analyze",
+        json={"scene_id": created["scene_id"], "question": "What is visible?"},
+    )
+
+    assert response.status_code == 502
+    assert response.json() == {"detail": "Model returned an invalid response."}
+    assert repr(model_output) not in response.text
+    assert trace_store.records() == []
+
+
+def test_generic_model_exception_returns_sanitized_502(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    created = upload(client, "scene.png", image_bytes("PNG")).json()
+
+    def fail(**_: object) -> dict:
+        raise RuntimeError("CUDA exploded at /Users/secret/model.pt token=abc123")
+
+    monkeypatch.setattr(
+        model_router, "get", lambda _: SimpleNamespace(version="test", infer=fail)
+    )
+    response = client.post(
+        "/api/analyze",
+        json={"scene_id": created["scene_id"], "question": "What is visible?"},
+    )
+
+    assert response.status_code == 502
+    assert response.json() == {"detail": "Model execution failed."}
+    assert "/Users/secret/model.pt" not in response.text
+    assert "token=abc123" not in response.text
+    assert "RuntimeError" not in response.text
+    assert trace_store.records() == []
+
+
+def test_no_gpu_returns_503_for_uploaded_scene(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    created = upload(client, "scene.png", image_bytes("PNG")).json()
+
+    def no_gpu(**_: object) -> dict:
+        raise RuntimeError("CUDA GPU unavailable with secret-token")
+
+    monkeypatch.setattr(
+        model_router, "get", lambda _: SimpleNamespace(version="test", infer=no_gpu)
+    )
+    response = client.post(
+        "/api/analyze",
+        json={"scene_id": created["scene_id"], "question": "What is visible?"},
+    )
+
+    assert response.status_code == 503
+    assert response.json() == {"detail": "Live model inference is unavailable."}
+    assert "secret-token" not in response.text
+    assert trace_store.records() == []
+
+
+@pytest.mark.parametrize(
+    "failure",
+    [
+        trace_store.TraceIntegrityError("private trace detail"),
+        OSError("/tmp/private/path/secret"),
+    ],
+)
+def test_trace_failure_after_valid_output_returns_503_without_answer(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch, failure: Exception
+) -> None:
+    created = upload(client, "scene.png", image_bytes("PNG")).json()
+    model = SimpleNamespace(
+        version="test", infer=lambda **_: {"answer": "Yes", "evidence": []}
+    )
+    monkeypatch.setattr(model_router, "get", lambda _: model)
+    monkeypatch.setattr(
+        model_router,
+        "append_record",
+        lambda _: (_ for _ in ()).throw(failure),
+    )
+
+    response = client.post(
+        "/api/analyze",
+        json={"scene_id": created["scene_id"], "question": "What is visible?"},
+    )
+
+    assert response.status_code == 503
+    assert response.json() == {"detail": "Execution trace is temporarily unavailable."}
+    assert "Yes" not in response.text
+    assert "private" not in response.text
+    assert "OSError" not in response.text
+    assert "Traceback" not in response.text
+    assert trace_store.records() == []
+
+
+def test_invalid_execution_mode_returns_502_without_trace(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    created = upload(client, "scene.png", image_bytes("PNG")).json()
+    model = SimpleNamespace(
+        version="test",
+        infer=lambda **_: {
+            "answer": "Yes",
+            "evidence": [],
+            "execution_mode": "cached_result",
+        },
+    )
+    monkeypatch.setattr(model_router, "get", lambda _: model)
+
+    response = client.post(
+        "/api/analyze",
+        json={"scene_id": created["scene_id"], "question": "What is visible?"},
+    )
+
+    assert response.status_code == 502
+    assert response.json() == {"detail": "Model returned an invalid response."}
+    assert trace_store.records() == []
+
+
+def test_invalid_model_metadata_returns_502_without_trace(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    created = upload(client, "scene.png", image_bytes("PNG")).json()
+    model = SimpleNamespace(
+        version=None,
+        infer=lambda **_: {"answer": "Yes", "evidence": []},
+    )
+    monkeypatch.setattr(model_router, "get", lambda _: model)
+
+    response = client.post(
+        "/api/analyze",
+        json={"scene_id": created["scene_id"], "question": "What is visible?"},
+    )
+
+    assert response.status_code == 502
+    assert response.json() == {"detail": "Model returned an invalid response."}
+    assert trace_store.records() == []
+
+
+def test_unexpected_service_exception_returns_sanitized_502(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    def fail(*_: object) -> dict:
+        raise RuntimeError("failure at /Users/secret/service.py token=abc123")
+
+    monkeypatch.setattr(analyze_routes, "analyze_scene", fail)
+
+    response = client.post(
+        "/api/analyze",
+        json={"scene_id": services.GOLDEN_SCENE_ID, "question": "Question"},
+    )
+
+    assert response.status_code == 502
+    assert response.json() == {"detail": "Model execution failed."}
+    assert "/Users/secret/service.py" not in response.text
+    assert "token=abc123" not in response.text
+    assert "RuntimeError" not in response.text
+
+
+def test_invalid_cached_answer_fails_before_trace(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(
+        services,
+        "find_cached_result",
+        lambda *_: {
+            "tile_id": services.GOLDEN_SCENE_ID,
+            "question": services.GOLDEN_QUESTION,
+            "prediction": {},
+        },
+    )
+    monkeypatch.setattr(
+        services,
+        "route",
+        lambda **_: (_ for _ in ()).throw(RuntimeError("CUDA GPU unavailable")),
+    )
+
+    response = client.post(
+        "/api/analyze",
+        json={
+            "scene_id": services.GOLDEN_SCENE_ID,
+            "question": services.GOLDEN_QUESTION,
+            "sensor": "LoveDA",
+        },
+    )
+
+    assert response.status_code == 503
+    assert response.json() == {
+        "detail": "Required analysis artifacts are temporarily unavailable."
+    }
+    assert trace_store.records() == []
+
+
+def test_whitespace_question_is_rejected_without_execution(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    created = upload(client, "scene.png", image_bytes("PNG")).json()
+    monkeypatch.setattr(
+        services,
+        "route",
+        lambda **_: (_ for _ in ()).throw(AssertionError("model must not run")),
+    )
+
+    response = client.post(
+        "/api/analyze", json={"scene_id": created["scene_id"], "question": "   "}
+    )
+
+    assert response.status_code == 422
+    assert response.json() == {
+        "detail": "A non-empty question is required. No answer was generated."
+    }
+
+
+def test_oversized_question_is_rejected(client: TestClient) -> None:
+    response = client.post(
+        "/api/analyze",
+        json={"scene_id": services.GOLDEN_SCENE_ID, "question": "x" * (MAX_QUESTION_LENGTH + 1)},
+    )
+
+    assert response.status_code == 422
+
+
+def test_model_timeout_bounds_request_without_success_trace(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    created = upload(client, "scene.png", image_bytes("PNG")).json()
+    release = Event()
+    finished = Event()
+
+    def wait_forever(**_: object) -> dict:
+        try:
+            release.wait(2)
+            return {"answer": "late answer", "evidence": []}
+        finally:
+            finished.set()
+
+    monkeypatch.setattr(
+        model_router,
+        "get",
+        lambda _: SimpleNamespace(version="test", infer=wait_forever),
+    )
+    monkeypatch.setattr(services, "MODEL_EXECUTION_TIMEOUT_SECONDS", 0.01)
+
+    started = time.monotonic()
+    response = client.post(
+        "/api/analyze",
+        json={"scene_id": created["scene_id"], "question": "What is visible?"},
+    )
+    elapsed = time.monotonic() - started
+    release.set()
+
+    assert finished.wait(1)
+    assert elapsed < 0.5
+    assert response.status_code == 503
+    assert response.json() == {"detail": "Live model inference is unavailable."}
+    assert "late answer" not in response.text
+    assert trace_store.records() == []
