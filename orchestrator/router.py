@@ -1,4 +1,4 @@
-"""Route requests through the public Model interface only."""
+"""Capability-oriented routing through the public Model interface only."""
 
 from collections.abc import Mapping
 from concurrent.futures import ThreadPoolExecutor, TimeoutError as FutureTimeoutError
@@ -6,6 +6,7 @@ from datetime import datetime, timezone
 from threading import Event
 from typing import Any
 
+from orchestrator.capabilities import ResolvedProvider, resolve_provider
 from orchestrator.registry import get
 from orchestrator.trace import TraceIntegrityError, append_record
 
@@ -52,26 +53,37 @@ def _validate_execution_mode(
     return dict(params)
 
 
-def _model_version(model_name: str, model: Any) -> str:
+def _model_version(provider: ResolvedProvider, model: Any) -> str:
+    """Truthful trace metadata comes from the executed model object."""
     version = getattr(model, "version", None)
-    if not model_name or not isinstance(version, str) or not version:
+    if not provider.provider_name or not isinstance(version, str) or not version:
         raise InvalidModelOutput
     return version
 
 
 def route(
-    model_name: str,
+    capability: str,
     image_paths: list[str],
     question: str,
     params: dict[str, Any] | None = None,
     timeout_seconds: float | None = None,
 ) -> dict[str, Any]:
-    model = get(model_name)
+    """Resolve the capability, invoke its provider, validate, and trace.
+
+    The capability binding and provider identity come from the provider
+    registry; execution flows through the existing model registry so the
+    hardened execution seam is preserved. The resolved capability is recorded
+    truthfully in the execution trace; caller params remain otherwise unchanged.
+    """
+    resolved = resolve_provider(capability)
+    model = get(resolved.model_name)
     if timeout_seconds is None:
         result = model.infer(image_paths=image_paths, question=question)
     else:
         abandoned = Event()
-        future = _INFERENCE_EXECUTOR.submit(_infer, model, image_paths, question, abandoned)
+        future = _INFERENCE_EXECUTOR.submit(
+            _infer, model, image_paths, question, abandoned
+        )
         try:
             result = future.result(timeout=timeout_seconds)
         except FutureTimeoutError as exc:
@@ -80,13 +92,14 @@ def route(
             raise ModelExecutionTimeout from exc
     validated = _validate_result(result)
     validated_params = _validate_execution_mode(validated, params)
-    model_version = _model_version(model_name, model)
+    model_version = _model_version(resolved, model)
+    traced_params = {**validated_params, "capability": resolved.capability}
     try:
         trace_record = append_record(
             {
-                "model_name": model_name,
+                "model_name": resolved.provider_name,
                 "model_version": model_version,
-                "params": validated_params,
+                "params": traced_params,
                 "input_summary": {
                     "image_paths": image_paths,
                     "question": question,

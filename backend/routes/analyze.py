@@ -1,7 +1,7 @@
 from fastapi import APIRouter, File, HTTPException, UploadFile, status
 from fastapi.responses import FileResponse
 
-from backend.schemas import AnalyzeRequest, AnalyzeResponse, SceneUploadResponse
+from backend.schemas import AnalyzeRequest, AnalyzeResponse, CapabilitiesResponse, SceneUploadResponse
 from backend.services import (
     AnalysisUnavailable,
     ArtifactError,
@@ -10,9 +10,11 @@ from backend.services import (
     ModelUnavailable,
     SceneStorageError,
     analyze_scene,
+    capabilities_overview,
     ingest_scene,
     local_scene_image,
 )
+from orchestrator.capabilities import CapabilityUnavailable, UnknownCapability
 from orchestrator.router import InvalidModelOutput, TracePersistenceError
 
 router = APIRouter(prefix="/api", tags=["analysis"])
@@ -34,11 +36,16 @@ async def upload_scene(file: UploadFile = File(...)) -> SceneUploadResponse:
         raise HTTPException(status_code=500, detail="The uploaded image could not be stored.") from exc
 
 
+@router.get("/capabilities", response_model=CapabilitiesResponse)
+def capabilities() -> CapabilitiesResponse:
+    return CapabilitiesResponse.model_validate(capabilities_overview())
+
+
 @router.post("/analyze", response_model=AnalyzeResponse)
 def analyze(request: AnalyzeRequest) -> AnalyzeResponse:
     try:
         return AnalyzeResponse.model_validate(
-            analyze_scene(request.scene_id, request.question, request.sensor)
+            analyze_scene(request.scene_id, request.question, request.sensor, request.capability)
         )
     except ArtifactError as exc:
         raise HTTPException(
@@ -46,6 +53,10 @@ def analyze(request: AnalyzeRequest) -> AnalyzeResponse:
         ) from exc
     except AnalysisUnavailable as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
+    except UnknownCapability as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+    except CapabilityUnavailable as exc:
+        raise HTTPException(status_code=503, detail=str(exc)) from exc
     except ModelUnavailable as exc:
         raise HTTPException(status_code=503, detail="Live model inference is unavailable.") from exc
     except ModelExecutionError as exc:

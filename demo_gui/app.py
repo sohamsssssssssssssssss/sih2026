@@ -22,6 +22,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from demo_gui import golden_assets  # noqa: E402
+from orchestrator.capabilities import SINGLE_IMAGE_VQA
 from orchestrator.registry import get  # noqa: E402
 from orchestrator.router import route  # noqa: E402
 from orchestrator.trace import append_record, verify_chain  # noqa: E402
@@ -135,7 +136,7 @@ def execute_query(
         return response, notice, False
     try:
         response = route(
-            model_name=MODEL_NAME,
+            capability=SINGLE_IMAGE_VQA,
             image_paths=[str(image_path)],
             question=question,
             params={"scene_id": scene_id, "sensor": sensor, "execution_mode": "live"},
