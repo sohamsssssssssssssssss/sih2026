@@ -67,6 +67,9 @@ def route(
     question: str,
     params: dict[str, Any] | None = None,
     timeout_seconds: float | None = None,
+    planner_version: str | None = None,
+    planner_rule: str | None = None,
+    requested_capability: str | None = None,
 ) -> dict[str, Any]:
     """Resolve the capability, invoke its provider, validate, and trace.
 
@@ -93,7 +96,33 @@ def route(
     validated = _validate_result(result)
     validated_params = _validate_execution_mode(validated, params)
     model_version = _model_version(resolved, model)
-    traced_params = {**validated_params, "capability": resolved.capability}
+    if (planner_version is None) != (planner_rule is None):
+        raise InvalidModelOutput
+    if planner_version is not None and (
+        not isinstance(planner_version, str)
+        or not planner_version
+        or not isinstance(planner_rule, str)
+        or not planner_rule
+    ):
+        raise InvalidModelOutput
+    reserved = {
+        "capability",
+        "planner_version",
+        "planner_rule",
+        "requested_capability",
+    }
+    traced_params = {
+        key: value for key, value in validated_params.items() if key not in reserved
+    }
+    traced_params["capability"] = resolved.capability
+    if planner_version is not None:
+        traced_params.update(
+            {
+                "planner_version": planner_version,
+                "planner_rule": planner_rule,
+                "requested_capability": requested_capability,
+            }
+        )
     try:
         trace_record = append_record(
             {

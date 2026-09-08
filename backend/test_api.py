@@ -88,6 +88,8 @@ def test_golden_analysis_falls_back_to_exact_cache(client: TestClient, monkeypat
     assert payload["answer"] == "Yes"
     assert payload["execution_mode"] == "cached_result"
     assert payload["trace"]["params"]["results_artifact"] == services.RESULTS_RELATIVE_PATH
+    assert payload["trace"]["params"]["planner_version"] == "phase0-rules-v1"
+    assert payload["trace"]["params"]["planner_rule"] == "default_single_image_vqa"
 
 
 def test_unmatched_query_never_fabricates(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -324,6 +326,9 @@ def test_uploaded_scene_is_resolved_for_live_analysis(
         "sensor": None,
         "execution_mode": "live",
     }
+    assert routed["planner_version"] == "phase0-rules-v1"
+    assert routed["planner_rule"] == "default_single_image_vqa"
+    assert routed["requested_capability"] is None
 
 
 def test_uploaded_scene_never_uses_golden_cached_result(
@@ -716,6 +721,9 @@ def test_trace_records_requested_capability(
     records = trace_store.records()
     assert len(records) == 1
     assert records[0]["params"]["capability"] == "single_image_vqa"
+    assert records[0]["params"]["planner_version"] == "phase0-rules-v1"
+    assert records[0]["params"]["planner_rule"] == "default_single_image_vqa"
+    assert records[0]["params"]["requested_capability"] is None
     assert records[0]["model_name"] == "qwen2.5vl-3b"
     assert records[0]["model_version"] == "test"
     assert trace_store.verify_chain()[0] is True
@@ -741,9 +749,8 @@ def test_unknown_capability_is_rejected_without_execution(
     assert trace_store.records() == []
 
 
-@pytest.mark.parametrize("capability", ["grounding", "change_vqa", "optical_sar"])
-def test_unavailable_capability_never_routes_to_vqa(
-    client: TestClient, monkeypatch: pytest.MonkeyPatch, capability: str
+def test_unavailable_grounding_never_routes_to_vqa(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     def fail(**_: object) -> dict:
         raise AssertionError("model must not run")
@@ -755,13 +762,35 @@ def test_unavailable_capability_never_routes_to_vqa(
         json={
             "scene_id": services.GOLDEN_SCENE_ID,
             "question": services.GOLDEN_QUESTION,
-            "capability": capability,
+            "capability": "grounding",
         },
     )
     assert response.status_code == 503
     assert response.json() == {
-        "detail": f"No provider is registered for capability: {capability}"
+        "detail": "Required capability is not currently available."
     }
+    assert trace_store.records() == []
+
+
+@pytest.mark.parametrize("capability", ["change_vqa", "optical_sar"])
+def test_explicit_pair_capability_reports_missing_second_scene_first(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch, capability: str
+) -> None:
+    monkeypatch.setattr(
+        services,
+        "route",
+        lambda **_: (_ for _ in ()).throw(AssertionError("model must not run")),
+    )
+    response = client.post(
+        "/api/analyze",
+        json={
+            "scene_id": services.GOLDEN_SCENE_ID,
+            "question": services.GOLDEN_QUESTION,
+            "capability": capability,
+        },
+    )
+    assert response.status_code == 422
+    assert response.json() == {"detail": "This request requires two scenes."}
     assert trace_store.records() == []
 
 
@@ -781,7 +810,223 @@ def test_golden_fallback_rejects_unsupported_capability(
         },
     )
     assert response.status_code == 503
+    assert response.json() == {
+        "detail": "Required capability is not currently available."
+    }
     assert "showing the exact committed result" not in response.text
+    assert trace_store.records() == []
+
+
+def test_inferred_grounding_is_unavailable_without_execution(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(
+        services,
+        "route",
+        lambda **_: (_ for _ in ()).throw(AssertionError("model must not run")),
+    )
+    response = client.post(
+        "/api/analyze",
+        json={"scene_id": services.GOLDEN_SCENE_ID, "question": "Where is the building?"},
+    )
+    assert response.status_code == 503
+    assert response.json() == {
+        "detail": "Required capability is not currently available."
+    }
+    assert trace_store.records() == []
+
+
+@pytest.mark.parametrize(
+    "question",
+    [
+        "What changed between these images?",
+        "Compare the optical and SAR images.",
+    ],
+)
+def test_inferred_pair_capability_requires_second_scene(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch, question: str
+) -> None:
+    monkeypatch.setattr(
+        services,
+        "route",
+        lambda **_: (_ for _ in ()).throw(AssertionError("model must not run")),
+    )
+    response = client.post(
+        "/api/analyze",
+        json={"scene_id": services.GOLDEN_SCENE_ID, "question": question},
+    )
+    assert response.status_code == 422
+    assert response.json() == {"detail": "This request requires two scenes."}
+    assert trace_store.records() == []
+
+
+def test_explicit_vqa_overrides_grounding_wording(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    created = upload(client, "scene.png", image_bytes("PNG")).json()
+    monkeypatch.setattr(
+        model_router,
+        "get",
+        lambda _: SimpleNamespace(
+            version="test", infer=lambda **_: {"answer": "Yes", "evidence": []}
+        ),
+    )
+    response = client.post(
+        "/api/analyze",
+        json={
+            "scene_id": created["scene_id"],
+            "question": "Where is the building?",
+            "capability": "single_image_vqa",
+        },
+    )
+    assert response.status_code == 200
+    params = response.json()["trace"]["params"]
+    assert params["capability"] == "single_image_vqa"
+    assert params["planner_rule"] == "explicit_capability"
+    assert params["requested_capability"] == "single_image_vqa"
+
+
+def test_caller_cannot_forge_planner_trace_metadata(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    created = upload(client, "scene.png", image_bytes("PNG")).json()
+    monkeypatch.setattr(
+        model_router,
+        "get",
+        lambda _: SimpleNamespace(
+            version="test", infer=lambda **_: {"answer": "Yes", "evidence": []}
+        ),
+    )
+    response = client.post(
+        "/api/analyze",
+        json={
+            "scene_id": created["scene_id"],
+            "question": "Is water visible?",
+            "planner_version": "forged",
+            "planner_rule": "forged",
+        },
+    )
+    assert response.status_code == 200
+    params = response.json()["trace"]["params"]
+    assert params["planner_version"] == "phase0-rules-v1"
+    assert params["planner_rule"] == "default_single_image_vqa"
+
+
+def test_sar_labeled_single_image_analysis_is_not_claimed_available(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(
+        services,
+        "route",
+        lambda **_: (_ for _ in ()).throw(AssertionError("model must not run")),
+    )
+    response = client.post(
+        "/api/analyze",
+        json={
+            "scene_id": services.GOLDEN_SCENE_ID,
+            "question": "Is water visible?",
+            "sensor": "SAR",
+        },
+    )
+    assert response.status_code == 503
+    assert response.json() == {
+        "detail": "Required capability is not currently available."
+    }
+    assert trace_store.records() == []
+
+
+def test_plan_endpoint_reports_vqa_without_model_or_trace(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(
+        services,
+        "route",
+        lambda **_: (_ for _ in ()).throw(AssertionError("model must not run")),
+    )
+    request = {
+        "scene_id": services.GOLDEN_SCENE_ID,
+        "question": "Is there a building?",
+    }
+    first = client.post("/api/plan", json=request)
+    second = client.post("/api/plan", json=request)
+    assert first.status_code == 200
+    assert first.json() == second.json()
+    assert first.json() == {
+        "planner_version": "phase0-rules-v1",
+        "rule_id": "default_single_image_vqa",
+        "requested_capability": None,
+        "selected_capability": "single_image_vqa",
+        "executable": True,
+        "reason": "The request asks about the contents of a single scene.",
+        "required_inputs": ["single_scene"],
+        "missing_inputs": [],
+        "provider_available": True,
+        "provider": "qwen2.5vl-3b",
+        "unavailable_reason": None,
+    }
+    assert trace_store.records() == []
+
+
+def test_plan_endpoint_reports_unavailable_and_missing_inputs(
+    client: TestClient,
+) -> None:
+    grounding = client.post(
+        "/api/plan",
+        json={"scene_id": "scene_a", "question": "Locate the road."},
+    )
+    change = client.post(
+        "/api/plan",
+        json={"scene_id": "scene_a", "question": "What changed?"},
+    )
+    assert grounding.status_code == 200
+    assert grounding.json()["selected_capability"] == "grounding"
+    assert grounding.json()["provider_available"] is False
+    assert grounding.json()["executable"] is False
+    assert change.status_code == 200
+    assert change.json()["selected_capability"] == "change_vqa"
+    assert change.json()["missing_inputs"] == ["second_scene"]
+    assert change.json()["executable"] is False
+
+
+def test_plan_endpoint_shows_explicit_override(client: TestClient) -> None:
+    response = client.post(
+        "/api/plan",
+        json={
+            "scene_id": "scene_a",
+            "question": "Where is the building?",
+            "capability": "single_image_vqa",
+        },
+    )
+    assert response.status_code == 200
+    assert response.json()["selected_capability"] == "single_image_vqa"
+    assert response.json()["requested_capability"] == "single_image_vqa"
+    assert response.json()["rule_id"] == "explicit_capability"
+
+
+def test_plan_endpoint_rejects_unknown_capability(client: TestClient) -> None:
+    response = client.post(
+        "/api/plan",
+        json={
+            "scene_id": "scene_a",
+            "question": "Question",
+            "capability": "time_travel",
+        },
+    )
+    assert response.status_code == 422
+    assert response.json() == {"detail": "Unknown capability: time_travel"}
+    assert trace_store.records() == []
+
+
+@pytest.mark.parametrize("endpoint", ["/api/plan", "/api/analyze"])
+def test_planner_rejects_punctuation_only_question_as_client_error(
+    client: TestClient, endpoint: str
+) -> None:
+    response = client.post(
+        endpoint,
+        json={"scene_id": services.GOLDEN_SCENE_ID, "question": " ... !!! "},
+    )
+    assert response.status_code == 422
+    assert response.json() == {"detail": "A non-empty question is required."}
     assert trace_store.records() == []
 
 

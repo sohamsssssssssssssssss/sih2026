@@ -5,6 +5,7 @@ import os
 import re
 import warnings
 from collections.abc import Mapping
+from dataclasses import asdict
 from datetime import datetime, timezone
 from functools import lru_cache
 from io import BytesIO
@@ -20,11 +21,15 @@ os.environ["TRANSFORMERS_OFFLINE"] = "1"
 
 from orchestrator.capabilities import (  # noqa: E402
     CapabilityUnavailable,
-    KNOWN_CAPABILITIES,
     SINGLE_IMAGE_VQA,
     UnknownCapability,
 )
 from orchestrator.registry import get  # noqa: E402
+from orchestrator.planner import (  # noqa: E402
+    Plan,
+    PlanRequest,
+    plan_request,
+)
 from orchestrator.router import (  # noqa: E402
     InvalidModelOutput,
     ModelExecutionTimeout,
@@ -179,7 +184,9 @@ def ingest_scene(data: bytes, filename: str) -> dict[str, Any]:
     }
 
 
-def _cached_response(cached: dict[str, Any], sensor: str | None, reason: str) -> dict[str, Any]:
+def _cached_response(
+    cached: dict[str, Any], sensor: str | None, reason: str, plan: Plan
+) -> dict[str, Any]:
     prediction = cached.get("prediction")
     answer = prediction.get("answer") if isinstance(prediction, dict) else None
     if not isinstance(answer, str) or not answer.strip():
@@ -192,6 +199,9 @@ def _cached_response(cached: dict[str, Any], sensor: str | None, reason: str) ->
                 "model_version": model.version,
                 "params": {
                     "capability": GOLDEN_CAPABILITY,
+                    "planner_version": plan.planner_version,
+                    "planner_rule": plan.rule_id,
+                    "requested_capability": plan.requested_capability,
                     "execution_mode": "cached_result",
                     "results_artifact": RESULTS_RELATIVE_PATH,
                     "scene_id": cached["tile_id"],
@@ -245,29 +255,41 @@ def analyze_scene(
     scene_id: str,
     question: str,
     sensor: str | None,
-    capability: str = GOLDEN_CAPABILITY,
+    capability: str | None = None,
 ) -> dict[str, Any]:
     question = question.strip()
     if not question:
         raise AnalysisUnavailable("A non-empty question is required. No answer was generated.")
-    if capability != GOLDEN_CAPABILITY:
-        if capability not in KNOWN_CAPABILITIES:
-            raise UnknownCapability(f"Unknown capability: {capability}")
-        raise CapabilityUnavailable(
-            f"No provider is registered for capability: {capability}"
+    plan = plan_request(
+        PlanRequest(
+            question=question,
+            scene_ids=(scene_id,),
+            sensor=sensor,
+            requested_capability=capability,
         )
-    cached = find_cached_result(scene_id, question, capability)
+    )
+    if plan.missing_inputs:
+        if "second_scene" in plan.missing_inputs:
+            raise AnalysisUnavailable("This request requires two scenes.")
+        raise AnalysisUnavailable("This request requires a scene.")
+    if not plan.executable:
+        raise CapabilityUnavailable(
+            plan.unavailable_reason or "The selected capability cannot be executed."
+        )
+    cached = find_cached_result(scene_id, question, plan.selected_capability)
     image_path = local_scene_image(scene_id)
     if image_path is None:
         if cached is None:
             raise AnalysisUnavailable(
                 "No local scene pixels or exact committed result match this scene and question. No answer was generated."
             )
-        return _cached_response(cached, sensor, "local scene pixels unavailable")
+        return _cached_response(
+            cached, sensor, "local scene pixels unavailable", plan
+        )
 
     try:
         result = route(
-            capability=capability,
+            capability=plan.selected_capability,
             image_paths=[str(image_path)],
             question=question,
             params={
@@ -276,6 +298,9 @@ def analyze_scene(
                 "execution_mode": "live",
             },
             timeout_seconds=MODEL_EXECUTION_TIMEOUT_SECONDS,
+            planner_version=plan.planner_version,
+            planner_rule=plan.rule_id,
+            requested_capability=plan.requested_capability,
         )
         return _live_response(result)
     except TracePersistenceError:
@@ -286,7 +311,9 @@ def analyze_scene(
         raise
     except ModelExecutionTimeout as exc:
         if cached is not None:
-            return _cached_response(cached, sensor, "model execution timed out")
+            return _cached_response(
+                cached, sensor, "model execution timed out", plan
+            )
         raise ModelUnavailable from exc
     except Exception as exc:
         unavailable = "CUDA GPU" in str(exc) or "requires transformers" in str(exc)
@@ -294,7 +321,25 @@ def analyze_scene(
             error = ModelUnavailable if unavailable else ModelExecutionError
             raise error from exc
         reason = "no CUDA GPU" if unavailable else "model execution failed"
-        return _cached_response(cached, sensor, reason)
+        return _cached_response(cached, sensor, reason, plan)
+
+
+def plan_analysis(
+    scene_id: str,
+    question: str,
+    sensor: str | None,
+    capability: str | None,
+) -> dict[str, Any]:
+    return asdict(
+        plan_request(
+            PlanRequest(
+                question=question,
+                scene_ids=(scene_id,),
+                sensor=sensor,
+                requested_capability=capability,
+            )
+        )
+    )
 
 
 def capabilities_overview() -> dict[str, Any]:
