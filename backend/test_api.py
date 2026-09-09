@@ -963,6 +963,18 @@ def test_plan_endpoint_reports_vqa_without_model_or_trace(
         "provider_available": True,
         "provider": "qwen2.5vl-3b",
         "unavailable_reason": None,
+        "execution_plan_version": "phase0-plan-v1",
+        "steps": [
+            {
+                "step_id": "step_1",
+                "capability": "single_image_vqa",
+                "depends_on": [],
+                "required_inputs": ["single_scene"],
+                "provider_available": True,
+                "provider": "qwen2.5vl-3b",
+            }
+        ],
+        "unavailable_capabilities": [],
     }
     assert trace_store.records() == []
 
@@ -1017,6 +1029,67 @@ def test_plan_endpoint_rejects_unknown_capability(client: TestClient) -> None:
     assert trace_store.records() == []
 
 
+def test_plan_endpoint_reports_unavailable_grounding_step(
+    client: TestClient,
+) -> None:
+    response = client.post(
+        "/api/plan",
+        json={"scene_id": "scene_a", "question": "Where is the building?"},
+    )
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["execution_plan_version"] == "phase0-plan-v1"
+    assert payload["steps"] == [
+        {
+            "step_id": "step_1",
+            "capability": "grounding",
+            "depends_on": [],
+            "required_inputs": ["single_scene"],
+            "provider_available": False,
+            "provider": None,
+        }
+    ]
+    assert payload["unavailable_capabilities"] == ["grounding"]
+    assert payload["executable"] is False
+
+
+def test_plan_endpoint_reports_two_step_chain_for_temporal_localization(
+    client: TestClient,
+) -> None:
+    response = client.post(
+        "/api/plan",
+        json={
+            "scene_id": "scene_a",
+            "question": "Where did flooding increase between these two scenes?",
+        },
+    )
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["rule_id"] == "temporal_change_then_grounding"
+    assert payload["selected_capability"] == "change_vqa"
+    assert payload["steps"] == [
+        {
+            "step_id": "step_1",
+            "capability": "change_vqa",
+            "depends_on": [],
+            "required_inputs": ["scene_pair"],
+            "provider_available": False,
+            "provider": None,
+        },
+        {
+            "step_id": "step_2",
+            "capability": "grounding",
+            "depends_on": ["step_1"],
+            "required_inputs": ["step_1.output"],
+            "provider_available": False,
+            "provider": None,
+        },
+    ]
+    assert payload["unavailable_capabilities"] == ["change_vqa", "grounding"]
+    assert payload["executable"] is False
+    assert trace_store.records() == []
+
+
 @pytest.mark.parametrize("endpoint", ["/api/plan", "/api/analyze"])
 def test_planner_rejects_punctuation_only_question_as_client_error(
     client: TestClient, endpoint: str
@@ -1051,3 +1124,133 @@ def test_registry_inspection_does_not_expose_mutable_state() -> None:
     again = capabilities.capabilities_status()
     assert [entry["name"] for entry in again] == list(capabilities.KNOWN_CAPABILITIES)
     assert all(entry["name"] != "forged" for entry in again)
+
+
+def test_plan_endpoint_writes_no_trace_and_invokes_no_model(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(
+        services,
+        "route",
+        lambda **_: (_ for _ in ()).throw(AssertionError("model must not run")),
+    )
+    for question in (
+        "Is there a building in this image?",
+        "Where is the building?",
+        "Where did flooding increase between these two scenes?",
+    ):
+        response = client.post(
+            "/api/plan", json={"scene_id": "scene_a", "question": question}
+        )
+        assert response.status_code == 200
+    assert trace_store.records() == []
+
+
+def test_multi_step_plan_analyze_invokes_no_provider(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(
+        services,
+        "route",
+        lambda **_: (_ for _ in ()).throw(AssertionError("model must not run")),
+    )
+    response = client.post(
+        "/api/analyze",
+        json={
+            "scene_id": services.GOLDEN_SCENE_ID,
+            "question": "Where did flooding increase?",
+        },
+    )
+    # Structural inputs are checked first: the combined change→grounding plan
+    # requires a scene pair the current API cannot supply, so it fails as a
+    # client error before any availability check or provider invocation.
+    assert response.status_code == 422
+    assert response.json() == {"detail": "This request requires two scenes."}
+    assert trace_store.records() == []
+
+
+def test_multi_step_request_on_golden_scene_cannot_use_cache(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(
+        services,
+        "route",
+        lambda **_: (_ for _ in ()).throw(AssertionError("model must not run")),
+    )
+    response = client.post(
+        "/api/analyze",
+        json={
+            "scene_id": services.GOLDEN_SCENE_ID,
+            "question": "Where did flooding increase?",
+        },
+    )
+    assert response.status_code == 422
+    assert "showing the exact committed result" not in response.text
+    assert trace_store.records() == []
+
+    # A structurally complete request is impossible for the combined plan on
+    # the current API; a single-scene grounding plan must also never see cache.
+    grounding = client.post(
+        "/api/analyze",
+        json={
+            "scene_id": services.GOLDEN_SCENE_ID,
+            "question": services.GOLDEN_QUESTION,
+            "capability": "grounding",
+        },
+    )
+    assert grounding.status_code == 503
+    assert "showing the exact committed result" not in grounding.text
+    assert trace_store.records() == []
+
+
+def test_trace_records_execution_step_metadata(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    created = upload(client, "scene.png", image_bytes("PNG")).json()
+    model = SimpleNamespace(
+        version="test", infer=lambda **_: {"answer": "Yes", "evidence": []}
+    )
+    monkeypatch.setattr(model_router, "get", lambda _: model)
+
+    response = client.post(
+        "/api/analyze",
+        json={"scene_id": created["scene_id"], "question": "Is water visible?"},
+    )
+
+    assert response.status_code == 200
+    records = trace_store.records()
+    assert len(records) == 1
+    params = records[0]["params"]
+    assert params["execution_plan_version"] == "phase0-plan-v1"
+    assert params["execution_step_id"] == "step_1"
+    assert params["execution_step_index"] == 1
+    assert params["execution_step_count"] == 1
+    assert params["capability"] == "single_image_vqa"
+    assert trace_store.verify_chain()[0] is True
+
+
+def test_caller_cannot_forge_execution_step_metadata(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    created = upload(client, "scene.png", image_bytes("PNG")).json()
+    model = SimpleNamespace(
+        version="test", infer=lambda **_: {"answer": "Yes", "evidence": []}
+    )
+    monkeypatch.setattr(model_router, "get", lambda _: model)
+
+    response = client.post(
+        "/api/analyze",
+        json={
+            "scene_id": created["scene_id"],
+            "question": "Is water visible?",
+            "execution_step_id": "forged_step",
+            "execution_plan_version": "forged-plan",
+        },
+    )
+
+    assert response.status_code == 200
+    params = response.json()["trace"]["params"]
+    assert params["execution_plan_version"] == "phase0-plan-v1"
+    assert params["execution_step_id"] == "step_1"
+    assert params["execution_step_index"] == 1
+    assert params["execution_step_count"] == 1
