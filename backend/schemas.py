@@ -58,6 +58,15 @@ class CapabilitiesResponse(BaseModel):
     capabilities: list[CapabilityStatus]
 
 
+class PlanStepSummary(BaseModel):
+    step_id: str
+    capability: str
+    depends_on: list[str]
+    required_inputs: list[str]
+    provider_available: bool
+    provider: str | None
+
+
 class PlanResponse(BaseModel):
     planner_version: str
     rule_id: str
@@ -70,3 +79,6 @@ class PlanResponse(BaseModel):
     provider_available: bool
     provider: str | None
     unavailable_reason: str | None
+    execution_plan_version: str
+    steps: list[PlanStepSummary]
+    unavailable_capabilities: list[str]

@@ -30,6 +30,11 @@ from orchestrator.planner import (  # noqa: E402
     PlanRequest,
     plan_request,
 )
+from orchestrator.execution_plan import (  # noqa: E402
+    ExecutionPlan,
+    build_execution_plan,
+)
+from orchestrator.executor import execute_plan  # noqa: E402
 from orchestrator.router import (  # noqa: E402
     InvalidModelOutput,
     ModelExecutionTimeout,
@@ -88,6 +93,19 @@ def normalize_scene_id(scene_id: str) -> str:
     path = Path(scene_id)
     value = str(path.with_suffix("")) if path.suffix.lower() in {".png", ".jpg", ".jpeg", ".tif", ".tiff"} else scene_id
     return value.replace("loveda_Train_Rural_images_png_", "loveda_LoveDA_images_png_")
+
+
+def is_golden_eligible_plan(execution: ExecutionPlan) -> bool:
+    """Golden fallback applies only to a one-step single-image VQA plan.
+
+    Multi-step or unavailable-capability plans must never receive the exact
+    committed single-image VQA result, regardless of scene and question.
+    """
+    return (
+        len(execution.steps) == 1
+        and execution.steps[0].capability == GOLDEN_CAPABILITY
+        and not execution.unavailable_capabilities
+    )
 
 
 def find_cached_result(
@@ -268,6 +286,7 @@ def analyze_scene(
             requested_capability=capability,
         )
     )
+    execution = build_execution_plan(plan)
     if plan.missing_inputs:
         if "second_scene" in plan.missing_inputs:
             raise AnalysisUnavailable("This request requires two scenes.")
@@ -275,6 +294,10 @@ def analyze_scene(
     if not plan.executable:
         raise CapabilityUnavailable(
             plan.unavailable_reason or "The selected capability cannot be executed."
+        )
+    if not is_golden_eligible_plan(execution):
+        raise CapabilityUnavailable(
+            "The planned execution requires capabilities that are not currently available."
         )
     cached = find_cached_result(scene_id, question, plan.selected_capability)
     image_path = local_scene_image(scene_id)
@@ -288,19 +311,17 @@ def analyze_scene(
         )
 
     try:
-        result = route(
-            capability=plan.selected_capability,
+        result = execute_plan(
+            execution,
+            route_fn=route,
             image_paths=[str(image_path)],
             question=question,
-            params={
+            base_params={
                 "scene_id": normalize_scene_id(scene_id),
                 "sensor": sensor,
                 "execution_mode": "live",
             },
             timeout_seconds=MODEL_EXECUTION_TIMEOUT_SECONDS,
-            planner_version=plan.planner_version,
-            planner_rule=plan.rule_id,
-            requested_capability=plan.requested_capability,
         )
         return _live_response(result)
     except TracePersistenceError:
@@ -330,16 +351,37 @@ def plan_analysis(
     sensor: str | None,
     capability: str | None,
 ) -> dict[str, Any]:
-    return asdict(
-        plan_request(
-            PlanRequest(
-                question=question,
-                scene_ids=(scene_id,),
-                sensor=sensor,
-                requested_capability=capability,
-            )
+    """Truthful planning snapshot: planner decision plus structured steps.
+
+    Planning invokes no model, writes no trace, and touches no GPU; a plan
+    may be structurally valid while non-executable because providers are
+    missing, and the response says exactly that.
+    """
+    plan = plan_request(
+        PlanRequest(
+            question=question,
+            scene_ids=(scene_id,),
+            sensor=sensor,
+            requested_capability=capability,
         )
     )
+    execution = build_execution_plan(plan)
+    return {
+        **asdict(plan),
+        "execution_plan_version": execution.execution_plan_version,
+        "steps": [
+            {
+                "step_id": step.step_id,
+                "capability": step.capability,
+                "depends_on": list(step.depends_on),
+                "required_inputs": list(step.required_inputs),
+                "provider_available": step.provider_available,
+                "provider": step.provider,
+            }
+            for step in execution.steps
+        ],
+        "unavailable_capabilities": list(execution.unavailable_capabilities),
+    }
 
 
 def capabilities_overview() -> dict[str, Any]:

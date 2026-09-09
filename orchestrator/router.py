@@ -70,13 +70,19 @@ def route(
     planner_version: str | None = None,
     planner_rule: str | None = None,
     requested_capability: str | None = None,
+    execution_plan_version: str | None = None,
+    execution_step_id: str | None = None,
+    execution_step_index: int | None = None,
+    execution_step_count: int | None = None,
 ) -> dict[str, Any]:
     """Resolve the capability, invoke its provider, validate, and trace.
 
     The capability binding and provider identity come from the provider
     registry; execution flows through the existing model registry so the
-    hardened execution seam is preserved. The resolved capability is recorded
-    truthfully in the execution trace; caller params remain otherwise unchanged.
+    hardened execution seam is preserved. The resolved capability, planner
+    metadata, and execution-plan provenance are recorded truthfully in the
+    execution trace and cannot be forged by caller params; caller params
+    remain otherwise unchanged.
     """
     resolved = resolve_provider(capability)
     model = get(resolved.model_name)
@@ -105,11 +111,35 @@ def route(
         or not planner_rule
     ):
         raise InvalidModelOutput
+    execution_metadata = (
+        execution_plan_version,
+        execution_step_id,
+        execution_step_index,
+        execution_step_count,
+    )
+    plan_metadata_incomplete = (
+        not isinstance(execution_plan_version, str)
+        or not execution_plan_version
+        or not isinstance(execution_step_id, str)
+        or not execution_step_id
+        or not isinstance(execution_step_index, int)
+        or isinstance(execution_step_index, bool)
+        or execution_step_index < 1
+        or not isinstance(execution_step_count, int)
+        or isinstance(execution_step_count, bool)
+        or execution_step_count < 1
+    )
+    if any(value is not None for value in execution_metadata) and plan_metadata_incomplete:
+        raise InvalidModelOutput
     reserved = {
         "capability",
         "planner_version",
         "planner_rule",
         "requested_capability",
+        "execution_plan_version",
+        "execution_step_id",
+        "execution_step_index",
+        "execution_step_count",
     }
     traced_params = {
         key: value for key, value in validated_params.items() if key not in reserved
@@ -121,6 +151,15 @@ def route(
                 "planner_version": planner_version,
                 "planner_rule": planner_rule,
                 "requested_capability": requested_capability,
+            }
+        )
+    if not plan_metadata_incomplete:
+        traced_params.update(
+            {
+                "execution_plan_version": execution_plan_version,
+                "execution_step_id": execution_step_id,
+                "execution_step_index": execution_step_index,
+                "execution_step_count": execution_step_count,
             }
         )
     try:

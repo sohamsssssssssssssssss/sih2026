@@ -1,8 +1,11 @@
 """Pure Phase 0 request planning with deterministic, auditable rules.
 
-Precedence is explicit capability, optical/SAR, temporal change, grounding,
-then single-image VQA. One request selects one primary capability; multi-step
-decomposition and autonomous replanning are intentionally out of scope.
+Precedence is explicit capability, optical/SAR, combined temporal change plus
+spatial localization, temporal change, grounding, then single-image VQA. The
+combined rule is the only multi-step decomposition: it selects change_vqa as
+the primary capability while the execution-plan layer represents the future
+change_vqa → grounding chain. Such plans remain representation only until
+providers exist; there is no replanning and no autonomy.
 """
 
 import re
@@ -20,6 +23,9 @@ from orchestrator.capabilities import (
 )
 
 PLANNER_VERSION = "phase0-rules-v1"
+
+# Narrow combined intent: temporal change AND spatial localization together.
+TEMPORAL_LOCALIZATION_RULE_ID = "temporal_change_then_grounding"
 
 
 class InvalidPlanRequest(ValueError):
@@ -180,6 +186,38 @@ def _has_grounding_intent(tokens: tuple[str, ...]) -> bool:
     return "concentrated" in tokens and bool(directions.intersection(tokens))
 
 
+def _has_temporal_verb(tokens: tuple[str, ...]) -> bool:
+    temporal_verbs = {
+        "change",
+        "changed",
+        "increase",
+        "increased",
+        "decrease",
+        "decreased",
+        "expand",
+        "expanded",
+        "shrink",
+        "shrunk",
+        "appear",
+        "appeared",
+        "disappear",
+        "disappeared",
+    }
+    return bool(temporal_verbs.intersection(tokens))
+
+
+def _has_combined_temporal_localization_intent(tokens: tuple[str, ...]) -> bool:
+    """Narrow trigger: temporal change AND spatial localization, both clear.
+
+    Matches requests like "Where did flooding increase?" or "Locate the
+    areas that changed." Single-intent questions ("What changed?", "Where
+    is the building?", "Is flooding visible?") stay single-step.
+    """
+    if not _has_temporal_verb(tokens):
+        return False
+    return "where" in tokens or _has_grounding_intent(tokens)
+
+
 def _selection(
     request: PlanRequest, tokens: tuple[str, ...]
 ) -> tuple[str, str, str, str | None]:
@@ -204,6 +242,13 @@ def _selection(
             OPTICAL_SAR,
             "optical_sar_cross_modal",
             "The request asks for combined optical and SAR analysis.",
+            None,
+        )
+    if _has_combined_temporal_localization_intent(tokens):
+        return (
+            CHANGE_VQA,
+            TEMPORAL_LOCALIZATION_RULE_ID,
+            "The request requires temporal change analysis followed by spatial localization.",
             None,
         )
     if _has_change_intent(tokens):
