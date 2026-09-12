@@ -4,43 +4,72 @@
 
 :root { color-scheme: dark; }
 
+/* Custom radius utilities */
+@layer utilities {
+  .rounded-16 { border-radius: 16px; }
+  .rounded-24 { border-radius: 24px; }
+}
+
 * { box-sizing: border-box; }
 
-html { background: #071019; }
+html { background: #0b101d; }
 
 body {
   margin: 0;
-  background:
-    radial-gradient(circle at 80% -10%, rgba(71, 215, 221, 0.08), transparent 28rem),
-    #071019;
-  color: #e8f1f5;
+  min-height: 100vh;
+  background-color: #0b101d;
+  background-image:
+    linear-gradient(rgba(56, 189, 248, 0.022) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(56, 189, 248, 0.022) 1px, transparent 1px);
+  background-size: 36px 36px;
+  color: #f1f5f9;
+  font-family: var(--font-sans, Inter), sans-serif;
+  font-weight: 400;
+  line-height: 1.5;
 }
 
-::selection { background: rgba(71, 215, 221, 0.28); }
+::selection { background: rgba(6, 182, 212, 0.3); }
 
 button, input, select, textarea { font: inherit; }
 
+/* Surface hierarchy */
+.surface { background: #121a2d; }
+.surface-elevated { background: #080c17; }
+
+/* Text colors */
+.text-primary { color: #f1f5f9; }
+.text-secondary { color: #94a3b8; }
+.text-tertiary { color: #64748b; }
+.text-inverse { color: #0c0c0c; }
+.text-accent { color: #38bdf8; }
+
+/* Panel composite class */
 .panel {
-  @apply rounded-xl border border-border bg-surface shadow-panel;
+  @apply rounded-md border border-border bg-surface shadow-panel;
 }
 
+/* Eyebrow */
 .eyebrow {
-  @apply text-[0.68rem] font-bold uppercase tracking-[0.18em] text-accent;
+  @apply text-xs font-bold uppercase tracking-[0.1em] text-subtitle;
 }
 
-.muted { @apply text-sm leading-relaxed text-slate-400; }
+/* Muted */
+.muted { @apply text-sm leading-relaxed text-tertiary; }
 
-.grid-overlay {
-  background-image:
-    linear-gradient(rgba(71, 215, 221, 0.055) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(71, 215, 221, 0.055) 1px, transparent 1px);
-  background-size: 32px 32px;
+/* Restrained button */
+.btn-restrained {
+  @apply rounded-24 border border-border bg-transparent px-4 py-2.5 text-sm font-black tracking-wide text-onyx transition hover:text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-60;
 }
 
-.maplibregl-control-container { display: none; }
+/* Base spacing */
+.space-4 > * + * { @apply space-x-4; }
+.space-12 > * + * { @apply space-x-12; }
+.space-24 > * + * { @apply space-x-24; }
+.space-64 > * + * { @apply space-x-64; }
 
+/* Prose adjustments */
 .prose-annotation p { margin: 0.65rem 0; }
-.prose-annotation strong { color: #dffcff; }
+.prose-annotation strong { color: #e0f2fe; }
 
 /* Cinematic landing experience */
 .cinematic-story {
@@ -107,16 +136,16 @@ button, input, select, textarea { font: inherit; }
   width: 2rem;
   height: 2rem;
   place-items: center;
-  border: 1px solid rgba(151, 211, 222, 0.25);
-  color: #a9dfe7;
+  border: 1px solid rgba(56, 66, 112, 0.25);
+  color: #384270;
 }
 
 .cinematic-enter-link {
-  color: #a8bbc0;
+  color: #858893;
   transition: color 180ms ease;
 }
 
-.cinematic-enter-link:hover { color: #efffff; }
+.cinematic-enter-link:hover { color: #f2f2f3; }
 
 .cinematic-hero-copy {
   position: absolute;
@@ -139,7 +168,7 @@ button, input, select, textarea { font: inherit; }
 
 .cinematic-kicker {
   margin: 0 0 1.5rem;
-  color: #8eabb1;
+  color: #54565f;
   font-size: clamp(0.58rem, 0.8vw, 0.7rem);
   font-weight: 650;
   letter-spacing: 0.2em;
@@ -147,9 +176,9 @@ button, input, select, textarea { font: inherit; }
 
 .cinematic-hero-copy h1 {
   margin: 0;
-  color: #f2f7f7;
+  color: #f2f2f3;
   font-size: clamp(3rem, 7.5vw, 7.4rem);
-  font-weight: 560;
+  font-weight: 400;
   letter-spacing: -0.055em;
   line-height: 0.86;
   text-wrap: balance;
@@ -157,7 +186,7 @@ button, input, select, textarea { font: inherit; }
 
 .cinematic-subtitle {
   margin: 1.7rem 0 0;
-  color: #b3c4c8;
+  color: #858893;
   font-size: clamp(0.73rem, 1.1vw, 0.95rem);
   letter-spacing: 0.045em;
 }
@@ -167,7 +196,7 @@ button, input, select, textarea { font: inherit; }
   z-index: 4;
   inset: 0;
   pointer-events: none;
-  color: #abc1c6;
+  color: #54565f;
   font-size: 0.61rem;
   letter-spacing: 0.15em;
 }
@@ -182,7 +211,7 @@ button, input, select, textarea { font: inherit; }
 }
 
 .telemetry-arrival p { margin: 0 0 0.55rem; }
-.telemetry-arrival p:last-child { color: #638087; }
+.telemetry-arrival p:last-child { color: #54565f; }
 
 .telemetry-pulse {
   position: absolute;
@@ -191,8 +220,7 @@ button, input, select, textarea { font: inherit; }
   width: 0.36rem;
   height: 0.36rem;
   border-radius: 999px;
-  background: #9edce3;
-  box-shadow: 0 0 12px rgba(158, 220, 227, 0.48);
+  background: #384270;
 }
 
 .telemetry-lock {
@@ -203,12 +231,12 @@ button, input, select, textarea { font: inherit; }
   flex-direction: column;
   align-items: center;
   gap: 0.65rem;
-  color: #829ca2;
+  color: #54565f;
   opacity: clamp(0, calc((var(--story-progress) - 0.27) * 18), calc((0.42 - var(--story-progress)) * 18));
   transform: translateX(-50%);
 }
 
-.telemetry-rule { width: 1px; height: 2.8rem; background: linear-gradient(#71979f, transparent); }
+.telemetry-rule { width: 1px; height: 2.8rem; background: linear-gradient(#384270, transparent); }
 
 .descent-readout {
   position: absolute;
@@ -221,8 +249,8 @@ button, input, select, textarea { font: inherit; }
   opacity: clamp(0, calc((var(--story-progress) - 0.34) * 15), calc((0.57 - var(--story-progress)) * 18));
 }
 
-.descent-readout span { color: #688188; }
-.descent-readout strong { color: #c2d8db; font-size: 0.67rem; font-weight: 600; }
+.descent-readout span { color: #54565f; }
+.descent-readout strong { color: #384270; font-size: 0.67rem; font-weight: 400; }
 
 .cinematic-scroll-cue {
   position: absolute;
@@ -232,7 +260,7 @@ button, input, select, textarea { font: inherit; }
   display: flex;
   align-items: center;
   gap: 0.7rem;
-  color: #71868c;
+  color: #54565f;
   font-size: 0.58rem;
   letter-spacing: 0.16em;
   opacity: clamp(0, calc(1 - var(--story-progress) * 16), 1);
@@ -248,7 +276,7 @@ button, input, select, textarea { font: inherit; }
   flex-direction: column;
   align-items: center;
   gap: 0.75rem;
-  color: #52666b;
+  color: #54565f;
   font-size: 0.48rem;
   letter-spacing: 0.15em;
   transform: translateY(-50%);
@@ -260,13 +288,13 @@ button, input, select, textarea { font: inherit; }
   width: 1px;
   height: 7.5rem;
   overflow: hidden;
-  background: rgba(158, 196, 203, 0.15);
+  background: rgba(84, 86, 95, 0.15);
 }
 
 .cinematic-progress i {
   position: absolute;
   inset: 0;
-  background: #9dc9cf;
+  background: #384270;
   transform: scaleY(var(--story-progress));
   transform-origin: top;
 }

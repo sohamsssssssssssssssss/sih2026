@@ -14,6 +14,7 @@ os.environ["TRANSFORMERS_OFFLINE"] = "1"
 from orchestrator.registry import get  # noqa: E402
 from orchestrator.router import route  # noqa: E402
 from orchestrator.trace import append_record  # noqa: E402
+from demo_gui.golden_assets import local_golden_image  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 MODEL_NAME = "qwen2.5vl-3b"
@@ -61,12 +62,9 @@ def find_cached_result(scene_id: str, question: str) -> dict[str, Any] | None:
 
 def local_scene_image(scene_id: str) -> Path | None:
     normalized = normalize_scene_id(scene_id)
-    if "_gsd" not in normalized:
+    if normalized != GOLDEN_SCENE_ID:
         return None
-    local_id = normalized.replace("loveda_LoveDA_images_png_", "loveda_Train_Rural_images_png_")
-    gsd = normalized.rsplit("_gsd", 1)[-1]
-    candidate = ROOT / "data" / "ladder" / gsd / f"{local_id}.png"
-    return candidate if candidate.is_file() else None
+    return local_golden_image(normalized, ROOT)
 
 
 def _cached_response(cached: dict[str, Any], sensor: str, reason: str) -> dict[str, Any]:

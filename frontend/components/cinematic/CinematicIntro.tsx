@@ -68,7 +68,6 @@ export function CinematicIntro() {
       const dt = Math.min(50, lastFrame ? now - lastFrame : 16.67);
       lastFrame = now;
       const delta = targetTimeRef.current - displayedTimeRef.current;
-      // Short, frame-rate-independent settling; no perpetual playback after scrolling stops.
       displayedTimeRef.current = now - lastScroll > 110 || reducedRef.current
         ? targetTimeRef.current
         : displayedTimeRef.current + delta * (1 - Math.pow(.84, dt / 16.67));
@@ -82,7 +81,6 @@ export function CinematicIntro() {
     const update = () => {
       progress = clampProgress((window.scrollY - top) / distance);
       const duration = Number.isFinite(video.duration) && video.duration > 0 ? video.duration : 0;
-      // End a fraction before duration so decoders retain the final actual frame.
       targetTimeRef.current = (reducedRef.current || failed ? 1 : progress) * Math.max(0, duration - .045);
       lastScroll = performance.now();
       schedule();
@@ -170,6 +168,7 @@ export function CinematicIntro() {
               autoComplete="email"
               placeholder="analyst@isro.gov.in"
               defaultValue="analyst@isro.gov.in"
+              className="w-full rounded-16 border border-border bg-surface px-4 py-3 text-sm leading-relaxed text-primary outline-none focus:border-primary mb-3"
             />
             <label htmlFor="intro-password">Password</label>
             <input
@@ -178,17 +177,18 @@ export function CinematicIntro() {
               autoComplete="current-password"
               placeholder="••••••••••••"
               defaultValue="satquery-demo"
+              className="w-full rounded-16 border border-bg-surface bg-surface px-4 py-3 text-sm leading-relaxed text-primary outline-none focus:border-primary mb-4"
             />
-            <button type="submit" className="sq-submit-btn">
+            <button type="submit" className="w-full rounded-24 border border-primary/15 bg-primary/10 px-4 py-3 text-sm font-black tracking-wide text-[#031013] transition hover:text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-60">
               ENTER WORKSPACE <span aria-hidden="true">→</span>
             </button>
           </form>
-          <footer>
+          <div className="sq-footer">
             Vision-Language Intelligence<br />
             for Satellite Imagery
             <span>SIH26167</span>
-          </footer>
-          <button className="sq-replay" onClick={() => scrollTo(false)}>
+          </div>
+          <button className="sq-replay w-full rounded-24 border border-primary/15 bg-primary/10 px-4 py-3 text-sm font-medium tracking-[0.08em] text-primary mb-4 transition hover:text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2" onClick={() => scrollTo(false)}>
             Replay introduction ↑
           </button>
         </div>
