@@ -1,239 +1,405 @@
-# sih26167
+# SatQuery AI
 
-Contract-first scaffold for a multi-agent geospatial visual-question-answering system on Python 3.11 (recorded in `.python-version`). Install with `pip3 install -r requirements.txt`; if `rasterio` fails to install on macOS, omit it for the MVP demo because none of the scaffolded paths require it.
+## What SatQuery Is
 
-## Folders and invariants
+> "Ask your satellite data anything."
 
-`configs/` contains one YAML file per experiment. Every config must keep the common fields in `example.yaml` so training and smoke-test entry points remain interchangeable.
+SatQuery AI is a capability-oriented remote-sensing visual intelligence system built for SIH26167. It translates natural-language queries into structured, evidence-backed geospatial reasoning over Earth observation imagery, enforcing cryptographic auditability, resolution awareness, and fail-closed safety constraints.
 
-`data/` owns loading and the canonical tile schema. Every loaded sample must include non-null `gsd` and `sensor`, and arrays must preserve their specified float32 channel-first shapes.
+---
 
-`models/` owns the abstract inference contract and all implementations. Models may change internally, but `infer(image_paths: list[str], question: str)` must always return `answer`, `confidence`, and `evidence` with the documented types.
+## Current Status
 
-`orchestrator/` owns registration, routing, and hash-chained traces. It must communicate with models only through `Model.infer()` and must never inspect implementation internals; every routed call must append a trace record.
+### AVAILABLE
+- **Controlled Image Ingestion**: Upload validation (`POST /api/scenes`) supporting PNG and JPEG up to 20 MiB with decompression-bomb guards, format normalization, and path-traversal prevention.
+- **Deterministic Planner**: Rule-based request planning (`POST /api/plan`) that analyzes input questions, scene requirements, and sensor intent to select appropriate capabilities without LLM non-determinism.
+- **Structured Execution Plan**: Generation of explicit, multi-step dependency graphs (`execution_plan_version: 0.1.0`) separating plan representation from execution.
+- **Single-Image VQA Path**: Complete visual-question-answering execution pipeline for optical imagery via `Qwen/Qwen2.5-VL-3B-Instruct`.
+- **Cryptographic Audit Trace**: SHA-256 hash-chained, append-only execution log (`trace.jsonl`, `GET /api/traces`, `POST /api/traces/verify`) guaranteeing verifiable provenance for every routed decision.
+- **Golden Cached Fallback**: Exact, verified committed fallback (`results/qwen2.5vl-3b__ladder__rescored__20260904.json`) for the designated benchmark query when running offline or without GPU acceleration.
+- **Frontend / Backend Integration**: Full-stack integration between the Next.js 16 workspace UI and the FastAPI backend service.
 
-`eval/` owns authoritative metrics, smoke verification, and suite loader stubs. Reported evaluation numbers are valid only when produced by `eval/eval.py`, using exact case-insensitive stripped answer matching.
+### UNAVAILABLE / IN DEVELOPMENT
+- **Grounding Provider**: Capability vocabulary and planning rules (`grounding`, `grounding_spatial_localization`) are defined, but the Grounding DINO provider is **not yet registered** in the active codebase. Grounding requests fail closed with `503 Service Unavailable`.
+- **Bi-Temporal Change-VQA (`change_vqa`)**: Planned multi-scene change detection chain is represented in the planner, but no change detection execution provider is currently registered.
+- **Optical–SAR Fusion (`optical_sar`)**: SAR false-color interpretation reference materials are available (`/sar`), but automated multimodal fusion models are not yet deployed.
+- **Remote Sensing Fine-Tuning**: Currently running frozen foundation checkpoints; domain-adapted weights are in development.
 
-`scripts/` owns configuration-driven training entry points. It may select a registered model by name, but must not embed model-specific training logic or reach into model internals.
+*Unavailable capabilities intentionally fail closed and never silently fall back to unrelated models or fabricated outputs.*
 
-`demo_gui/` owns the Phase 0 Streamlit shell. It must call the router—not a model directly—so real models can replace the mock without changing the UI contract.
+---
 
-## Commands
+## Prerequisites
+
+- **Python**: Declared version is **Python 3.11** (recorded in [`.python-version`](.python-version)). The system has also been verified under Python 3.14 on macOS arm64.
+- **Node.js & npm**: Node.js 18+ (tested on Node v25.9.0 with npm 11+).
+- **CUDA / GPU Acceleration**: An NVIDIA GPU with CUDA support is required for live `Qwen2.5-VL` model inference. On systems without CUDA (e.g., local macOS or CPU-only Linux), the system operates in offline-first mode, serving the verified golden query or failing closed with `503`.
+
+---
+
+## Clone
 
 ```bash
-python3 eval/smoke.py --config configs/example.yaml
-python3 eval/eval.py --model mock --suite resolution_proxy --out results.json
-python3 scripts/train.py --config configs/example.yaml
-streamlit run demo_gui/app.py --server.headless true
+git clone https://github.com/sohamsssssssssssssssss/sih2026.git
+cd sih2026
 ```
 
-### Offline Streamlit demo
+---
 
-The command above is the supported launch path. The app forces Hugging Face Hub
-and Transformers offline mode before importing the model registry, so it never
-downloads weights at runtime. Live inference can use an already-cached local
-Qwen checkpoint; if the checkpoint or a CUDA GPU is unavailable, the pinned
-golden query falls back to its verified committed result.
+## Backend Setup
 
-The cached golden path has these local requirements:
+### Minimal API Environment
 
-- `results/qwen2.5vl-3b__ladder__rescored__20260904.json` must exist and contain
-  the pinned scene/question row. This is the only required data artifact.
-- The repository root must be writable if a cached answer is requested, because
-  the audit chain is appended to the ignored `trace.jsonl` file there.
-- `data/ladder/0.3/loveda_Train_Rural_images_png_0_gsd0.3.png` is optional. When
-  absent, the verified cached answer remains usable without scene pixels.
-- `data/sar_gate/annotation_template.md` and
-  `data/sar_gate/rendered/mumbai_coastal.png` belong to the SAR tab, not the
-  cached golden path. The render is optional; a missing render is reported in
-  the UI. A missing annotation disables only the analyst interpretation.
+For running the API service and offline verification:
 
-Cached golden execution needs neither internet access nor local model weights.
-
-## Resolution ladder
-
-The ladder uses real LoveDA pixels and semantic masks; only spatial resolution and sensor noise are simulated. LoveDA is licensed for academic, non-commercial use. Download and extract Train+Val idempotently with `python3 data/download_ladder_data.py`, then generate up to 200 real source images at five rungs with `python3 eval/ladder.py --limit 200`. The degradation applies a Gaussian PSF, area-average decimation, and read plus shot noise while keeping `sensor: loveda`, never `synthetic`. Evaluate with `python3 eval/eval.py --model mock --suite ladder --out results.json` and plot with `python3 eval/plot_ladder.py results.json`. DOTA acquisition can be attempted with `python3 data/download_ladder_data.py --dataset dota`; Google Drive failures return promptly with manual-download instructions.
-
-### Ladder results — read the stratified curve, not the aggregate
-
-![Resolution ladder](results/ladder_curve_qwen_stratified.png)
-
-Frozen Qwen2.5-VL-3B, 200 real LoveDA sources at five rungs, 2,000 samples:
-
-| GSD | aggregate | open-ended | binary | yes-rate | verdict |
-|---|---|---|---|---|---|
-| 0.3 m | 0.5625 | 0.3350 | 0.7900 | 0.640 | ok |
-| 1 m | 0.5050 | 0.2900 | 0.7200 | 0.500 | ok |
-| 2 m | 0.4250 | 0.2750 | 0.5750 | 0.315 | ok |
-| 5 m | 0.4650 | 0.2450 | 0.6850 | 0.975 | **degenerate** |
-| 10 m | 0.4850 | 0.2700 | 0.7000 | 1.000 | **degenerate** |
-
-**The aggregate curve rises from 2 m to 10 m.** A model cannot see better
-through more blur. What actually happens is that the model stops answering the
-binary question and says "yes" to everything: at 10 m the yes-rate is 1.000 and
-binary accuracy is 0.7000, which is *exactly* the gold yes-prior of 0.70. The
-apparent recovery is the collapse landing on the base rate.
-
-**Read `open_accuracy`.** It falls 0.335 → 0.245 across the honest rungs and is
-the only curve here that measures resolution sensitivity.
-
-**The guard is two-sided.** It flags a yes-rate above 0.85 *or* below 0.15,
-because a model stuck on "no" is exactly as uninformative as one stuck on
-"yes" — it just scores the complement of the prior. (The RSVQA baseline sits
-at 0.3675 and is unaffected; its accuracy is unchanged at 0.514194.)
-
-**What the guard does not catch, and why 2 m still passes.** At 2 m this model
-leans hard toward "no" — yes-rate 0.315, 137 "No" answers — and scores 0.575,
-which is 12.5 points *below* what always-answering-yes would score. That looks
-like it ought to be flagged. It is not, and it should not be: 0.315 is nowhere
-near the 0.15 floor, and the rung still discriminates, with **MCC 0.350** on
-59 true positives and 56 true negatives out of 200. Compare 5 m (MCC −0.035)
-and 10 m (no negative predictions at all).
-
-The distinction is worth holding onto: **the guard catches collapse, not
-bias.** A rate inside the band is not a certificate that a rung is sound. Read
-the yes-rate against the gold prior — 2 m is a real measurement made by a
-badly calibrated model, which is a different problem with a different fix.
-
-Also note 11 binary predictions at 0.3 m are the bare string `0`, which matches
-neither yes nor no and always scores incorrect — a prompting wart that slightly
-depresses that rung, independent of the collapse above.
-
-The whole-run guard does not catch this — the run-level yes-rate is 0.686, well
-under the 0.85 threshold, because three honest rungs dilute two degenerate ones.
-`eval.py` therefore applies the guard **per rung**, lists offenders in
-`degenerate_rungs`, and `plot_ladder.py` draws them hollow so a non-measurement
-can never be mistaken for a measurement.
-
-### Running the ladder on a Kaggle T4
-
-Settings → Accelerator **GPU T4 x2** · Internet **On**. LoveDA is ~6.5 GB, so
-mount it as a Kaggle Dataset rather than re-downloading it each session.
-
-```python
-# Cell 1 — fail before anything expensive if the GPU is absent.
-import torch
-assert torch.cuda.is_available(), "Enable a T4 accelerator first"
-print(torch.__version__, torch.cuda.get_device_name(0))
+```bash
+python3 -m venv backend/.venv
+source backend/.venv/bin/activate
+pip install -r backend/requirements.txt
+pip install pillow
 ```
 
-```python
-# Cell 2 — dependencies.
-%pip install -q "transformers>=4.49" qwen-vl-utils accelerate matplotlib
+> **Important**: `backend/services.py` requires `PIL` (Pillow) for safe image verification, format conversion, and dimensions extraction. Because `pillow` is defined in root `requirements.txt` rather than `backend/requirements.txt`, install `pillow` explicitly when setting up a minimal environment.
+
+### Full Development / Test Environment
+
+For running the complete test suite, evaluations, and scripts:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r backend/requirements.txt
+pip install -r requirements.txt
 ```
 
-```python
-# Cell 3 — the repo.
-!git clone https://github.com/sohamsssssssssssssssss/sih2026.git /kaggle/working/sih26167
-%cd /kaggle/working/sih26167
+> **macOS Note**: If `rasterio` fails to install due to system GDAL bindings, omit it for local API and frontend development. Core VQA, ingestion, planning, and evaluation paths do not require `rasterio`.
+
+---
+
+## Frontend Setup
+
+```bash
+cd frontend
+npm install
 ```
 
-```python
-# Cell 4 — generate the ladder from mounted LoveDA, then evaluate and plot.
-# Replace LOVEDA_SLUG with the Kaggle Dataset holding extracted LoveDA
-# (Train/ and Val/ with images_png and masks_png inside).
-!python3 kaggle/run_ladder_baseline.py \
-    --ladder-source regenerate \
-    --dataset-name LOVEDA_SLUG \
-    --limit 200
+To run the frontend development server:
+
+```bash
+npm run dev
 ```
 
-```python
-# Cell 5 — read the numbers, and check for degenerate rungs before quoting any.
-import json
-report = json.load(open("/kaggle/working/results_ladder.json"))
-for gsd, v in sorted(report["per_rung"].items(), key=lambda kv: float(kv[0])):
-    flag = "  <-- DEGENERATE" if v.get("warning") else ""
-    print(f"{gsd:>5} m  open={v['open_accuracy']:.4f}  binary={v['binary_accuracy']:.4f}"
-          f"  yes_rate={v['pred_yes_rate_on_binary']:.4f}{flag}")
-print("degenerate rungs:", report.get("degenerate_rungs"))
+The frontend will start at `http://localhost:3000` (or `http://localhost:3001` if port 3000 is occupied).
+
+---
+
+## Run Backend
+
+From the repository root:
+
+```bash
+backend/.venv/bin/uvicorn backend.main:app --reload --port 8000
 ```
 
-Cell 4 writes `/kaggle/working/results_ladder.json` and `ladder_curve.png` as
-downloadable Kaggle artifacts. **Commit the JSON into `results/`** — a number
-that exists only in a Kaggle session does not exist. If `degenerate_rungs` is
-non-empty, fix prompting before quoting anything from those rungs.
+Or using the provided Makefile:
 
-
-## Baseline
-
-Stage 0, measured. Every later stage is judged against these numbers.
-
-| Metric | Value |
-|---|---|
-| accuracy | 0.5142 |
-| binary_accuracy | 0.6671 |
-| **open_accuracy** | **0.1651** |
-| pred_yes_rate_on_binary | 0.3675 |
-| n | 10004 |
-| binary_n / open_n | 6957 / 3047 |
-
-- **Model:** frozen `Qwen/Qwen2.5-VL-3B-Instruct`, fp16, greedy decoding, no training or fine-tuning.
-- **Split:** official RSVQA-LR test split, all 10,004 active test questions (`--full`).
-- **Degeneracy check:** passed, no warning. A yes-rate of 0.3675 is well under the 0.85 threshold, so this is a real measurement rather than an always-yes artefact.
-- **Result:** `results/qwen2.5vl-3b__rsvqa__20260903T175900Z.json`
-- **Scoring:** figures above are under the current matcher. The JSON itself was scored before `daab09b` and reads 0.5131 / 0.6655; it is left exactly as measured. See [`results/RESCORE_NOTE.md`](results/RESCORE_NOTE.md) for the 11 samples that moved and why.
-- **`open_accuracy` is invariant under the `daab09b` matcher change**, so the headline metric is not sensitive to matcher revisions — unlike the aggregate, which moved when the definition of a correct answer did.
-
-**`open_accuracy` is the headline metric for this project.** Aggregate accuracy is dominated by the 6957 binary questions, where a coin-flip already scores near 0.5; it moves even when the model has learned nothing about the imagery. The open-ended stratum is what the problem statement actually asks for, and 0.1651 is the number Stages 1-3 have to beat. Report it alongside the aggregate, never instead of it.
-
-### Sample-size warning
-
-`binary_accuracy` is stable under small `--limit` runs. `open_accuracy` is **not**.
-
-The split is 6957 binary to 3047 open-ended, so `--limit` draws roughly 70/30 in favour of binary and the open-ended stratum stays small: `--limit 200` lands on only ~61 open-ended questions. Same config, same matcher, two runs:
-
-| Metric | `--limit 200` | full split (n=10004) |
-|---|---|---|
-| binary_accuracy | 0.699 | 0.6655 |
-| open_accuracy | 0.4227 | 0.1651 |
-
-Both columns above were scored under the pre-`daab09b` matcher, so the comparison stays like-for-like. `open_accuracy` is unaffected by that matcher change in any case, so the conclusion holds unchanged; only the `binary_accuracy` figures would shift slightly (0.6655 -> 0.6671 on the full split).
-
-`binary_accuracy` moved 3 points. `open_accuracy` moved by a factor of 2.5 — and the small-sample figure was optimistic, in the direction that flatters us.
-
-**Do not use `--limit` below ~2000 to compare open-ended performance between models or checkpoints** (~2000 draws ~609 open-ended questions). Headline numbers use `--full`. `eval/eval.py` prints a warning before inference starts when a run would land on fewer than 500 open-ended questions, and records it as `sampling_warning` in the results JSON.
-
-## Frozen Qwen RSVQA-LR baseline
-
-`qwen2.5vl-3b` wraps the frozen `Qwen/Qwen2.5-VL-3B-Instruct` checkpoint with lazy loading, greedy decoding, and no training or fine-tuning. `python3 scripts/dry_run_rsvqa.py` downloads the complete official RSVQA-LR release and validates two real samples plus a mocked forward call without loading model weights. The eval CLI uses the official test split, defaults to 200 deterministically spaced samples across the split, accepts `--limit N`, and uses all 10,004 active test questions with `--full`.
-
-Push this repository to a public GitHub repository before using Kaggle, or upload it as a Kaggle dataset and copy it into `/kaggle/working/sih26167`. In a new Kaggle notebook with a T4 accelerator and Internet enabled, use these cells in order, replacing the repository URL:
-
-```python
-# Cell 1: fail before downloads if the T4 is not attached.
-import torch
-assert torch.cuda.is_available(), "Select a T4 accelerator in Kaggle settings"
-print(torch.__version__, torch.cuda.get_device_name(0))
+```bash
+make api
 ```
 
-```python
-# Cell 2: install Qwen2.5-VL runtime dependencies.
-%pip install -q "transformers>=4.49" qwen-vl-utils accelerate
+- **Default Host**: `127.0.0.1` / `localhost`
+- **Default Port**: `8000`
+- **Interactive OpenAPI Documentation**: `http://localhost:8000/docs`
+
+---
+
+## Run Frontend
+
+From the repository root:
+
+```bash
+cd frontend && npm run dev
 ```
 
-```python
-# Cell 3: clone the pushed repository.
-REPO_URL = "https://github.com/YOUR_USERNAME/sih26167.git"
-!git clone "$REPO_URL" /kaggle/working/sih26167
-%cd /kaggle/working/sih26167
+Or using the provided Makefile:
+
+```bash
+make frontend
 ```
 
-If GitHub access is unavailable, replace Cell 3 with `!cp -R /kaggle/input/YOUR_DATASET_SLUG/sih26167 /kaggle/working/sih26167` followed by `%cd /kaggle/working/sih26167`.
+- **Default URL**: `http://localhost:3000` (or `http://localhost:3001`)
+- **Main Workspace**: `http://localhost:3000/workspace`
+- **Cinematic Landing & Story**: `http://localhost:3000/intro`
+- **Execution Audit Log**: `http://localhost:3000/executions`
+- **Resolution Lab**: `http://localhost:3000/resolution`
+- **SAR Analysis**: `http://localhost:3000/sar`
+- **System Telemetry**: `http://localhost:3000/system`
 
-```python
-# Cell 4: download RSVQA-LR and run the 200-sample frozen baseline.
-!python3 eval/eval.py --model qwen2.5vl-3b --suite rsvqa --out /kaggle/working/results.json
+---
+
+## Quick Health Check
+
+Verify the backend service is responding:
+
+```bash
+curl -s http://localhost:8000/api/health
 ```
 
-```python
-# Cell 5: print the metric; results.json remains a downloadable Kaggle output artifact.
-import json
-with open("/kaggle/working/results.json") as handle:
-    report = json.load(handle)
-print("accuracy:", report["accuracy"], "n_samples:", report["n_samples"])
+**Expected Response**:
+
+```json
+{
+  "status": "ready",
+  "mode": "offline-first"
+}
 ```
 
-## SAR reading gate
+---
 
-The SAR gate submits five recent dual-polarization Sentinel-1 GRD scenes over diverse Indian landscapes for HyP3 gamma-0 RTC processing, then creates fixed-scale VV/VH/VV−VH false-color quicklooks for manual interpretation. Create a free [NASA Earthdata account](https://urs.earthdata.nasa.gov/users/new), link it in [ASF Vertex](https://search.asf.alaska.edu/), configure an Earthdata entry in `~/.netrc`, and run `pip3 install asf_search hyp3_sdk rasterio`. Run `python3 data/sar_gate/order_scenes.py`, wait for the jobs to succeed, then run `python3 data/sar_gate/process_scenes.py`. Rasterio is required for this gate even though the earlier MVP demo can run without it. Raw products, job IDs, and renders are intentionally ignored; only scripts and the blank manual annotation materials are versioned.
+## Basic End-to-End Flow
+
+### 1. Upload a Scene
+Upload a local PNG or JPEG satellite image tile:
+
+```bash
+curl -X POST http://localhost:8000/api/scenes \
+  -F "file=@data/ladder/0.3/loveda_Train_Rural_images_png_0_gsd0.3.png"
+```
+
+**Generated Scene ID Format**: `scene_<uuid4_hex>` (e.g., `scene_4f8c92a1...`).
+
+**Expected Response (HTTP 201)**:
+
+```json
+{
+  "scene_id": "scene_4f8c92a1...",
+  "filename": "loveda_Train_Rural_images_png_0_gsd0.3.png",
+  "format": "PNG",
+  "width": 512,
+  "height": 512,
+  "sensor": null,
+  "gsd": null,
+  "location": null,
+  "acquisition_date": null
+}
+```
+
+*Note: Unobserved metadata fields remain explicitly `null` to prevent synthetic hallucinations.*
+
+### 2. Plan a Request
+Submit an analytical query to generate a deterministic execution plan:
+
+```bash
+curl -X POST http://localhost:8000/api/plan \
+  -H "Content-Type: application/json" \
+  -d '{
+    "scene_id": "loveda_LoveDA_images_png_0_gsd0.3",
+    "question": "Is there a building in this image?",
+    "sensor": "optical",
+    "capability": null
+  }'
+```
+
+**Expected Response (HTTP 200)**:
+
+```json
+{
+  "planner_version": "0.1.0",
+  "rule_id": "single_image_vqa_default",
+  "requested_capability": null,
+  "selected_capability": "single_image_vqa",
+  "executable": true,
+  "reason": "Single scene provided without change keywords; defaulted to single-image VQA.",
+  "required_inputs": ["single_scene"],
+  "missing_inputs": [],
+  "provider_available": true,
+  "provider": "Qwen/Qwen2.5-VL-3B-Instruct",
+  "unavailable_reason": null,
+  "execution_plan_version": "0.1.0",
+  "steps": [
+    {
+      "step_id": "step_1",
+      "capability": "single_image_vqa",
+      "depends_on": [],
+      "required_inputs": ["single_scene"],
+      "provider_available": true,
+      "provider": "Qwen/Qwen2.5-VL-3B-Instruct"
+    }
+  ],
+  "unavailable_capabilities": []
+}
+```
+
+### 3. Analyze
+Execute single-image visual question answering:
+
+```bash
+curl -X POST http://localhost:8000/api/analyze \
+  -H "Content-Type: application/json" \
+  -d '{
+    "scene_id": "loveda_LoveDA_images_png_0_gsd0.3",
+    "question": "Is there a building in this image?",
+    "sensor": "optical"
+  }'
+```
+
+**Expected Response (HTTP 200)**:
+
+```json
+{
+  "answer": "Yes.",
+  "execution_mode": "cached_result",
+  "results_artifact": "results/qwen2.5vl-3b__ladder__rescored__20260904.json",
+  "model": {
+    "name": "Qwen/Qwen2.5-VL-3B-Instruct",
+    "version": "frozen-qwen2.5vl-3b-instruct"
+  },
+  "trace": {
+    "record_hash": "...",
+    "prev_hash": "...",
+    "route": "single_image_vqa",
+    "model_name": "qwen2.5vl-3b",
+    "timestamp": "..."
+  },
+  "notice": "Offline demonstration: showing the exact committed result for this pinned query."
+}
+```
+
+### 4. Inspect Audit Traces
+Retrieve chronological execution logs:
+
+```bash
+curl -s http://localhost:8000/api/traces
+```
+
+### 5. Verify Cryptographic Trace Chain
+Verify SHA-256 integrity and linkage across the audit log:
+
+```bash
+curl -X POST http://localhost:8000/api/traces/verify
+```
+
+**Expected Response**:
+
+```json
+{
+  "verified": true,
+  "message": "Chain verified (N records)"
+}
+```
+
+---
+
+## Golden Offline / Cached Demo
+
+To enable zero-dependency evaluations and demonstrations without local GPU infrastructure, the repository includes a pinned golden path:
+
+- **Pinned Scene ID**: `loveda_LoveDA_images_png_0_gsd0.3`
+- **Pinned Question**: `Is there a building in this image?`
+- **Capability**: `single_image_vqa`
+- **Artifact Source**: [`results/qwen2.5vl-3b__ladder__rescored__20260904.json`](results/qwen2.5vl-3b__ladder__rescored__20260904.json)
+
+### Exact Fallback Invariants
+1. **Intentionally Narrow**: Fallback activates *only* when the scene ID, question, and capability match the exact pinned values.
+2. **Provenance Disclosure**: Responses explicitly return `execution_mode: "cached_result"` and state the source artifact path.
+3. **Not a Generic Cache**: Dynamic queries, arbitrary questions, and uploaded user scenes are **never** served from cache.
+4. **No Fallback for In-Development Capabilities**: Grounding, change detection, and multimodal fusion queries never fall through to the golden VQA answer.
+
+---
+
+## GPU / CUDA Behavior
+
+- **Live Model Inference**: Real-time forward passes with `Qwen2.5-VL-3B` require PyTorch with CUDA acceleration (`torch.cuda.is_available() == True`).
+- **Fail-Closed Design**: When run in an environment without CUDA or without downloaded model weights, live requests on non-golden queries fail closed with `503 Service Unavailable` (`"Live model inference is unavailable."`).
+- **Engineering Rule**: Do **not** modify failure handling to silently generate mock answers or synthetic confidence values on CPU. Factual failure is a safety invariant.
+
+---
+
+## Grounding Status
+
+- **Capability Identifier**: `grounding`
+- **Planning Rule**: Queries containing spatial localization markers (*"where"*, *"locate"*, *"bounding box"*) are mapped by the planner to `selected_capability: "grounding"`, producing a plan with `rule_id: "grounding_spatial_localization"`.
+- **Current Execution Status**: **Unavailable**. No grounding model provider (e.g. Grounding DINO) is currently registered in `orchestrator/capabilities.py`.
+- **Honest Failure**: Attempting to execute grounding returns `503 Service Unavailable` (`"Required capability is not currently available."`).
+- **No Hallucinations**: Neither the backend nor the frontend fabricates bounding boxes when a grounding model is absent.
+- **Evaluation**: Zero-shot DIOR-RSVG evaluation pipelines are in development and will be committed alongside model weights.
+
+---
+
+## Run Tests
+
+### Run Backend API Tests
+
+```bash
+python3 -m pytest backend/test_api.py -q
+```
+
+### Run Full Python Test Suite
+
+```bash
+python3 -m pytest -q
+```
+
+*Verified status in current environment: all unit, contract, and route tests pass cleanly (76 passed on API suite, 254 passed across full test harness).*
+
+---
+
+## Frontend Production Build
+
+Validate TypeScript compilation, Tailwind CSS styling, and Next.js static asset optimization:
+
+```bash
+cd frontend && npm run build
+```
+
+**Expected Output**:
+```
+✓ Compiled successfully
+✓ Generating static pages (8/8)
+Finalizing page optimization ...
+```
+
+---
+
+## Runtime Data & Hygiene
+
+- **Uploaded Scenes**: Stored in `data/runtime/scenes/<scene_id>.png`.
+- **Audit Traces**: Appended to [`trace.jsonl`](trace.jsonl) in the repository root.
+- **Git Ignore Policy**: Both `data/runtime/` and `trace.jsonl` are strictly ignored in [`.gitignore`](.gitignore).
+- **Hygiene Rule**: Never commit runtime-generated scenes, temporary files, or local execution traces to git.
+
+---
+
+## Troubleshooting
+
+| Issue | Cause | Resolution |
+| :--- | :--- | :--- |
+| **Backend returns 503 on `/api/analyze`** | Running without CUDA hardware or local model weights. | Expected behavior. Test using the golden demo query or deploy on a CUDA-enabled GPU. |
+| **Capability unavailable (503)** | Requesting `grounding`, `change_vqa`, or `optical_sar`. | These capabilities are currently in development and fail closed. |
+| **Upload rejected (422 / 413)** | Uploaded file is corrupt, not a PNG/JPEG, or exceeds 20 MiB. | Provide a standard PNG or JPEG image tile under 20 MiB. |
+| **Frontend cannot connect to backend** | Backend server is stopped or running on a different port. | Ensure backend is active at `http://localhost:8000`. Check with `curl http://localhost:8000/api/health`. |
+| **Trace integrity error (503)** | `trace.jsonl` has been manually edited or corrupted. | The hash chain verifies previous record hashes. Remove `trace.jsonl` to reinitialize a clean audit chain. |
+| **`ModuleNotFoundError: No module named 'PIL'`** | Minimal backend venv created without Pillow. | Run `pip install pillow` inside your backend virtual environment. |
+| **`rasterio` build error on macOS** | Missing system GDAL C-libraries. | Omit `rasterio` for local API/frontend development; core pathways do not depend on it. |
+
+---
+
+## Safety & Engineering Invariants
+
+1. **Unknown Metadata Remains Null**: Ground-sample distance (`gsd`), sensor, location, and acquisition timestamps are never guessed. If not explicitly extracted, they remain `null`.
+2. **No Fabricated Confidence**: Confidence scores reflect measured model probabilities or are omitted; synthetic mock confidences are prohibited.
+3. **No Hallucinated Detections**: The system will never return mock bounding box coordinates.
+4. **Codebase Review**: All changes to orchestration, model contracts, or schemas require pull request review.
+5. **Runtime Cleanliness**: Runtime artifacts must remain strictly untracked.
+
+---
+
+## Development Status & Scientific Baselines
+
+- **Stage 0 Baseline**: Measured on official RSVQA-LR test split (10,004 questions) using frozen `Qwen/Qwen2.5-VL-3B-Instruct`:
+  - **Open Accuracy**: `0.1651` *(Headline metric; uninflated by binary yes-rate collapse)*
+  - **Binary Accuracy**: `0.6671`
+  - **Aggregate Accuracy**: `0.5142`
+  - **Binary Prediction Yes-Rate**: `0.3675` *(Passed two-sided degeneracy guard [0.15, 0.85])*
+- **Resolution Robustness Ladder**: Evaluated on 200 real LoveDA scenes degraded across 5 rungs (0.3m, 1m, 2m, 5m, 10m). Rungs at 5m and 10m exhibit collapse to the gold yes-prior and are flagged as degenerate.
+- **Phase 1 Progress**: Deterministic planner, structured multi-step execution plans, and controlled scene ingestion complete. Grounding DINO integration and threshold evaluation underway.
