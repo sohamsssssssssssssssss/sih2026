@@ -162,7 +162,21 @@ export interface SarReport {
   scene: string;
   title: string;
   human_validation: boolean;
+  /** Real Sentinel-1 GRD → RTC provenance, not an AI product. */
+  data_source: string;
+  sensor: string;
+  /** Recorded location, or the literal string "UNKNOWN" when not committed. */
+  location: string;
+  latitude: number | null;
+  longitude: number | null;
+  /** Always null today: no acquisition date is recorded in this repository. */
+  acquisition_date: string | null;
+  /** HyP3 RTC job ID when recorded, otherwise null. */
+  processing_job_id: string | null;
+  /** Exact processing chain implemented by data/sar_gate/process_scenes.py. */
+  processing_chain: string;
   render_available: boolean;
+  fusion_capability: string;
   summaries: Record<"water" | "built_up" | "vegetation" | "terrain", string>;
   annotation: string;
 }

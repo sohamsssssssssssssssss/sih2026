@@ -519,7 +519,8 @@ with robustness_tab:
 with sar_tab:
     st.header("Mumbai coastal SAR")
     st.info("HUMAN SAR VALIDATION — NOT AI MODEL OUTPUT")
-    st.caption("Optical–SAR fusion is in development; this tab shows analyst validation only.")
+    st.caption("Real Sentinel-1 GRD data · Manual analyst interpretation · SAR prototype (fusion in development)")
+    st.caption("Fusion capability: PROTOTYPE — not a fused AI model result")
     if SAR_IMAGE_PATH.is_file():
         st.image(
             str(SAR_IMAGE_PATH),
@@ -528,6 +529,11 @@ with sar_tab:
         )
     else:
         st.info("The local processed Mumbai SAR render is unavailable on this machine.")
+    # Show sensor metadata if known
+    sensor = "Sentinel-1 C-band dual-polarization (VV/VH)"  # from SAR annotation metadata
+    st.caption(f"Sensor: {sensor}")
+    st.caption(f"Data source: real Sentinel-1 GRD RTC (Ground Range Detected, Range Terrain Corrected)")
+    st.caption("Fusion capability: PROTOTYPE analyst validation — not AI model output")
     st.subheader("Analyst interpretation")
     try:
         annotation = load_mumbai_interpretation(SAR_ANNOTATION_PATH)

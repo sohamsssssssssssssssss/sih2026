@@ -9,7 +9,10 @@ router = APIRouter(prefix="/api", tags=["sar"])
 @router.get("/sar/{scene}")
 def sar(scene: str) -> dict:
     try:
-        return sar_annotation(scene)
+        annotation = sar_annotation(scene)
+        # Prepend clear human validation label
+        annotation["_notice"] = "HUMAN VALIDATION — NOT AI MODEL OUTPUT. Real SAR GRD data, manual analyst interpretation."
+        return annotation
     except ArtifactError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
 

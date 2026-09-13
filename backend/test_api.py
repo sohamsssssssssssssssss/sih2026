@@ -1283,3 +1283,40 @@ def test_caller_cannot_forge_execution_step_metadata(
     assert params["execution_step_id"] == "step_1"
     assert params["execution_step_index"] == 1
     assert params["execution_step_count"] == 1
+
+
+def test_sar_reports_only_recorded_scene_provenance(client: TestClient) -> None:
+    payload = client.get("/api/sar/mumbai-coastal").json()
+    assert payload["scene"] == "mumbai-coastal"
+    assert payload["location"] == "19.05, 72.85"
+    assert payload["latitude"] == 19.05
+    assert payload["longitude"] == 72.85
+    assert payload["processing_job_id"] == "71cf874e-4303-4e1f-9ab7-74037b1956c9"
+    assert payload["acquisition_date"] is None
+    assert "HyP3 RTC gamma-0" in payload["processing_chain"]
+
+
+def test_sar_scenes_without_recorded_provenance_report_unknown(
+    client: TestClient,
+) -> None:
+    payload = client.get("/api/sar/flat-inland-plain").json()
+    assert payload["scene"] == "flat-inland-plain"
+    assert payload["location"] == "UNKNOWN"
+    assert payload["latitude"] is None
+    assert payload["longitude"] is None
+    assert payload["processing_job_id"] is None
+    assert payload["acquisition_date"] is None
+
+
+def test_sar_unknown_scene_fails_closed(client: TestClient) -> None:
+    assert client.get("/api/sar/not-a-real-scene").status_code == 404
+
+
+def test_sar_image_endpoint_fails_closed_without_committed_render(
+    client: TestClient,
+) -> None:
+    from backend.services import SAR_RENDER_DIR
+
+    if (SAR_RENDER_DIR / "mumbai_coastal.png").is_file():
+        pytest.skip("render asset present in this checkout")
+    assert client.get("/api/sar/mumbai-coastal/image").status_code == 404

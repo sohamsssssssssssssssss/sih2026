@@ -57,6 +57,49 @@ RESULTS_RELATIVE_PATH = "results/qwen2.5vl-3b__ladder__rescored__20260904.json"
 RESULTS_PATH = ROOT / RESULTS_RELATIVE_PATH
 SAR_ANNOTATION_PATH = ROOT / "data" / "sar_gate" / "annotation_template.md"
 SAR_RENDER_DIR = ROOT / "data" / "sar_gate" / "rendered"
+# Scene provenance is limited to facts recorded in committed artifacts
+# (data/sar_gate/annotation_template.md, data/sar_gate/order_scenes.py).
+# Scenes without recorded provenance report UNKNOWN/None rather than values
+# inferred from maps or search heuristics.
+SAR_SCENE_ALIASES = {"mumbai": "mumbai-coastal"}
+SAR_SCENE_PROVENANCE: dict[str, dict[str, Any]] = {
+    "mumbai-coastal": {
+        "location": "19.05, 72.85",
+        "latitude": 19.05,
+        "longitude": 72.85,
+        "processing_job_id": "71cf874e-4303-4e1f-9ab7-74037b1956c9",
+    },
+    "maharashtra-farmland": {
+        "location": "UNKNOWN",
+        "latitude": None,
+        "longitude": None,
+        "processing_job_id": None,
+    },
+    "western-ghats-forest": {
+        "location": "UNKNOWN",
+        "latitude": None,
+        "longitude": None,
+        "processing_job_id": None,
+    },
+    "konkan-coast": {
+        "location": "UNKNOWN",
+        "latitude": None,
+        "longitude": None,
+        "processing_job_id": None,
+    },
+    "flat-inland-plain": {
+        "location": "UNKNOWN",
+        "latitude": None,
+        "longitude": None,
+        "processing_job_id": None,
+    },
+}
+# The exact processing chain implemented by data/sar_gate/process_scenes.py.
+SAR_PROCESSING_CHAIN = (
+    "Sentinel-1 IW GRD (VV+VH) -> ASF HyP3 RTC gamma-0 (30 m posting, power "
+    "scale, no speckle filter) -> 7x7 Lee filter -> dB scaling fixed to "
+    "[-25, +5] -> false-color composite R=VV, G=VH, B=VV-VH"
+)
 GOLDEN_SCENE_ID = "loveda_LoveDA_images_png_0_gsd0.3"
 GOLDEN_QUESTION = "Is there a building in this image?"
 GOLDEN_CAPABILITY = SINGLE_IMAGE_VQA
@@ -525,7 +568,7 @@ def sar_annotation(scene: str) -> dict[str, Any]:
     for block in document.split("\n## ")[1:]:
         title, _, body = block.partition("\n")
         sections[_slug(title)] = (title.strip(), body.strip())
-    key = {"mumbai": "mumbai-coastal"}.get(_slug(scene), _slug(scene))
+    key = SAR_SCENE_ALIASES.get(_slug(scene), _slug(scene))
     if key not in sections:
         raise ArtifactError(f"No analyst annotation exists for SAR scene '{scene}'.")
     title, body = sections[key]
@@ -552,17 +595,27 @@ def sar_annotation(scene: str) -> dict[str, Any]:
         text = " ".join(line.strip().lstrip("- ") for line in segment.splitlines() if line.strip())
         summaries[key_name] = text[:420].rstrip() + ("…" if len(text) > 420 else "")
     render_path = SAR_RENDER_DIR / f"{key.replace('-', '_')}.png"
+    provenance = SAR_SCENE_PROVENANCE.get(key, {})
     return {
         "scene": key,
         "title": title,
         "human_validation": True,
+        "data_source": "real_sar_grd_rtc",
+        "sensor": "Sentinel-1 C-band SAR, IW GRD, dual-polarization VV/VH",
+        "location": provenance.get("location", "UNKNOWN"),
+        "latitude": provenance.get("latitude"),
+        "longitude": provenance.get("longitude"),
+        "acquisition_date": None,
+        "processing_job_id": provenance.get("processing_job_id"),
+        "processing_chain": SAR_PROCESSING_CHAIN,
         "render_available": render_path.is_file(),
+        "fusion_capability": "prototype_analyst_validation_not_ai_model_output",
         "summaries": summaries,
         "annotation": cleaned,
     }
 
 
 def sar_render_path(scene: str) -> Path | None:
-    key = {"mumbai": "mumbai-coastal"}.get(_slug(scene), _slug(scene))
+    key = SAR_SCENE_ALIASES.get(_slug(scene), _slug(scene))
     candidate = SAR_RENDER_DIR / f"{key.replace('-', '_')}.png"
     return candidate if candidate.is_file() else None
