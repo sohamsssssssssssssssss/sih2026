@@ -46,11 +46,10 @@
       "result_state": "cached_real",
       "catalog_visible": true,
       "replay_upload": true,
-      "available": false,
-      "unavailable_reason": "The exact DIOR-RSVG 07272.jpg evaluation input is not present locally; no substitute is permitted.",
+      "available": true,
       "asset_path": "data/demo/grounding/07272.jpg",
-      "asset_sha256": null,
-      "pixel_sha256": null,
+      "asset_sha256": "ed12e0c3c5eb20ad2ae240657f7224cbba808137046f5722154b48e8aff2b13b",
+      "pixel_sha256": "7ce8e207203433cb5961d36b2e6dc3189bceb8690ca9b4bb7238619d4ea07fe2",
       "width": 800,
       "height": 800,
       "source": {
@@ -76,7 +75,8 @@
         "run_id": "grounding-dino-swint__dior-rsvg__20260911T085257Z",
         "git_sha": "14e8c14a211eb14807678961d1222f396c7674f1",
         "working_tree_sha256": "1f3c3e15e824f0a318b7e77b0fe98f79cbae96cb219212b115345d714bdc8d5d"
-      }
+      },
+      "unavailable_reason": null
     }
   ],
   "resolution_ladder": {
@@ -92,43 +92,44 @@
         "asset_path": "data/ladder/0.3/loveda_Train_Rural_images_png_0_gsd0.3.png",
         "asset_sha256": "495a8e889c686611f5324cb1c03ecf2b22cedc424c868fc13a8666e2fc5ab0e0",
         "width": 1024,
-        "height": 1024
+        "height": 1024,
+        "unavailable_reason": null
       },
       {
         "gsd": 1.0,
-        "available": false,
-        "unavailable_reason": "The exact evaluated 1.0 m rung image is not present locally.",
+        "available": true,
         "asset_path": "data/demo/resolution/loveda_LoveDA_images_png_0_gsd1.0.png",
-        "asset_sha256": null,
-        "width": null,
-        "height": null
+        "asset_sha256": "a37c213526cab3542b0ad3808dd1f0d6cdbb06ffdd775e5a45f51367e28bd873",
+        "width": 307,
+        "height": 307,
+        "unavailable_reason": null
       },
       {
         "gsd": 2.0,
-        "available": false,
-        "unavailable_reason": "The exact evaluated 2.0 m rung image is not present locally.",
+        "available": true,
         "asset_path": "data/demo/resolution/loveda_LoveDA_images_png_0_gsd2.0.png",
-        "asset_sha256": null,
-        "width": null,
-        "height": null
+        "asset_sha256": "c9bde17e758b6868fc7664958878ac42c77d759851a083667dd06f07771657f1",
+        "width": 154,
+        "height": 154,
+        "unavailable_reason": null
       },
       {
         "gsd": 5.0,
-        "available": false,
-        "unavailable_reason": "The exact evaluated 5.0 m rung image is not present locally.",
+        "available": true,
         "asset_path": "data/demo/resolution/loveda_LoveDA_images_png_0_gsd5.0.png",
-        "asset_sha256": null,
-        "width": null,
-        "height": null
+        "asset_sha256": "04125815e69a945cbd4c96826619ec949cdbf756e67eced697d83ca7a63416d2",
+        "width": 61,
+        "height": 61,
+        "unavailable_reason": null
       },
       {
         "gsd": 10.0,
-        "available": false,
-        "unavailable_reason": "The exact evaluated 10.0 m rung image is not present locally.",
+        "available": true,
         "asset_path": "data/demo/resolution/loveda_LoveDA_images_png_0_gsd10.0.png",
-        "asset_sha256": null,
-        "width": null,
-        "height": null
+        "asset_sha256": "3af5e28d186d7b02a0dac122e21ec07cbd987632586959a2b945335dfb5f5db0",
+        "width": 31,
+        "height": 31,
+        "unavailable_reason": null
       }
     ]
   }
