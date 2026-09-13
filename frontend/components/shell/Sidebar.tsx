@@ -1,12 +1,13 @@
 "use client";
 
-import { Activity, Aperture, History, Radar, Satellite, Settings2 } from "lucide-react";
+import { Activity, AlertCircle, Aperture, History, Radar, Satellite, Settings2 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 const navigation = [
   { href: "/workspace", label: "Workspace", icon: Aperture },
+  { href: "/change", label: "Change Intelligence", icon: AlertCircle },
   { href: "/resolution", label: "Resolution Lab", icon: Activity },
   { href: "/sar", label: "SAR Validation", icon: Radar },
   { href: "/executions", label: "Executions", icon: History },

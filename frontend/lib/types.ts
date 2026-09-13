@@ -7,6 +7,9 @@ export interface AnalysisRequest {
   question: string;
   sensor?: string | null;
   capability?: string | null;
+  /** Second scene for pairwise capabilities (change_vqa, optical_sar).
+   *  Omitted for every single-scene request, which is unchanged. */
+  scene_id_2?: string | null;
 }
 
 export interface SceneUploadResponse {

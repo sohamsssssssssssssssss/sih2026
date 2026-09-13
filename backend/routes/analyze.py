@@ -67,6 +67,7 @@ def plan(request: AnalyzeRequest) -> PlanResponse:
                 request.question,
                 request.sensor,
                 request.capability,
+                request.scene_id_2,
             )
         )
     except (InvalidPlanRequest, UnknownCapability) as exc:
@@ -79,7 +80,13 @@ def plan(request: AnalyzeRequest) -> PlanResponse:
 def analyze(request: AnalyzeRequest) -> AnalyzeResponse:
     try:
         return AnalyzeResponse.model_validate(
-            analyze_scene(request.scene_id, request.question, request.sensor, request.capability)
+            analyze_scene(
+                request.scene_id,
+                request.question,
+                request.sensor,
+                request.capability,
+                request.scene_id_2,
+            )
         )
     except ArtifactError as exc:
         raise HTTPException(

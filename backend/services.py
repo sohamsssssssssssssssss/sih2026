@@ -361,6 +361,7 @@ def analyze_scene(
     question: str,
     sensor: str | None,
     capability: str | None = None,
+    scene_id_2: str | None = None,
 ) -> dict[str, Any]:
     question = question.strip()
     if not question:
@@ -368,7 +369,7 @@ def analyze_scene(
     plan = plan_request(
         PlanRequest(
             question=question,
-            scene_ids=(scene_id,),
+            scene_ids=_scene_ids(scene_id, scene_id_2),
             sensor=sensor,
             requested_capability=capability,
         )
@@ -449,11 +450,25 @@ def analyze_scene(
         return _cached_response(cached, sensor, reason, plan)
 
 
+def _scene_ids(scene_id: str, scene_id_2: str | None) -> tuple[str, ...]:
+    """Scene tuple for the planner.
+
+    Pairwise capabilities (change_vqa, optical_sar) require two scenes; the
+    planner reports ``second_scene`` as missing when only one is supplied.
+    A caller that omits the second scene keeps the exact single-scene
+    behaviour the frozen Phase 0 contract already had.
+    """
+    if scene_id_2 is None or not scene_id_2.strip():
+        return (scene_id,)
+    return (scene_id, scene_id_2)
+
+
 def plan_analysis(
     scene_id: str,
     question: str,
     sensor: str | None,
     capability: str | None,
+    scene_id_2: str | None = None,
 ) -> dict[str, Any]:
     """Truthful planning snapshot: planner decision plus structured steps.
 
@@ -464,7 +479,7 @@ def plan_analysis(
     plan = plan_request(
         PlanRequest(
             question=question,
-            scene_ids=(scene_id,),
+            scene_ids=_scene_ids(scene_id, scene_id_2),
             sensor=sensor,
             requested_capability=capability,
         )
