@@ -35,3 +35,9 @@ def test_official_index_loader_and_coordinate_metrics(tmp_path: Path) -> None:
     assert normalized == [0.2, 0.2, 0.6, 0.6]
     assert iou_xyxy(normalized, normalized) == 1.0
     assert iou_xyxy(normalized, [0.7, 0.7, 0.9, 0.9]) == 0.0
+
+    (tmp_path / "val.txt").write_text("0\n", encoding="utf-8")
+    _, validation = load_test_records(
+        tmp_path, expected_split_size=1, split_file="val.txt"
+    )
+    assert [row["category"] for row in validation] == ["airplane"]

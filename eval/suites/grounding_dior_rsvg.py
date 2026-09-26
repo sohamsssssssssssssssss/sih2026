@@ -69,18 +69,25 @@ def _dataset_root(root: Path) -> Path:
 
 
 def load_test_records(
-    root: Path, *, expected_split_size: int = OFFICIAL_TEST_SIZE
+    root: Path,
+    *,
+    expected_split_size: int = OFFICIAL_TEST_SIZE,
+    split_file: str = "test.txt",
 ) -> tuple[Path, list[dict[str, Any]]]:
-    """Reproduce the official loader's sorted-XML, global-object indexing."""
+    """Reproduce the official loader's sorted-XML, global-object indexing.
+
+    `split_file` selects another official index file (e.g. val.txt); the
+    `test_index` key then holds that split's global expression index.
+    """
     dataset_root = _dataset_root(root)
     indices = [
         int(line)
-        for line in (dataset_root / "test.txt").read_text(encoding="utf-8").splitlines()
+        for line in (dataset_root / split_file).read_text(encoding="utf-8").splitlines()
         if line.strip()
     ]
     if len(indices) != expected_split_size or len(set(indices)) != len(indices):
         raise ValueError(
-            f"Expected {expected_split_size} unique official test indices, got {len(indices)}"
+            f"Expected {expected_split_size} unique official {split_file} indices, got {len(indices)}"
         )
     selected_indices = set(indices)
     records: list[dict[str, Any]] = []

@@ -1,0 +1,232 @@
+{
+  "adapter_revision": null,
+  "artifact_paths": [
+    "/Users/atharva/satquery-data/grounding/runs/r10-tfull-expression-b035-t025-mps/analysis.json",
+    "/Users/atharva/satquery-data/grounding/viz/r10-tfull",
+    "eval/results/grounding/grounding-study-v1.json"
+  ],
+  "command": "eval/grounding_research.py analyze --run-dir <runs>/r10-tfull-expression-b035-t025-mps --data-root <dior-rsvg>/extracted --archive <dior-rsvg>/JPEGImages.zip --render-dir <grounding>/viz/r10-tfull",
+  "dataset": "DIOR-RSVG",
+  "dataset_checksum": {
+    "Annotations.zip": {
+      "bytes": 7774359,
+      "sha256": "cecbf38add026dcfef9e5505c6594090cb11912c4801e6aa98514aa469024e4c"
+    },
+    "JPEGImages.zip": {
+      "bytes": 5386728679,
+      "sha256": "1c0a52b10c9471cb02c801590d87ab23035fb82fe776ed825682a0e3270e690e"
+    },
+    "test.txt": {
+      "bytes": 42873,
+      "sha256": "d1d0b200fc2be1c5c1ca776601278adb3566d0efc6ea7a690ba927ce1877e5f8"
+    },
+    "train.txt": {
+      "bytes": 154012,
+      "sha256": "d55036d5dd9b234e74439cda910c8c0119894fbfcf72386412aef8be208c436b"
+    },
+    "val.txt": {
+      "bytes": 21925,
+      "sha256": "6324ad50498948e791e714cc03cb2ac7af4872e333087a48912f714141e979f9"
+    }
+  },
+  "dataset_version": "official Google Drive release (Annotations.zip 2023-04-07, JPEGImages.zip 2022-11-12)",
+  "ended_at": "2026-09-26T13:36:37+00:00",
+  "environment": {
+    "machine": "arm64",
+    "packages": {
+      "groundingdino-py": "0.4.0",
+      "numpy": "2.4.6",
+      "pillow": "12.3.0",
+      "timm": "1.0.30",
+      "torch": "2.14.0",
+      "torchvision": "0.29.0",
+      "transformers": "4.49.0"
+    },
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "processor": "arm",
+    "python": "3.11.15"
+  },
+  "experiment_id": "SQ-20260926-211",
+  "hyperparameters": {},
+  "metrics": {
+    "failure_types": {
+      "background_or_unannotated": 2133,
+      "no_detection": 2380,
+      "other_class_object": 289,
+      "poor_localization_of_target": 1181,
+      "same_class_other_instance": 501
+    },
+    "overall": {
+      "hits_at_0.5": 1016,
+      "mean_detections": 0.7781333333333333,
+      "mean_iou": 0.15327329812894244,
+      "median_detections": 1.0,
+      "multi_detection_rate": 0.08786666666666666,
+      "n": 7500,
+      "no_detection_rate": 0.31733333333333336,
+      "pr_at_0.25": 0.21333333333333335,
+      "pr_at_0.5": 0.13546666666666668,
+      "pr_at_0.5_wilson95": [
+        0.12790796138586735,
+        0.14339860472924454
+      ],
+      "pr_at_0.75": 0.0796,
+      "selective_pr_at_0.5": 0.1984375
+    },
+    "per_relational": {
+      "non_relational": {
+        "hits_at_0.5": 378,
+        "mean_detections": 1.0715654952076676,
+        "mean_iou": 0.26753512726173706,
+        "median_detections": 1,
+        "multi_detection_rate": 0.16293929712460065,
+        "n": 1565,
+        "no_detection_rate": 0.11373801916932902,
+        "pr_at_0.25": 0.3706070287539936,
+        "pr_at_0.5": 0.2415335463258786,
+        "pr_at_0.5_wilson95": [
+          0.22097748330999867,
+          0.2633553691779264
+        ],
+        "pr_at_0.75": 0.15399361022364216,
+        "selective_pr_at_0.5": 0.2725306416726748
+      },
+      "relational": {
+        "hits_at_0.5": 638,
+        "mean_detections": 0.7007582139848357,
+        "mean_iou": 0.12314359929274635,
+        "median_detections": 1,
+        "multi_detection_rate": 0.06807076663858466,
+        "n": 5935,
+        "no_detection_rate": 0.3710193765796125,
+        "pr_at_0.25": 0.17186183656276327,
+        "pr_at_0.5": 0.10749789385004212,
+        "pr_at_0.5_wilson95": [
+          0.09986994504403147,
+          0.11563361196157697
+        ],
+        "pr_at_0.75": 0.05998315080033698,
+        "selective_pr_at_0.5": 0.1709081167961425
+      }
+    },
+    "per_same_class_annotated_count": {
+      "1": {
+        "hits_at_0.5": 645,
+        "mean_detections": 0.8836436170212766,
+        "mean_iou": 0.24153471555371644,
+        "median_detections": 1.0,
+        "multi_detection_rate": 0.11402925531914894,
+        "n": 3008,
+        "no_detection_rate": 0.24035904255319152,
+        "pr_at_0.25": 0.3367686170212766,
+        "pr_at_0.5": 0.2144281914893617,
+        "pr_at_0.5_wilson95": [
+          0.20013019650953484,
+          0.22945465267501497
+        ],
+        "pr_at_0.75": 0.13929521276595744,
+        "selective_pr_at_0.5": 0.28227571115973743
+      },
+      "2-3": {
+        "hits_at_0.5": 290,
+        "mean_detections": 0.720583854632112,
+        "mean_iou": 0.1039129361568961,
+        "median_detections": 1,
+        "multi_detection_rate": 0.07685433422698838,
+        "n": 3357,
+        "no_detection_rate": 0.36193029490616624,
+        "pr_at_0.25": 0.1456657730116175,
+        "pr_at_0.5": 0.08638665475126601,
+        "pr_at_0.5_wilson95": [
+          0.07734973562053266,
+          0.09636909819664954
+        ],
+        "pr_at_0.75": 0.044682752457551385,
+        "selective_pr_at_0.5": 0.1353874883286648
+      },
+      ">=4": {
+        "hits_at_0.5": 81,
+        "mean_detections": 0.6687224669603524,
+        "mean_iou": 0.06535470035488247,
+        "median_detections": 1,
+        "multi_detection_rate": 0.05110132158590308,
+        "n": 1135,
+        "no_detection_rate": 0.3894273127753304,
+        "pr_at_0.25": 0.08634361233480176,
+        "pr_at_0.5": 0.07136563876651983,
+        "pr_at_0.5_wilson95": [
+          0.05779027895095015,
+          0.0878326763673476
+        ],
+        "pr_at_0.75": 0.024669603524229075,
+        "selective_pr_at_0.5": 0.11688311688311688
+      }
+    },
+    "per_size": {
+      "large": {
+        "hits_at_0.5": 781,
+        "mean_detections": 0.8438438438438438,
+        "mean_iou": 0.23311152882534592,
+        "median_detections": 1.0,
+        "multi_detection_rate": 0.10285285285285285,
+        "n": 3996,
+        "no_detection_rate": 0.26876876876876876,
+        "pr_at_0.25": 0.31506506506506504,
+        "pr_at_0.5": 0.19544544544544545,
+        "pr_at_0.5_wilson95": [
+          0.1834454406431115,
+          0.20803044033324145
+        ],
+        "pr_at_0.75": 0.13463463463463463,
+        "selective_pr_at_0.5": 0.2672826830937714
+      },
+      "medium": {
+        "hits_at_0.5": 184,
+        "mean_detections": 0.7471369674759505,
+        "mean_iou": 0.07966977367278809,
+        "median_detections": 1,
+        "multi_detection_rate": 0.0755840586349061,
+        "n": 2183,
+        "no_detection_rate": 0.33394411360513054,
+        "pr_at_0.25": 0.119560238204306,
+        "pr_at_0.5": 0.0842876775080165,
+        "pr_at_0.5_wilson95": [
+          0.07335108316942389,
+          0.09668477259467702
+        ],
+        "pr_at_0.75": 0.02702702702702703,
+        "selective_pr_at_0.5": 0.1265474552957359
+      },
+      "small": {
+        "hits_at_0.5": 51,
+        "mean_detections": 0.6305828917486752,
+        "mean_iou": 0.03339663198583696,
+        "median_detections": 1,
+        "multi_detection_rate": 0.06283118849356548,
+        "n": 1321,
+        "no_detection_rate": 0.4367903103709311,
+        "pr_at_0.25": 0.06056018168054504,
+        "pr_at_0.5": 0.03860711582134747,
+        "pr_at_0.5_wilson95": [
+          0.029484948937229815,
+          0.05040495650901819
+        ],
+        "pr_at_0.75": 0.0,
+        "selective_pr_at_0.5": 0.06854838709677419
+      }
+    }
+  },
+  "model_id": "ShilongLiu/GroundingDINO:groundingdino_swint_ogc.pth (IDEA-Research groundingdino-py 0.4.0)",
+  "model_revision": "HF ShilongLiu/GroundingDINO@a94c9b567a2a374598f05c584e96798a170c56fb; groundingdino_swint_ogc.pth sha256 3b3ca2563c77c69f651d7bd133e97139c186df06231157a64c507099c52bc799; tokenizer bert-base-uncased@86b5e0934494bd15c9632b12f734a8a67f723594",
+  "notes": "Derived analysis of SQ-20260926-210 (no new inference). Failure types among 6,484 misses: no_detection 2380, background_or_unannotated 2133, poor_localization_of_target 1181, same_class_other_instance 501, other_class_object 289. Relational expressions 0.108 vs 0.242; small objects 0.039 vs large 0.195; >=4 same-class annotated instances 0.071 vs 1 instance 0.214. Start not logged; both timestamps are the analysis.json write time. Renders: 2 per outcome, first by test_index (not cherry-picked). DIOR-RSVG XML lists only referred objects, so 'background_or_unannotated' can include real unannotated objects.",
+  "repository": {
+    "url": "https://github.com/AtharvaPatil466/SatAi",
+    "dirty": false,
+    "sha": "9390cb5215c9ab4be5994d3e24f7f7acb36c90ce"
+  },
+  "seed": 26167,
+  "split": "official test.txt (7500)",
+  "started_at": "2026-09-26T13:36:37+00:00",
+  "status": "PASSED",
+  "title": "Day 12 failure analysis on T-full (per class, size, density, relational, failure type)"
+}

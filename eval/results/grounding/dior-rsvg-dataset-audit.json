@@ -1,0 +1,48 @@
+{
+  "dataset": "DIOR-RSVG",
+  "source": "official Google Drive folder 1hTqtYsC6B-m4ED2ewx5oKuYZV13EoJp_ (as used by kaggle/run_grounding_dior_rsvg.py)",
+  "files": {
+    "Annotations.zip": {
+      "bytes": 7774359,
+      "sha256": "cecbf38add026dcfef9e5505c6594090cb11912c4801e6aa98514aa469024e4c"
+    },
+    "JPEGImages.zip": {
+      "bytes": 5386728679,
+      "sha256": "1c0a52b10c9471cb02c801590d87ab23035fb82fe776ed825682a0e3270e690e"
+    },
+    "train.txt": {
+      "bytes": 154012,
+      "sha256": "d55036d5dd9b234e74439cda910c8c0119894fbfcf72386412aef8be208c436b"
+    },
+    "val.txt": {
+      "bytes": 21925,
+      "sha256": "6324ad50498948e791e714cc03cb2ac7af4872e333087a48912f714141e979f9"
+    },
+    "test.txt": {
+      "bytes": 42873,
+      "sha256": "d1d0b200fc2be1c5c1ca776601278adb3566d0efc6ea7a690ba927ce1877e5f8"
+    }
+  },
+  "total_expressions": 38320,
+  "total_images": 17402,
+  "splits": {
+    "train": {
+      "expressions": 26991,
+      "images": 14730
+    },
+    "val": {
+      "expressions": 3829,
+      "images": 3465
+    },
+    "test": {
+      "expressions": 7500,
+      "images": 6102
+    }
+  },
+  "image_overlap": {
+    "train&val": 2449,
+    "train&test": 4206,
+    "val&test": 1115
+  },
+  "audited_at": "2026-09-26T08:58:55.224909+00:00"
+}
