@@ -1,0 +1,184 @@
+{
+  "adapter_revision": null,
+  "artifact_paths": [
+    "eval/routing/results/SQ-20260926-501.json"
+  ],
+  "command": "python -m eval.routing.evaluate --experiment-id SQ-20260926-501",
+  "dataset": "eval/routing/queries.v1.jsonl (hand-labelled, 169 queries) + 25 generated GeoTIFF pair fixtures",
+  "dataset_checksum": "sha256:ca5a64c99548108efe2cc951bb8b94b37d2de41097ca60644bf052b4dfdfb6c1",
+  "dataset_version": "v1 (labels commit f28d617a1cb4963bb0ff3538130fd094dbc74415)",
+  "ended_at": "2026-09-26T08:48:44.719283+00:00",
+  "environment": {
+    "machine": "arm64",
+    "packages": {
+      "accelerate": "1.12.0",
+      "bitsandbytes": null,
+      "numpy": "2.4.2",
+      "peft": "0.18.1",
+      "qwen-vl-utils": null,
+      "rasterio": "1.5.1",
+      "torch": "2.10.0",
+      "transformers": "5.1.0"
+    },
+    "platform": "macOS-26.6-arm64-arm-64bit-Mach-O",
+    "processor": "arm",
+    "python": "3.13.0"
+  },
+  "experiment_id": "SQ-20260926-501",
+  "hyperparameters": {
+    "max_resolution_ratio": {
+      "change_vqa": 1.25,
+      "optical_sar": 4.0
+    },
+    "overlap_thresholds": {
+      "change_vqa": 0.9,
+      "optical_sar": 0.8
+    },
+    "regimes": [
+      "stub_ready",
+      "actual"
+    ]
+  },
+  "metrics": {
+    "abstention_stub_ready": {
+      "baseline_dispatches": 160,
+      "baseline_wrong_dispatches": 86,
+      "items": 169,
+      "system_dispatches": 141,
+      "system_false_refusals": 0,
+      "system_wrong_dispatches": 67
+    },
+    "ambiguous_acceptable_handling": {
+      "hits": 7,
+      "n": 12,
+      "rate": 0.5833333333333334
+    },
+    "ambiguous_explicit_clarification": {
+      "hits": 0,
+      "n": 12,
+      "rate": 0.0
+    },
+    "pair_suite": {
+      "invalid_pair_expected_code_reported": {
+        "hits": 23,
+        "n": 23,
+        "rate": 1.0
+      },
+      "invalid_pair_rejection": {
+        "hits": 23,
+        "n": 23,
+        "rate": 1.0
+      },
+      "valid_pair_acceptance": {
+        "hits": 2,
+        "n": 2,
+        "rate": 1.0
+      }
+    },
+    "provider_unavailable_actual": {
+      "answered_200": 0,
+      "not_executed_trace_records": 119,
+      "requests_routed_to_unready_provider": 119,
+      "sar_single_image_reported_as_provider_unavailable": 3,
+      "structured_503": 119,
+      "unready_capabilities": [
+        "grounding",
+        "single_image_vqa"
+      ]
+    },
+    "rejection_rate": {
+      "hits": 28,
+      "n": 53,
+      "rate": 0.5283018867924528
+    },
+    "rejection_rate_by_category": {
+      "invalid": {
+        "hits": 20,
+        "n": 20,
+        "rate": 1.0
+      },
+      "multi_step": {
+        "hits": 5,
+        "n": 8,
+        "rate": 0.625
+      },
+      "unsupported": {
+        "hits": 3,
+        "n": 25,
+        "rate": 0.12
+      }
+    },
+    "rejection_reason_accuracy": {
+      "hits": 28,
+      "n": 53,
+      "rate": 0.5283018867924528
+    },
+    "routing_plan_accuracy": {
+      "hits": 67,
+      "n": 104,
+      "rate": 0.6442307692307693
+    },
+    "routing_plan_accuracy_by_category": {
+      "change": {
+        "hits": 10,
+        "n": 26,
+        "rate": 0.38461538461538464
+      },
+      "grounding": {
+        "hits": 15,
+        "n": 26,
+        "rate": 0.5769230769230769
+      },
+      "optical_sar": {
+        "hits": 12,
+        "n": 21,
+        "rate": 0.5714285714285714
+      },
+      "vqa": {
+        "hits": 30,
+        "n": 31,
+        "rate": 0.967741935483871
+      }
+    },
+    "routing_plan_accuracy_by_variant": {
+      "adversarial": {
+        "hits": 11,
+        "n": 27,
+        "rate": 0.4074074074074074
+      },
+      "canonical": {
+        "hits": 31,
+        "n": 32,
+        "rate": 0.96875
+      },
+      "explicit": {
+        "hits": 4,
+        "n": 4,
+        "rate": 1.0
+      },
+      "paraphrase": {
+        "hits": 21,
+        "n": 41,
+        "rate": 0.5121951219512195
+      }
+    },
+    "unsupported_rejection_rate": {
+      "hits": 3,
+      "n": 25,
+      "rate": 0.12
+    }
+  },
+  "model_id": "orchestrator.planner phase0-rules-v1 + execution plan phase0-plan-v1 (deterministic rules, no learned model)",
+  "model_revision": "448cbffd641f0ef67b0cca2787a48d83ee13528a",
+  "notes": "PASSED = benchmark executed as designed; it is not a claim the router is good. stub_ready replaces services.route with a recorder and forces readiness True: dispatch decisions only, no model output. actual = this Mac (no CUDA; qwen_vl_utils and groundingdino missing). Labeller had read planner source before labelling; adversarial items are white-box. Labels commit message says 165 items; the file has 169.",
+  "repository": {
+    "url": "https://github.com/AtharvaPatil466/SatAi",
+    "dirty": false,
+    "sha": "448cbffd641f0ef67b0cca2787a48d83ee13528a"
+  },
+  "seed": null,
+  "split": "all (no training; evaluation-only labelled set)",
+  "started_at": "2026-09-26T08:48:43.474995+00:00",
+  "status": "PASSED",
+  "title": "Deterministic orchestrator routing + validation benchmark v1 (stub_ready + actual regimes, pair-gate suite)"
+}
