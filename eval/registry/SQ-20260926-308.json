@@ -1,0 +1,104 @@
+{
+  "adapter_revision": null,
+  "artifact_paths": {
+    "render": "/Users/atharva/satquery-data/change/renders/disaster-wayanad-landslide-2024-2025.png",
+    "results": "eval/results/change-real-pairs-v1.json"
+  },
+  "command": "python3 eval/change_real_pairs.py --register 301",
+  "dataset": "SatQuery real Sentinel-2 change pair pack (Earth Search sentinel-2-c1-l2a windows)",
+  "dataset_checksum": {
+    "t1_sha256": "f4c1369f9a61c3faa06349d500ca61b2ce43d75830260a8b92df08c06572800f",
+    "t2_sha256": "b65e33091a780b76e8ae56490c9adb3231fabe819737e92d65526f14bb834ccf"
+  },
+  "dataset_version": "data/manifests/change/pairs.v1.json",
+  "ended_at": "2026-09-26T13:37:44.834664+00:00",
+  "environment": {
+    "machine": "arm64",
+    "packages": {
+      "accelerate": "1.12.0",
+      "bitsandbytes": null,
+      "numpy": "2.4.2",
+      "peft": "0.18.1",
+      "qwen-vl-utils": null,
+      "rasterio": "1.5.1",
+      "torch": "2.10.0",
+      "transformers": "5.1.0"
+    },
+    "platform": "macOS-26.6-arm64-arm-64bit-Mach-O",
+    "processor": "arm",
+    "python": "3.13.0"
+  },
+  "experiment_id": "SQ-20260926-308",
+  "hyperparameters": {
+    "threshold": 0.1
+  },
+  "metrics": {
+    "api_status_code": 200,
+    "category": "disaster_landslide",
+    "changed_fraction": 0.021829477292202228,
+    "delta_ndvi_mean": -0.027538424582007174,
+    "delta_ndwi_mean": 0.028517439035218348,
+    "expected_outcome": "real_surface_change",
+    "gate_reason_codes": null,
+    "magnitude_p50": 0.012235201895236969,
+    "magnitude_p95": 0.04924349710345267,
+    "nir_shift_px_t2_vs_t1": {
+      "dx": -0.08329255792824251,
+      "dy": -0.014047592699228242,
+      "peak": 0.5542741508540278
+    },
+    "reference_box": {
+      "box_fraction_of_valid": 0.1338942120433123,
+      "boxes_normalized_xyxy": [
+        [
+          0.78,
+          0.18,
+          0.95,
+          0.4
+        ],
+        [
+          0.62,
+          0.38,
+          0.82,
+          0.6
+        ],
+        [
+          0.42,
+          0.58,
+          0.66,
+          0.8
+        ]
+      ],
+      "changed_fraction_inside": 0.11262217826390505,
+      "changed_fraction_outside": 0.007793527729308701,
+      "inside_outside_rate_ratio": 14.450731706563753,
+      "share_of_changed_inside": 0.6907841912748685
+    },
+    "scl": {
+      "changed_fraction_on_clear_both": 0.017931584840039066,
+      "changed_fraction_on_cloud_any": null,
+      "changed_fraction_on_scl_water_transition": null,
+      "changed_fraction_on_shadow_any": 0.19658211521926053,
+      "clear_both_fraction_of_valid": 0.9810469735919607,
+      "cloud_any_fraction_of_valid": 0.0,
+      "scl_water_transition_fraction_of_valid": 0.0,
+      "shadow_any_fraction_of_valid": 0.018119498325153853,
+      "share_of_changed_in_cloud_or_shadow": 0.1631724507092515
+    },
+    "scl_masked_changed_fraction": 0.017931584840039066,
+    "valid_fraction": 1.0
+  },
+  "model_id": "change-deterministic",
+  "model_revision": "bitemporal-difference-v1",
+  "notes": "valid, predominantly clear co-registered pair measured",
+  "repository": {
+    "url": "https://github.com/AtharvaPatil466/SatAi",
+    "dirty": true,
+    "sha": "901bd59c69c3f1aeef2adeb5ec21056db1fbdc4b"
+  },
+  "seed": null,
+  "split": "evaluation-only; no training or tuning",
+  "started_at": "2026-09-26T13:37:35.825165+00:00",
+  "status": "PASSED",
+  "title": "change-deterministic on real S2 pair: disaster-wayanad-landslide-2024-2025"
+}

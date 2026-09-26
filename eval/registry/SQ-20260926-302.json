@@ -1,0 +1,56 @@
+{
+  "adapter_revision": null,
+  "artifact_paths": {
+    "render": null,
+    "results": "eval/results/change-real-pairs-v1.json"
+  },
+  "command": "python3 eval/change_real_pairs.py --register 301",
+  "dataset": "SatQuery real Sentinel-2 change pair pack (Earth Search sentinel-2-c1-l2a windows)",
+  "dataset_checksum": {
+    "t1_sha256": null,
+    "t2_sha256": null
+  },
+  "dataset_version": "data/manifests/change/pairs.v1.json",
+  "ended_at": "2026-09-26T13:37:44.834664+00:00",
+  "environment": {
+    "machine": "arm64",
+    "packages": {
+      "accelerate": "1.12.0",
+      "bitsandbytes": null,
+      "numpy": "2.4.2",
+      "peft": "0.18.1",
+      "qwen-vl-utils": null,
+      "rasterio": "1.5.1",
+      "torch": "2.10.0",
+      "transformers": "5.1.0"
+    },
+    "platform": "macOS-26.6-arm64-arm-64bit-Mach-O",
+    "processor": "arm",
+    "python": "3.13.0"
+  },
+  "experiment_id": "SQ-20260926-302",
+  "hyperparameters": {
+    "threshold": 0.1
+  },
+  "metrics": {
+    "api_status_code": 422,
+    "category": "rejection_temporal_order",
+    "expected_outcome": "gate_rejection",
+    "gate_reason_codes": [
+      "acquisition_order_invalid"
+    ]
+  },
+  "model_id": "change-deterministic",
+  "model_revision": "bitemporal-difference-v1",
+  "notes": "gate rejected as expected with ['acquisition_order_invalid']",
+  "repository": {
+    "url": "https://github.com/AtharvaPatil466/SatAi",
+    "dirty": true,
+    "sha": "901bd59c69c3f1aeef2adeb5ec21056db1fbdc4b"
+  },
+  "seed": null,
+  "split": "evaluation-only; no training or tuning",
+  "started_at": "2026-09-26T13:37:35.825165+00:00",
+  "status": "PASSED",
+  "title": "change-deterministic on real S2 pair: urban-jewar-airport-2021-2025::reversed-order"
+}

@@ -1,0 +1,234 @@
+{
+  "observations": [
+    {
+      "acquisition_time": "2024-03-09T05:40:18.027000Z",
+      "aoi_nodata_fraction": 0.0,
+      "aoi_scl_histogram": {
+        "2": 228,
+        "4": 37468,
+        "5": 116744
+      },
+      "asset_file_checksums": {
+        "B02": "122063bd4019035d41e59e678c4d542a08888b3cb6cad04bed1c6f5116b78a7d6850",
+        "B03": "122063914debb00747210001461b7a9b405f54a03cac97773974bb52f3901af42d9e",
+        "B04": "1220a6028582fdef59ba59f075f4a76cfaa8b873123249a63e773f5d378c4c01fb18",
+        "B08": "122090687ea6b9dcab6c8c0569d57b50866f24d336a654d6a21618bc9b22c91fc62c",
+        "SCL": "122002bf75b35c80f9c2160ac79b77c5ba49b2decf5f58330622f98fd449db5a4a51"
+      },
+      "asset_hrefs": {
+        "B02": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/43/R/FQ/2024/3/S2B_T43RFQ_20240309T053132_L2A/B02.tif",
+        "B03": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/43/R/FQ/2024/3/S2B_T43RFQ_20240309T053132_L2A/B03.tif",
+        "B04": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/43/R/FQ/2024/3/S2B_T43RFQ_20240309T053132_L2A/B04.tif",
+        "B08": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/43/R/FQ/2024/3/S2B_T43RFQ_20240309T053132_L2A/B08.tif",
+        "SCL": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/43/R/FQ/2024/3/S2B_T43RFQ_20240309T053132_L2A/SCL.tif"
+      },
+      "collection": "sentinel-2-c1-l2a",
+      "declared_scaling": {
+        "B02": {
+          "offset": -0.1,
+          "scale": 0.0001
+        },
+        "B03": {
+          "offset": -0.1,
+          "scale": 0.0001
+        },
+        "B04": {
+          "offset": -0.1,
+          "scale": 0.0001
+        },
+        "B08": {
+          "offset": -0.1,
+          "scale": 0.0001
+        }
+      },
+      "estimated_bytes_transferred": 12657751,
+      "granule_id": null,
+      "label": "t1",
+      "mgrs_tile": "MGRS-43RFQ",
+      "native_window": {
+        "col_off": 6846,
+        "height": 396,
+        "row_off": 9620,
+        "width": 390
+      },
+      "observed_red_dn_p01": 1247.0,
+      "platform": "sentinel-2b",
+      "processing_baseline": "05.10",
+      "product_uri": "S2B_MSIL2A_20240309T052639_N0510_R105_T43RFQ_20240309T080348.SAFE",
+      "raster": {
+        "band_descriptions": [
+          "B02",
+          "B03",
+          "B04",
+          "B08",
+          "dataMask"
+        ],
+        "bounds": [
+          668460.0,
+          3399880.0,
+          672360.0,
+          3403840.0
+        ],
+        "bytes": 2204975,
+        "crs": "EPSG:32643",
+        "dtype": "float32",
+        "height": 396,
+        "mask_semantics": "dataMask=1 where all four bands have non-zero DN; clouds are NOT masked",
+        "nodata_tag": null,
+        "path": "t1.tif",
+        "resolution_m": [
+          10.0,
+          10.0
+        ],
+        "sha256": "ddaaf5f51792c7adb2064fba0607ed01ea252fd5e4b596cbd10cb4b05ac9f233",
+        "transform": [
+          10.0,
+          0.0,
+          668460.0,
+          0.0,
+          -10.0,
+          3403840.0
+        ],
+        "units": "surface reflectance = DN * scale + offset (STAC raster:bands)",
+        "width": 390
+      },
+      "scl_raster": {
+        "derivation": "SCL 20 m window, nearest 2x2 replication to 10 m",
+        "path": "t1_scl.tif",
+        "sha256": "8aadaa7697b9885db6a139c6fad2fad7cdbf6f212405d7d6d8a4df5d9c6c83d6"
+      },
+      "stac_item_id": "S2B_T43RFQ_20240309T053132_L2A",
+      "sun_azimuth_deg": 146.8889169456,
+      "sun_elevation_deg": 49.344852833617,
+      "tile_cloud_cover_percent": 0.104575
+    },
+    {
+      "acquisition_time": "2025-03-24T05:40:25.971000Z",
+      "aoi_nodata_fraction": 0.0,
+      "aoi_scl_histogram": {
+        "2": 32,
+        "4": 16976,
+        "5": 137432
+      },
+      "asset_file_checksums": {
+        "B02": "12201e6d07ad054c4f97de0c4c5c619df365329d641b545f74fd00a24618495dccfa",
+        "B03": "1220e13706d51a7a90824758cc390836026e0d2703a527a26361f9d7aa7c6a227620",
+        "B04": "1220a615d7ed3c37a8d407d56a6bbb7d706c7fb0dac2ae8cee76fa702a34b543560e",
+        "B08": "122095686e507ae7c1a3f528732c870c898efb6d6f03f617d77ae730480aa0d8c0ad",
+        "SCL": "122004caeb54aa073d928714b1ea4fb75c2283414efc74c47ad29859928870345c3c"
+      },
+      "asset_hrefs": {
+        "B02": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/43/R/FQ/2025/3/S2B_T43RFQ_20250324T054002_L2A/B02.tif",
+        "B03": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/43/R/FQ/2025/3/S2B_T43RFQ_20250324T054002_L2A/B03.tif",
+        "B04": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/43/R/FQ/2025/3/S2B_T43RFQ_20250324T054002_L2A/B04.tif",
+        "B08": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/43/R/FQ/2025/3/S2B_T43RFQ_20250324T054002_L2A/B08.tif",
+        "SCL": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/43/R/FQ/2025/3/S2B_T43RFQ_20250324T054002_L2A/SCL.tif"
+      },
+      "collection": "sentinel-2-c1-l2a",
+      "declared_scaling": {
+        "B02": {
+          "offset": -0.1,
+          "scale": 0.0001
+        },
+        "B03": {
+          "offset": -0.1,
+          "scale": 0.0001
+        },
+        "B04": {
+          "offset": -0.1,
+          "scale": 0.0001
+        },
+        "B08": {
+          "offset": -0.1,
+          "scale": 0.0001
+        }
+      },
+      "estimated_bytes_transferred": 12473903,
+      "granule_id": null,
+      "label": "t2",
+      "mgrs_tile": "MGRS-43RFQ",
+      "native_window": {
+        "col_off": 6846,
+        "height": 396,
+        "row_off": 9620,
+        "width": 390
+      },
+      "observed_red_dn_p01": 1387.0,
+      "platform": "sentinel-2b",
+      "processing_baseline": "05.11",
+      "product_uri": "S2B_MSIL2A_20250324T052649_N0511_R105_T43RFQ_20250324T074123.SAFE",
+      "raster": {
+        "band_descriptions": [
+          "B02",
+          "B03",
+          "B04",
+          "B08",
+          "dataMask"
+        ],
+        "bounds": [
+          668460.0,
+          3399880.0,
+          672360.0,
+          3403840.0
+        ],
+        "bytes": 2165921,
+        "crs": "EPSG:32643",
+        "dtype": "float32",
+        "height": 396,
+        "mask_semantics": "dataMask=1 where all four bands have non-zero DN; clouds are NOT masked",
+        "nodata_tag": null,
+        "path": "t2.tif",
+        "resolution_m": [
+          10.0,
+          10.0
+        ],
+        "sha256": "ad13961319d704f8216ff2ad93dbb3c871a16daef9d75fbf7b49d8beb1e873a6",
+        "transform": [
+          10.0,
+          0.0,
+          668460.0,
+          0.0,
+          -10.0,
+          3403840.0
+        ],
+        "units": "surface reflectance = DN * scale + offset (STAC raster:bands)",
+        "width": 390
+      },
+      "scl_raster": {
+        "derivation": "SCL 20 m window, nearest 2x2 replication to 10 m",
+        "path": "t2_scl.tif",
+        "sha256": "f48e5108c96699bc063c2d8f1b5ce8ef76dacd293200b538bf5ee2fe87328a77"
+      },
+      "stac_item_id": "S2B_T43RFQ_20250324T054002_L2A",
+      "sun_azimuth_deg": 143.807303419345,
+      "sun_elevation_deg": 54.9567591997305,
+      "tile_cloud_cover_percent": 0.229586
+    }
+  ],
+  "pair_id": "control-chandigarh-interannual-2024-2025",
+  "retrieved_at": "2026-09-26T08:53:27.671677+00:00",
+  "same_native_grid": true,
+  "schema": "satquery.change_pair_provenance.v1",
+  "source": {
+    "access": "public, anonymous HTTPS range reads of COGs",
+    "collection": "sentinel-2-c1-l2a",
+    "stac_api": "https://earth-search.aws.element84.com/v1"
+  },
+  "spec": {
+    "aoi_lonlat": [
+      76.76,
+      30.72,
+      76.8,
+      30.755
+    ],
+    "category": "control_interannual_same_season",
+    "collection": "sentinel-2-c1-l2a",
+    "confounders": "Urban greenery phenology, small construction, year-to-year atmosphere.",
+    "event": "Same established sectors one year apart, same platform, 15-day day-of-year difference.",
+    "expected_outcome": "no_land_cover_change",
+    "pair_id": "control-chandigarh-interannual-2024-2025",
+    "t1_item": "S2B_T43RFQ_20240309T053132_L2A",
+    "t2_item": "S2B_T43RFQ_20250324T054002_L2A"
+  },
+  "window_policy": "T2 reuses T1's exact native pixel window"
+}

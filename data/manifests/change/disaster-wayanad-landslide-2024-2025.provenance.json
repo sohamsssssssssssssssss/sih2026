@@ -1,0 +1,236 @@
+{
+  "observations": [
+    {
+      "acquisition_time": "2024-02-10T05:35:43.384000Z",
+      "aoi_nodata_fraction": 0.0,
+      "aoi_scl_histogram": {
+        "2": 5900,
+        "4": 500312,
+        "5": 6848,
+        "7": 420
+      },
+      "asset_file_checksums": {
+        "B02": "122045970e7aba65c8237fa50c8ed4f234e8871e37895a130fc7a39515e0ef007d16",
+        "B03": "12201e9856c25b7359bb9d34d5be0195ece065fd33b27569f0c6215f77544aa0f336",
+        "B04": "12204c4dd614de27a43328414562b9c9d2909258ef2ba84c6ba8e8adb5c27a841b9b",
+        "B08": "12203d236f3243565c17297201f5434928bfa10841e71d62a49e69192fb792eea666",
+        "SCL": "1220cd1fdc1706b08f0b43e6ffbd1317062f881e821c66f10f5966fd4d2eb35bfc7a"
+      },
+      "asset_hrefs": {
+        "B02": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/43/P/FN/2024/2/S2A_T43PFN_20240210T052850_L2A/B02.tif",
+        "B03": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/43/P/FN/2024/2/S2A_T43PFN_20240210T052850_L2A/B03.tif",
+        "B04": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/43/P/FN/2024/2/S2A_T43PFN_20240210T052850_L2A/B04.tif",
+        "B08": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/43/P/FN/2024/2/S2A_T43PFN_20240210T052850_L2A/B08.tif",
+        "SCL": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/43/P/FN/2024/2/S2A_T43PFN_20240210T052850_L2A/SCL.tif"
+      },
+      "collection": "sentinel-2-c1-l2a",
+      "declared_scaling": {
+        "B02": {
+          "offset": -0.1,
+          "scale": 0.0001
+        },
+        "B03": {
+          "offset": -0.1,
+          "scale": 0.0001
+        },
+        "B04": {
+          "offset": -0.1,
+          "scale": 0.0001
+        },
+        "B08": {
+          "offset": -0.1,
+          "scale": 0.0001
+        }
+      },
+      "estimated_bytes_transferred": 11198383,
+      "granule_id": null,
+      "label": "t1",
+      "mgrs_tile": "MGRS-43PFN",
+      "native_window": {
+        "col_off": 2104,
+        "height": 778,
+        "row_off": 2628,
+        "width": 660
+      },
+      "observed_red_dn_p01": 1100.0,
+      "platform": "sentinel-2a",
+      "processing_baseline": "05.10",
+      "product_uri": "S2A_MSIL2A_20240210T051951_N0510_R062_T43PFN_20240210T092349.SAFE",
+      "raster": {
+        "band_descriptions": [
+          "B02",
+          "B03",
+          "B04",
+          "B08",
+          "dataMask"
+        ],
+        "bounds": [
+          621040.0,
+          1265960.0,
+          627640.0,
+          1273740.0
+        ],
+        "bytes": 7102489,
+        "crs": "EPSG:32643",
+        "dtype": "float32",
+        "height": 778,
+        "mask_semantics": "dataMask=1 where all four bands have non-zero DN; clouds are NOT masked",
+        "nodata_tag": null,
+        "path": "t1.tif",
+        "resolution_m": [
+          10.0,
+          10.0
+        ],
+        "sha256": "f4c1369f9a61c3faa06349d500ca61b2ce43d75830260a8b92df08c06572800f",
+        "transform": [
+          10.0,
+          0.0,
+          621040.0,
+          0.0,
+          -10.0,
+          1273740.0
+        ],
+        "units": "surface reflectance = DN * scale + offset (STAC raster:bands)",
+        "width": 660
+      },
+      "scl_raster": {
+        "derivation": "SCL 20 m window, nearest 2x2 replication to 10 m",
+        "path": "t1_scl.tif",
+        "sha256": "c53803eb19d5f859d5caf398932529089b5c2641282be541ce69388efd570a16"
+      },
+      "stac_item_id": "S2A_T43PFN_20240210T052850_L2A",
+      "sun_azimuth_deg": 137.737950944987,
+      "sun_elevation_deg": 55.4737466320766,
+      "tile_cloud_cover_percent": 1.291316
+    },
+    {
+      "acquisition_time": "2025-02-09T05:35:49.492000Z",
+      "aoi_nodata_fraction": 0.0,
+      "aoi_scl_histogram": {
+        "2": 8584,
+        "4": 491708,
+        "5": 13144,
+        "7": 44
+      },
+      "asset_file_checksums": {
+        "B02": "12202f209b21cc39cb360a0da8579c0c8f079cb641384b9d9ad18741555958a2feae",
+        "B03": "12207e90b3fbb99076378abc36c422f80d43fe800371c8a0afb97f5b931c7fe90d6b",
+        "B04": "122067c3bf61322d3655401f39aa28d679e0892f292865a13290e8428d267b61b97b",
+        "B08": "1220f0dfcdfd51d26d69951993f9aa202b9e18ae68fc04532e9d12fbbe6a01fa848b",
+        "SCL": "12208b7bb5f55886225b46325a16ecf91c417922760e049ad74c5d6aa6f6cfe83b99"
+      },
+      "asset_hrefs": {
+        "B02": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/43/P/FN/2025/2/S2B_T43PFN_20250209T052942_L2A/B02.tif",
+        "B03": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/43/P/FN/2025/2/S2B_T43PFN_20250209T052942_L2A/B03.tif",
+        "B04": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/43/P/FN/2025/2/S2B_T43PFN_20250209T052942_L2A/B04.tif",
+        "B08": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/43/P/FN/2025/2/S2B_T43PFN_20250209T052942_L2A/B08.tif",
+        "SCL": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/43/P/FN/2025/2/S2B_T43PFN_20250209T052942_L2A/SCL.tif"
+      },
+      "collection": "sentinel-2-c1-l2a",
+      "declared_scaling": {
+        "B02": {
+          "offset": -0.1,
+          "scale": 0.0001
+        },
+        "B03": {
+          "offset": -0.1,
+          "scale": 0.0001
+        },
+        "B04": {
+          "offset": -0.1,
+          "scale": 0.0001
+        },
+        "B08": {
+          "offset": -0.1,
+          "scale": 0.0001
+        }
+      },
+      "estimated_bytes_transferred": 11234894,
+      "granule_id": null,
+      "label": "t2",
+      "mgrs_tile": "MGRS-43PFN",
+      "native_window": {
+        "col_off": 2104,
+        "height": 778,
+        "row_off": 2628,
+        "width": 660
+      },
+      "observed_red_dn_p01": 1127.0,
+      "platform": "sentinel-2b",
+      "processing_baseline": "05.11",
+      "product_uri": "S2B_MSIL2A_20250209T051859_N0511_R062_T43PFN_20250209T075235.SAFE",
+      "raster": {
+        "band_descriptions": [
+          "B02",
+          "B03",
+          "B04",
+          "B08",
+          "dataMask"
+        ],
+        "bounds": [
+          621040.0,
+          1265960.0,
+          627640.0,
+          1273740.0
+        ],
+        "bytes": 7038819,
+        "crs": "EPSG:32643",
+        "dtype": "float32",
+        "height": 778,
+        "mask_semantics": "dataMask=1 where all four bands have non-zero DN; clouds are NOT masked",
+        "nodata_tag": null,
+        "path": "t2.tif",
+        "resolution_m": [
+          10.0,
+          10.0
+        ],
+        "sha256": "b65e33091a780b76e8ae56490c9adb3231fabe819737e92d65526f14bb834ccf",
+        "transform": [
+          10.0,
+          0.0,
+          621040.0,
+          0.0,
+          -10.0,
+          1273740.0
+        ],
+        "units": "surface reflectance = DN * scale + offset (STAC raster:bands)",
+        "width": 660
+      },
+      "scl_raster": {
+        "derivation": "SCL 20 m window, nearest 2x2 replication to 10 m",
+        "path": "t2_scl.tif",
+        "sha256": "427843e28361d22f06c11c057c867e03d30f298883cd15d991cd4297c03be29d"
+      },
+      "stac_item_id": "S2B_T43PFN_20250209T052942_L2A",
+      "sun_azimuth_deg": 137.864522469845,
+      "sun_elevation_deg": 55.4347656025471,
+      "tile_cloud_cover_percent": 1.137621
+    }
+  ],
+  "pair_id": "disaster-wayanad-landslide-2024-2025",
+  "retrieved_at": "2026-09-26T08:52:30.982937+00:00",
+  "same_native_grid": true,
+  "schema": "satquery.change_pair_provenance.v1",
+  "source": {
+    "access": "public, anonymous HTTPS range reads of COGs",
+    "collection": "sentinel-2-c1-l2a",
+    "stac_api": "https://earth-search.aws.element84.com/v1"
+  },
+  "spec": {
+    "aoi_lonlat": [
+      76.11,
+      11.45,
+      76.17,
+      11.52
+    ],
+    "category": "disaster_landslide",
+    "collection": "sentinel-2-c1-l2a",
+    "confounders": "Tile 43PFN has ~27% swath-edge nodata; hill-shadow and orographic cloud are common; one year of vegetation regrowth on the scar.",
+    "event": "Wayanad (Kerala) debris flow of 30 Jul 2024 through Punchirimattam, Mundakkai and Chooralmala. Dry-season images one year apart bracket the event.",
+    "expected_outcome": "real_surface_change",
+    "pair_id": "disaster-wayanad-landslide-2024-2025",
+    "t1_item": "S2A_T43PFN_20240210T052850_L2A",
+    "t2_item": "S2B_T43PFN_20250209T052942_L2A"
+  },
+  "window_policy": "T2 reuses T1's exact native pixel window"
+}

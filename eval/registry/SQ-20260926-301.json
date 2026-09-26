@@ -1,0 +1,92 @@
+{
+  "adapter_revision": null,
+  "artifact_paths": {
+    "render": "/Users/atharva/satquery-data/change/renders/urban-jewar-airport-2021-2025.png",
+    "results": "eval/results/change-real-pairs-v1.json"
+  },
+  "command": "python3 eval/change_real_pairs.py --register 301",
+  "dataset": "SatQuery real Sentinel-2 change pair pack (Earth Search sentinel-2-c1-l2a windows)",
+  "dataset_checksum": {
+    "t1_sha256": "b8ea89d3deb92534287c7aedbbaed776916bcbdd59031d3f93c0e79c98c72797",
+    "t2_sha256": "a727c586939d1b53f73619a5a07426b676b3cffbe9da32dc1b49155dc42aae69"
+  },
+  "dataset_version": "data/manifests/change/pairs.v1.json",
+  "ended_at": "2026-09-26T13:37:44.834664+00:00",
+  "environment": {
+    "machine": "arm64",
+    "packages": {
+      "accelerate": "1.12.0",
+      "bitsandbytes": null,
+      "numpy": "2.4.2",
+      "peft": "0.18.1",
+      "qwen-vl-utils": null,
+      "rasterio": "1.5.1",
+      "torch": "2.10.0",
+      "transformers": "5.1.0"
+    },
+    "platform": "macOS-26.6-arm64-arm-64bit-Mach-O",
+    "processor": "arm",
+    "python": "3.13.0"
+  },
+  "experiment_id": "SQ-20260926-301",
+  "hyperparameters": {
+    "threshold": 0.1
+  },
+  "metrics": {
+    "api_status_code": 200,
+    "category": "urban_construction",
+    "changed_fraction": 0.22092847163193324,
+    "delta_ndvi_mean": -0.01963395072507528,
+    "delta_ndwi_mean": 0.003729702539510798,
+    "expected_outcome": "real_surface_change",
+    "gate_reason_codes": null,
+    "magnitude_p50": 0.05244056321680546,
+    "magnitude_p95": 0.21708348691463433,
+    "nir_shift_px_t2_vs_t1": {
+      "dx": 0.011798909729278162,
+      "dy": -0.031379516044616,
+      "peak": 0.09891253092804171
+    },
+    "reference_box": {
+      "box_fraction_of_valid": 0.4504792332268371,
+      "boxes_normalized_xyxy": [
+        [
+          0.0,
+          0.27,
+          1.0,
+          0.72
+        ]
+      ],
+      "changed_fraction_inside": 0.3488949617194786,
+      "changed_fraction_outside": 0.11602570940900363,
+      "inside_outside_rate_ratio": 3.0070487264989243,
+      "share_of_changed_inside": 0.7114064279317627
+    },
+    "scl": {
+      "changed_fraction_on_clear_both": 0.21952922157448684,
+      "changed_fraction_on_cloud_any": null,
+      "changed_fraction_on_scl_water_transition": 0.9476102941176471,
+      "changed_fraction_on_shadow_any": null,
+      "clear_both_fraction_of_valid": 0.9972056941309806,
+      "cloud_any_fraction_of_valid": 0.0,
+      "scl_water_transition_fraction_of_valid": 0.00531504333128157,
+      "shadow_any_fraction_of_valid": 0.0,
+      "share_of_changed_in_cloud_or_shadow": 0.0
+    },
+    "scl_masked_changed_fraction": 0.21952922157448684,
+    "valid_fraction": 1.0
+  },
+  "model_id": "change-deterministic",
+  "model_revision": "bitemporal-difference-v1",
+  "notes": "valid, predominantly clear co-registered pair measured",
+  "repository": {
+    "url": "https://github.com/AtharvaPatil466/SatAi",
+    "dirty": true,
+    "sha": "901bd59c69c3f1aeef2adeb5ec21056db1fbdc4b"
+  },
+  "seed": null,
+  "split": "evaluation-only; no training or tuning",
+  "started_at": "2026-09-26T13:37:35.825165+00:00",
+  "status": "PASSED",
+  "title": "change-deterministic on real S2 pair: urban-jewar-airport-2021-2025"
+}

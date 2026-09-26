@@ -1,0 +1,238 @@
+{
+  "observations": [
+    {
+      "acquisition_time": "2019-06-15T05:15:20.292000Z",
+      "aoi_nodata_fraction": 0.0,
+      "aoi_scl_histogram": {
+        "4": 6300,
+        "5": 310260,
+        "6": 46744,
+        "7": 4,
+        "8": 1624
+      },
+      "asset_file_checksums": {
+        "B02": "1220b3f60d42c79e2b2d36a697e5d7329cec87c53b30b903dc8bd15efd78f0f11629",
+        "B03": "1220b1d11f824e741047ef70506d785b70dffe1db48379359c52f5d42f7d7b69bd21",
+        "B04": "122030d6561c97cb81fcecbd3799be95b7ddb7777712666644fa5f2040ff4c18fdde",
+        "B08": "122024bf4ff487db724376e73291d6b5b7b300dce195ff88fc61ea4c207b24b6673e",
+        "SCL": "12202fee4965a939b5874cb9a54899f869f1454827e0caa08fe8683c38472c1badc9"
+      },
+      "asset_hrefs": {
+        "B02": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/44/P/MV/2019/6/S2B_T44PMV_20190615T050930_L2A/B02.tif",
+        "B03": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/44/P/MV/2019/6/S2B_T44PMV_20190615T050930_L2A/B03.tif",
+        "B04": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/44/P/MV/2019/6/S2B_T44PMV_20190615T050930_L2A/B04.tif",
+        "B08": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/44/P/MV/2019/6/S2B_T44PMV_20190615T050930_L2A/B08.tif",
+        "SCL": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/44/P/MV/2019/6/S2B_T44PMV_20190615T050930_L2A/SCL.tif"
+      },
+      "collection": "sentinel-2-c1-l2a",
+      "declared_scaling": {
+        "B02": {
+          "offset": -0.1,
+          "scale": 0.0001
+        },
+        "B03": {
+          "offset": -0.1,
+          "scale": 0.0001
+        },
+        "B04": {
+          "offset": -0.1,
+          "scale": 0.0001
+        },
+        "B08": {
+          "offset": -0.1,
+          "scale": 0.0001
+        }
+      },
+      "estimated_bytes_transferred": 12179113,
+      "granule_id": null,
+      "label": "t1",
+      "mgrs_tile": "MGRS-44PMV",
+      "native_window": {
+        "col_off": 574,
+        "height": 558,
+        "row_off": 4168,
+        "width": 654
+      },
+      "observed_red_dn_p01": 1834.0,
+      "platform": "sentinel-2b",
+      "processing_baseline": "05.00",
+      "product_uri": "S2B_MSIL2A_20190615T045709_N0500_R119_T44PMV_20230626T160651.SAFE",
+      "raster": {
+        "band_descriptions": [
+          "B02",
+          "B03",
+          "B04",
+          "B08",
+          "dataMask"
+        ],
+        "bounds": [
+          405700.0,
+          1452740.0,
+          412240.0,
+          1458320.0
+        ],
+        "bytes": 4800459,
+        "crs": "EPSG:32644",
+        "dtype": "float32",
+        "height": 558,
+        "mask_semantics": "dataMask=1 where all four bands have non-zero DN; clouds are NOT masked",
+        "nodata_tag": null,
+        "path": "t1.tif",
+        "resolution_m": [
+          10.0,
+          10.0
+        ],
+        "sha256": "11de85349f5570eebfb15fe037b31d395fea927c7fad6dc2bb5ac92b893c068a",
+        "transform": [
+          10.0,
+          0.0,
+          405700.0,
+          0.0,
+          -10.0,
+          1458320.0
+        ],
+        "units": "surface reflectance = DN * scale + offset (STAC raster:bands)",
+        "width": 654
+      },
+      "scl_raster": {
+        "derivation": "SCL 20 m window, nearest 2x2 replication to 10 m",
+        "path": "t1_scl.tif",
+        "sha256": "a665bd9780c63b4eaf3014ae027e3a1349fe1e2164927abff5683e082e4833ba"
+      },
+      "stac_item_id": "S2B_T44PMV_20190615T050930_L2A",
+      "sun_azimuth_deg": 59.5244124022131,
+      "sun_elevation_deg": 67.89189196049429,
+      "tile_cloud_cover_percent": 7.963013
+    },
+    {
+      "acquisition_time": "2021-05-30T05:15:13.736000Z",
+      "aoi_nodata_fraction": 0.0,
+      "aoi_scl_histogram": {
+        "2": 4,
+        "4": 25168,
+        "5": 160664,
+        "6": 139776,
+        "7": 39320
+      },
+      "asset_file_checksums": {
+        "B02": "1220677a09fb1791b08068543f828397cf3203eb411fcc1a6f8a2ef40a582e09c84e",
+        "B03": "122088116a81ef02854eee973aa6c3b44d70b29426fd22f4d4d40e8122e3e5067bab",
+        "B04": "122009db5eb44fae3ae348a233905dab6f3414e20f2717f4cfca35ee75fc8c87873e",
+        "B08": "12202229007f0a637ce876874ae40dac9034283065c422c81b1c45b0b6ff42c38f80",
+        "SCL": "12201117da4c0ff3784ea88fec64f62d53f9bbc4a18e15b2dbdb70332bf35ea26732"
+      },
+      "asset_hrefs": {
+        "B02": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/44/P/MV/2021/5/S2A_T44PMV_20210530T051409_L2A/B02.tif",
+        "B03": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/44/P/MV/2021/5/S2A_T44PMV_20210530T051409_L2A/B03.tif",
+        "B04": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/44/P/MV/2021/5/S2A_T44PMV_20210530T051409_L2A/B04.tif",
+        "B08": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/44/P/MV/2021/5/S2A_T44PMV_20210530T051409_L2A/B08.tif",
+        "SCL": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/44/P/MV/2021/5/S2A_T44PMV_20210530T051409_L2A/SCL.tif"
+      },
+      "collection": "sentinel-2-c1-l2a",
+      "declared_scaling": {
+        "B02": {
+          "offset": -0.1,
+          "scale": 0.0001
+        },
+        "B03": {
+          "offset": -0.1,
+          "scale": 0.0001
+        },
+        "B04": {
+          "offset": -0.1,
+          "scale": 0.0001
+        },
+        "B08": {
+          "offset": -0.1,
+          "scale": 0.0001
+        }
+      },
+      "estimated_bytes_transferred": 12322904,
+      "granule_id": null,
+      "label": "t2",
+      "mgrs_tile": "MGRS-44PMV",
+      "native_window": {
+        "col_off": 574,
+        "height": 558,
+        "row_off": 4168,
+        "width": 654
+      },
+      "observed_red_dn_p01": 1235.0,
+      "platform": "sentinel-2a",
+      "processing_baseline": "05.00",
+      "product_uri": "S2A_MSIL2A_20210530T045701_N0500_R119_T44PMV_20230215T070040.SAFE",
+      "raster": {
+        "band_descriptions": [
+          "B02",
+          "B03",
+          "B04",
+          "B08",
+          "dataMask"
+        ],
+        "bounds": [
+          405700.0,
+          1452740.0,
+          412240.0,
+          1458320.0
+        ],
+        "bytes": 4748287,
+        "crs": "EPSG:32644",
+        "dtype": "float32",
+        "height": 558,
+        "mask_semantics": "dataMask=1 where all four bands have non-zero DN; clouds are NOT masked",
+        "nodata_tag": null,
+        "path": "t2.tif",
+        "resolution_m": [
+          10.0,
+          10.0
+        ],
+        "sha256": "3faaf79cd7df41d72a7fdb6d16ad36c58dc05d3fa6f3a30a80f213d1103e079e",
+        "transform": [
+          10.0,
+          0.0,
+          405700.0,
+          0.0,
+          -10.0,
+          1458320.0
+        ],
+        "units": "surface reflectance = DN * scale + offset (STAC raster:bands)",
+        "width": 654
+      },
+      "scl_raster": {
+        "derivation": "SCL 20 m window, nearest 2x2 replication to 10 m",
+        "path": "t2_scl.tif",
+        "sha256": "48cfa633176103a4fa6164f8b6c58d19a31eea9732eafd73d3cf54df00e95909"
+      },
+      "stac_item_id": "S2A_T44PMV_20210530T051409_L2A",
+      "sun_azimuth_deg": 62.60922365435,
+      "sun_elevation_deg": 69.0515768306289,
+      "tile_cloud_cover_percent": 0.213105
+    }
+  ],
+  "pair_id": "water-puzhal-lake-2019-2021",
+  "retrieved_at": "2026-09-26T08:51:54.271287+00:00",
+  "same_native_grid": true,
+  "schema": "satquery.change_pair_provenance.v1",
+  "source": {
+    "access": "public, anonymous HTTPS range reads of COGs",
+    "collection": "sentinel-2-c1-l2a",
+    "stac_api": "https://earth-search.aws.element84.com/v1"
+  },
+  "spec": {
+    "aoi_lonlat": [
+      80.13,
+      13.14,
+      80.19,
+      13.19
+    ],
+    "category": "water_change_gain",
+    "collection": "sentinel-2-c1-l2a",
+    "confounders": "Different platforms (S2B/S2A); 16-day day-of-year difference; T1 tile cloud cover 8%.",
+    "event": "Same reservoir: near-empty June 2019 (crisis) versus refilled after the 2020 north-east monsoon (late May 2021).",
+    "expected_outcome": "real_surface_change",
+    "pair_id": "water-puzhal-lake-2019-2021",
+    "t1_item": "S2B_T44PMV_20190615T050930_L2A",
+    "t2_item": "S2A_T44PMV_20210530T051409_L2A"
+  },
+  "window_policy": "T2 reuses T1's exact native pixel window"
+}

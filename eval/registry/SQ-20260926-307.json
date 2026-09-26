@@ -1,0 +1,78 @@
+{
+  "adapter_revision": null,
+  "artifact_paths": {
+    "render": "/Users/atharva/satquery-data/change/renders/vegetation-kancha-gachibowli-2025.png",
+    "results": "eval/results/change-real-pairs-v1.json"
+  },
+  "command": "python3 eval/change_real_pairs.py --register 301",
+  "dataset": "SatQuery real Sentinel-2 change pair pack (Earth Search sentinel-2-c1-l2a windows)",
+  "dataset_checksum": {
+    "t1_sha256": "fda048bce37e63d579e93588f86fbe3cee0e897ab914cd3f7d897f38408e87a6",
+    "t2_sha256": "8c5c637b8b03a3188072c8e2999e1dc43afe7c6a8400410c3efdedb6be5a1851"
+  },
+  "dataset_version": "data/manifests/change/pairs.v1.json",
+  "ended_at": "2026-09-26T13:37:44.834664+00:00",
+  "environment": {
+    "machine": "arm64",
+    "packages": {
+      "accelerate": "1.12.0",
+      "bitsandbytes": null,
+      "numpy": "2.4.2",
+      "peft": "0.18.1",
+      "qwen-vl-utils": null,
+      "rasterio": "1.5.1",
+      "torch": "2.10.0",
+      "transformers": "5.1.0"
+    },
+    "platform": "macOS-26.6-arm64-arm-64bit-Mach-O",
+    "processor": "arm",
+    "python": "3.13.0"
+  },
+  "experiment_id": "SQ-20260926-307",
+  "hyperparameters": {
+    "threshold": 0.1
+  },
+  "metrics": {
+    "api_status_code": 200,
+    "category": "vegetation_change",
+    "changed_fraction": 0.027888837386660214,
+    "delta_ndvi_mean": 0.04078308977035661,
+    "delta_ndwi_mean": -0.014492078955689935,
+    "expected_outcome": "real_surface_change",
+    "gate_reason_codes": null,
+    "magnitude_p50": 0.021600663661956787,
+    "magnitude_p95": 0.08477856367826456,
+    "nir_shift_px_t2_vs_t1": {
+      "dx": -0.020752223039345923,
+      "dy": -0.10937866664905135,
+      "peak": 0.5812291437764734
+    },
+    "reference_box": null,
+    "scl": {
+      "changed_fraction_on_clear_both": 0.026092180141512246,
+      "changed_fraction_on_cloud_any": null,
+      "changed_fraction_on_scl_water_transition": 0.6818181818181818,
+      "changed_fraction_on_shadow_any": 0.41317365269461076,
+      "clear_both_fraction_of_valid": 0.9958739864780011,
+      "cloud_any_fraction_of_valid": 0.0,
+      "scl_water_transition_fraction_of_valid": 0.0006530381113955151,
+      "shadow_any_fraction_of_valid": 0.000762638913308049,
+      "share_of_changed_in_cloud_or_shadow": 0.011298509906664483
+    },
+    "scl_masked_changed_fraction": 0.026092180141512246,
+    "valid_fraction": 0.999783128789539
+  },
+  "model_id": "change-deterministic",
+  "model_revision": "bitemporal-difference-v1",
+  "notes": "valid, predominantly clear co-registered pair measured",
+  "repository": {
+    "url": "https://github.com/AtharvaPatil466/SatAi",
+    "dirty": true,
+    "sha": "901bd59c69c3f1aeef2adeb5ec21056db1fbdc4b"
+  },
+  "seed": null,
+  "split": "evaluation-only; no training or tuning",
+  "started_at": "2026-09-26T13:37:35.825165+00:00",
+  "status": "PASSED",
+  "title": "change-deterministic on real S2 pair: vegetation-kancha-gachibowli-2025"
+}

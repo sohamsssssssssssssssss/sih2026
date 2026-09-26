@@ -1,0 +1,233 @@
+{
+  "observations": [
+    {
+      "acquisition_time": "2024-02-16T05:50:20.135000Z",
+      "aoi_nodata_fraction": 0.0,
+      "aoi_scl_histogram": {
+        "4": 149028,
+        "5": 23900
+      },
+      "asset_file_checksums": {
+        "B02": "12206d312a9ed94f8c57b3c63e2485a7f9f81be80b1803ca04aac72f02ae10ef73af",
+        "B03": "1220983d8de7905c5cfdeb1200863aa185de1c744f97ac6c471e7340dcc061fac728",
+        "B04": "122058d5b4bf7cdb01c12ab8f6c6ebdb20f0b14b6ca1b8ec2e7c538bb91455f9112e",
+        "B08": "12206123bd5571ed0a7d40381ce4a68dda3ddfbaf52a3527f6776dd618e5ee4f8ba9",
+        "SCL": "1220b39e696a70c13da2398a4a67f768ed0bac6e35f7d89de1f1cb52e8e2f2a75342"
+      },
+      "asset_hrefs": {
+        "B02": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/43/R/EQ/2024/2/S2A_T43REQ_20240216T054950_L2A/B02.tif",
+        "B03": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/43/R/EQ/2024/2/S2A_T43REQ_20240216T054950_L2A/B03.tif",
+        "B04": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/43/R/EQ/2024/2/S2A_T43REQ_20240216T054950_L2A/B04.tif",
+        "B08": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/43/R/EQ/2024/2/S2A_T43REQ_20240216T054950_L2A/B08.tif",
+        "SCL": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/43/R/EQ/2024/2/S2A_T43REQ_20240216T054950_L2A/SCL.tif"
+      },
+      "collection": "sentinel-2-c1-l2a",
+      "declared_scaling": {
+        "B02": {
+          "offset": -0.1,
+          "scale": 0.0001
+        },
+        "B03": {
+          "offset": -0.1,
+          "scale": 0.0001
+        },
+        "B04": {
+          "offset": -0.1,
+          "scale": 0.0001
+        },
+        "B08": {
+          "offset": -0.1,
+          "scale": 0.0001
+        }
+      },
+      "estimated_bytes_transferred": 11411337,
+      "granule_id": null,
+      "label": "t1",
+      "mgrs_tile": "MGRS-43REQ",
+      "native_window": {
+        "col_off": 5740,
+        "height": 448,
+        "row_off": 9020,
+        "width": 386
+      },
+      "observed_red_dn_p01": 1170.0,
+      "platform": "sentinel-2a",
+      "processing_baseline": "05.10",
+      "product_uri": "S2A_MSIL2A_20240216T053921_N0510_R005_T43REQ_20240216T085450.SAFE",
+      "raster": {
+        "band_descriptions": [
+          "B02",
+          "B03",
+          "B04",
+          "B08",
+          "dataMask"
+        ],
+        "bounds": [
+          557380.0,
+          3405360.0,
+          561240.0,
+          3409840.0
+        ],
+        "bytes": 2337519,
+        "crs": "EPSG:32643",
+        "dtype": "float32",
+        "height": 448,
+        "mask_semantics": "dataMask=1 where all four bands have non-zero DN; clouds are NOT masked",
+        "nodata_tag": null,
+        "path": "t1.tif",
+        "resolution_m": [
+          10.0,
+          10.0
+        ],
+        "sha256": "d397b6a182c981d4188e08849266191c7b4037ca7b131cc3af6d2328de7224bf",
+        "transform": [
+          10.0,
+          0.0,
+          557380.0,
+          0.0,
+          -10.0,
+          3409840.0
+        ],
+        "units": "surface reflectance = DN * scale + offset (STAC raster:bands)",
+        "width": 386
+      },
+      "scl_raster": {
+        "derivation": "SCL 20 m window, nearest 2x2 replication to 10 m",
+        "path": "t1_scl.tif",
+        "sha256": "828998e61ee6bc747eec24a1c2eca43146863f1fb6bc7651cb332e7d84c5a367"
+      },
+      "stac_item_id": "S2A_T43REQ_20240216T054950_L2A",
+      "sun_azimuth_deg": 152.719998232475,
+      "sun_elevation_deg": 42.1867045250145,
+      "tile_cloud_cover_percent": 0.000425
+    },
+    {
+      "acquisition_time": "2024-05-06T05:50:24.938000Z",
+      "aoi_nodata_fraction": 0.0,
+      "aoi_scl_histogram": {
+        "4": 25652,
+        "5": 147008,
+        "7": 268
+      },
+      "asset_file_checksums": {
+        "B02": "12207f45f5050579ffc69e3410a00c24ebfd9da21bc5f77efa794460a6a6ffde2aa7",
+        "B03": "1220ad01fa2c09d012cf05e9c12d04557a53e94fa8c2d447592d8bda3278fa344c7c",
+        "B04": "1220a26eaaf6347ab1b5091f2bc449fa0ff8c656a84653f6760410cad1084db16a98",
+        "B08": "12201b3df0c1ff11f7e2416cec5ceb52c2384eadc8ee7dcfb051f9c3c42eadc30dae",
+        "SCL": "12209e8403fd35276bf90480265e976cce15a552aedb2991991fb80803d3b7edfc6f"
+      },
+      "asset_hrefs": {
+        "B02": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/43/R/EQ/2024/5/S2A_T43REQ_20240506T054650_L2A/B02.tif",
+        "B03": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/43/R/EQ/2024/5/S2A_T43REQ_20240506T054650_L2A/B03.tif",
+        "B04": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/43/R/EQ/2024/5/S2A_T43REQ_20240506T054650_L2A/B04.tif",
+        "B08": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/43/R/EQ/2024/5/S2A_T43REQ_20240506T054650_L2A/B08.tif",
+        "SCL": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/43/R/EQ/2024/5/S2A_T43REQ_20240506T054650_L2A/SCL.tif"
+      },
+      "collection": "sentinel-2-c1-l2a",
+      "declared_scaling": {
+        "B02": {
+          "offset": -0.1,
+          "scale": 0.0001
+        },
+        "B03": {
+          "offset": -0.1,
+          "scale": 0.0001
+        },
+        "B04": {
+          "offset": -0.1,
+          "scale": 0.0001
+        },
+        "B08": {
+          "offset": -0.1,
+          "scale": 0.0001
+        }
+      },
+      "estimated_bytes_transferred": 11209332,
+      "granule_id": null,
+      "label": "t2",
+      "mgrs_tile": "MGRS-43REQ",
+      "native_window": {
+        "col_off": 5740,
+        "height": 448,
+        "row_off": 9020,
+        "width": 386
+      },
+      "observed_red_dn_p01": 1485.0,
+      "platform": "sentinel-2a",
+      "processing_baseline": "05.10",
+      "product_uri": "S2A_MSIL2A_20240506T053641_N0510_R005_T43REQ_20240506T094758.SAFE",
+      "raster": {
+        "band_descriptions": [
+          "B02",
+          "B03",
+          "B04",
+          "B08",
+          "dataMask"
+        ],
+        "bounds": [
+          557380.0,
+          3405360.0,
+          561240.0,
+          3409840.0
+        ],
+        "bytes": 2279455,
+        "crs": "EPSG:32643",
+        "dtype": "float32",
+        "height": 448,
+        "mask_semantics": "dataMask=1 where all four bands have non-zero DN; clouds are NOT masked",
+        "nodata_tag": null,
+        "path": "t2.tif",
+        "resolution_m": [
+          10.0,
+          10.0
+        ],
+        "sha256": "d2ff568bf414ba490c15abe37a424d2776d329d6625b1233592c31067b1699e1",
+        "transform": [
+          10.0,
+          0.0,
+          557380.0,
+          0.0,
+          -10.0,
+          3409840.0
+        ],
+        "units": "surface reflectance = DN * scale + offset (STAC raster:bands)",
+        "width": 386
+      },
+      "scl_raster": {
+        "derivation": "SCL 20 m window, nearest 2x2 replication to 10 m",
+        "path": "t2_scl.tif",
+        "sha256": "7877e11481d358409103164f46ea68b63d8ee00b5c28adbf196b29da15f6c6d6"
+      },
+      "stac_item_id": "S2A_T43REQ_20240506T054650_L2A",
+      "sun_azimuth_deg": 131.180686042261,
+      "sun_elevation_deg": 69.5070783942512,
+      "tile_cloud_cover_percent": 0.001311
+    }
+  ],
+  "pair_id": "control-ludhiana-seasonal-2024",
+  "retrieved_at": "2026-09-26T08:53:59.446957+00:00",
+  "same_native_grid": true,
+  "schema": "satquery.change_pair_provenance.v1",
+  "source": {
+    "access": "public, anonymous HTTPS range reads of COGs",
+    "collection": "sentinel-2-c1-l2a",
+    "stac_api": "https://earth-search.aws.element84.com/v1"
+  },
+  "spec": {
+    "aoi_lonlat": [
+      75.6,
+      30.78,
+      75.64,
+      30.82
+    ],
+    "category": "control_seasonal_only",
+    "collection": "sentinel-2-c1-l2a",
+    "confounders": "Stubble burning and early kharif sowing may occur by early May.",
+    "event": "Irrigated Punjab farmland: rabi wheat in growth (mid-Feb) versus post-harvest (early May). Surface change is real but is crop phenology, not land-cover conversion.",
+    "expected_outcome": "phenology_only",
+    "pair_id": "control-ludhiana-seasonal-2024",
+    "t1_item": "S2A_T43REQ_20240216T054950_L2A",
+    "t2_item": "S2A_T43REQ_20240506T054650_L2A"
+  },
+  "window_policy": "T2 reuses T1's exact native pixel window"
+}

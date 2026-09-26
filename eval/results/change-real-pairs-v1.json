@@ -1,0 +1,1848 @@
+{
+  "ended_at": "2026-09-26T13:37:44.834664+00:00",
+  "provider": {
+    "name": "change-deterministic",
+    "threshold": 0.1,
+    "version": "bitemporal-difference-v1"
+  },
+  "results": [
+    {
+      "acquisition": {
+        "aoi_nodata_fraction": [
+          0.0,
+          0.0
+        ],
+        "day_of_year": [
+          64,
+          63
+        ],
+        "interval_days": 1460.0,
+        "platforms": [
+          "sentinel-2b",
+          "sentinel-2b"
+        ],
+        "processing_baselines": [
+          "05.00",
+          "05.11"
+        ],
+        "sun_elevation_deg": [
+          50.5936359199401,
+          50.2482839876846
+        ],
+        "tile_cloud_cover_percent": [
+          0.000348,
+          0.001022
+        ]
+      },
+      "api": {
+        "answer": "Deterministic change baseline found 90449 of 409404 co-valid pixels above the heuristic threshold. It does not infer semantic change classes or causes.",
+        "confidence_present": false,
+        "evidence": [
+          {
+            "bands": [
+              "B02",
+              "B03",
+              "B04",
+              "B08",
+              "dataMask"
+            ],
+            "t1": {
+              "path": "/Users/atharva/satquery-data/change/runtime/rasters/scene_5ce4124710554906ade7f5f4e013ded3.tif",
+              "sha256": "b8ea89d3deb92534287c7aedbbaed776916bcbdd59031d3f93c0e79c98c72797"
+            },
+            "t2": {
+              "path": "/Users/atharva/satquery-data/change/runtime/rasters/scene_f29ad551dc0f434f9c97f18b69c66fce.tif",
+              "sha256": "a727c586939d1b53f73619a5a07426b676b3cffbe9da32dc1b49155dc42aae69"
+            },
+            "temporal_order": "input_1_is_t1_input_2_is_t2",
+            "type": "temporal_inputs"
+          },
+          {
+            "change_magnitude": {
+              "max": 0.6803730726242065,
+              "mean": 0.07481037071117544,
+              "p05": 0.010948279779404402,
+              "p50": 0.05244056321680546,
+              "p95": 0.21708348691463433,
+              "valid_pixels": 409404
+            },
+            "changed_fraction": 0.22092847163193324,
+            "changed_pixels": 90449,
+            "delta_ndvi": {
+              "max": 0.9579694271087646,
+              "mean": -0.01963395072507528,
+              "p05": -0.46129429787397386,
+              "p50": 0.05176684260368347,
+              "p95": 0.23725388124585126,
+              "valid_pixels": 409404
+            },
+            "delta_ndwi": {
+              "max": 1.3942996263504028,
+              "mean": 0.003729702539510798,
+              "p05": -0.20632201582193374,
+              "p50": -0.055007606744766235,
+              "p95": 0.3523120805621147,
+              "valid_pixels": 409404
+            },
+            "heuristic": true,
+            "method": "spectral_index_delta",
+            "threshold": 0.1,
+            "threshold_rule": "changed when normalized change magnitude > 0.1",
+            "type": "change_statistics"
+          },
+          {
+            "crs": "EPSG:32643",
+            "height": 626,
+            "total_pixels": 409404,
+            "type": "temporal_valid_coverage",
+            "valid_fraction": 1.0,
+            "valid_pixels": 409404,
+            "width": 654
+          },
+          {
+            "coordinate_space": "normalized_xyxy",
+            "coordinates": [
+              0.0,
+              0.0,
+              1.0,
+              1.0
+            ],
+            "meaning": "bounding extent of all heuristic changed pixels",
+            "type": "change_extent"
+          }
+        ],
+        "execution_mode": "live",
+        "model": {
+          "name": "change-deterministic",
+          "version": "bitemporal-difference-v1"
+        },
+        "stage": "analyze",
+        "status_code": 200,
+        "trace_chain_valid": true
+      },
+      "category": "urban_construction",
+      "diagnostics": {
+        "negative_reflectance_fraction": 0.00010014557747359577,
+        "nir_shift_px_t2_vs_t1": {
+          "dx": 0.011798909729278162,
+          "dy": -0.031379516044616,
+          "peak": 0.09891253092804171
+        },
+        "reference_box": {
+          "box_fraction_of_valid": 0.4504792332268371,
+          "boxes_normalized_xyxy": [
+            [
+              0.0,
+              0.27,
+              1.0,
+              0.72
+            ]
+          ],
+          "changed_fraction_inside": 0.3488949617194786,
+          "changed_fraction_outside": 0.11602570940900363,
+          "inside_outside_rate_ratio": 3.0070487264989243,
+          "share_of_changed_inside": 0.7114064279317627
+        },
+        "replica_matches_provider": true,
+        "scl": {
+          "changed_fraction_on_clear_both": 0.21952922157448684,
+          "changed_fraction_on_cloud_any": null,
+          "changed_fraction_on_scl_water_transition": 0.9476102941176471,
+          "changed_fraction_on_shadow_any": null,
+          "clear_both_fraction_of_valid": 0.9972056941309806,
+          "cloud_any_fraction_of_valid": 0.0,
+          "scl_water_transition_fraction_of_valid": 0.00531504333128157,
+          "shadow_any_fraction_of_valid": 0.0,
+          "share_of_changed_in_cloud_or_shadow": 0.0
+        }
+      },
+      "expected_outcome": "real_surface_change",
+      "expected_reason_code": null,
+      "input_sha256": [
+        "b8ea89d3deb92534287c7aedbbaed776916bcbdd59031d3f93c0e79c98c72797",
+        "a727c586939d1b53f73619a5a07426b676b3cffbe9da32dc1b49155dc42aae69"
+      ],
+      "pair_id": "urban-jewar-airport-2021-2025",
+      "registry_reason": "valid, predominantly clear co-registered pair measured",
+      "registry_status": "PASSED",
+      "render": "/Users/atharva/satquery-data/change/renders/urban-jewar-airport-2021-2025.png",
+      "scl_masked_variant": {
+        "changed_fraction": 0.21952922157448684,
+        "changed_pixels": 89625,
+        "rule": "dataMask &= SCL in {4,5,6,11} at both dates",
+        "status": "ran",
+        "valid_pixels": 408260
+      }
+    },
+    {
+      "api": {
+        "gate": {
+          "acquisition_interval_seconds": 126144004.053,
+          "eligible": false,
+          "failed_checks": [
+            {
+              "code": "acquisition_order_invalid",
+              "message": "The first scene must predate the second scene."
+            }
+          ],
+          "normalized_overlap_ratio": 1.0,
+          "operations_required": [],
+          "reason_codes": [
+            "acquisition_order_invalid"
+          ],
+          "requested_workflow": "change_vqa",
+          "resolution_ratio": 1.0,
+          "unknown_metadata": [],
+          "verified_checks": [
+            "scene_1_manifest_valid",
+            "scene_2_manifest_valid",
+            "modalities_compatible",
+            "pair_group_match",
+            "footprints_transformable",
+            "overlap_threshold_met",
+            "resolution_ratio_compatible",
+            "grid_alignment_compatible"
+          ],
+          "warnings": []
+        },
+        "stage": "analyze",
+        "status_code": 422
+      },
+      "category": "rejection_temporal_order",
+      "expected_outcome": "gate_rejection",
+      "expected_reason_code": "acquisition_order_invalid",
+      "pair_id": "urban-jewar-airport-2021-2025::reversed-order",
+      "registry_reason": "gate rejected as expected with ['acquisition_order_invalid']",
+      "registry_status": "PASSED"
+    },
+    {
+      "category": "water_change_loss",
+      "expected_outcome": "real_surface_change",
+      "invalidated": {
+        "date": "2026-09-26",
+        "reason": "Acquisition defect: the AOI extends ~2.4 km past the east edge of tile 44PLV (native window cols 10570-11224 of 10980). rasterio silently clipped the read to 410 columns and the writer stretched them across the declared 654-column window, so both rasters are geometrically wrong while their metadata claims the full AOI. Detected by a same-datatake cross-tile comparison (44PLV vs 44PMV correlated 0.11). Acquisition now fails closed on windows outside the tile and on clipped reads. Replaced by water-puzhal-lake-2018-2019-pmv; the committed provenance is kept unchanged as evidence."
+      },
+      "pair_id": "water-puzhal-lake-2018-2019",
+      "registry_reason": "invalidated: Acquisition defect: the AOI extends ~2.4 km past the east edge of tile 44PLV (native window cols 10570-11224 of 10980). rasterio silently clipped the read to 410 columns and the writer stretched them across the declared 654-column window, so both rasters are geometrically wrong while their metadata claims the full AOI. Detected by a same-datatake cross-tile comparison (44PLV vs 44PMV correlated 0.11). Acquisition now fails closed on windows outside the tile and on clipped reads. Replaced by water-puzhal-lake-2018-2019-pmv; the committed provenance is kept unchanged as evidence.",
+      "registry_status": "FAILED",
+      "status": "invalidated"
+    },
+    {
+      "acquisition": {
+        "aoi_nodata_fraction": [
+          0.0,
+          0.0
+        ],
+        "day_of_year": [
+          156,
+          166
+        ],
+        "interval_days": 375.0,
+        "platforms": [
+          "sentinel-2a",
+          "sentinel-2b"
+        ],
+        "processing_baselines": [
+          "05.00",
+          "05.00"
+        ],
+        "sun_elevation_deg": [
+          68.5809839282762,
+          67.89189196049429
+        ],
+        "tile_cloud_cover_percent": [
+          38.647124,
+          7.963013
+        ]
+      },
+      "api": {
+        "answer": "Deterministic change baseline found 143566 of 364932 co-valid pixels above the heuristic threshold. It does not infer semantic change classes or causes.",
+        "confidence_present": false,
+        "evidence": [
+          {
+            "bands": [
+              "B02",
+              "B03",
+              "B04",
+              "B08",
+              "dataMask"
+            ],
+            "t1": {
+              "path": "/Users/atharva/satquery-data/change/runtime/rasters/scene_c7617ca7e0a94a509e1c2a95a4bbc39f.tif",
+              "sha256": "88d1ccc8bccb029f06c3b41a9138b2b2b4219d6b90f0cf14a1a883b42f7badaa"
+            },
+            "t2": {
+              "path": "/Users/atharva/satquery-data/change/runtime/rasters/scene_4d4863b5d5534826a57eba19e09cb162.tif",
+              "sha256": "11de85349f5570eebfb15fe037b31d395fea927c7fad6dc2bb5ac92b893c068a"
+            },
+            "temporal_order": "input_1_is_t1_input_2_is_t2",
+            "type": "temporal_inputs"
+          },
+          {
+            "change_magnitude": {
+              "max": 0.44128918647766113,
+              "mean": 0.08707210753501568,
+              "p05": 0.006855821050703525,
+              "p50": 0.06659063324332237,
+              "p95": 0.22661643624305727,
+              "valid_pixels": 364932
+            },
+            "changed_fraction": 0.393404798702224,
+            "changed_pixels": 143566,
+            "delta_ndvi": {
+              "max": 0.8667320609092712,
+              "mean": 0.026611918678247772,
+              "p05": -0.3011834740638733,
+              "p50": 0.0032556280493736267,
+              "p95": 0.332805383205414,
+              "valid_pixels": 364932
+            },
+            "delta_ndwi": {
+              "max": 0.8715879917144775,
+              "mean": -0.11996494002165531,
+              "p05": -0.5639064282178878,
+              "p50": -0.002267710864543915,
+              "p95": 0.17365896999835972,
+              "valid_pixels": 364932
+            },
+            "heuristic": true,
+            "method": "spectral_index_delta",
+            "threshold": 0.1,
+            "threshold_rule": "changed when normalized change magnitude > 0.1",
+            "type": "change_statistics"
+          },
+          {
+            "crs": "EPSG:32644",
+            "height": 558,
+            "total_pixels": 364932,
+            "type": "temporal_valid_coverage",
+            "valid_fraction": 1.0,
+            "valid_pixels": 364932,
+            "width": 654
+          },
+          {
+            "coordinate_space": "normalized_xyxy",
+            "coordinates": [
+              0.0,
+              0.0,
+              1.0,
+              1.0
+            ],
+            "meaning": "bounding extent of all heuristic changed pixels",
+            "type": "change_extent"
+          }
+        ],
+        "execution_mode": "live",
+        "model": {
+          "name": "change-deterministic",
+          "version": "bitemporal-difference-v1"
+        },
+        "stage": "analyze",
+        "status_code": 200,
+        "trace_chain_valid": true
+      },
+      "category": "water_change_loss",
+      "diagnostics": {
+        "negative_reflectance_fraction": 0.0,
+        "nir_shift_px_t2_vs_t1": {
+          "dx": -0.03181140386577692,
+          "dy": 0.2773177046539943,
+          "peak": 0.19027246352261598
+        },
+        "reference_box": {
+          "box_fraction_of_valid": 0.46819407451251194,
+          "boxes_normalized_xyxy": [
+            [
+              0.62,
+              0.0,
+              1.0,
+              0.72
+            ],
+            [
+              0.3,
+              0.55,
+              0.9,
+              0.95
+            ]
+          ],
+          "changed_fraction_inside": 0.6893813027115926,
+          "changed_fraction_outside": 0.13283146032678425,
+          "inside_outside_rate_ratio": 5.189894781067804,
+          "share_of_changed_inside": 0.8204379867099453
+        },
+        "replica_matches_provider": true,
+        "scl": {
+          "changed_fraction_on_clear_both": 0.38705910096461577,
+          "changed_fraction_on_cloud_any": 0.6114532019704434,
+          "changed_fraction_on_scl_water_transition": 0.8686258972685746,
+          "changed_fraction_on_shadow_any": null,
+          "clear_both_fraction_of_valid": 0.9760832155031622,
+          "cloud_any_fraction_of_valid": 0.0044501441364418574,
+          "scl_water_transition_fraction_of_valid": 0.23515613867789067,
+          "shadow_any_fraction_of_valid": 0.0,
+          "share_of_changed_in_cloud_or_shadow": 0.006916679436635415
+        }
+      },
+      "expected_outcome": "real_surface_change",
+      "expected_reason_code": null,
+      "input_sha256": [
+        "88d1ccc8bccb029f06c3b41a9138b2b2b4219d6b90f0cf14a1a883b42f7badaa",
+        "11de85349f5570eebfb15fe037b31d395fea927c7fad6dc2bb5ac92b893c068a"
+      ],
+      "pair_id": "water-puzhal-lake-2018-2019-pmv",
+      "registry_reason": "valid, predominantly clear co-registered pair measured",
+      "registry_status": "PASSED",
+      "render": "/Users/atharva/satquery-data/change/renders/water-puzhal-lake-2018-2019-pmv.png",
+      "scl_masked_variant": {
+        "changed_fraction": 0.38705910096461577,
+        "changed_pixels": 137872,
+        "rule": "dataMask &= SCL in {4,5,6,11} at both dates",
+        "status": "ran",
+        "valid_pixels": 356204
+      }
+    },
+    {
+      "acquisition": {
+        "aoi_nodata_fraction": [
+          0.0,
+          0.0
+        ],
+        "day_of_year": [
+          166,
+          166
+        ],
+        "interval_days": 0.0,
+        "platforms": [
+          "sentinel-2b",
+          "sentinel-2b"
+        ],
+        "processing_baselines": [
+          "05.00",
+          "05.00"
+        ],
+        "sun_elevation_deg": [
+          67.89189196049429,
+          67.1222359431595
+        ],
+        "tile_cloud_cover_percent": [
+          7.963013,
+          0.063736
+        ]
+      },
+      "api": {
+        "answer": "Deterministic change baseline found 0 of 254016 co-valid pixels above the heuristic threshold. It does not infer semantic change classes or causes.",
+        "confidence_present": false,
+        "evidence": [
+          {
+            "bands": [
+              "B02",
+              "B03",
+              "B04",
+              "B08",
+              "dataMask"
+            ],
+            "t1": {
+              "path": "/Users/atharva/satquery-data/change/runtime/rasters/scene_cd5ab69982824ff9893836fb65eba6f5.tif",
+              "sha256": "32599b46e3b60b1299d41e4950235f3dc3f5c81a683586d1415f928257790025"
+            },
+            "t2": {
+              "path": "/Users/atharva/satquery-data/change/runtime/rasters/scene_737606bccf8f41398f844b50598c4efb.tif",
+              "sha256": "c5473881148a62f2cfa40e3c41ede4cec5cb9ad589290c90446251234d2bcfb9"
+            },
+            "temporal_order": "input_1_is_t1_input_2_is_t2",
+            "type": "temporal_inputs"
+          },
+          {
+            "change_magnitude": {
+              "max": 0.044202499091625214,
+              "mean": 0.0013395937574097875,
+              "p05": 0.00016734236851334572,
+              "p50": 0.0008715782314538956,
+              "p95": 0.004293601959943771,
+              "valid_pixels": 254016
+            },
+            "changed_fraction": 0.0,
+            "changed_pixels": 0,
+            "delta_ndvi": {
+              "max": 0.08621188998222351,
+              "mean": -0.0012091841414029296,
+              "p05": -0.009425260126590729,
+              "p50": -0.00026595592498779297,
+              "p95": 0.002772219479084015,
+              "valid_pixels": 254016
+            },
+            "delta_ndwi": {
+              "max": 0.033177584409713745,
+              "mean": 0.00023981433996832048,
+              "p05": -0.005017094314098358,
+              "p50": -6.216764450073242e-05,
+              "p95": 0.007259801030158997,
+              "valid_pixels": 254016
+            },
+            "heuristic": true,
+            "method": "spectral_index_delta",
+            "threshold": 0.1,
+            "threshold_rule": "changed when normalized change magnitude > 0.1",
+            "type": "change_statistics"
+          },
+          {
+            "crs": "EPSG:32644",
+            "height": 504,
+            "total_pixels": 254016,
+            "type": "temporal_valid_coverage",
+            "valid_fraction": 1.0,
+            "valid_pixels": 254016,
+            "width": 504
+          }
+        ],
+        "execution_mode": "live",
+        "model": {
+          "name": "change-deterministic",
+          "version": "bitemporal-difference-v1"
+        },
+        "stage": "analyze",
+        "status_code": 200,
+        "trace_chain_valid": true
+      },
+      "category": "control_same_datatake_cross_tile",
+      "diagnostics": {
+        "negative_reflectance_fraction": 0.0,
+        "nir_shift_px_t2_vs_t1": {
+          "dx": 0.00025306397265179205,
+          "dy": 0.00013177064488344953,
+          "peak": 0.9880684731004192
+        },
+        "reference_box": null,
+        "replica_matches_provider": true,
+        "scl": {
+          "changed_fraction_on_clear_both": 0.0,
+          "changed_fraction_on_cloud_any": null,
+          "changed_fraction_on_scl_water_transition": 0.0,
+          "changed_fraction_on_shadow_any": null,
+          "clear_both_fraction_of_valid": 0.9990394305870496,
+          "cloud_any_fraction_of_valid": 0.0,
+          "scl_water_transition_fraction_of_valid": 1.5747039556563368e-05,
+          "shadow_any_fraction_of_valid": 0.0,
+          "share_of_changed_in_cloud_or_shadow": null
+        }
+      },
+      "expected_outcome": "no_surface_change",
+      "expected_reason_code": null,
+      "input_sha256": [
+        "32599b46e3b60b1299d41e4950235f3dc3f5c81a683586d1415f928257790025",
+        "c5473881148a62f2cfa40e3c41ede4cec5cb9ad589290c90446251234d2bcfb9"
+      ],
+      "pair_id": "control-puzhal-same-datatake-cross-tile-2019",
+      "registry_reason": "valid, predominantly clear co-registered pair measured",
+      "registry_status": "PASSED",
+      "render": "/Users/atharva/satquery-data/change/renders/control-puzhal-same-datatake-cross-tile-2019.png",
+      "scl_masked_variant": {
+        "changed_fraction": 0.0,
+        "changed_pixels": 0,
+        "rule": "dataMask &= SCL in {4,5,6,11} at both dates",
+        "status": "ran",
+        "valid_pixels": 253772
+      }
+    },
+    {
+      "acquisition": {
+        "aoi_nodata_fraction": [
+          0.0,
+          0.0
+        ],
+        "day_of_year": [
+          166,
+          150
+        ],
+        "interval_days": 715.0,
+        "platforms": [
+          "sentinel-2b",
+          "sentinel-2a"
+        ],
+        "processing_baselines": [
+          "05.00",
+          "05.00"
+        ],
+        "sun_elevation_deg": [
+          67.89189196049429,
+          69.0515768306289
+        ],
+        "tile_cloud_cover_percent": [
+          7.963013,
+          0.213105
+        ]
+      },
+      "api": {
+        "answer": "Deterministic change baseline found 196251 of 364932 co-valid pixels above the heuristic threshold. It does not infer semantic change classes or causes.",
+        "confidence_present": false,
+        "evidence": [
+          {
+            "bands": [
+              "B02",
+              "B03",
+              "B04",
+              "B08",
+              "dataMask"
+            ],
+            "t1": {
+              "path": "/Users/atharva/satquery-data/change/runtime/rasters/scene_ea0f1f81bc0b4705819e6184103b8ff6.tif",
+              "sha256": "11de85349f5570eebfb15fe037b31d395fea927c7fad6dc2bb5ac92b893c068a"
+            },
+            "t2": {
+              "path": "/Users/atharva/satquery-data/change/runtime/rasters/scene_72ec259c78f540258779e091bbaac558.tif",
+              "sha256": "3faaf79cd7df41d72a7fdb6d16ad36c58dc05d3fa6f3a30a80f213d1103e079e"
+            },
+            "temporal_order": "input_1_is_t1_input_2_is_t2",
+            "type": "temporal_inputs"
+          },
+          {
+            "change_magnitude": {
+              "max": 0.5599962472915649,
+              "mean": 0.12282718837329294,
+              "p05": 0.007394516095519066,
+              "p50": 0.11192848160862923,
+              "p95": 0.299954491853714,
+              "valid_pixels": 364932
+            },
+            "changed_fraction": 0.5377741606655486,
+            "changed_pixels": 196251,
+            "delta_ndvi": {
+              "max": 0.8825011849403381,
+              "mean": -0.0943451954608478,
+              "p05": -0.4671168103814125,
+              "p50": -0.09500473737716675,
+              "p95": 0.2876414120197298,
+              "valid_pixels": 364932
+            },
+            "delta_ndwi": {
+              "max": 1.2346354722976685,
+              "mean": 0.2277416454952153,
+              "p05": -0.1516690954566002,
+              "p50": 0.161680668592453,
+              "p95": 0.7304211676120759,
+              "valid_pixels": 364932
+            },
+            "heuristic": true,
+            "method": "spectral_index_delta",
+            "threshold": 0.1,
+            "threshold_rule": "changed when normalized change magnitude > 0.1",
+            "type": "change_statistics"
+          },
+          {
+            "crs": "EPSG:32644",
+            "height": 558,
+            "total_pixels": 364932,
+            "type": "temporal_valid_coverage",
+            "valid_fraction": 1.0,
+            "valid_pixels": 364932,
+            "width": 654
+          },
+          {
+            "coordinate_space": "normalized_xyxy",
+            "coordinates": [
+              0.0,
+              0.0,
+              1.0,
+              1.0
+            ],
+            "meaning": "bounding extent of all heuristic changed pixels",
+            "type": "change_extent"
+          }
+        ],
+        "execution_mode": "live",
+        "model": {
+          "name": "change-deterministic",
+          "version": "bitemporal-difference-v1"
+        },
+        "stage": "analyze",
+        "status_code": 200,
+        "trace_chain_valid": true
+      },
+      "category": "water_change_gain",
+      "diagnostics": {
+        "negative_reflectance_fraction": 0.0,
+        "nir_shift_px_t2_vs_t1": {
+          "dx": 0.0016704133232081934,
+          "dy": -0.0972258934979549,
+          "peak": 0.13836355405849654
+        },
+        "reference_box": {
+          "box_fraction_of_valid": 0.4333958107263819,
+          "boxes_normalized_xyxy": [
+            [
+              0.62,
+              0.0,
+              1.0,
+              0.72
+            ],
+            [
+              0.25,
+              0.72,
+              0.88,
+              0.97
+            ]
+          ],
+          "changed_fraction_inside": 0.9079792615073343,
+          "changed_fraction_outside": 0.25460410500454606,
+          "inside_outside_rate_ratio": 3.566239678229548,
+          "share_of_changed_inside": 0.7317465898262939
+        },
+        "replica_matches_provider": true,
+        "scl": {
+          "changed_fraction_on_clear_both": 0.49682387801716155,
+          "changed_fraction_on_cloud_any": 0.9839901477832512,
+          "changed_fraction_on_scl_water_transition": 0.9917232780118669,
+          "changed_fraction_on_shadow_any": 0.25,
+          "clear_both_fraction_of_valid": 0.8877818333278529,
+          "cloud_any_fraction_of_valid": 0.0044501441364418574,
+          "scl_water_transition_fraction_of_valid": 0.254929685530455,
+          "shadow_any_fraction_of_valid": 1.0960946148871571e-05,
+          "share_of_changed_in_cloud_or_shadow": 0.008147729183545562
+        }
+      },
+      "expected_outcome": "real_surface_change",
+      "expected_reason_code": null,
+      "input_sha256": [
+        "11de85349f5570eebfb15fe037b31d395fea927c7fad6dc2bb5ac92b893c068a",
+        "3faaf79cd7df41d72a7fdb6d16ad36c58dc05d3fa6f3a30a80f213d1103e079e"
+      ],
+      "pair_id": "water-puzhal-lake-2019-2021",
+      "registry_reason": "SCL clear-both fraction 0.888 < 0.9",
+      "registry_status": "INCONCLUSIVE",
+      "render": "/Users/atharva/satquery-data/change/renders/water-puzhal-lake-2019-2021.png",
+      "scl_masked_variant": {
+        "changed_fraction": 0.49682387801716155,
+        "changed_pixels": 160961,
+        "rule": "dataMask &= SCL in {4,5,6,11} at both dates",
+        "status": "ran",
+        "valid_pixels": 323980
+      }
+    },
+    {
+      "acquisition": {
+        "aoi_nodata_fraction": [
+          5.250566148007341e-05,
+          5.935422602088014e-05
+        ],
+        "day_of_year": [
+          87,
+          97
+        ],
+        "interval_days": 10.0,
+        "platforms": [
+          "sentinel-2b",
+          "sentinel-2b"
+        ],
+        "processing_baselines": [
+          "05.11",
+          "05.11"
+        ],
+        "sun_elevation_deg": [
+          64.3748126103509,
+          67.066014999369
+        ],
+        "tile_cloud_cover_percent": [
+          0.001068,
+          0.004124
+        ]
+      },
+      "api": {
+        "answer": "Deterministic change baseline found 12214 of 437953 co-valid pixels above the heuristic threshold. It does not infer semantic change classes or causes.",
+        "confidence_present": false,
+        "evidence": [
+          {
+            "bands": [
+              "B02",
+              "B03",
+              "B04",
+              "B08",
+              "dataMask"
+            ],
+            "t1": {
+              "path": "/Users/atharva/satquery-data/change/runtime/rasters/scene_7ad73c20c45048b59a3cb51d045af6b0.tif",
+              "sha256": "fda048bce37e63d579e93588f86fbe3cee0e897ab914cd3f7d897f38408e87a6"
+            },
+            "t2": {
+              "path": "/Users/atharva/satquery-data/change/runtime/rasters/scene_5c0b1940c7a646dabaa6630a7b5dbc5c.tif",
+              "sha256": "8c5c637b8b03a3188072c8e2999e1dc43afe7c6a8400410c3efdedb6be5a1851"
+            },
+            "temporal_order": "input_1_is_t1_input_2_is_t2",
+            "type": "temporal_inputs"
+          },
+          {
+            "change_magnitude": {
+              "max": 1.0,
+              "mean": 0.03490808640972934,
+              "p05": 0.004766251891851425,
+              "p50": 0.021600663661956787,
+              "p95": 0.08477856367826456,
+              "valid_pixels": 437953
+            },
+            "changed_fraction": 0.027888837386660214,
+            "changed_pixels": 12214,
+            "delta_ndvi": {
+              "max": 174.7829132080078,
+              "mean": 0.04078308977035661,
+              "p05": -0.07018539905548095,
+              "p50": 0.026494860649108887,
+              "p95": 0.21717156171798702,
+              "valid_pixels": 437953
+            },
+            "delta_ndwi": {
+              "max": 284.9570007324219,
+              "mean": -0.014492078955689935,
+              "p05": -0.11589037179946898,
+              "p50": -0.013591885566711426,
+              "p95": 0.07644975185394266,
+              "valid_pixels": 437953
+            },
+            "heuristic": true,
+            "method": "spectral_index_delta",
+            "threshold": 0.1,
+            "threshold_rule": "changed when normalized change magnitude > 0.1",
+            "type": "change_statistics"
+          },
+          {
+            "crs": "EPSG:32644",
+            "height": 676,
+            "total_pixels": 438048,
+            "type": "temporal_valid_coverage",
+            "valid_fraction": 0.999783128789539,
+            "valid_pixels": 437953,
+            "width": 648
+          },
+          {
+            "coordinate_space": "normalized_xyxy",
+            "coordinates": [
+              0.0,
+              0.0,
+              1.0,
+              1.0
+            ],
+            "meaning": "bounding extent of all heuristic changed pixels",
+            "type": "change_extent"
+          }
+        ],
+        "execution_mode": "live",
+        "model": {
+          "name": "change-deterministic",
+          "version": "bitemporal-difference-v1"
+        },
+        "stage": "analyze",
+        "status_code": 200,
+        "trace_chain_valid": true
+      },
+      "category": "vegetation_change",
+      "diagnostics": {
+        "negative_reflectance_fraction": 0.006677350427350427,
+        "nir_shift_px_t2_vs_t1": {
+          "dx": -0.020752223039345923,
+          "dy": -0.10937866664905135,
+          "peak": 0.5812291437764734
+        },
+        "reference_box": null,
+        "replica_matches_provider": true,
+        "scl": {
+          "changed_fraction_on_clear_both": 0.026092180141512246,
+          "changed_fraction_on_cloud_any": null,
+          "changed_fraction_on_scl_water_transition": 0.6818181818181818,
+          "changed_fraction_on_shadow_any": 0.41317365269461076,
+          "clear_both_fraction_of_valid": 0.9958739864780011,
+          "cloud_any_fraction_of_valid": 0.0,
+          "scl_water_transition_fraction_of_valid": 0.0006530381113955151,
+          "shadow_any_fraction_of_valid": 0.000762638913308049,
+          "share_of_changed_in_cloud_or_shadow": 0.011298509906664483
+        }
+      },
+      "expected_outcome": "real_surface_change",
+      "expected_reason_code": null,
+      "input_sha256": [
+        "fda048bce37e63d579e93588f86fbe3cee0e897ab914cd3f7d897f38408e87a6",
+        "8c5c637b8b03a3188072c8e2999e1dc43afe7c6a8400410c3efdedb6be5a1851"
+      ],
+      "pair_id": "vegetation-kancha-gachibowli-2025",
+      "registry_reason": "valid, predominantly clear co-registered pair measured",
+      "registry_status": "PASSED",
+      "render": "/Users/atharva/satquery-data/change/renders/vegetation-kancha-gachibowli-2025.png",
+      "scl_masked_variant": {
+        "changed_fraction": 0.026092180141512246,
+        "changed_pixels": 11380,
+        "rule": "dataMask &= SCL in {4,5,6,11} at both dates",
+        "status": "ran",
+        "valid_pixels": 436146
+      }
+    },
+    {
+      "acquisition": {
+        "aoi_nodata_fraction": [
+          0.0,
+          0.0
+        ],
+        "day_of_year": [
+          41,
+          40
+        ],
+        "interval_days": 365.0,
+        "platforms": [
+          "sentinel-2a",
+          "sentinel-2b"
+        ],
+        "processing_baselines": [
+          "05.10",
+          "05.11"
+        ],
+        "sun_elevation_deg": [
+          55.4737466320766,
+          55.4347656025471
+        ],
+        "tile_cloud_cover_percent": [
+          1.291316,
+          1.137621
+        ]
+      },
+      "api": {
+        "answer": "Deterministic change baseline found 11209 of 513480 co-valid pixels above the heuristic threshold. It does not infer semantic change classes or causes.",
+        "confidence_present": false,
+        "evidence": [
+          {
+            "bands": [
+              "B02",
+              "B03",
+              "B04",
+              "B08",
+              "dataMask"
+            ],
+            "t1": {
+              "path": "/Users/atharva/satquery-data/change/runtime/rasters/scene_1bf7d35682594b94b0c8847cd65baeb6.tif",
+              "sha256": "f4c1369f9a61c3faa06349d500ca61b2ce43d75830260a8b92df08c06572800f"
+            },
+            "t2": {
+              "path": "/Users/atharva/satquery-data/change/runtime/rasters/scene_7c97b34188314f1983526e24a5f6e07c.tif",
+              "sha256": "b65e33091a780b76e8ae56490c9adb3231fabe819737e92d65526f14bb834ccf"
+            },
+            "temporal_order": "input_1_is_t1_input_2_is_t2",
+            "type": "temporal_inputs"
+          },
+          {
+            "change_magnitude": {
+              "max": 0.36916226148605347,
+              "mean": 0.019726282350947217,
+              "p05": 0.00261138379573822,
+              "p50": 0.012235201895236969,
+              "p95": 0.04924349710345267,
+              "valid_pixels": 513480
+            },
+            "changed_fraction": 0.021829477292202228,
+            "changed_pixels": 11209,
+            "delta_ndvi": {
+              "max": 0.5247685313224792,
+              "mean": -0.027538424582007174,
+              "p05": -0.10501248836517334,
+              "p50": -0.0166928768157959,
+              "p95": 0.03250159323215479,
+              "valid_pixels": 513480
+            },
+            "delta_ndwi": {
+              "max": 0.6649543046951294,
+              "mean": 0.028517439035218348,
+              "p05": -0.024949976801872255,
+              "p50": 0.022306621074676514,
+              "p95": 0.08571950793266295,
+              "valid_pixels": 513480
+            },
+            "heuristic": true,
+            "method": "spectral_index_delta",
+            "threshold": 0.1,
+            "threshold_rule": "changed when normalized change magnitude > 0.1",
+            "type": "change_statistics"
+          },
+          {
+            "crs": "EPSG:32643",
+            "height": 778,
+            "total_pixels": 513480,
+            "type": "temporal_valid_coverage",
+            "valid_fraction": 1.0,
+            "valid_pixels": 513480,
+            "width": 660
+          },
+          {
+            "coordinate_space": "normalized_xyxy",
+            "coordinates": [
+              0.0,
+              0.019280205655526992,
+              1.0,
+              1.0
+            ],
+            "meaning": "bounding extent of all heuristic changed pixels",
+            "type": "change_extent"
+          }
+        ],
+        "execution_mode": "live",
+        "model": {
+          "name": "change-deterministic",
+          "version": "bitemporal-difference-v1"
+        },
+        "stage": "analyze",
+        "status_code": 200,
+        "trace_chain_valid": true
+      },
+      "category": "disaster_landslide",
+      "diagnostics": {
+        "negative_reflectance_fraction": 0.000689413414349147,
+        "nir_shift_px_t2_vs_t1": {
+          "dx": -0.08329255792824251,
+          "dy": -0.014047592699228242,
+          "peak": 0.5542741508540278
+        },
+        "reference_box": {
+          "box_fraction_of_valid": 0.1338942120433123,
+          "boxes_normalized_xyxy": [
+            [
+              0.78,
+              0.18,
+              0.95,
+              0.4
+            ],
+            [
+              0.62,
+              0.38,
+              0.82,
+              0.6
+            ],
+            [
+              0.42,
+              0.58,
+              0.66,
+              0.8
+            ]
+          ],
+          "changed_fraction_inside": 0.11262217826390505,
+          "changed_fraction_outside": 0.007793527729308701,
+          "inside_outside_rate_ratio": 14.450731706563753,
+          "share_of_changed_inside": 0.6907841912748685
+        },
+        "replica_matches_provider": true,
+        "scl": {
+          "changed_fraction_on_clear_both": 0.017931584840039066,
+          "changed_fraction_on_cloud_any": null,
+          "changed_fraction_on_scl_water_transition": null,
+          "changed_fraction_on_shadow_any": 0.19658211521926053,
+          "clear_both_fraction_of_valid": 0.9810469735919607,
+          "cloud_any_fraction_of_valid": 0.0,
+          "scl_water_transition_fraction_of_valid": 0.0,
+          "shadow_any_fraction_of_valid": 0.018119498325153853,
+          "share_of_changed_in_cloud_or_shadow": 0.1631724507092515
+        }
+      },
+      "expected_outcome": "real_surface_change",
+      "expected_reason_code": null,
+      "input_sha256": [
+        "f4c1369f9a61c3faa06349d500ca61b2ce43d75830260a8b92df08c06572800f",
+        "b65e33091a780b76e8ae56490c9adb3231fabe819737e92d65526f14bb834ccf"
+      ],
+      "pair_id": "disaster-wayanad-landslide-2024-2025",
+      "registry_reason": "valid, predominantly clear co-registered pair measured",
+      "registry_status": "PASSED",
+      "render": "/Users/atharva/satquery-data/change/renders/disaster-wayanad-landslide-2024-2025.png",
+      "scl_masked_variant": {
+        "changed_fraction": 0.017931584840039066,
+        "changed_pixels": 9033,
+        "rule": "dataMask &= SCL in {4,5,6,11} at both dates",
+        "status": "ran",
+        "valid_pixels": 503748
+      }
+    },
+    {
+      "acquisition": {
+        "aoi_nodata_fraction": [
+          0.0,
+          0.00010360010360010996
+        ],
+        "day_of_year": [
+          83,
+          90
+        ],
+        "interval_days": 7.0,
+        "platforms": [
+          "sentinel-2b",
+          "sentinel-2a"
+        ],
+        "processing_baselines": [
+          "05.11",
+          "05.11"
+        ],
+        "sun_elevation_deg": [
+          54.9567591997305,
+          57.5857003631563
+        ],
+        "tile_cloud_cover_percent": [
+          0.229586,
+          0.008813
+        ]
+      },
+      "api": {
+        "answer": "Deterministic change baseline found 3766 of 154424 co-valid pixels above the heuristic threshold. It does not infer semantic change classes or causes.",
+        "confidence_present": false,
+        "evidence": [
+          {
+            "bands": [
+              "B02",
+              "B03",
+              "B04",
+              "B08",
+              "dataMask"
+            ],
+            "t1": {
+              "path": "/Users/atharva/satquery-data/change/runtime/rasters/scene_1a57dee777c2498bb413bb52f28afa80.tif",
+              "sha256": "ad13961319d704f8216ff2ad93dbb3c871a16daef9d75fbf7b49d8beb1e873a6"
+            },
+            "t2": {
+              "path": "/Users/atharva/satquery-data/change/runtime/rasters/scene_db586b6b516e4551b6d3f8642cecd3a6.tif",
+              "sha256": "df3d4aae6bffcd18fd00aac04ccad503d42dbc6d129d263cbdb3fd3df3053ee0"
+            },
+            "temporal_order": "input_1_is_t1_input_2_is_t2",
+            "type": "temporal_inputs"
+          },
+          {
+            "change_magnitude": {
+              "max": 0.321150004863739,
+              "mean": 0.03167039550165383,
+              "p05": 0.004941398836672307,
+              "p50": 0.022818638011813164,
+              "p95": 0.0839151717722416,
+              "valid_pixels": 154424
+            },
+            "changed_fraction": 0.024387400922136454,
+            "changed_pixels": 3766,
+            "delta_ndvi": {
+              "max": 0.6699960231781006,
+              "mean": 0.03523065545591358,
+              "p05": -0.05735571980476379,
+              "p50": 0.022541671991348267,
+              "p95": 0.16428855657577515,
+              "valid_pixels": 154424
+            },
+            "delta_ndwi": {
+              "max": 0.42224034667015076,
+              "mean": -0.053972816064529035,
+              "p05": -0.17949391603469847,
+              "p50": -0.04569520056247711,
+              "p95": 0.045629273355007195,
+              "valid_pixels": 154424
+            },
+            "heuristic": true,
+            "method": "spectral_index_delta",
+            "threshold": 0.1,
+            "threshold_rule": "changed when normalized change magnitude > 0.1",
+            "type": "change_statistics"
+          },
+          {
+            "crs": "EPSG:32643",
+            "height": 396,
+            "total_pixels": 154440,
+            "type": "temporal_valid_coverage",
+            "valid_fraction": 0.9998963998963999,
+            "valid_pixels": 154424,
+            "width": 390
+          },
+          {
+            "coordinate_space": "normalized_xyxy",
+            "coordinates": [
+              0.0,
+              0.0,
+              1.0,
+              1.0
+            ],
+            "meaning": "bounding extent of all heuristic changed pixels",
+            "type": "change_extent"
+          }
+        ],
+        "execution_mode": "live",
+        "model": {
+          "name": "change-deterministic",
+          "version": "bitemporal-difference-v1"
+        },
+        "stage": "analyze",
+        "status_code": 200,
+        "trace_chain_valid": true
+      },
+      "category": "control_near_simultaneous",
+      "diagnostics": {
+        "negative_reflectance_fraction": 0.03351463351463351,
+        "nir_shift_px_t2_vs_t1": {
+          "dx": 0.03539644465515498,
+          "dy": 0.006434068367352191,
+          "peak": 0.7921666728789283
+        },
+        "reference_box": null,
+        "replica_matches_provider": true,
+        "scl": {
+          "changed_fraction_on_clear_both": 0.024328946004767333,
+          "changed_fraction_on_cloud_any": null,
+          "changed_fraction_on_scl_water_transition": null,
+          "changed_fraction_on_shadow_any": 0.25,
+          "clear_both_fraction_of_valid": 0.9997409729057659,
+          "cloud_any_fraction_of_valid": 0.0,
+          "scl_water_transition_fraction_of_valid": 0.0,
+          "shadow_any_fraction_of_valid": 0.00025902709423405686,
+          "share_of_changed_in_cloud_or_shadow": 0.0026553372278279343
+        }
+      },
+      "expected_outcome": "no_land_cover_change",
+      "expected_reason_code": null,
+      "input_sha256": [
+        "ad13961319d704f8216ff2ad93dbb3c871a16daef9d75fbf7b49d8beb1e873a6",
+        "df3d4aae6bffcd18fd00aac04ccad503d42dbc6d129d263cbdb3fd3df3053ee0"
+      ],
+      "pair_id": "control-chandigarh-5day-2025",
+      "registry_reason": "valid, predominantly clear co-registered pair measured",
+      "registry_status": "PASSED",
+      "render": "/Users/atharva/satquery-data/change/renders/control-chandigarh-5day-2025.png",
+      "scl_masked_variant": {
+        "changed_fraction": 0.024328946004767333,
+        "changed_pixels": 3756,
+        "rule": "dataMask &= SCL in {4,5,6,11} at both dates",
+        "status": "ran",
+        "valid_pixels": 154384
+      }
+    },
+    {
+      "acquisition": {
+        "aoi_nodata_fraction": [
+          0.0,
+          0.0
+        ],
+        "day_of_year": [
+          69,
+          83
+        ],
+        "interval_days": 380.0,
+        "platforms": [
+          "sentinel-2b",
+          "sentinel-2b"
+        ],
+        "processing_baselines": [
+          "05.10",
+          "05.11"
+        ],
+        "sun_elevation_deg": [
+          49.344852833617,
+          54.9567591997305
+        ],
+        "tile_cloud_cover_percent": [
+          0.104575,
+          0.229586
+        ]
+      },
+      "api": {
+        "answer": "Deterministic change baseline found 4772 of 154440 co-valid pixels above the heuristic threshold. It does not infer semantic change classes or causes.",
+        "confidence_present": false,
+        "evidence": [
+          {
+            "bands": [
+              "B02",
+              "B03",
+              "B04",
+              "B08",
+              "dataMask"
+            ],
+            "t1": {
+              "path": "/Users/atharva/satquery-data/change/runtime/rasters/scene_a7a3722ab7a34f0195a3ffa720153875.tif",
+              "sha256": "ddaaf5f51792c7adb2064fba0607ed01ea252fd5e4b596cbd10cb4b05ac9f233"
+            },
+            "t2": {
+              "path": "/Users/atharva/satquery-data/change/runtime/rasters/scene_02dc9812ef44488ba654a9face5bcd86.tif",
+              "sha256": "ad13961319d704f8216ff2ad93dbb3c871a16daef9d75fbf7b49d8beb1e873a6"
+            },
+            "temporal_order": "input_1_is_t1_input_2_is_t2",
+            "type": "temporal_inputs"
+          },
+          {
+            "change_magnitude": {
+              "max": 0.5816158652305603,
+              "mean": 0.03236477672989971,
+              "p05": 0.0046116415411233905,
+              "p50": 0.02356144692748785,
+              "p95": 0.08740453273057931,
+              "valid_pixels": 154440
+            },
+            "changed_fraction": 0.030898730898730898,
+            "changed_pixels": 4772,
+            "delta_ndvi": {
+              "max": 0.5683233737945557,
+              "mean": -0.03581887497939766,
+              "p05": -0.19525281488895416,
+              "p50": -0.025377074256539345,
+              "p95": 0.09536583125591278,
+              "valid_pixels": 154440
+            },
+            "delta_ndwi": {
+              "max": 1.8304076194763184,
+              "mean": 0.031580685497825056,
+              "p05": -0.06941738165915012,
+              "p50": 0.025753557682037354,
+              "p95": 0.14869820922613144,
+              "valid_pixels": 154440
+            },
+            "heuristic": true,
+            "method": "spectral_index_delta",
+            "threshold": 0.1,
+            "threshold_rule": "changed when normalized change magnitude > 0.1",
+            "type": "change_statistics"
+          },
+          {
+            "crs": "EPSG:32643",
+            "height": 396,
+            "total_pixels": 154440,
+            "type": "temporal_valid_coverage",
+            "valid_fraction": 1.0,
+            "valid_pixels": 154440,
+            "width": 390
+          },
+          {
+            "coordinate_space": "normalized_xyxy",
+            "coordinates": [
+              0.0,
+              0.0,
+              1.0,
+              1.0
+            ],
+            "meaning": "bounding extent of all heuristic changed pixels",
+            "type": "change_extent"
+          }
+        ],
+        "execution_mode": "live",
+        "model": {
+          "name": "change-deterministic",
+          "version": "bitemporal-difference-v1"
+        },
+        "stage": "analyze",
+        "status_code": 200,
+        "trace_chain_valid": true
+      },
+      "category": "control_interannual_same_season",
+      "diagnostics": {
+        "negative_reflectance_fraction": 7.77000777000777e-05,
+        "nir_shift_px_t2_vs_t1": {
+          "dx": -0.04523881146682747,
+          "dy": 0.05210346492626783,
+          "peak": 0.5272393191014607
+        },
+        "reference_box": null,
+        "replica_matches_provider": true,
+        "scl": {
+          "changed_fraction_on_clear_both": 0.030931445023733562,
+          "changed_fraction_on_cloud_any": null,
+          "changed_fraction_on_scl_water_transition": null,
+          "changed_fraction_on_shadow_any": 0.008771929824561403,
+          "clear_both_fraction_of_valid": 0.9985236985236985,
+          "cloud_any_fraction_of_valid": 0.0,
+          "scl_water_transition_fraction_of_valid": 0.0,
+          "shadow_any_fraction_of_valid": 0.0014763014763014763,
+          "share_of_changed_in_cloud_or_shadow": 0.00041911148365465214
+        }
+      },
+      "expected_outcome": "no_land_cover_change",
+      "expected_reason_code": null,
+      "input_sha256": [
+        "ddaaf5f51792c7adb2064fba0607ed01ea252fd5e4b596cbd10cb4b05ac9f233",
+        "ad13961319d704f8216ff2ad93dbb3c871a16daef9d75fbf7b49d8beb1e873a6"
+      ],
+      "pair_id": "control-chandigarh-interannual-2024-2025",
+      "registry_reason": "valid, predominantly clear co-registered pair measured",
+      "registry_status": "PASSED",
+      "render": "/Users/atharva/satquery-data/change/renders/control-chandigarh-interannual-2024-2025.png",
+      "scl_masked_variant": {
+        "changed_fraction": 0.030931445023733562,
+        "changed_pixels": 4770,
+        "rule": "dataMask &= SCL in {4,5,6,11} at both dates",
+        "status": "ran",
+        "valid_pixels": 154212
+      }
+    },
+    {
+      "acquisition": {
+        "aoi_nodata_fraction": [
+          0.0,
+          0.0
+        ],
+        "day_of_year": [
+          83,
+          88
+        ],
+        "interval_days": 5.0,
+        "platforms": [
+          "sentinel-2b",
+          "sentinel-2c"
+        ],
+        "processing_baselines": [
+          "05.11",
+          "05.11"
+        ],
+        "sun_elevation_deg": [
+          54.9567591997305,
+          56.8721375954803
+        ],
+        "tile_cloud_cover_percent": [
+          0.229586,
+          52.449113
+        ]
+      },
+      "api": {
+        "answer": "Deterministic change baseline found 30953 of 154440 co-valid pixels above the heuristic threshold. It does not infer semantic change classes or causes.",
+        "confidence_present": false,
+        "evidence": [
+          {
+            "bands": [
+              "B02",
+              "B03",
+              "B04",
+              "B08",
+              "dataMask"
+            ],
+            "t1": {
+              "path": "/Users/atharva/satquery-data/change/runtime/rasters/scene_189eb9e7ce584530a8f3fb134b0cf186.tif",
+              "sha256": "ad13961319d704f8216ff2ad93dbb3c871a16daef9d75fbf7b49d8beb1e873a6"
+            },
+            "t2": {
+              "path": "/Users/atharva/satquery-data/change/runtime/rasters/scene_ad0ddeae9ee0448f818d84ffd9597e0b.tif",
+              "sha256": "f4db760fd7974bdc472b2bc9154032e9cf427b585d47a4907c6aaea3ff8cf1d1"
+            },
+            "temporal_order": "input_1_is_t1_input_2_is_t2",
+            "type": "temporal_inputs"
+          },
+          {
+            "change_magnitude": {
+              "max": 0.3040706515312195,
+              "mean": 0.06860102955963811,
+              "p05": 0.02012196248397231,
+              "p50": 0.06646306067705154,
+              "p95": 0.12553578168153762,
+              "valid_pixels": 154440
+            },
+            "changed_fraction": 0.20042087542087542,
+            "changed_pixels": 30953,
+            "delta_ndvi": {
+              "max": 0.2666536569595337,
+              "mean": -0.12552296391124407,
+              "p05": -0.2607065007090569,
+              "p50": -0.11939343810081482,
+              "p95": -0.013516853004693997,
+              "valid_pixels": 154440
+            },
+            "delta_ndwi": {
+              "max": 0.4152542054653168,
+              "mean": 0.14765214006530714,
+              "p05": 0.05646843649446964,
+              "p50": 0.14666924625635147,
+              "p95": 0.2466914981603622,
+              "valid_pixels": 154440
+            },
+            "heuristic": true,
+            "method": "spectral_index_delta",
+            "threshold": 0.1,
+            "threshold_rule": "changed when normalized change magnitude > 0.1",
+            "type": "change_statistics"
+          },
+          {
+            "crs": "EPSG:32643",
+            "height": 396,
+            "total_pixels": 154440,
+            "type": "temporal_valid_coverage",
+            "valid_fraction": 1.0,
+            "valid_pixels": 154440,
+            "width": 390
+          },
+          {
+            "coordinate_space": "normalized_xyxy",
+            "coordinates": [
+              0.0,
+              0.0,
+              1.0,
+              1.0
+            ],
+            "meaning": "bounding extent of all heuristic changed pixels",
+            "type": "change_extent"
+          }
+        ],
+        "execution_mode": "live",
+        "model": {
+          "name": "change-deterministic",
+          "version": "bitemporal-difference-v1"
+        },
+        "stage": "analyze",
+        "status_code": 200,
+        "trace_chain_valid": true
+      },
+      "category": "control_cloud_contamination",
+      "diagnostics": {
+        "negative_reflectance_fraction": 6.475006475006475e-06,
+        "nir_shift_px_t2_vs_t1": {
+          "dx": 0.04914913296611143,
+          "dy": -0.04954665486602577,
+          "peak": 0.6083346683492713
+        },
+        "reference_box": null,
+        "replica_matches_provider": true,
+        "scl": {
+          "changed_fraction_on_clear_both": null,
+          "changed_fraction_on_cloud_any": 0.20042087542087542,
+          "changed_fraction_on_scl_water_transition": null,
+          "changed_fraction_on_shadow_any": null,
+          "clear_both_fraction_of_valid": 0.0,
+          "cloud_any_fraction_of_valid": 1.0,
+          "scl_water_transition_fraction_of_valid": 0.0,
+          "shadow_any_fraction_of_valid": 0.0,
+          "share_of_changed_in_cloud_or_shadow": 1.0
+        }
+      },
+      "expected_outcome": "no_land_cover_change",
+      "expected_reason_code": null,
+      "input_sha256": [
+        "ad13961319d704f8216ff2ad93dbb3c871a16daef9d75fbf7b49d8beb1e873a6",
+        "f4db760fd7974bdc472b2bc9154032e9cf427b585d47a4907c6aaea3ff8cf1d1"
+      ],
+      "pair_id": "control-chandigarh-cloud-2025",
+      "registry_reason": "cloud present in AOI as intended",
+      "registry_status": "PASSED",
+      "render": "/Users/atharva/satquery-data/change/renders/control-chandigarh-cloud-2025.png",
+      "scl_masked_variant": {
+        "detail": "T1 and T2 have no co-valid spectral-index pixels",
+        "status": "provider_refused"
+      }
+    },
+    {
+      "acquisition": {
+        "aoi_nodata_fraction": [
+          0.0,
+          0.0
+        ],
+        "day_of_year": [
+          47,
+          127
+        ],
+        "interval_days": 80.0,
+        "platforms": [
+          "sentinel-2a",
+          "sentinel-2a"
+        ],
+        "processing_baselines": [
+          "05.10",
+          "05.10"
+        ],
+        "sun_elevation_deg": [
+          42.1867045250145,
+          69.5070783942512
+        ],
+        "tile_cloud_cover_percent": [
+          0.000425,
+          0.001311
+        ]
+      },
+      "api": {
+        "answer": "Deterministic change baseline found 142645 of 172928 co-valid pixels above the heuristic threshold. It does not infer semantic change classes or causes.",
+        "confidence_present": false,
+        "evidence": [
+          {
+            "bands": [
+              "B02",
+              "B03",
+              "B04",
+              "B08",
+              "dataMask"
+            ],
+            "t1": {
+              "path": "/Users/atharva/satquery-data/change/runtime/rasters/scene_d05ae52706354ebe9c304fb2d313c722.tif",
+              "sha256": "d397b6a182c981d4188e08849266191c7b4037ca7b131cc3af6d2328de7224bf"
+            },
+            "t2": {
+              "path": "/Users/atharva/satquery-data/change/runtime/rasters/scene_33b92fa4f6774e869ed8c8729915cdea.tif",
+              "sha256": "d2ff568bf414ba490c15abe37a424d2776d329d6625b1233592c31067b1699e1"
+            },
+            "temporal_order": "input_1_is_t1_input_2_is_t2",
+            "type": "temporal_inputs"
+          },
+          {
+            "change_magnitude": {
+              "max": 0.3665587902069092,
+              "mean": 0.2354659919186651,
+              "p05": 0.022101292852312326,
+              "p50": 0.2935033440589905,
+              "p95": 0.3318528294563293,
+              "valid_pixels": 172928
+            },
+            "changed_fraction": 0.8248808752775721,
+            "changed_pixels": 142645,
+            "delta_ndvi": {
+              "max": 0.6937543749809265,
+              "mean": -0.5004496347373344,
+              "p05": -0.7842172235250473,
+              "p50": -0.7107617557048798,
+              "p95": 0.3294328570365906,
+              "valid_pixels": 172928
+            },
+            "delta_ndwi": {
+              "max": 0.6457904577255249,
+              "mean": 0.32556753759307294,
+              "p05": -0.24139746874570844,
+              "p50": 0.45987647771835327,
+              "p95": 0.5481853395700454,
+              "valid_pixels": 172928
+            },
+            "heuristic": true,
+            "method": "spectral_index_delta",
+            "threshold": 0.1,
+            "threshold_rule": "changed when normalized change magnitude > 0.1",
+            "type": "change_statistics"
+          },
+          {
+            "crs": "EPSG:32643",
+            "height": 448,
+            "total_pixels": 172928,
+            "type": "temporal_valid_coverage",
+            "valid_fraction": 1.0,
+            "valid_pixels": 172928,
+            "width": 386
+          },
+          {
+            "coordinate_space": "normalized_xyxy",
+            "coordinates": [
+              0.0,
+              0.0,
+              1.0,
+              1.0
+            ],
+            "meaning": "bounding extent of all heuristic changed pixels",
+            "type": "change_extent"
+          }
+        ],
+        "execution_mode": "live",
+        "model": {
+          "name": "change-deterministic",
+          "version": "bitemporal-difference-v1"
+        },
+        "stage": "analyze",
+        "status_code": 200,
+        "trace_chain_valid": true
+      },
+      "category": "control_seasonal_only",
+      "diagnostics": {
+        "negative_reflectance_fraction": 0.0,
+        "nir_shift_px_t2_vs_t1": {
+          "dx": 0.011712473181980826,
+          "dy": -0.06472282360503306,
+          "peak": 0.0831765942051315
+        },
+        "reference_box": null,
+        "replica_matches_provider": true,
+        "scl": {
+          "changed_fraction_on_clear_both": 0.8247364763118267,
+          "changed_fraction_on_cloud_any": null,
+          "changed_fraction_on_scl_water_transition": null,
+          "changed_fraction_on_shadow_any": null,
+          "clear_both_fraction_of_valid": 0.998450222057735,
+          "cloud_any_fraction_of_valid": 0.0,
+          "scl_water_transition_fraction_of_valid": 0.0,
+          "shadow_any_fraction_of_valid": 0.0,
+          "share_of_changed_in_cloud_or_shadow": 0.0
+        }
+      },
+      "expected_outcome": "phenology_only",
+      "expected_reason_code": null,
+      "input_sha256": [
+        "d397b6a182c981d4188e08849266191c7b4037ca7b131cc3af6d2328de7224bf",
+        "d2ff568bf414ba490c15abe37a424d2776d329d6625b1233592c31067b1699e1"
+      ],
+      "pair_id": "control-ludhiana-seasonal-2024",
+      "registry_reason": "valid, predominantly clear co-registered pair measured",
+      "registry_status": "PASSED",
+      "render": "/Users/atharva/satquery-data/change/renders/control-ludhiana-seasonal-2024.png",
+      "scl_masked_variant": {
+        "changed_fraction": 0.8247364763118267,
+        "changed_pixels": 142399,
+        "rule": "dataMask &= SCL in {4,5,6,11} at both dates",
+        "status": "ran",
+        "valid_pixels": 172660
+      }
+    },
+    {
+      "acquisition": {
+        "aoi_nodata_fraction": [
+          4.0718822954532996e-05,
+          5.935422602088014e-05
+        ],
+        "day_of_year": [
+          87,
+          97
+        ],
+        "interval_days": 10.0,
+        "platforms": [
+          "sentinel-2b",
+          "sentinel-2b"
+        ],
+        "processing_baselines": [
+          "05.11",
+          "05.11"
+        ],
+        "sun_elevation_deg": [
+          64.1046162898414,
+          67.066014999369
+        ],
+        "tile_cloud_cover_percent": [
+          0.000894,
+          0.004124
+        ]
+      },
+      "api": {
+        "gate": {
+          "acquisition_interval_seconds": 863997.666,
+          "eligible": false,
+          "failed_checks": [
+            {
+              "code": "reprojection_required",
+              "message": "CRS differs; pixel reprojection would be required before analysis."
+            },
+            {
+              "code": "dimensions_incompatible",
+              "message": "T1 and T2 raster dimensions differ."
+            },
+            {
+              "code": "grid_alignment_incompatible",
+              "message": "Bi-temporal pixel grids are not aligned."
+            }
+          ],
+          "normalized_overlap_ratio": 1.0,
+          "operations_required": [
+            "reprojection",
+            "co_registration_or_resampling"
+          ],
+          "reason_codes": [
+            "reprojection_required",
+            "dimensions_incompatible",
+            "grid_alignment_incompatible"
+          ],
+          "requested_workflow": "change_vqa",
+          "resolution_ratio": 1.0028930126165352,
+          "unknown_metadata": [],
+          "verified_checks": [
+            "scene_1_manifest_valid",
+            "scene_2_manifest_valid",
+            "modalities_compatible",
+            "acquisition_order_valid",
+            "pair_group_match",
+            "footprints_transformable",
+            "overlap_threshold_met",
+            "resolution_ratio_compatible"
+          ],
+          "warnings": []
+        },
+        "stage": "analyze",
+        "status_code": 422
+      },
+      "category": "rejection_cross_utm_zone",
+      "expected_outcome": "gate_rejection",
+      "expected_reason_code": "reprojection_required",
+      "input_sha256": [
+        "20d47abb9f3c16dfd73db2e8e7ff1d93fd8cf1306d869a7473da1d1131ec739c",
+        "8c5c637b8b03a3188072c8e2999e1dc43afe7c6a8400410c3efdedb6be5a1851"
+      ],
+      "pair_id": "reject-hyderabad-cross-utm-2025",
+      "registry_reason": "gate rejected as expected with ['reprojection_required', 'dimensions_incompatible', 'grid_alignment_incompatible']",
+      "registry_status": "PASSED"
+    },
+    {
+      "acquisition": {
+        "aoi_nodata_fraction": [
+          0.0,
+          0.0
+        ],
+        "day_of_year": [
+          64,
+          63
+        ],
+        "interval_days": 1460.0,
+        "platforms": [
+          "sentinel-2b",
+          "sentinel-2b"
+        ],
+        "processing_baselines": [
+          "05.00",
+          "05.11"
+        ],
+        "sun_elevation_deg": [
+          50.5936359199401,
+          50.2482839876846
+        ],
+        "tile_cloud_cover_percent": [
+          0.000348,
+          0.001022
+        ]
+      },
+      "api": {
+        "gate": {
+          "acquisition_interval_seconds": 126144004.053,
+          "eligible": false,
+          "failed_checks": [
+            {
+              "code": "grid_alignment_incompatible",
+              "message": "Bi-temporal pixel grids are not aligned."
+            }
+          ],
+          "normalized_overlap_ratio": 0.9969380594553938,
+          "operations_required": [
+            "co_registration_or_resampling"
+          ],
+          "reason_codes": [
+            "grid_alignment_incompatible"
+          ],
+          "requested_workflow": "change_vqa",
+          "resolution_ratio": 1.000001481621889,
+          "unknown_metadata": [],
+          "verified_checks": [
+            "scene_1_manifest_valid",
+            "scene_2_manifest_valid",
+            "modalities_compatible",
+            "acquisition_order_valid",
+            "pair_group_match",
+            "footprints_transformable",
+            "overlap_threshold_met",
+            "resolution_ratio_compatible"
+          ],
+          "warnings": []
+        },
+        "stage": "analyze",
+        "status_code": 422
+      },
+      "category": "rejection_grid_shift",
+      "expected_outcome": "gate_rejection",
+      "expected_reason_code": "grid_alignment_incompatible",
+      "input_sha256": [
+        "b8ea89d3deb92534287c7aedbbaed776916bcbdd59031d3f93c0e79c98c72797",
+        "4bc419af5c35fe60e72e67feaa63533eb86531c789bdcf0d1e2871110a3b9830"
+      ],
+      "pair_id": "reject-jewar-2px-shift-2021-2025",
+      "registry_reason": "gate rejected as expected with ['grid_alignment_incompatible']",
+      "registry_status": "PASSED"
+    }
+  ],
+  "schema": "satquery.change_real_pairs_eval.v1",
+  "scl_groups": {
+    "clear": [
+      4,
+      5,
+      6,
+      11
+    ],
+    "cloud": [
+      8,
+      9,
+      10
+    ],
+    "shadow": [
+      2,
+      3
+    ]
+  },
+  "spec": "data/manifests/change/pairs.v1.json",
+  "started_at": "2026-09-26T13:37:35.825165+00:00"
+}

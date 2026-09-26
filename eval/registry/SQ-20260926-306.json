@@ -1,0 +1,98 @@
+{
+  "adapter_revision": null,
+  "artifact_paths": {
+    "render": "/Users/atharva/satquery-data/change/renders/water-puzhal-lake-2019-2021.png",
+    "results": "eval/results/change-real-pairs-v1.json"
+  },
+  "command": "python3 eval/change_real_pairs.py --register 301",
+  "dataset": "SatQuery real Sentinel-2 change pair pack (Earth Search sentinel-2-c1-l2a windows)",
+  "dataset_checksum": {
+    "t1_sha256": "11de85349f5570eebfb15fe037b31d395fea927c7fad6dc2bb5ac92b893c068a",
+    "t2_sha256": "3faaf79cd7df41d72a7fdb6d16ad36c58dc05d3fa6f3a30a80f213d1103e079e"
+  },
+  "dataset_version": "data/manifests/change/pairs.v1.json",
+  "ended_at": "2026-09-26T13:37:44.834664+00:00",
+  "environment": {
+    "machine": "arm64",
+    "packages": {
+      "accelerate": "1.12.0",
+      "bitsandbytes": null,
+      "numpy": "2.4.2",
+      "peft": "0.18.1",
+      "qwen-vl-utils": null,
+      "rasterio": "1.5.1",
+      "torch": "2.10.0",
+      "transformers": "5.1.0"
+    },
+    "platform": "macOS-26.6-arm64-arm-64bit-Mach-O",
+    "processor": "arm",
+    "python": "3.13.0"
+  },
+  "experiment_id": "SQ-20260926-306",
+  "hyperparameters": {
+    "threshold": 0.1
+  },
+  "metrics": {
+    "api_status_code": 200,
+    "category": "water_change_gain",
+    "changed_fraction": 0.5377741606655486,
+    "delta_ndvi_mean": -0.0943451954608478,
+    "delta_ndwi_mean": 0.2277416454952153,
+    "expected_outcome": "real_surface_change",
+    "gate_reason_codes": null,
+    "magnitude_p50": 0.11192848160862923,
+    "magnitude_p95": 0.299954491853714,
+    "nir_shift_px_t2_vs_t1": {
+      "dx": 0.0016704133232081934,
+      "dy": -0.0972258934979549,
+      "peak": 0.13836355405849654
+    },
+    "reference_box": {
+      "box_fraction_of_valid": 0.4333958107263819,
+      "boxes_normalized_xyxy": [
+        [
+          0.62,
+          0.0,
+          1.0,
+          0.72
+        ],
+        [
+          0.25,
+          0.72,
+          0.88,
+          0.97
+        ]
+      ],
+      "changed_fraction_inside": 0.9079792615073343,
+      "changed_fraction_outside": 0.25460410500454606,
+      "inside_outside_rate_ratio": 3.566239678229548,
+      "share_of_changed_inside": 0.7317465898262939
+    },
+    "scl": {
+      "changed_fraction_on_clear_both": 0.49682387801716155,
+      "changed_fraction_on_cloud_any": 0.9839901477832512,
+      "changed_fraction_on_scl_water_transition": 0.9917232780118669,
+      "changed_fraction_on_shadow_any": 0.25,
+      "clear_both_fraction_of_valid": 0.8877818333278529,
+      "cloud_any_fraction_of_valid": 0.0044501441364418574,
+      "scl_water_transition_fraction_of_valid": 0.254929685530455,
+      "shadow_any_fraction_of_valid": 1.0960946148871571e-05,
+      "share_of_changed_in_cloud_or_shadow": 0.008147729183545562
+    },
+    "scl_masked_changed_fraction": 0.49682387801716155,
+    "valid_fraction": 1.0
+  },
+  "model_id": "change-deterministic",
+  "model_revision": "bitemporal-difference-v1",
+  "notes": "SCL clear-both fraction 0.888 < 0.9",
+  "repository": {
+    "url": "https://github.com/AtharvaPatil466/SatAi",
+    "dirty": true,
+    "sha": "901bd59c69c3f1aeef2adeb5ec21056db1fbdc4b"
+  },
+  "seed": null,
+  "split": "evaluation-only; no training or tuning",
+  "started_at": "2026-09-26T13:37:35.825165+00:00",
+  "status": "INCONCLUSIVE",
+  "title": "change-deterministic on real S2 pair: water-puzhal-lake-2019-2021"
+}

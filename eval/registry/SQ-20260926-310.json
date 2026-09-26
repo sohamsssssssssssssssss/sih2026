@@ -1,0 +1,78 @@
+{
+  "adapter_revision": null,
+  "artifact_paths": {
+    "render": "/Users/atharva/satquery-data/change/renders/control-chandigarh-interannual-2024-2025.png",
+    "results": "eval/results/change-real-pairs-v1.json"
+  },
+  "command": "python3 eval/change_real_pairs.py --register 301",
+  "dataset": "SatQuery real Sentinel-2 change pair pack (Earth Search sentinel-2-c1-l2a windows)",
+  "dataset_checksum": {
+    "t1_sha256": "ddaaf5f51792c7adb2064fba0607ed01ea252fd5e4b596cbd10cb4b05ac9f233",
+    "t2_sha256": "ad13961319d704f8216ff2ad93dbb3c871a16daef9d75fbf7b49d8beb1e873a6"
+  },
+  "dataset_version": "data/manifests/change/pairs.v1.json",
+  "ended_at": "2026-09-26T13:37:44.834664+00:00",
+  "environment": {
+    "machine": "arm64",
+    "packages": {
+      "accelerate": "1.12.0",
+      "bitsandbytes": null,
+      "numpy": "2.4.2",
+      "peft": "0.18.1",
+      "qwen-vl-utils": null,
+      "rasterio": "1.5.1",
+      "torch": "2.10.0",
+      "transformers": "5.1.0"
+    },
+    "platform": "macOS-26.6-arm64-arm-64bit-Mach-O",
+    "processor": "arm",
+    "python": "3.13.0"
+  },
+  "experiment_id": "SQ-20260926-310",
+  "hyperparameters": {
+    "threshold": 0.1
+  },
+  "metrics": {
+    "api_status_code": 200,
+    "category": "control_interannual_same_season",
+    "changed_fraction": 0.030898730898730898,
+    "delta_ndvi_mean": -0.03581887497939766,
+    "delta_ndwi_mean": 0.031580685497825056,
+    "expected_outcome": "no_land_cover_change",
+    "gate_reason_codes": null,
+    "magnitude_p50": 0.02356144692748785,
+    "magnitude_p95": 0.08740453273057931,
+    "nir_shift_px_t2_vs_t1": {
+      "dx": -0.04523881146682747,
+      "dy": 0.05210346492626783,
+      "peak": 0.5272393191014607
+    },
+    "reference_box": null,
+    "scl": {
+      "changed_fraction_on_clear_both": 0.030931445023733562,
+      "changed_fraction_on_cloud_any": null,
+      "changed_fraction_on_scl_water_transition": null,
+      "changed_fraction_on_shadow_any": 0.008771929824561403,
+      "clear_both_fraction_of_valid": 0.9985236985236985,
+      "cloud_any_fraction_of_valid": 0.0,
+      "scl_water_transition_fraction_of_valid": 0.0,
+      "shadow_any_fraction_of_valid": 0.0014763014763014763,
+      "share_of_changed_in_cloud_or_shadow": 0.00041911148365465214
+    },
+    "scl_masked_changed_fraction": 0.030931445023733562,
+    "valid_fraction": 1.0
+  },
+  "model_id": "change-deterministic",
+  "model_revision": "bitemporal-difference-v1",
+  "notes": "valid, predominantly clear co-registered pair measured",
+  "repository": {
+    "url": "https://github.com/AtharvaPatil466/SatAi",
+    "dirty": true,
+    "sha": "901bd59c69c3f1aeef2adeb5ec21056db1fbdc4b"
+  },
+  "seed": null,
+  "split": "evaluation-only; no training or tuning",
+  "started_at": "2026-09-26T13:37:35.825165+00:00",
+  "status": "PASSED",
+  "title": "change-deterministic on real S2 pair: control-chandigarh-interannual-2024-2025"
+}

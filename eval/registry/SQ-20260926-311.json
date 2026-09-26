@@ -1,0 +1,78 @@
+{
+  "adapter_revision": null,
+  "artifact_paths": {
+    "render": "/Users/atharva/satquery-data/change/renders/control-chandigarh-cloud-2025.png",
+    "results": "eval/results/change-real-pairs-v1.json"
+  },
+  "command": "python3 eval/change_real_pairs.py --register 301",
+  "dataset": "SatQuery real Sentinel-2 change pair pack (Earth Search sentinel-2-c1-l2a windows)",
+  "dataset_checksum": {
+    "t1_sha256": "ad13961319d704f8216ff2ad93dbb3c871a16daef9d75fbf7b49d8beb1e873a6",
+    "t2_sha256": "f4db760fd7974bdc472b2bc9154032e9cf427b585d47a4907c6aaea3ff8cf1d1"
+  },
+  "dataset_version": "data/manifests/change/pairs.v1.json",
+  "ended_at": "2026-09-26T13:37:44.834664+00:00",
+  "environment": {
+    "machine": "arm64",
+    "packages": {
+      "accelerate": "1.12.0",
+      "bitsandbytes": null,
+      "numpy": "2.4.2",
+      "peft": "0.18.1",
+      "qwen-vl-utils": null,
+      "rasterio": "1.5.1",
+      "torch": "2.10.0",
+      "transformers": "5.1.0"
+    },
+    "platform": "macOS-26.6-arm64-arm-64bit-Mach-O",
+    "processor": "arm",
+    "python": "3.13.0"
+  },
+  "experiment_id": "SQ-20260926-311",
+  "hyperparameters": {
+    "threshold": 0.1
+  },
+  "metrics": {
+    "api_status_code": 200,
+    "category": "control_cloud_contamination",
+    "changed_fraction": 0.20042087542087542,
+    "delta_ndvi_mean": -0.12552296391124407,
+    "delta_ndwi_mean": 0.14765214006530714,
+    "expected_outcome": "no_land_cover_change",
+    "gate_reason_codes": null,
+    "magnitude_p50": 0.06646306067705154,
+    "magnitude_p95": 0.12553578168153762,
+    "nir_shift_px_t2_vs_t1": {
+      "dx": 0.04914913296611143,
+      "dy": -0.04954665486602577,
+      "peak": 0.6083346683492713
+    },
+    "reference_box": null,
+    "scl": {
+      "changed_fraction_on_clear_both": null,
+      "changed_fraction_on_cloud_any": 0.20042087542087542,
+      "changed_fraction_on_scl_water_transition": null,
+      "changed_fraction_on_shadow_any": null,
+      "clear_both_fraction_of_valid": 0.0,
+      "cloud_any_fraction_of_valid": 1.0,
+      "scl_water_transition_fraction_of_valid": 0.0,
+      "shadow_any_fraction_of_valid": 0.0,
+      "share_of_changed_in_cloud_or_shadow": 1.0
+    },
+    "scl_masked_changed_fraction": null,
+    "valid_fraction": 1.0
+  },
+  "model_id": "change-deterministic",
+  "model_revision": "bitemporal-difference-v1",
+  "notes": "cloud present in AOI as intended",
+  "repository": {
+    "url": "https://github.com/AtharvaPatil466/SatAi",
+    "dirty": true,
+    "sha": "901bd59c69c3f1aeef2adeb5ec21056db1fbdc4b"
+  },
+  "seed": null,
+  "split": "evaluation-only; no training or tuning",
+  "started_at": "2026-09-26T13:37:35.825165+00:00",
+  "status": "PASSED",
+  "title": "change-deterministic on real S2 pair: control-chandigarh-cloud-2025"
+}

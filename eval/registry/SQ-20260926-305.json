@@ -1,0 +1,78 @@
+{
+  "adapter_revision": null,
+  "artifact_paths": {
+    "render": "/Users/atharva/satquery-data/change/renders/control-puzhal-same-datatake-cross-tile-2019.png",
+    "results": "eval/results/change-real-pairs-v1.json"
+  },
+  "command": "python3 eval/change_real_pairs.py --register 301",
+  "dataset": "SatQuery real Sentinel-2 change pair pack (Earth Search sentinel-2-c1-l2a windows)",
+  "dataset_checksum": {
+    "t1_sha256": "32599b46e3b60b1299d41e4950235f3dc3f5c81a683586d1415f928257790025",
+    "t2_sha256": "c5473881148a62f2cfa40e3c41ede4cec5cb9ad589290c90446251234d2bcfb9"
+  },
+  "dataset_version": "data/manifests/change/pairs.v1.json",
+  "ended_at": "2026-09-26T13:37:44.834664+00:00",
+  "environment": {
+    "machine": "arm64",
+    "packages": {
+      "accelerate": "1.12.0",
+      "bitsandbytes": null,
+      "numpy": "2.4.2",
+      "peft": "0.18.1",
+      "qwen-vl-utils": null,
+      "rasterio": "1.5.1",
+      "torch": "2.10.0",
+      "transformers": "5.1.0"
+    },
+    "platform": "macOS-26.6-arm64-arm-64bit-Mach-O",
+    "processor": "arm",
+    "python": "3.13.0"
+  },
+  "experiment_id": "SQ-20260926-305",
+  "hyperparameters": {
+    "threshold": 0.1
+  },
+  "metrics": {
+    "api_status_code": 200,
+    "category": "control_same_datatake_cross_tile",
+    "changed_fraction": 0.0,
+    "delta_ndvi_mean": -0.0012091841414029296,
+    "delta_ndwi_mean": 0.00023981433996832048,
+    "expected_outcome": "no_surface_change",
+    "gate_reason_codes": null,
+    "magnitude_p50": 0.0008715782314538956,
+    "magnitude_p95": 0.004293601959943771,
+    "nir_shift_px_t2_vs_t1": {
+      "dx": 0.00025306397265179205,
+      "dy": 0.00013177064488344953,
+      "peak": 0.9880684731004192
+    },
+    "reference_box": null,
+    "scl": {
+      "changed_fraction_on_clear_both": 0.0,
+      "changed_fraction_on_cloud_any": null,
+      "changed_fraction_on_scl_water_transition": 0.0,
+      "changed_fraction_on_shadow_any": null,
+      "clear_both_fraction_of_valid": 0.9990394305870496,
+      "cloud_any_fraction_of_valid": 0.0,
+      "scl_water_transition_fraction_of_valid": 1.5747039556563368e-05,
+      "shadow_any_fraction_of_valid": 0.0,
+      "share_of_changed_in_cloud_or_shadow": null
+    },
+    "scl_masked_changed_fraction": 0.0,
+    "valid_fraction": 1.0
+  },
+  "model_id": "change-deterministic",
+  "model_revision": "bitemporal-difference-v1",
+  "notes": "valid, predominantly clear co-registered pair measured",
+  "repository": {
+    "url": "https://github.com/AtharvaPatil466/SatAi",
+    "dirty": true,
+    "sha": "901bd59c69c3f1aeef2adeb5ec21056db1fbdc4b"
+  },
+  "seed": null,
+  "split": "evaluation-only; no training or tuning",
+  "started_at": "2026-09-26T13:37:35.825165+00:00",
+  "status": "PASSED",
+  "title": "change-deterministic on real S2 pair: control-puzhal-same-datatake-cross-tile-2019"
+}

@@ -1,0 +1,54 @@
+{
+  "adapter_revision": null,
+  "artifact_paths": {
+    "render": null,
+    "results": "eval/results/change-real-pairs-v1.json"
+  },
+  "command": "python3 eval/change_real_pairs.py --register 301",
+  "dataset": "SatQuery real Sentinel-2 change pair pack (Earth Search sentinel-2-c1-l2a windows)",
+  "dataset_checksum": {
+    "t1_sha256": null,
+    "t2_sha256": null
+  },
+  "dataset_version": "data/manifests/change/pairs.v1.json",
+  "ended_at": "2026-09-26T13:37:44.834664+00:00",
+  "environment": {
+    "machine": "arm64",
+    "packages": {
+      "accelerate": "1.12.0",
+      "bitsandbytes": null,
+      "numpy": "2.4.2",
+      "peft": "0.18.1",
+      "qwen-vl-utils": null,
+      "rasterio": "1.5.1",
+      "torch": "2.10.0",
+      "transformers": "5.1.0"
+    },
+    "platform": "macOS-26.6-arm64-arm-64bit-Mach-O",
+    "processor": "arm",
+    "python": "3.13.0"
+  },
+  "experiment_id": "SQ-20260926-303",
+  "hyperparameters": {
+    "threshold": 0.1
+  },
+  "metrics": {
+    "api_status_code": null,
+    "category": "water_change_loss",
+    "expected_outcome": "real_surface_change",
+    "gate_reason_codes": null
+  },
+  "model_id": "change-deterministic",
+  "model_revision": "bitemporal-difference-v1",
+  "notes": "invalidated: Acquisition defect: the AOI extends ~2.4 km past the east edge of tile 44PLV (native window cols 10570-11224 of 10980). rasterio silently clipped the read to 410 columns and the writer stretched them across the declared 654-column window, so both rasters are geometrically wrong while their metadata claims the full AOI. Detected by a same-datatake cross-tile comparison (44PLV vs 44PMV correlated 0.11). Acquisition now fails closed on windows outside the tile and on clipped reads. Replaced by water-puzhal-lake-2018-2019-pmv; the committed provenance is kept unchanged as evidence.",
+  "repository": {
+    "url": "https://github.com/AtharvaPatil466/SatAi",
+    "dirty": true,
+    "sha": "901bd59c69c3f1aeef2adeb5ec21056db1fbdc4b"
+  },
+  "seed": null,
+  "split": "evaluation-only; no training or tuning",
+  "started_at": "2026-09-26T13:37:35.825165+00:00",
+  "status": "FAILED",
+  "title": "change-deterministic on real S2 pair: water-puzhal-lake-2018-2019"
+}
