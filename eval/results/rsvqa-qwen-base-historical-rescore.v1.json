@@ -1,0 +1,70 @@
+{
+  "metrics": {
+    "count_bin_accuracy": "count questions only: prediction and gold both parse as integers and fall in the same bin of 0 | 1-10 | 11-100 | 101-1000 | >1000 (the counting quantisation described for RSVQA-LR by Lobry et al. 2020). Unparseable predictions are wrong.",
+    "invalid_rate": "share of predictions outside the question type's answer space after normalisation (strip, casefold, trailing '.!' removed): presence/comp must be yes|no, rural_urban must be rural|urban, count must be a non-negative integer or a number word zero-ten. Empty output is invalid.",
+    "lenient_accuracy": "eval.eval.answer_matches(prediction, gold): word-boundary containment, '1' counts as 'yes', number words zero-ten map to digits. This is the scorer behind the historical 0.514194 base result; reported only for comparability with it.",
+    "mcnemar_exact_p": "two-sided exact binomial test on discordant paired outcomes (base wrong/adapter right vs base right/adapter wrong) over the same sample IDs.",
+    "strict_accuracy": "prediction.strip().casefold() == gold.strip().casefold(); identical to the metric of scripts/evaluate_remote_sensing_adapter.py before this change.",
+    "type_weighted_strict_accuracy": "sum over question types of strict accuracy on that type weighted by the type's share of the FULL split; corrects the stratified subset's floor oversampling of small types.",
+    "wilson_95": "Wilson score 95% interval for a proportion."
+  },
+  "source_git_sha": "777707a",
+  "source_gpu": "Tesla T4",
+  "source_result": "qwen2.5vl-3b__rsvqa__20260903T175900Z.json",
+  "summary": {
+    "degenerate_binary": false,
+    "invalid_rate": 0.015993602558976416,
+    "lenient_accuracy": 0.5141943222710915,
+    "n": 10004,
+    "per_type": {
+      "comp": {
+        "invalid_rate": 0.02048975512243878,
+        "lenient_accuracy": 0.7261369315342329,
+        "n": 4002,
+        "strict_accuracy": 0.723888055972014,
+        "strict_wilson_95": [
+          0.709827,
+          0.73752
+        ]
+      },
+      "count": {
+        "count_bin_accuracy": 0.3169324737020699,
+        "invalid_rate": 0.002714625042416041,
+        "lenient_accuracy": 0.1486257210722769,
+        "n": 2947,
+        "strict_accuracy": 0.1486257210722769,
+        "strict_wilson_95": [
+          0.13624,
+          0.161926
+        ]
+      },
+      "presence": {
+        "invalid_rate": 0.02368866328257191,
+        "lenient_accuracy": 0.5871404399323181,
+        "n": 2955,
+        "strict_accuracy": 0.5742808798646362,
+        "strict_wilson_95": [
+          0.556368,
+          0.592001
+        ]
+      },
+      "rural_urban": {
+        "invalid_rate": 0.0,
+        "lenient_accuracy": 0.65,
+        "n": 100,
+        "strict_accuracy": 0.65,
+        "strict_wilson_95": [
+          0.552543,
+          0.736359
+        ]
+      }
+    },
+    "pred_yes_rate_on_binary": 0.357481673134972,
+    "strict_accuracy": 0.5094962015193922,
+    "strict_wilson_95": [
+      0.499698,
+      0.519287
+    ],
+    "type_weighted_strict_accuracy": 0.5094962015193922
+  }
+}

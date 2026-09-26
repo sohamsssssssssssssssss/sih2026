@@ -47,6 +47,8 @@ class TrainingConfig:
     lora_alpha: int = 32
     lora_dropout: float = 0.05
     lora_target_modules: tuple[str, ...] = ("q_proj", "k_proj", "v_proj", "o_proj")
+    model_revision: str | None = None
+    resume_from_checkpoint: Path | None = None
 
     def validate(self) -> None:
         if self.split not in SPLITS:
@@ -70,7 +72,7 @@ class TrainingConfig:
 
     def serializable(self) -> dict[str, Any]:
         value = asdict(self)
-        for key in ("model_path", "dataset_manifest", "image_root", "output_dir"):
+        for key in ("model_path", "dataset_manifest", "image_root", "output_dir", "resume_from_checkpoint"):
             value[key] = str(value[key]) if value[key] is not None else None
         value["lora_target_modules"] = list(self.lora_target_modules)
         return value

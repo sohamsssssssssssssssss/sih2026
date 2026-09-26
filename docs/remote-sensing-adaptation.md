@@ -16,7 +16,7 @@ Every setting below is configurable on the command line. Defaults are: 4-bit NF4
 
 Each prompt contains one resized image, the original RSVQA question, and the same concise-answer instruction used by the SatQuery Qwen provider. Only assistant target tokens contribute to loss. The base weights remain frozen and the selected attention projections receive LoRA adapters.
 
-`training-report.json` records the base model ID and local path, unknown revision and checksum as `null`, dataset manifest SHA-256, dataset/source identities, split, selected sample IDs and count, seed, all training and adapter settings, dependency versions, adapter location, runtime time, status, and trainer metrics when training completes. It contains no improvement claim.
+`training-report.json` records the base model ID and local path, the revision passed with `--model-revision` (otherwise `null`), checksum `null`, dataset manifest SHA-256, dataset/source identities, split, selected sample IDs and count, seed, all training and adapter settings, dependency versions, adapter location, runtime time, status, peak CUDA memory, wall-clock time, and, when training completes, trainer metrics, the full trainer log history and the adapter size. It contains no improvement claim. `kaggle/run_vlm_program.py` passes the pinned revision only after its env stage has checksum-verified the local files.
 
 ## Kaggle GPU procedure
 
@@ -145,12 +145,13 @@ python scripts/evaluate_remote_sensing_adapter.py \
   --adapter-path "$TRAIN_OUT/adapter" \
   --dataset-manifest "$RSVQA_MANIFEST" \
   --image-root "$RSVQA_ROOT" \
-  --split validation --max-samples 200 --seed 17 --image-size 224 \
-  --out "$EVAL_REPORT"
+  --subset eval/subsets/rsvqa-lr-validation-dev1000.v1.json \
+  --expected-subset-sha256 e3b43319645767c2c559fba82413f66818193689d4316e067f7339eb9ec4e20c \
+  --image-size 252 --out "$EVAL_REPORT"
 python -m json.tool "$EVAL_REPORT"
 ```
 
-Use validation for configuration decisions. Keep official test untouched until the configuration is locked. Case-insensitive exact match is a narrow comparison metric and does not fully characterize remote-sensing VQA quality.
+Omit `--adapter-path` to evaluate the base model alone, or add `--skip-base` to evaluate only the adapter. Use validation for configuration decisions and keep the official test split untouched until the configuration is locked. Metric definitions (strict, lenient, count-bin and invalid rate) are in `eval.rsvqa_research.METRICS`; case-insensitive exact match is a narrow metric and does not fully characterize remote-sensing VQA quality. The staged research program, including the locked final test, is `kaggle/run_vlm_program.py`; see `docs/research/vlm-kaggle-runbook.md` and `docs/research/rsvqa-lr-audit.md`.
 
 ### 9. Preserve evidence without committing large artifacts
 

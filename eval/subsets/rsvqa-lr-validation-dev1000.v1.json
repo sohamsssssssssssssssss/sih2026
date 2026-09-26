@@ -1,0 +1,5034 @@
+{
+  "audit_sha256": "d9ead9d644c8c31c9e93ea9f939fba5a4e1a573d03e50c6fc3abeb2064ad0282",
+  "dataset": "RSVQA-LR",
+  "excluded_image_ids": [
+    481,
+    507,
+    509,
+    511,
+    527,
+    528,
+    546,
+    550
+  ],
+  "full_split_type_counts": {
+    "comp": 4020,
+    "count": 2966,
+    "presence": 2919,
+    "rural_urban": 100
+  },
+  "leakage_flagged_image_ids": [],
+  "samples": [
+    {
+      "image_id": 517,
+      "sample_id": "validation-51730",
+      "type": "presence"
+    },
+    {
+      "image_id": 567,
+      "sample_id": "validation-56730",
+      "type": "count"
+    },
+    {
+      "image_id": 503,
+      "sample_id": "validation-50355",
+      "type": "comp"
+    },
+    {
+      "image_id": 500,
+      "sample_id": "validation-50021",
+      "type": "presence"
+    },
+    {
+      "image_id": 499,
+      "sample_id": "validation-49982",
+      "type": "comp"
+    },
+    {
+      "image_id": 565,
+      "sample_id": "validation-56571",
+      "type": "presence"
+    },
+    {
+      "image_id": 473,
+      "sample_id": "validation-47387",
+      "type": "comp"
+    },
+    {
+      "image_id": 484,
+      "sample_id": "validation-48420",
+      "type": "count"
+    },
+    {
+      "image_id": 513,
+      "sample_id": "validation-51358",
+      "type": "comp"
+    },
+    {
+      "image_id": 495,
+      "sample_id": "validation-49560",
+      "type": "comp"
+    },
+    {
+      "image_id": 514,
+      "sample_id": "validation-51454",
+      "type": "comp"
+    },
+    {
+      "image_id": 545,
+      "sample_id": "validation-54540",
+      "type": "count"
+    },
+    {
+      "image_id": 514,
+      "sample_id": "validation-51489",
+      "type": "comp"
+    },
+    {
+      "image_id": 558,
+      "sample_id": "validation-55868",
+      "type": "comp"
+    },
+    {
+      "image_id": 551,
+      "sample_id": "validation-55161",
+      "type": "comp"
+    },
+    {
+      "image_id": 539,
+      "sample_id": "validation-53960",
+      "type": "comp"
+    },
+    {
+      "image_id": 569,
+      "sample_id": "validation-56944",
+      "type": "presence"
+    },
+    {
+      "image_id": 539,
+      "sample_id": "validation-53936",
+      "type": "comp"
+    },
+    {
+      "image_id": 530,
+      "sample_id": "validation-53096",
+      "type": "count"
+    },
+    {
+      "image_id": 496,
+      "sample_id": "validation-49703",
+      "type": "presence"
+    },
+    {
+      "image_id": 533,
+      "sample_id": "validation-53331",
+      "type": "count"
+    },
+    {
+      "image_id": 501,
+      "sample_id": "validation-50165",
+      "type": "count"
+    },
+    {
+      "image_id": 564,
+      "sample_id": "validation-56426",
+      "type": "comp"
+    },
+    {
+      "image_id": 473,
+      "sample_id": "validation-47334",
+      "type": "comp"
+    },
+    {
+      "image_id": 538,
+      "sample_id": "validation-53891",
+      "type": "presence"
+    },
+    {
+      "image_id": 541,
+      "sample_id": "validation-54141",
+      "type": "comp"
+    },
+    {
+      "image_id": 512,
+      "sample_id": "validation-51235",
+      "type": "count"
+    },
+    {
+      "image_id": 494,
+      "sample_id": "validation-49477",
+      "type": "comp"
+    },
+    {
+      "image_id": 547,
+      "sample_id": "validation-54723",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 473,
+      "sample_id": "validation-47381",
+      "type": "count"
+    },
+    {
+      "image_id": 473,
+      "sample_id": "validation-47362",
+      "type": "comp"
+    },
+    {
+      "image_id": 497,
+      "sample_id": "validation-49764",
+      "type": "presence"
+    },
+    {
+      "image_id": 535,
+      "sample_id": "validation-53596",
+      "type": "presence"
+    },
+    {
+      "image_id": 552,
+      "sample_id": "validation-55286",
+      "type": "comp"
+    },
+    {
+      "image_id": 559,
+      "sample_id": "validation-56010",
+      "type": "comp"
+    },
+    {
+      "image_id": 560,
+      "sample_id": "validation-56067",
+      "type": "presence"
+    },
+    {
+      "image_id": 504,
+      "sample_id": "validation-50435",
+      "type": "comp"
+    },
+    {
+      "image_id": 513,
+      "sample_id": "validation-51378",
+      "type": "presence"
+    },
+    {
+      "image_id": 493,
+      "sample_id": "validation-49390",
+      "type": "comp"
+    },
+    {
+      "image_id": 519,
+      "sample_id": "validation-51998",
+      "type": "count"
+    },
+    {
+      "image_id": 499,
+      "sample_id": "validation-49945",
+      "type": "comp"
+    },
+    {
+      "image_id": 480,
+      "sample_id": "validation-48052",
+      "type": "comp"
+    },
+    {
+      "image_id": 536,
+      "sample_id": "validation-53632",
+      "type": "count"
+    },
+    {
+      "image_id": 538,
+      "sample_id": "validation-53884",
+      "type": "comp"
+    },
+    {
+      "image_id": 551,
+      "sample_id": "validation-55180",
+      "type": "count"
+    },
+    {
+      "image_id": 501,
+      "sample_id": "validation-50213",
+      "type": "count"
+    },
+    {
+      "image_id": 562,
+      "sample_id": "validation-56280",
+      "type": "comp"
+    },
+    {
+      "image_id": 516,
+      "sample_id": "validation-51716",
+      "type": "comp"
+    },
+    {
+      "image_id": 514,
+      "sample_id": "validation-51476",
+      "type": "count"
+    },
+    {
+      "image_id": 562,
+      "sample_id": "validation-56237",
+      "type": "count"
+    },
+    {
+      "image_id": 569,
+      "sample_id": "validation-56981",
+      "type": "comp"
+    },
+    {
+      "image_id": 540,
+      "sample_id": "validation-54077",
+      "type": "presence"
+    },
+    {
+      "image_id": 508,
+      "sample_id": "validation-50844",
+      "type": "presence"
+    },
+    {
+      "image_id": 526,
+      "sample_id": "validation-52705",
+      "type": "comp"
+    },
+    {
+      "image_id": 534,
+      "sample_id": "validation-53446",
+      "type": "comp"
+    },
+    {
+      "image_id": 557,
+      "sample_id": "validation-55811",
+      "type": "comp"
+    },
+    {
+      "image_id": 488,
+      "sample_id": "validation-48855",
+      "type": "presence"
+    },
+    {
+      "image_id": 513,
+      "sample_id": "validation-51384",
+      "type": "comp"
+    },
+    {
+      "image_id": 489,
+      "sample_id": "validation-48940",
+      "type": "count"
+    },
+    {
+      "image_id": 515,
+      "sample_id": "validation-51531",
+      "type": "presence"
+    },
+    {
+      "image_id": 487,
+      "sample_id": "validation-48741",
+      "type": "presence"
+    },
+    {
+      "image_id": 478,
+      "sample_id": "validation-47830",
+      "type": "count"
+    },
+    {
+      "image_id": 526,
+      "sample_id": "validation-52636",
+      "type": "presence"
+    },
+    {
+      "image_id": 513,
+      "sample_id": "validation-51347",
+      "type": "comp"
+    },
+    {
+      "image_id": 522,
+      "sample_id": "validation-52237",
+      "type": "count"
+    },
+    {
+      "image_id": 474,
+      "sample_id": "validation-47494",
+      "type": "comp"
+    },
+    {
+      "image_id": 486,
+      "sample_id": "validation-48619",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 570,
+      "sample_id": "validation-57102",
+      "type": "presence"
+    },
+    {
+      "image_id": 569,
+      "sample_id": "validation-57021",
+      "type": "count"
+    },
+    {
+      "image_id": 488,
+      "sample_id": "validation-48902",
+      "type": "comp"
+    },
+    {
+      "image_id": 538,
+      "sample_id": "validation-53834",
+      "type": "count"
+    },
+    {
+      "image_id": 485,
+      "sample_id": "validation-48588",
+      "type": "comp"
+    },
+    {
+      "image_id": 497,
+      "sample_id": "validation-49782",
+      "type": "comp"
+    },
+    {
+      "image_id": 568,
+      "sample_id": "validation-56898",
+      "type": "presence"
+    },
+    {
+      "image_id": 557,
+      "sample_id": "validation-55791",
+      "type": "presence"
+    },
+    {
+      "image_id": 567,
+      "sample_id": "validation-56748",
+      "type": "count"
+    },
+    {
+      "image_id": 498,
+      "sample_id": "validation-49820",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 517,
+      "sample_id": "validation-51786",
+      "type": "presence"
+    },
+    {
+      "image_id": 565,
+      "sample_id": "validation-56543",
+      "type": "count"
+    },
+    {
+      "image_id": 476,
+      "sample_id": "validation-47666",
+      "type": "comp"
+    },
+    {
+      "image_id": 485,
+      "sample_id": "validation-48547",
+      "type": "comp"
+    },
+    {
+      "image_id": 531,
+      "sample_id": "validation-53142",
+      "type": "comp"
+    },
+    {
+      "image_id": 533,
+      "sample_id": "validation-53328",
+      "type": "count"
+    },
+    {
+      "image_id": 535,
+      "sample_id": "validation-53573",
+      "type": "comp"
+    },
+    {
+      "image_id": 489,
+      "sample_id": "validation-48966",
+      "type": "presence"
+    },
+    {
+      "image_id": 558,
+      "sample_id": "validation-55885",
+      "type": "comp"
+    },
+    {
+      "image_id": 501,
+      "sample_id": "validation-50129",
+      "type": "count"
+    },
+    {
+      "image_id": 539,
+      "sample_id": "validation-53933",
+      "type": "count"
+    },
+    {
+      "image_id": 567,
+      "sample_id": "validation-56790",
+      "type": "presence"
+    },
+    {
+      "image_id": 532,
+      "sample_id": "validation-53250",
+      "type": "comp"
+    },
+    {
+      "image_id": 513,
+      "sample_id": "validation-51412",
+      "type": "comp"
+    },
+    {
+      "image_id": 519,
+      "sample_id": "validation-51923",
+      "type": "presence"
+    },
+    {
+      "image_id": 530,
+      "sample_id": "validation-53030",
+      "type": "count"
+    },
+    {
+      "image_id": 491,
+      "sample_id": "validation-49153",
+      "type": "comp"
+    },
+    {
+      "image_id": 560,
+      "sample_id": "validation-56040",
+      "type": "count"
+    },
+    {
+      "image_id": 523,
+      "sample_id": "validation-52322",
+      "type": "count"
+    },
+    {
+      "image_id": 500,
+      "sample_id": "validation-50068",
+      "type": "count"
+    },
+    {
+      "image_id": 531,
+      "sample_id": "validation-53150",
+      "type": "count"
+    },
+    {
+      "image_id": 555,
+      "sample_id": "validation-55524",
+      "type": "presence"
+    },
+    {
+      "image_id": 555,
+      "sample_id": "validation-55566",
+      "type": "comp"
+    },
+    {
+      "image_id": 555,
+      "sample_id": "validation-55620",
+      "type": "comp"
+    },
+    {
+      "image_id": 533,
+      "sample_id": "validation-53336",
+      "type": "count"
+    },
+    {
+      "image_id": 510,
+      "sample_id": "validation-51041",
+      "type": "presence"
+    },
+    {
+      "image_id": 483,
+      "sample_id": "validation-48418",
+      "type": "comp"
+    },
+    {
+      "image_id": 489,
+      "sample_id": "validation-48919",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 533,
+      "sample_id": "validation-53349",
+      "type": "count"
+    },
+    {
+      "image_id": 571,
+      "sample_id": "validation-57201",
+      "type": "comp"
+    },
+    {
+      "image_id": 480,
+      "sample_id": "validation-48062",
+      "type": "count"
+    },
+    {
+      "image_id": 476,
+      "sample_id": "validation-47667",
+      "type": "count"
+    },
+    {
+      "image_id": 542,
+      "sample_id": "validation-54315",
+      "type": "presence"
+    },
+    {
+      "image_id": 562,
+      "sample_id": "validation-56245",
+      "type": "presence"
+    },
+    {
+      "image_id": 506,
+      "sample_id": "validation-50620",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 516,
+      "sample_id": "validation-51664",
+      "type": "comp"
+    },
+    {
+      "image_id": 490,
+      "sample_id": "validation-49068",
+      "type": "comp"
+    },
+    {
+      "image_id": 545,
+      "sample_id": "validation-54538",
+      "type": "presence"
+    },
+    {
+      "image_id": 494,
+      "sample_id": "validation-49479",
+      "type": "presence"
+    },
+    {
+      "image_id": 565,
+      "sample_id": "validation-56556",
+      "type": "count"
+    },
+    {
+      "image_id": 495,
+      "sample_id": "validation-49550",
+      "type": "count"
+    },
+    {
+      "image_id": 495,
+      "sample_id": "validation-49527",
+      "type": "presence"
+    },
+    {
+      "image_id": 562,
+      "sample_id": "validation-56296",
+      "type": "comp"
+    },
+    {
+      "image_id": 534,
+      "sample_id": "validation-53487",
+      "type": "comp"
+    },
+    {
+      "image_id": 490,
+      "sample_id": "validation-49100",
+      "type": "count"
+    },
+    {
+      "image_id": 482,
+      "sample_id": "validation-48290",
+      "type": "comp"
+    },
+    {
+      "image_id": 482,
+      "sample_id": "validation-48222",
+      "type": "count"
+    },
+    {
+      "image_id": 522,
+      "sample_id": "validation-52236",
+      "type": "presence"
+    },
+    {
+      "image_id": 483,
+      "sample_id": "validation-48382",
+      "type": "presence"
+    },
+    {
+      "image_id": 536,
+      "sample_id": "validation-53699",
+      "type": "comp"
+    },
+    {
+      "image_id": 551,
+      "sample_id": "validation-55195",
+      "type": "presence"
+    },
+    {
+      "image_id": 494,
+      "sample_id": "validation-49478",
+      "type": "count"
+    },
+    {
+      "image_id": 486,
+      "sample_id": "validation-48655",
+      "type": "comp"
+    },
+    {
+      "image_id": 554,
+      "sample_id": "validation-55462",
+      "type": "count"
+    },
+    {
+      "image_id": 495,
+      "sample_id": "validation-49528",
+      "type": "count"
+    },
+    {
+      "image_id": 560,
+      "sample_id": "validation-56083",
+      "type": "comp"
+    },
+    {
+      "image_id": 530,
+      "sample_id": "validation-53113",
+      "type": "presence"
+    },
+    {
+      "image_id": 504,
+      "sample_id": "validation-50482",
+      "type": "presence"
+    },
+    {
+      "image_id": 487,
+      "sample_id": "validation-48785",
+      "type": "count"
+    },
+    {
+      "image_id": 516,
+      "sample_id": "validation-51680",
+      "type": "comp"
+    },
+    {
+      "image_id": 480,
+      "sample_id": "validation-48032",
+      "type": "count"
+    },
+    {
+      "image_id": 553,
+      "sample_id": "validation-55386",
+      "type": "comp"
+    },
+    {
+      "image_id": 494,
+      "sample_id": "validation-49487",
+      "type": "presence"
+    },
+    {
+      "image_id": 495,
+      "sample_id": "validation-49609",
+      "type": "comp"
+    },
+    {
+      "image_id": 495,
+      "sample_id": "validation-49618",
+      "type": "presence"
+    },
+    {
+      "image_id": 537,
+      "sample_id": "validation-53795",
+      "type": "comp"
+    },
+    {
+      "image_id": 561,
+      "sample_id": "validation-56191",
+      "type": "count"
+    },
+    {
+      "image_id": 563,
+      "sample_id": "validation-56407",
+      "type": "count"
+    },
+    {
+      "image_id": 519,
+      "sample_id": "validation-51928",
+      "type": "presence"
+    },
+    {
+      "image_id": 530,
+      "sample_id": "validation-53098",
+      "type": "comp"
+    },
+    {
+      "image_id": 531,
+      "sample_id": "validation-53145",
+      "type": "count"
+    },
+    {
+      "image_id": 503,
+      "sample_id": "validation-50322",
+      "type": "count"
+    },
+    {
+      "image_id": 531,
+      "sample_id": "validation-53184",
+      "type": "presence"
+    },
+    {
+      "image_id": 569,
+      "sample_id": "validation-56978",
+      "type": "comp"
+    },
+    {
+      "image_id": 497,
+      "sample_id": "validation-49748",
+      "type": "presence"
+    },
+    {
+      "image_id": 478,
+      "sample_id": "validation-47827",
+      "type": "count"
+    },
+    {
+      "image_id": 475,
+      "sample_id": "validation-47519",
+      "type": "comp"
+    },
+    {
+      "image_id": 475,
+      "sample_id": "validation-47610",
+      "type": "count"
+    },
+    {
+      "image_id": 487,
+      "sample_id": "validation-48798",
+      "type": "comp"
+    },
+    {
+      "image_id": 517,
+      "sample_id": "validation-51774",
+      "type": "comp"
+    },
+    {
+      "image_id": 554,
+      "sample_id": "validation-55506",
+      "type": "presence"
+    },
+    {
+      "image_id": 533,
+      "sample_id": "validation-53322",
+      "type": "presence"
+    },
+    {
+      "image_id": 526,
+      "sample_id": "validation-52656",
+      "type": "comp"
+    },
+    {
+      "image_id": 533,
+      "sample_id": "validation-53395",
+      "type": "comp"
+    },
+    {
+      "image_id": 554,
+      "sample_id": "validation-55510",
+      "type": "comp"
+    },
+    {
+      "image_id": 570,
+      "sample_id": "validation-57033",
+      "type": "count"
+    },
+    {
+      "image_id": 532,
+      "sample_id": "validation-53254",
+      "type": "presence"
+    },
+    {
+      "image_id": 483,
+      "sample_id": "validation-48383",
+      "type": "comp"
+    },
+    {
+      "image_id": 543,
+      "sample_id": "validation-54421",
+      "type": "comp"
+    },
+    {
+      "image_id": 553,
+      "sample_id": "validation-55323",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 491,
+      "sample_id": "validation-49139",
+      "type": "comp"
+    },
+    {
+      "image_id": 473,
+      "sample_id": "validation-47397",
+      "type": "count"
+    },
+    {
+      "image_id": 538,
+      "sample_id": "validation-53835",
+      "type": "comp"
+    },
+    {
+      "image_id": 540,
+      "sample_id": "validation-54089",
+      "type": "comp"
+    },
+    {
+      "image_id": 477,
+      "sample_id": "validation-47737",
+      "type": "count"
+    },
+    {
+      "image_id": 521,
+      "sample_id": "validation-52130",
+      "type": "comp"
+    },
+    {
+      "image_id": 512,
+      "sample_id": "validation-51318",
+      "type": "comp"
+    },
+    {
+      "image_id": 475,
+      "sample_id": "validation-47543",
+      "type": "count"
+    },
+    {
+      "image_id": 540,
+      "sample_id": "validation-54046",
+      "type": "comp"
+    },
+    {
+      "image_id": 494,
+      "sample_id": "validation-49432",
+      "type": "count"
+    },
+    {
+      "image_id": 483,
+      "sample_id": "validation-48354",
+      "type": "presence"
+    },
+    {
+      "image_id": 560,
+      "sample_id": "validation-56104",
+      "type": "comp"
+    },
+    {
+      "image_id": 510,
+      "sample_id": "validation-51098",
+      "type": "presence"
+    },
+    {
+      "image_id": 567,
+      "sample_id": "validation-56771",
+      "type": "count"
+    },
+    {
+      "image_id": 568,
+      "sample_id": "validation-56883",
+      "type": "count"
+    },
+    {
+      "image_id": 494,
+      "sample_id": "validation-49488",
+      "type": "comp"
+    },
+    {
+      "image_id": 539,
+      "sample_id": "validation-53973",
+      "type": "comp"
+    },
+    {
+      "image_id": 563,
+      "sample_id": "validation-56360",
+      "type": "count"
+    },
+    {
+      "image_id": 545,
+      "sample_id": "validation-54609",
+      "type": "presence"
+    },
+    {
+      "image_id": 476,
+      "sample_id": "validation-47684",
+      "type": "presence"
+    },
+    {
+      "image_id": 523,
+      "sample_id": "validation-52420",
+      "type": "presence"
+    },
+    {
+      "image_id": 521,
+      "sample_id": "validation-52149",
+      "type": "count"
+    },
+    {
+      "image_id": 562,
+      "sample_id": "validation-56239",
+      "type": "presence"
+    },
+    {
+      "image_id": 512,
+      "sample_id": "validation-51271",
+      "type": "presence"
+    },
+    {
+      "image_id": 552,
+      "sample_id": "validation-55320",
+      "type": "count"
+    },
+    {
+      "image_id": 536,
+      "sample_id": "validation-53638",
+      "type": "count"
+    },
+    {
+      "image_id": 486,
+      "sample_id": "validation-48684",
+      "type": "comp"
+    },
+    {
+      "image_id": 480,
+      "sample_id": "validation-48114",
+      "type": "comp"
+    },
+    {
+      "image_id": 561,
+      "sample_id": "validation-56217",
+      "type": "comp"
+    },
+    {
+      "image_id": 485,
+      "sample_id": "validation-48615",
+      "type": "count"
+    },
+    {
+      "image_id": 503,
+      "sample_id": "validation-50349",
+      "type": "count"
+    },
+    {
+      "image_id": 497,
+      "sample_id": "validation-49765",
+      "type": "presence"
+    },
+    {
+      "image_id": 490,
+      "sample_id": "validation-49082",
+      "type": "comp"
+    },
+    {
+      "image_id": 551,
+      "sample_id": "validation-55129",
+      "type": "comp"
+    },
+    {
+      "image_id": 475,
+      "sample_id": "validation-47542",
+      "type": "presence"
+    },
+    {
+      "image_id": 479,
+      "sample_id": "validation-47950",
+      "type": "presence"
+    },
+    {
+      "image_id": 523,
+      "sample_id": "validation-52406",
+      "type": "count"
+    },
+    {
+      "image_id": 479,
+      "sample_id": "validation-47997",
+      "type": "count"
+    },
+    {
+      "image_id": 477,
+      "sample_id": "validation-47734",
+      "type": "count"
+    },
+    {
+      "image_id": 476,
+      "sample_id": "validation-47699",
+      "type": "comp"
+    },
+    {
+      "image_id": 495,
+      "sample_id": "validation-49580",
+      "type": "comp"
+    },
+    {
+      "image_id": 557,
+      "sample_id": "validation-55767",
+      "type": "presence"
+    },
+    {
+      "image_id": 479,
+      "sample_id": "validation-47956",
+      "type": "count"
+    },
+    {
+      "image_id": 473,
+      "sample_id": "validation-47365",
+      "type": "count"
+    },
+    {
+      "image_id": 473,
+      "sample_id": "validation-47325",
+      "type": "count"
+    },
+    {
+      "image_id": 484,
+      "sample_id": "validation-48495",
+      "type": "comp"
+    },
+    {
+      "image_id": 504,
+      "sample_id": "validation-50474",
+      "type": "comp"
+    },
+    {
+      "image_id": 513,
+      "sample_id": "validation-51386",
+      "type": "comp"
+    },
+    {
+      "image_id": 489,
+      "sample_id": "validation-49001",
+      "type": "comp"
+    },
+    {
+      "image_id": 556,
+      "sample_id": "validation-55629",
+      "type": "presence"
+    },
+    {
+      "image_id": 493,
+      "sample_id": "validation-49379",
+      "type": "count"
+    },
+    {
+      "image_id": 493,
+      "sample_id": "validation-49417",
+      "type": "presence"
+    },
+    {
+      "image_id": 547,
+      "sample_id": "validation-54818",
+      "type": "presence"
+    },
+    {
+      "image_id": 525,
+      "sample_id": "validation-52560",
+      "type": "comp"
+    },
+    {
+      "image_id": 479,
+      "sample_id": "validation-47975",
+      "type": "count"
+    },
+    {
+      "image_id": 571,
+      "sample_id": "validation-57168",
+      "type": "presence"
+    },
+    {
+      "image_id": 480,
+      "sample_id": "validation-48084",
+      "type": "comp"
+    },
+    {
+      "image_id": 480,
+      "sample_id": "validation-48099",
+      "type": "count"
+    },
+    {
+      "image_id": 479,
+      "sample_id": "validation-48004",
+      "type": "comp"
+    },
+    {
+      "image_id": 518,
+      "sample_id": "validation-51852",
+      "type": "count"
+    },
+    {
+      "image_id": 491,
+      "sample_id": "validation-49124",
+      "type": "count"
+    },
+    {
+      "image_id": 525,
+      "sample_id": "validation-52578",
+      "type": "presence"
+    },
+    {
+      "image_id": 529,
+      "sample_id": "validation-52999",
+      "type": "comp"
+    },
+    {
+      "image_id": 498,
+      "sample_id": "validation-49912",
+      "type": "count"
+    },
+    {
+      "image_id": 479,
+      "sample_id": "validation-47949",
+      "type": "comp"
+    },
+    {
+      "image_id": 494,
+      "sample_id": "validation-49446",
+      "type": "comp"
+    },
+    {
+      "image_id": 496,
+      "sample_id": "validation-49637",
+      "type": "presence"
+    },
+    {
+      "image_id": 570,
+      "sample_id": "validation-57076",
+      "type": "count"
+    },
+    {
+      "image_id": 561,
+      "sample_id": "validation-56156",
+      "type": "presence"
+    },
+    {
+      "image_id": 474,
+      "sample_id": "validation-47439",
+      "type": "comp"
+    },
+    {
+      "image_id": 536,
+      "sample_id": "validation-53661",
+      "type": "comp"
+    },
+    {
+      "image_id": 565,
+      "sample_id": "validation-56563",
+      "type": "comp"
+    },
+    {
+      "image_id": 510,
+      "sample_id": "validation-51051",
+      "type": "comp"
+    },
+    {
+      "image_id": 567,
+      "sample_id": "validation-56817",
+      "type": "comp"
+    },
+    {
+      "image_id": 553,
+      "sample_id": "validation-55343",
+      "type": "presence"
+    },
+    {
+      "image_id": 562,
+      "sample_id": "validation-56229",
+      "type": "comp"
+    },
+    {
+      "image_id": 536,
+      "sample_id": "validation-53711",
+      "type": "comp"
+    },
+    {
+      "image_id": 506,
+      "sample_id": "validation-50654",
+      "type": "comp"
+    },
+    {
+      "image_id": 500,
+      "sample_id": "validation-50029",
+      "type": "comp"
+    },
+    {
+      "image_id": 485,
+      "sample_id": "validation-48545",
+      "type": "count"
+    },
+    {
+      "image_id": 560,
+      "sample_id": "validation-56077",
+      "type": "comp"
+    },
+    {
+      "image_id": 566,
+      "sample_id": "validation-56626",
+      "type": "count"
+    },
+    {
+      "image_id": 530,
+      "sample_id": "validation-53112",
+      "type": "comp"
+    },
+    {
+      "image_id": 494,
+      "sample_id": "validation-49434",
+      "type": "presence"
+    },
+    {
+      "image_id": 556,
+      "sample_id": "validation-55713",
+      "type": "comp"
+    },
+    {
+      "image_id": 506,
+      "sample_id": "validation-50640",
+      "type": "presence"
+    },
+    {
+      "image_id": 494,
+      "sample_id": "validation-49429",
+      "type": "presence"
+    },
+    {
+      "image_id": 564,
+      "sample_id": "validation-56454",
+      "type": "count"
+    },
+    {
+      "image_id": 475,
+      "sample_id": "validation-47586",
+      "type": "comp"
+    },
+    {
+      "image_id": 544,
+      "sample_id": "validation-54480",
+      "type": "count"
+    },
+    {
+      "image_id": 561,
+      "sample_id": "validation-56164",
+      "type": "comp"
+    },
+    {
+      "image_id": 485,
+      "sample_id": "validation-48535",
+      "type": "count"
+    },
+    {
+      "image_id": 496,
+      "sample_id": "validation-49705",
+      "type": "count"
+    },
+    {
+      "image_id": 529,
+      "sample_id": "validation-52969",
+      "type": "count"
+    },
+    {
+      "image_id": 499,
+      "sample_id": "validation-49990",
+      "type": "comp"
+    },
+    {
+      "image_id": 495,
+      "sample_id": "validation-49590",
+      "type": "comp"
+    },
+    {
+      "image_id": 522,
+      "sample_id": "validation-52257",
+      "type": "count"
+    },
+    {
+      "image_id": 545,
+      "sample_id": "validation-54552",
+      "type": "count"
+    },
+    {
+      "image_id": 474,
+      "sample_id": "validation-47432",
+      "type": "presence"
+    },
+    {
+      "image_id": 518,
+      "sample_id": "validation-51861",
+      "type": "presence"
+    },
+    {
+      "image_id": 472,
+      "sample_id": "validation-47280",
+      "type": "count"
+    },
+    {
+      "image_id": 538,
+      "sample_id": "validation-53894",
+      "type": "presence"
+    },
+    {
+      "image_id": 529,
+      "sample_id": "validation-52956",
+      "type": "count"
+    },
+    {
+      "image_id": 544,
+      "sample_id": "validation-54426",
+      "type": "count"
+    },
+    {
+      "image_id": 531,
+      "sample_id": "validation-53139",
+      "type": "count"
+    },
+    {
+      "image_id": 530,
+      "sample_id": "validation-53027",
+      "type": "count"
+    },
+    {
+      "image_id": 545,
+      "sample_id": "validation-54535",
+      "type": "presence"
+    },
+    {
+      "image_id": 545,
+      "sample_id": "validation-54594",
+      "type": "comp"
+    },
+    {
+      "image_id": 529,
+      "sample_id": "validation-52976",
+      "type": "presence"
+    },
+    {
+      "image_id": 536,
+      "sample_id": "validation-53659",
+      "type": "presence"
+    },
+    {
+      "image_id": 491,
+      "sample_id": "validation-49167",
+      "type": "count"
+    },
+    {
+      "image_id": 498,
+      "sample_id": "validation-49853",
+      "type": "count"
+    },
+    {
+      "image_id": 533,
+      "sample_id": "validation-53396",
+      "type": "comp"
+    },
+    {
+      "image_id": 523,
+      "sample_id": "validation-52340",
+      "type": "presence"
+    },
+    {
+      "image_id": 540,
+      "sample_id": "validation-54087",
+      "type": "count"
+    },
+    {
+      "image_id": 532,
+      "sample_id": "validation-53231",
+      "type": "presence"
+    },
+    {
+      "image_id": 535,
+      "sample_id": "validation-53543",
+      "type": "presence"
+    },
+    {
+      "image_id": 496,
+      "sample_id": "validation-49653",
+      "type": "count"
+    },
+    {
+      "image_id": 497,
+      "sample_id": "validation-49763",
+      "type": "comp"
+    },
+    {
+      "image_id": 490,
+      "sample_id": "validation-49027",
+      "type": "presence"
+    },
+    {
+      "image_id": 560,
+      "sample_id": "validation-56043",
+      "type": "presence"
+    },
+    {
+      "image_id": 482,
+      "sample_id": "validation-48231",
+      "type": "presence"
+    },
+    {
+      "image_id": 472,
+      "sample_id": "validation-47298",
+      "type": "comp"
+    },
+    {
+      "image_id": 568,
+      "sample_id": "validation-56902",
+      "type": "count"
+    },
+    {
+      "image_id": 521,
+      "sample_id": "validation-52199",
+      "type": "comp"
+    },
+    {
+      "image_id": 513,
+      "sample_id": "validation-51411",
+      "type": "comp"
+    },
+    {
+      "image_id": 485,
+      "sample_id": "validation-48574",
+      "type": "presence"
+    },
+    {
+      "image_id": 477,
+      "sample_id": "validation-47812",
+      "type": "comp"
+    },
+    {
+      "image_id": 522,
+      "sample_id": "validation-52242",
+      "type": "presence"
+    },
+    {
+      "image_id": 533,
+      "sample_id": "validation-53346",
+      "type": "comp"
+    },
+    {
+      "image_id": 513,
+      "sample_id": "validation-51349",
+      "type": "comp"
+    },
+    {
+      "image_id": 554,
+      "sample_id": "validation-55437",
+      "type": "comp"
+    },
+    {
+      "image_id": 496,
+      "sample_id": "validation-49713",
+      "type": "count"
+    },
+    {
+      "image_id": 518,
+      "sample_id": "validation-51849",
+      "type": "comp"
+    },
+    {
+      "image_id": 570,
+      "sample_id": "validation-57043",
+      "type": "count"
+    },
+    {
+      "image_id": 521,
+      "sample_id": "validation-52182",
+      "type": "comp"
+    },
+    {
+      "image_id": 517,
+      "sample_id": "validation-51748",
+      "type": "comp"
+    },
+    {
+      "image_id": 492,
+      "sample_id": "validation-49303",
+      "type": "presence"
+    },
+    {
+      "image_id": 496,
+      "sample_id": "validation-49651",
+      "type": "comp"
+    },
+    {
+      "image_id": 570,
+      "sample_id": "validation-57023",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 533,
+      "sample_id": "validation-53414",
+      "type": "presence"
+    },
+    {
+      "image_id": 564,
+      "sample_id": "validation-56442",
+      "type": "count"
+    },
+    {
+      "image_id": 498,
+      "sample_id": "validation-49856",
+      "type": "comp"
+    },
+    {
+      "image_id": 545,
+      "sample_id": "validation-54562",
+      "type": "comp"
+    },
+    {
+      "image_id": 487,
+      "sample_id": "validation-48722",
+      "type": "presence"
+    },
+    {
+      "image_id": 517,
+      "sample_id": "validation-51721",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 518,
+      "sample_id": "validation-51918",
+      "type": "comp"
+    },
+    {
+      "image_id": 485,
+      "sample_id": "validation-48531",
+      "type": "presence"
+    },
+    {
+      "image_id": 548,
+      "sample_id": "validation-54838",
+      "type": "presence"
+    },
+    {
+      "image_id": 475,
+      "sample_id": "validation-47529",
+      "type": "presence"
+    },
+    {
+      "image_id": 542,
+      "sample_id": "validation-54233",
+      "type": "count"
+    },
+    {
+      "image_id": 524,
+      "sample_id": "validation-52490",
+      "type": "comp"
+    },
+    {
+      "image_id": 502,
+      "sample_id": "validation-50309",
+      "type": "count"
+    },
+    {
+      "image_id": 475,
+      "sample_id": "validation-47573",
+      "type": "count"
+    },
+    {
+      "image_id": 480,
+      "sample_id": "validation-48033",
+      "type": "presence"
+    },
+    {
+      "image_id": 494,
+      "sample_id": "validation-49438",
+      "type": "comp"
+    },
+    {
+      "image_id": 496,
+      "sample_id": "validation-49687",
+      "type": "comp"
+    },
+    {
+      "image_id": 544,
+      "sample_id": "validation-54475",
+      "type": "count"
+    },
+    {
+      "image_id": 504,
+      "sample_id": "validation-50436",
+      "type": "presence"
+    },
+    {
+      "image_id": 570,
+      "sample_id": "validation-57101",
+      "type": "comp"
+    },
+    {
+      "image_id": 549,
+      "sample_id": "validation-55013",
+      "type": "comp"
+    },
+    {
+      "image_id": 526,
+      "sample_id": "validation-52673",
+      "type": "comp"
+    },
+    {
+      "image_id": 520,
+      "sample_id": "validation-52102",
+      "type": "count"
+    },
+    {
+      "image_id": 556,
+      "sample_id": "validation-55667",
+      "type": "comp"
+    },
+    {
+      "image_id": 569,
+      "sample_id": "validation-57013",
+      "type": "count"
+    },
+    {
+      "image_id": 518,
+      "sample_id": "validation-51851",
+      "type": "comp"
+    },
+    {
+      "image_id": 523,
+      "sample_id": "validation-52335",
+      "type": "comp"
+    },
+    {
+      "image_id": 553,
+      "sample_id": "validation-55353",
+      "type": "comp"
+    },
+    {
+      "image_id": 531,
+      "sample_id": "validation-53207",
+      "type": "presence"
+    },
+    {
+      "image_id": 504,
+      "sample_id": "validation-50428",
+      "type": "count"
+    },
+    {
+      "image_id": 541,
+      "sample_id": "validation-54198",
+      "type": "presence"
+    },
+    {
+      "image_id": 483,
+      "sample_id": "validation-48365",
+      "type": "count"
+    },
+    {
+      "image_id": 548,
+      "sample_id": "validation-54840",
+      "type": "count"
+    },
+    {
+      "image_id": 492,
+      "sample_id": "validation-49263",
+      "type": "comp"
+    },
+    {
+      "image_id": 487,
+      "sample_id": "validation-48749",
+      "type": "comp"
+    },
+    {
+      "image_id": 523,
+      "sample_id": "validation-52399",
+      "type": "comp"
+    },
+    {
+      "image_id": 569,
+      "sample_id": "validation-56936",
+      "type": "presence"
+    },
+    {
+      "image_id": 524,
+      "sample_id": "validation-52473",
+      "type": "comp"
+    },
+    {
+      "image_id": 549,
+      "sample_id": "validation-54975",
+      "type": "presence"
+    },
+    {
+      "image_id": 534,
+      "sample_id": "validation-53435",
+      "type": "count"
+    },
+    {
+      "image_id": 551,
+      "sample_id": "validation-55151",
+      "type": "presence"
+    },
+    {
+      "image_id": 473,
+      "sample_id": "validation-47321",
+      "type": "presence"
+    },
+    {
+      "image_id": 561,
+      "sample_id": "validation-56174",
+      "type": "count"
+    },
+    {
+      "image_id": 540,
+      "sample_id": "validation-54109",
+      "type": "count"
+    },
+    {
+      "image_id": 555,
+      "sample_id": "validation-55610",
+      "type": "comp"
+    },
+    {
+      "image_id": 532,
+      "sample_id": "validation-53238",
+      "type": "count"
+    },
+    {
+      "image_id": 479,
+      "sample_id": "validation-47918",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 518,
+      "sample_id": "validation-51821",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 493,
+      "sample_id": "validation-49360",
+      "type": "comp"
+    },
+    {
+      "image_id": 558,
+      "sample_id": "validation-55859",
+      "type": "comp"
+    },
+    {
+      "image_id": 541,
+      "sample_id": "validation-54199",
+      "type": "comp"
+    },
+    {
+      "image_id": 537,
+      "sample_id": "validation-53800",
+      "type": "comp"
+    },
+    {
+      "image_id": 496,
+      "sample_id": "validation-49704",
+      "type": "comp"
+    },
+    {
+      "image_id": 503,
+      "sample_id": "validation-50358",
+      "type": "comp"
+    },
+    {
+      "image_id": 480,
+      "sample_id": "validation-48051",
+      "type": "comp"
+    },
+    {
+      "image_id": 519,
+      "sample_id": "validation-51992",
+      "type": "presence"
+    },
+    {
+      "image_id": 487,
+      "sample_id": "validation-48777",
+      "type": "comp"
+    },
+    {
+      "image_id": 542,
+      "sample_id": "validation-54278",
+      "type": "count"
+    },
+    {
+      "image_id": 484,
+      "sample_id": "validation-48496",
+      "type": "count"
+    },
+    {
+      "image_id": 565,
+      "sample_id": "validation-56561",
+      "type": "presence"
+    },
+    {
+      "image_id": 494,
+      "sample_id": "validation-49433",
+      "type": "presence"
+    },
+    {
+      "image_id": 530,
+      "sample_id": "validation-53072",
+      "type": "presence"
+    },
+    {
+      "image_id": 485,
+      "sample_id": "validation-48613",
+      "type": "presence"
+    },
+    {
+      "image_id": 559,
+      "sample_id": "validation-55946",
+      "type": "comp"
+    },
+    {
+      "image_id": 493,
+      "sample_id": "validation-49392",
+      "type": "comp"
+    },
+    {
+      "image_id": 487,
+      "sample_id": "validation-48813",
+      "type": "presence"
+    },
+    {
+      "image_id": 530,
+      "sample_id": "validation-53085",
+      "type": "comp"
+    },
+    {
+      "image_id": 557,
+      "sample_id": "validation-55738",
+      "type": "presence"
+    },
+    {
+      "image_id": 535,
+      "sample_id": "validation-53575",
+      "type": "comp"
+    },
+    {
+      "image_id": 510,
+      "sample_id": "validation-51096",
+      "type": "count"
+    },
+    {
+      "image_id": 505,
+      "sample_id": "validation-50572",
+      "type": "comp"
+    },
+    {
+      "image_id": 571,
+      "sample_id": "validation-57166",
+      "type": "presence"
+    },
+    {
+      "image_id": 549,
+      "sample_id": "validation-55003",
+      "type": "count"
+    },
+    {
+      "image_id": 566,
+      "sample_id": "validation-56631",
+      "type": "presence"
+    },
+    {
+      "image_id": 534,
+      "sample_id": "validation-53461",
+      "type": "comp"
+    },
+    {
+      "image_id": 563,
+      "sample_id": "validation-56413",
+      "type": "comp"
+    },
+    {
+      "image_id": 478,
+      "sample_id": "validation-47866",
+      "type": "comp"
+    },
+    {
+      "image_id": 476,
+      "sample_id": "validation-47679",
+      "type": "comp"
+    },
+    {
+      "image_id": 543,
+      "sample_id": "validation-54383",
+      "type": "comp"
+    },
+    {
+      "image_id": 564,
+      "sample_id": "validation-56477",
+      "type": "comp"
+    },
+    {
+      "image_id": 508,
+      "sample_id": "validation-50875",
+      "type": "comp"
+    },
+    {
+      "image_id": 479,
+      "sample_id": "validation-47943",
+      "type": "comp"
+    },
+    {
+      "image_id": 485,
+      "sample_id": "validation-48533",
+      "type": "count"
+    },
+    {
+      "image_id": 525,
+      "sample_id": "validation-52546",
+      "type": "count"
+    },
+    {
+      "image_id": 524,
+      "sample_id": "validation-52470",
+      "type": "comp"
+    },
+    {
+      "image_id": 519,
+      "sample_id": "validation-51984",
+      "type": "comp"
+    },
+    {
+      "image_id": 498,
+      "sample_id": "validation-49871",
+      "type": "presence"
+    },
+    {
+      "image_id": 494,
+      "sample_id": "validation-49493",
+      "type": "count"
+    },
+    {
+      "image_id": 564,
+      "sample_id": "validation-56484",
+      "type": "presence"
+    },
+    {
+      "image_id": 553,
+      "sample_id": "validation-55364",
+      "type": "presence"
+    },
+    {
+      "image_id": 542,
+      "sample_id": "validation-54265",
+      "type": "comp"
+    },
+    {
+      "image_id": 539,
+      "sample_id": "validation-53971",
+      "type": "count"
+    },
+    {
+      "image_id": 538,
+      "sample_id": "validation-53912",
+      "type": "presence"
+    },
+    {
+      "image_id": 524,
+      "sample_id": "validation-52505",
+      "type": "comp"
+    },
+    {
+      "image_id": 570,
+      "sample_id": "validation-57116",
+      "type": "presence"
+    },
+    {
+      "image_id": 482,
+      "sample_id": "validation-48262",
+      "type": "comp"
+    },
+    {
+      "image_id": 494,
+      "sample_id": "validation-49503",
+      "type": "count"
+    },
+    {
+      "image_id": 562,
+      "sample_id": "validation-56259",
+      "type": "comp"
+    },
+    {
+      "image_id": 516,
+      "sample_id": "validation-51658",
+      "type": "comp"
+    },
+    {
+      "image_id": 537,
+      "sample_id": "validation-53780",
+      "type": "count"
+    },
+    {
+      "image_id": 558,
+      "sample_id": "validation-55893",
+      "type": "comp"
+    },
+    {
+      "image_id": 510,
+      "sample_id": "validation-51100",
+      "type": "count"
+    },
+    {
+      "image_id": 474,
+      "sample_id": "validation-47472",
+      "type": "comp"
+    },
+    {
+      "image_id": 554,
+      "sample_id": "validation-55518",
+      "type": "comp"
+    },
+    {
+      "image_id": 545,
+      "sample_id": "validation-54534",
+      "type": "comp"
+    },
+    {
+      "image_id": 543,
+      "sample_id": "validation-54353",
+      "type": "comp"
+    },
+    {
+      "image_id": 540,
+      "sample_id": "validation-54076",
+      "type": "count"
+    },
+    {
+      "image_id": 494,
+      "sample_id": "validation-49495",
+      "type": "presence"
+    },
+    {
+      "image_id": 570,
+      "sample_id": "validation-57085",
+      "type": "comp"
+    },
+    {
+      "image_id": 526,
+      "sample_id": "validation-52697",
+      "type": "comp"
+    },
+    {
+      "image_id": 568,
+      "sample_id": "validation-56853",
+      "type": "presence"
+    },
+    {
+      "image_id": 548,
+      "sample_id": "validation-54857",
+      "type": "comp"
+    },
+    {
+      "image_id": 486,
+      "sample_id": "validation-48698",
+      "type": "presence"
+    },
+    {
+      "image_id": 502,
+      "sample_id": "validation-50298",
+      "type": "comp"
+    },
+    {
+      "image_id": 521,
+      "sample_id": "validation-52165",
+      "type": "count"
+    },
+    {
+      "image_id": 542,
+      "sample_id": "validation-54318",
+      "type": "comp"
+    },
+    {
+      "image_id": 554,
+      "sample_id": "validation-55434",
+      "type": "count"
+    },
+    {
+      "image_id": 519,
+      "sample_id": "validation-51972",
+      "type": "count"
+    },
+    {
+      "image_id": 520,
+      "sample_id": "validation-52099",
+      "type": "presence"
+    },
+    {
+      "image_id": 560,
+      "sample_id": "validation-56121",
+      "type": "comp"
+    },
+    {
+      "image_id": 530,
+      "sample_id": "validation-53104",
+      "type": "comp"
+    },
+    {
+      "image_id": 487,
+      "sample_id": "validation-48736",
+      "type": "comp"
+    },
+    {
+      "image_id": 497,
+      "sample_id": "validation-49760",
+      "type": "comp"
+    },
+    {
+      "image_id": 560,
+      "sample_id": "validation-56041",
+      "type": "comp"
+    },
+    {
+      "image_id": 497,
+      "sample_id": "validation-49810",
+      "type": "comp"
+    },
+    {
+      "image_id": 561,
+      "sample_id": "validation-56169",
+      "type": "comp"
+    },
+    {
+      "image_id": 523,
+      "sample_id": "validation-52412",
+      "type": "comp"
+    },
+    {
+      "image_id": 530,
+      "sample_id": "validation-53032",
+      "type": "count"
+    },
+    {
+      "image_id": 562,
+      "sample_id": "validation-56263",
+      "type": "count"
+    },
+    {
+      "image_id": 523,
+      "sample_id": "validation-52381",
+      "type": "comp"
+    },
+    {
+      "image_id": 551,
+      "sample_id": "validation-55184",
+      "type": "presence"
+    },
+    {
+      "image_id": 558,
+      "sample_id": "validation-55900",
+      "type": "count"
+    },
+    {
+      "image_id": 488,
+      "sample_id": "validation-48844",
+      "type": "presence"
+    },
+    {
+      "image_id": 526,
+      "sample_id": "validation-52621",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 557,
+      "sample_id": "validation-55800",
+      "type": "comp"
+    },
+    {
+      "image_id": 504,
+      "sample_id": "validation-50451",
+      "type": "comp"
+    },
+    {
+      "image_id": 545,
+      "sample_id": "validation-54561",
+      "type": "presence"
+    },
+    {
+      "image_id": 557,
+      "sample_id": "validation-55777",
+      "type": "comp"
+    },
+    {
+      "image_id": 516,
+      "sample_id": "validation-51642",
+      "type": "presence"
+    },
+    {
+      "image_id": 483,
+      "sample_id": "validation-48415",
+      "type": "comp"
+    },
+    {
+      "image_id": 543,
+      "sample_id": "validation-54370",
+      "type": "count"
+    },
+    {
+      "image_id": 479,
+      "sample_id": "validation-47924",
+      "type": "comp"
+    },
+    {
+      "image_id": 547,
+      "sample_id": "validation-54817",
+      "type": "comp"
+    },
+    {
+      "image_id": 491,
+      "sample_id": "validation-49159",
+      "type": "comp"
+    },
+    {
+      "image_id": 515,
+      "sample_id": "validation-51548",
+      "type": "comp"
+    },
+    {
+      "image_id": 556,
+      "sample_id": "validation-55716",
+      "type": "comp"
+    },
+    {
+      "image_id": 552,
+      "sample_id": "validation-55228",
+      "type": "count"
+    },
+    {
+      "image_id": 545,
+      "sample_id": "validation-54621",
+      "type": "count"
+    },
+    {
+      "image_id": 551,
+      "sample_id": "validation-55186",
+      "type": "presence"
+    },
+    {
+      "image_id": 526,
+      "sample_id": "validation-52688",
+      "type": "comp"
+    },
+    {
+      "image_id": 482,
+      "sample_id": "validation-48250",
+      "type": "presence"
+    },
+    {
+      "image_id": 487,
+      "sample_id": "validation-48779",
+      "type": "comp"
+    },
+    {
+      "image_id": 553,
+      "sample_id": "validation-55379",
+      "type": "comp"
+    },
+    {
+      "image_id": 552,
+      "sample_id": "validation-55280",
+      "type": "presence"
+    },
+    {
+      "image_id": 534,
+      "sample_id": "validation-53454",
+      "type": "count"
+    },
+    {
+      "image_id": 537,
+      "sample_id": "validation-53814",
+      "type": "count"
+    },
+    {
+      "image_id": 561,
+      "sample_id": "validation-56142",
+      "type": "comp"
+    },
+    {
+      "image_id": 495,
+      "sample_id": "validation-49587",
+      "type": "comp"
+    },
+    {
+      "image_id": 485,
+      "sample_id": "validation-48583",
+      "type": "count"
+    },
+    {
+      "image_id": 504,
+      "sample_id": "validation-50480",
+      "type": "comp"
+    },
+    {
+      "image_id": 567,
+      "sample_id": "validation-56786",
+      "type": "comp"
+    },
+    {
+      "image_id": 559,
+      "sample_id": "validation-55994",
+      "type": "count"
+    },
+    {
+      "image_id": 480,
+      "sample_id": "validation-48075",
+      "type": "comp"
+    },
+    {
+      "image_id": 503,
+      "sample_id": "validation-50348",
+      "type": "count"
+    },
+    {
+      "image_id": 508,
+      "sample_id": "validation-50820",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 531,
+      "sample_id": "validation-53121",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 488,
+      "sample_id": "validation-48873",
+      "type": "comp"
+    },
+    {
+      "image_id": 493,
+      "sample_id": "validation-49387",
+      "type": "comp"
+    },
+    {
+      "image_id": 524,
+      "sample_id": "validation-52463",
+      "type": "presence"
+    },
+    {
+      "image_id": 492,
+      "sample_id": "validation-49314",
+      "type": "comp"
+    },
+    {
+      "image_id": 478,
+      "sample_id": "validation-47837",
+      "type": "comp"
+    },
+    {
+      "image_id": 540,
+      "sample_id": "validation-54108",
+      "type": "comp"
+    },
+    {
+      "image_id": 473,
+      "sample_id": "validation-47348",
+      "type": "comp"
+    },
+    {
+      "image_id": 510,
+      "sample_id": "validation-51021",
+      "type": "presence"
+    },
+    {
+      "image_id": 516,
+      "sample_id": "validation-51625",
+      "type": "count"
+    },
+    {
+      "image_id": 523,
+      "sample_id": "validation-52377",
+      "type": "count"
+    },
+    {
+      "image_id": 525,
+      "sample_id": "validation-52539",
+      "type": "presence"
+    },
+    {
+      "image_id": 541,
+      "sample_id": "validation-54188",
+      "type": "comp"
+    },
+    {
+      "image_id": 538,
+      "sample_id": "validation-53895",
+      "type": "comp"
+    },
+    {
+      "image_id": 475,
+      "sample_id": "validation-47577",
+      "type": "count"
+    },
+    {
+      "image_id": 473,
+      "sample_id": "validation-47322",
+      "type": "presence"
+    },
+    {
+      "image_id": 561,
+      "sample_id": "validation-56158",
+      "type": "presence"
+    },
+    {
+      "image_id": 552,
+      "sample_id": "validation-55252",
+      "type": "comp"
+    },
+    {
+      "image_id": 473,
+      "sample_id": "validation-47350",
+      "type": "comp"
+    },
+    {
+      "image_id": 483,
+      "sample_id": "validation-48325",
+      "type": "count"
+    },
+    {
+      "image_id": 571,
+      "sample_id": "validation-57126",
+      "type": "count"
+    },
+    {
+      "image_id": 478,
+      "sample_id": "validation-47836",
+      "type": "comp"
+    },
+    {
+      "image_id": 506,
+      "sample_id": "validation-50672",
+      "type": "comp"
+    },
+    {
+      "image_id": 503,
+      "sample_id": "validation-50385",
+      "type": "count"
+    },
+    {
+      "image_id": 529,
+      "sample_id": "validation-53006",
+      "type": "count"
+    },
+    {
+      "image_id": 482,
+      "sample_id": "validation-48224",
+      "type": "presence"
+    },
+    {
+      "image_id": 568,
+      "sample_id": "validation-56844",
+      "type": "comp"
+    },
+    {
+      "image_id": 531,
+      "sample_id": "validation-53209",
+      "type": "comp"
+    },
+    {
+      "image_id": 521,
+      "sample_id": "validation-52150",
+      "type": "count"
+    },
+    {
+      "image_id": 477,
+      "sample_id": "validation-47753",
+      "type": "presence"
+    },
+    {
+      "image_id": 548,
+      "sample_id": "validation-54882",
+      "type": "comp"
+    },
+    {
+      "image_id": 501,
+      "sample_id": "validation-50193",
+      "type": "presence"
+    },
+    {
+      "image_id": 523,
+      "sample_id": "validation-52409",
+      "type": "presence"
+    },
+    {
+      "image_id": 570,
+      "sample_id": "validation-57048",
+      "type": "comp"
+    },
+    {
+      "image_id": 504,
+      "sample_id": "validation-50473",
+      "type": "comp"
+    },
+    {
+      "image_id": 544,
+      "sample_id": "validation-54510",
+      "type": "comp"
+    },
+    {
+      "image_id": 486,
+      "sample_id": "validation-48700",
+      "type": "presence"
+    },
+    {
+      "image_id": 484,
+      "sample_id": "validation-48423",
+      "type": "presence"
+    },
+    {
+      "image_id": 514,
+      "sample_id": "validation-51512",
+      "type": "comp"
+    },
+    {
+      "image_id": 487,
+      "sample_id": "validation-48720",
+      "type": "count"
+    },
+    {
+      "image_id": 477,
+      "sample_id": "validation-47719",
+      "type": "count"
+    },
+    {
+      "image_id": 489,
+      "sample_id": "validation-49016",
+      "type": "presence"
+    },
+    {
+      "image_id": 496,
+      "sample_id": "validation-49694",
+      "type": "comp"
+    },
+    {
+      "image_id": 559,
+      "sample_id": "validation-55964",
+      "type": "comp"
+    },
+    {
+      "image_id": 495,
+      "sample_id": "validation-49599",
+      "type": "presence"
+    },
+    {
+      "image_id": 529,
+      "sample_id": "validation-52992",
+      "type": "presence"
+    },
+    {
+      "image_id": 520,
+      "sample_id": "validation-52097",
+      "type": "count"
+    },
+    {
+      "image_id": 492,
+      "sample_id": "validation-49248",
+      "type": "comp"
+    },
+    {
+      "image_id": 499,
+      "sample_id": "validation-49986",
+      "type": "count"
+    },
+    {
+      "image_id": 479,
+      "sample_id": "validation-47962",
+      "type": "presence"
+    },
+    {
+      "image_id": 539,
+      "sample_id": "validation-53928",
+      "type": "presence"
+    },
+    {
+      "image_id": 562,
+      "sample_id": "validation-56273",
+      "type": "comp"
+    },
+    {
+      "image_id": 537,
+      "sample_id": "validation-53813",
+      "type": "count"
+    },
+    {
+      "image_id": 498,
+      "sample_id": "validation-49900",
+      "type": "comp"
+    },
+    {
+      "image_id": 548,
+      "sample_id": "validation-54883",
+      "type": "count"
+    },
+    {
+      "image_id": 558,
+      "sample_id": "validation-55920",
+      "type": "comp"
+    },
+    {
+      "image_id": 551,
+      "sample_id": "validation-55185",
+      "type": "presence"
+    },
+    {
+      "image_id": 567,
+      "sample_id": "validation-56767",
+      "type": "comp"
+    },
+    {
+      "image_id": 510,
+      "sample_id": "validation-51049",
+      "type": "comp"
+    },
+    {
+      "image_id": 504,
+      "sample_id": "validation-50449",
+      "type": "presence"
+    },
+    {
+      "image_id": 525,
+      "sample_id": "validation-52534",
+      "type": "count"
+    },
+    {
+      "image_id": 560,
+      "sample_id": "validation-56113",
+      "type": "count"
+    },
+    {
+      "image_id": 514,
+      "sample_id": "validation-51483",
+      "type": "comp"
+    },
+    {
+      "image_id": 569,
+      "sample_id": "validation-56941",
+      "type": "count"
+    },
+    {
+      "image_id": 510,
+      "sample_id": "validation-51116",
+      "type": "presence"
+    },
+    {
+      "image_id": 486,
+      "sample_id": "validation-48656",
+      "type": "count"
+    },
+    {
+      "image_id": 547,
+      "sample_id": "validation-54786",
+      "type": "presence"
+    },
+    {
+      "image_id": 478,
+      "sample_id": "validation-47891",
+      "type": "comp"
+    },
+    {
+      "image_id": 514,
+      "sample_id": "validation-51481",
+      "type": "comp"
+    },
+    {
+      "image_id": 529,
+      "sample_id": "validation-52941",
+      "type": "presence"
+    },
+    {
+      "image_id": 560,
+      "sample_id": "validation-56114",
+      "type": "count"
+    },
+    {
+      "image_id": 544,
+      "sample_id": "validation-54519",
+      "type": "comp"
+    },
+    {
+      "image_id": 512,
+      "sample_id": "validation-51295",
+      "type": "comp"
+    },
+    {
+      "image_id": 504,
+      "sample_id": "validation-50493",
+      "type": "presence"
+    },
+    {
+      "image_id": 505,
+      "sample_id": "validation-50570",
+      "type": "count"
+    },
+    {
+      "image_id": 554,
+      "sample_id": "validation-55461",
+      "type": "comp"
+    },
+    {
+      "image_id": 537,
+      "sample_id": "validation-53763",
+      "type": "count"
+    },
+    {
+      "image_id": 519,
+      "sample_id": "validation-52008",
+      "type": "comp"
+    },
+    {
+      "image_id": 476,
+      "sample_id": "validation-47670",
+      "type": "comp"
+    },
+    {
+      "image_id": 544,
+      "sample_id": "validation-54513",
+      "type": "comp"
+    },
+    {
+      "image_id": 472,
+      "sample_id": "validation-47311",
+      "type": "count"
+    },
+    {
+      "image_id": 514,
+      "sample_id": "validation-51433",
+      "type": "comp"
+    },
+    {
+      "image_id": 541,
+      "sample_id": "validation-54193",
+      "type": "comp"
+    },
+    {
+      "image_id": 502,
+      "sample_id": "validation-50306",
+      "type": "presence"
+    },
+    {
+      "image_id": 524,
+      "sample_id": "validation-52450",
+      "type": "presence"
+    },
+    {
+      "image_id": 484,
+      "sample_id": "validation-48510",
+      "type": "comp"
+    },
+    {
+      "image_id": 521,
+      "sample_id": "validation-52184",
+      "type": "count"
+    },
+    {
+      "image_id": 516,
+      "sample_id": "validation-51621",
+      "type": "count"
+    },
+    {
+      "image_id": 485,
+      "sample_id": "validation-48536",
+      "type": "presence"
+    },
+    {
+      "image_id": 533,
+      "sample_id": "validation-53419",
+      "type": "comp"
+    },
+    {
+      "image_id": 532,
+      "sample_id": "validation-53268",
+      "type": "comp"
+    },
+    {
+      "image_id": 505,
+      "sample_id": "validation-50549",
+      "type": "presence"
+    },
+    {
+      "image_id": 513,
+      "sample_id": "validation-51383",
+      "type": "comp"
+    },
+    {
+      "image_id": 497,
+      "sample_id": "validation-49799",
+      "type": "presence"
+    },
+    {
+      "image_id": 503,
+      "sample_id": "validation-50369",
+      "type": "comp"
+    },
+    {
+      "image_id": 530,
+      "sample_id": "validation-53052",
+      "type": "presence"
+    },
+    {
+      "image_id": 501,
+      "sample_id": "validation-50142",
+      "type": "presence"
+    },
+    {
+      "image_id": 571,
+      "sample_id": "validation-57216",
+      "type": "comp"
+    },
+    {
+      "image_id": 513,
+      "sample_id": "validation-51330",
+      "type": "presence"
+    },
+    {
+      "image_id": 505,
+      "sample_id": "validation-50546",
+      "type": "comp"
+    },
+    {
+      "image_id": 564,
+      "sample_id": "validation-56497",
+      "type": "count"
+    },
+    {
+      "image_id": 544,
+      "sample_id": "validation-54476",
+      "type": "comp"
+    },
+    {
+      "image_id": 499,
+      "sample_id": "validation-49975",
+      "type": "presence"
+    },
+    {
+      "image_id": 518,
+      "sample_id": "validation-51893",
+      "type": "presence"
+    },
+    {
+      "image_id": 544,
+      "sample_id": "validation-54457",
+      "type": "comp"
+    },
+    {
+      "image_id": 530,
+      "sample_id": "validation-53057",
+      "type": "comp"
+    },
+    {
+      "image_id": 553,
+      "sample_id": "validation-55334",
+      "type": "comp"
+    },
+    {
+      "image_id": 493,
+      "sample_id": "validation-49376",
+      "type": "count"
+    },
+    {
+      "image_id": 547,
+      "sample_id": "validation-54738",
+      "type": "count"
+    },
+    {
+      "image_id": 532,
+      "sample_id": "validation-53265",
+      "type": "comp"
+    },
+    {
+      "image_id": 566,
+      "sample_id": "validation-56722",
+      "type": "comp"
+    },
+    {
+      "image_id": 529,
+      "sample_id": "validation-52958",
+      "type": "comp"
+    },
+    {
+      "image_id": 562,
+      "sample_id": "validation-56308",
+      "type": "count"
+    },
+    {
+      "image_id": 539,
+      "sample_id": "validation-53992",
+      "type": "count"
+    },
+    {
+      "image_id": 510,
+      "sample_id": "validation-51040",
+      "type": "count"
+    },
+    {
+      "image_id": 491,
+      "sample_id": "validation-49136",
+      "type": "count"
+    },
+    {
+      "image_id": 502,
+      "sample_id": "validation-50285",
+      "type": "presence"
+    },
+    {
+      "image_id": 505,
+      "sample_id": "validation-50618",
+      "type": "comp"
+    },
+    {
+      "image_id": 565,
+      "sample_id": "validation-56524",
+      "type": "count"
+    },
+    {
+      "image_id": 555,
+      "sample_id": "validation-55612",
+      "type": "presence"
+    },
+    {
+      "image_id": 480,
+      "sample_id": "validation-48090",
+      "type": "presence"
+    },
+    {
+      "image_id": 512,
+      "sample_id": "validation-51245",
+      "type": "presence"
+    },
+    {
+      "image_id": 472,
+      "sample_id": "validation-47295",
+      "type": "comp"
+    },
+    {
+      "image_id": 490,
+      "sample_id": "validation-49062",
+      "type": "presence"
+    },
+    {
+      "image_id": 564,
+      "sample_id": "validation-56494",
+      "type": "count"
+    },
+    {
+      "image_id": 561,
+      "sample_id": "validation-56200",
+      "type": "comp"
+    },
+    {
+      "image_id": 513,
+      "sample_id": "validation-51375",
+      "type": "count"
+    },
+    {
+      "image_id": 483,
+      "sample_id": "validation-48407",
+      "type": "count"
+    },
+    {
+      "image_id": 530,
+      "sample_id": "validation-53039",
+      "type": "comp"
+    },
+    {
+      "image_id": 515,
+      "sample_id": "validation-51554",
+      "type": "comp"
+    },
+    {
+      "image_id": 505,
+      "sample_id": "validation-50545",
+      "type": "comp"
+    },
+    {
+      "image_id": 513,
+      "sample_id": "validation-51368",
+      "type": "comp"
+    },
+    {
+      "image_id": 566,
+      "sample_id": "validation-56704",
+      "type": "presence"
+    },
+    {
+      "image_id": 490,
+      "sample_id": "validation-49022",
+      "type": "count"
+    },
+    {
+      "image_id": 472,
+      "sample_id": "validation-47229",
+      "type": "presence"
+    },
+    {
+      "image_id": 537,
+      "sample_id": "validation-53786",
+      "type": "count"
+    },
+    {
+      "image_id": 499,
+      "sample_id": "validation-49936",
+      "type": "presence"
+    },
+    {
+      "image_id": 548,
+      "sample_id": "validation-54915",
+      "type": "count"
+    },
+    {
+      "image_id": 523,
+      "sample_id": "validation-52414",
+      "type": "count"
+    },
+    {
+      "image_id": 522,
+      "sample_id": "validation-52309",
+      "type": "comp"
+    },
+    {
+      "image_id": 485,
+      "sample_id": "validation-48599",
+      "type": "comp"
+    },
+    {
+      "image_id": 559,
+      "sample_id": "validation-55951",
+      "type": "comp"
+    },
+    {
+      "image_id": 548,
+      "sample_id": "validation-54901",
+      "type": "presence"
+    },
+    {
+      "image_id": 482,
+      "sample_id": "validation-48308",
+      "type": "presence"
+    },
+    {
+      "image_id": 479,
+      "sample_id": "validation-47932",
+      "type": "presence"
+    },
+    {
+      "image_id": 491,
+      "sample_id": "validation-49180",
+      "type": "count"
+    },
+    {
+      "image_id": 567,
+      "sample_id": "validation-56765",
+      "type": "count"
+    },
+    {
+      "image_id": 529,
+      "sample_id": "validation-52964",
+      "type": "presence"
+    },
+    {
+      "image_id": 567,
+      "sample_id": "validation-56768",
+      "type": "comp"
+    },
+    {
+      "image_id": 558,
+      "sample_id": "validation-55891",
+      "type": "presence"
+    },
+    {
+      "image_id": 475,
+      "sample_id": "validation-47537",
+      "type": "presence"
+    },
+    {
+      "image_id": 485,
+      "sample_id": "validation-48586",
+      "type": "presence"
+    },
+    {
+      "image_id": 514,
+      "sample_id": "validation-51492",
+      "type": "count"
+    },
+    {
+      "image_id": 477,
+      "sample_id": "validation-47815",
+      "type": "comp"
+    },
+    {
+      "image_id": 563,
+      "sample_id": "validation-56357",
+      "type": "presence"
+    },
+    {
+      "image_id": 548,
+      "sample_id": "validation-54839",
+      "type": "comp"
+    },
+    {
+      "image_id": 539,
+      "sample_id": "validation-53963",
+      "type": "count"
+    },
+    {
+      "image_id": 565,
+      "sample_id": "validation-56530",
+      "type": "presence"
+    },
+    {
+      "image_id": 552,
+      "sample_id": "validation-55312",
+      "type": "comp"
+    },
+    {
+      "image_id": 514,
+      "sample_id": "validation-51479",
+      "type": "presence"
+    },
+    {
+      "image_id": 497,
+      "sample_id": "validation-49771",
+      "type": "comp"
+    },
+    {
+      "image_id": 522,
+      "sample_id": "validation-52281",
+      "type": "comp"
+    },
+    {
+      "image_id": 475,
+      "sample_id": "validation-47520",
+      "type": "count"
+    },
+    {
+      "image_id": 490,
+      "sample_id": "validation-49106",
+      "type": "comp"
+    },
+    {
+      "image_id": 551,
+      "sample_id": "validation-55133",
+      "type": "presence"
+    },
+    {
+      "image_id": 548,
+      "sample_id": "validation-54829",
+      "type": "presence"
+    },
+    {
+      "image_id": 539,
+      "sample_id": "validation-53939",
+      "type": "comp"
+    },
+    {
+      "image_id": 538,
+      "sample_id": "validation-53913",
+      "type": "comp"
+    },
+    {
+      "image_id": 535,
+      "sample_id": "validation-53562",
+      "type": "count"
+    },
+    {
+      "image_id": 568,
+      "sample_id": "validation-56876",
+      "type": "comp"
+    },
+    {
+      "image_id": 538,
+      "sample_id": "validation-53898",
+      "type": "count"
+    },
+    {
+      "image_id": 510,
+      "sample_id": "validation-51085",
+      "type": "comp"
+    },
+    {
+      "image_id": 524,
+      "sample_id": "validation-52518",
+      "type": "presence"
+    },
+    {
+      "image_id": 517,
+      "sample_id": "validation-51735",
+      "type": "count"
+    },
+    {
+      "image_id": 524,
+      "sample_id": "validation-52513",
+      "type": "presence"
+    },
+    {
+      "image_id": 548,
+      "sample_id": "validation-54898",
+      "type": "presence"
+    },
+    {
+      "image_id": 514,
+      "sample_id": "validation-51426",
+      "type": "presence"
+    },
+    {
+      "image_id": 520,
+      "sample_id": "validation-52072",
+      "type": "comp"
+    },
+    {
+      "image_id": 548,
+      "sample_id": "validation-54825",
+      "type": "count"
+    },
+    {
+      "image_id": 494,
+      "sample_id": "validation-49467",
+      "type": "presence"
+    },
+    {
+      "image_id": 499,
+      "sample_id": "validation-49934",
+      "type": "count"
+    },
+    {
+      "image_id": 484,
+      "sample_id": "validation-48503",
+      "type": "count"
+    },
+    {
+      "image_id": 508,
+      "sample_id": "validation-50854",
+      "type": "presence"
+    },
+    {
+      "image_id": 519,
+      "sample_id": "validation-51927",
+      "type": "count"
+    },
+    {
+      "image_id": 494,
+      "sample_id": "validation-49452",
+      "type": "comp"
+    },
+    {
+      "image_id": 512,
+      "sample_id": "validation-51289",
+      "type": "comp"
+    },
+    {
+      "image_id": 531,
+      "sample_id": "validation-53167",
+      "type": "comp"
+    },
+    {
+      "image_id": 522,
+      "sample_id": "validation-52231",
+      "type": "presence"
+    },
+    {
+      "image_id": 542,
+      "sample_id": "validation-54235",
+      "type": "count"
+    },
+    {
+      "image_id": 488,
+      "sample_id": "validation-48888",
+      "type": "count"
+    },
+    {
+      "image_id": 514,
+      "sample_id": "validation-51514",
+      "type": "comp"
+    },
+    {
+      "image_id": 473,
+      "sample_id": "validation-47377",
+      "type": "presence"
+    },
+    {
+      "image_id": 568,
+      "sample_id": "validation-56832",
+      "type": "comp"
+    },
+    {
+      "image_id": 552,
+      "sample_id": "validation-55277",
+      "type": "presence"
+    },
+    {
+      "image_id": 515,
+      "sample_id": "validation-51556",
+      "type": "count"
+    },
+    {
+      "image_id": 490,
+      "sample_id": "validation-49065",
+      "type": "comp"
+    },
+    {
+      "image_id": 560,
+      "sample_id": "validation-56039",
+      "type": "comp"
+    },
+    {
+      "image_id": 513,
+      "sample_id": "validation-51419",
+      "type": "presence"
+    },
+    {
+      "image_id": 523,
+      "sample_id": "validation-52397",
+      "type": "count"
+    },
+    {
+      "image_id": 521,
+      "sample_id": "validation-52129",
+      "type": "presence"
+    },
+    {
+      "image_id": 548,
+      "sample_id": "validation-54859",
+      "type": "comp"
+    },
+    {
+      "image_id": 523,
+      "sample_id": "validation-52357",
+      "type": "comp"
+    },
+    {
+      "image_id": 569,
+      "sample_id": "validation-57014",
+      "type": "count"
+    },
+    {
+      "image_id": 530,
+      "sample_id": "validation-53073",
+      "type": "count"
+    },
+    {
+      "image_id": 476,
+      "sample_id": "validation-47674",
+      "type": "presence"
+    },
+    {
+      "image_id": 533,
+      "sample_id": "validation-53408",
+      "type": "presence"
+    },
+    {
+      "image_id": 504,
+      "sample_id": "validation-50431",
+      "type": "comp"
+    },
+    {
+      "image_id": 503,
+      "sample_id": "validation-50386",
+      "type": "count"
+    },
+    {
+      "image_id": 518,
+      "sample_id": "validation-51825",
+      "type": "presence"
+    },
+    {
+      "image_id": 518,
+      "sample_id": "validation-51850",
+      "type": "count"
+    },
+    {
+      "image_id": 526,
+      "sample_id": "validation-52686",
+      "type": "comp"
+    },
+    {
+      "image_id": 523,
+      "sample_id": "validation-52349",
+      "type": "presence"
+    },
+    {
+      "image_id": 489,
+      "sample_id": "validation-48928",
+      "type": "comp"
+    },
+    {
+      "image_id": 571,
+      "sample_id": "validation-57192",
+      "type": "comp"
+    },
+    {
+      "image_id": 541,
+      "sample_id": "validation-54162",
+      "type": "comp"
+    },
+    {
+      "image_id": 514,
+      "sample_id": "validation-51461",
+      "type": "presence"
+    },
+    {
+      "image_id": 480,
+      "sample_id": "validation-48117",
+      "type": "presence"
+    },
+    {
+      "image_id": 494,
+      "sample_id": "validation-49449",
+      "type": "presence"
+    },
+    {
+      "image_id": 539,
+      "sample_id": "validation-53989",
+      "type": "comp"
+    },
+    {
+      "image_id": 486,
+      "sample_id": "validation-48680",
+      "type": "presence"
+    },
+    {
+      "image_id": 570,
+      "sample_id": "validation-57065",
+      "type": "comp"
+    },
+    {
+      "image_id": 521,
+      "sample_id": "validation-52127",
+      "type": "presence"
+    },
+    {
+      "image_id": 487,
+      "sample_id": "validation-48733",
+      "type": "presence"
+    },
+    {
+      "image_id": 525,
+      "sample_id": "validation-52575",
+      "type": "presence"
+    },
+    {
+      "image_id": 486,
+      "sample_id": "validation-48713",
+      "type": "comp"
+    },
+    {
+      "image_id": 522,
+      "sample_id": "validation-52233",
+      "type": "count"
+    },
+    {
+      "image_id": 498,
+      "sample_id": "validation-49830",
+      "type": "count"
+    },
+    {
+      "image_id": 474,
+      "sample_id": "validation-47475",
+      "type": "comp"
+    },
+    {
+      "image_id": 571,
+      "sample_id": "validation-57171",
+      "type": "comp"
+    },
+    {
+      "image_id": 569,
+      "sample_id": "validation-56971",
+      "type": "presence"
+    },
+    {
+      "image_id": 483,
+      "sample_id": "validation-48409",
+      "type": "presence"
+    },
+    {
+      "image_id": 476,
+      "sample_id": "validation-47630",
+      "type": "comp"
+    },
+    {
+      "image_id": 519,
+      "sample_id": "validation-52017",
+      "type": "comp"
+    },
+    {
+      "image_id": 477,
+      "sample_id": "validation-47802",
+      "type": "count"
+    },
+    {
+      "image_id": 473,
+      "sample_id": "validation-47355",
+      "type": "count"
+    },
+    {
+      "image_id": 553,
+      "sample_id": "validation-55361",
+      "type": "count"
+    },
+    {
+      "image_id": 503,
+      "sample_id": "validation-50379",
+      "type": "comp"
+    },
+    {
+      "image_id": 545,
+      "sample_id": "validation-54539",
+      "type": "count"
+    },
+    {
+      "image_id": 494,
+      "sample_id": "validation-49470",
+      "type": "comp"
+    },
+    {
+      "image_id": 555,
+      "sample_id": "validation-55609",
+      "type": "comp"
+    },
+    {
+      "image_id": 544,
+      "sample_id": "validation-54472",
+      "type": "comp"
+    },
+    {
+      "image_id": 499,
+      "sample_id": "validation-50004",
+      "type": "count"
+    },
+    {
+      "image_id": 475,
+      "sample_id": "validation-47580",
+      "type": "presence"
+    },
+    {
+      "image_id": 533,
+      "sample_id": "validation-53405",
+      "type": "comp"
+    },
+    {
+      "image_id": 540,
+      "sample_id": "validation-54118",
+      "type": "presence"
+    },
+    {
+      "image_id": 571,
+      "sample_id": "validation-57135",
+      "type": "comp"
+    },
+    {
+      "image_id": 557,
+      "sample_id": "validation-55794",
+      "type": "presence"
+    },
+    {
+      "image_id": 560,
+      "sample_id": "validation-56053",
+      "type": "presence"
+    },
+    {
+      "image_id": 544,
+      "sample_id": "validation-54494",
+      "type": "comp"
+    },
+    {
+      "image_id": 536,
+      "sample_id": "validation-53662",
+      "type": "comp"
+    },
+    {
+      "image_id": 541,
+      "sample_id": "validation-54181",
+      "type": "comp"
+    },
+    {
+      "image_id": 502,
+      "sample_id": "validation-50244",
+      "type": "presence"
+    },
+    {
+      "image_id": 551,
+      "sample_id": "validation-55192",
+      "type": "count"
+    },
+    {
+      "image_id": 539,
+      "sample_id": "validation-53940",
+      "type": "presence"
+    },
+    {
+      "image_id": 512,
+      "sample_id": "validation-51279",
+      "type": "comp"
+    },
+    {
+      "image_id": 489,
+      "sample_id": "validation-48961",
+      "type": "comp"
+    },
+    {
+      "image_id": 484,
+      "sample_id": "validation-48494",
+      "type": "count"
+    },
+    {
+      "image_id": 494,
+      "sample_id": "validation-49501",
+      "type": "presence"
+    },
+    {
+      "image_id": 567,
+      "sample_id": "validation-56783",
+      "type": "comp"
+    },
+    {
+      "image_id": 493,
+      "sample_id": "validation-49381",
+      "type": "presence"
+    },
+    {
+      "image_id": 478,
+      "sample_id": "validation-47819",
+      "type": "presence"
+    },
+    {
+      "image_id": 556,
+      "sample_id": "validation-55632",
+      "type": "comp"
+    },
+    {
+      "image_id": 476,
+      "sample_id": "validation-47642",
+      "type": "comp"
+    },
+    {
+      "image_id": 494,
+      "sample_id": "validation-49466",
+      "type": "comp"
+    },
+    {
+      "image_id": 512,
+      "sample_id": "validation-51314",
+      "type": "presence"
+    },
+    {
+      "image_id": 473,
+      "sample_id": "validation-47326",
+      "type": "presence"
+    },
+    {
+      "image_id": 534,
+      "sample_id": "validation-53508",
+      "type": "presence"
+    },
+    {
+      "image_id": 473,
+      "sample_id": "validation-47366",
+      "type": "presence"
+    },
+    {
+      "image_id": 549,
+      "sample_id": "validation-54950",
+      "type": "comp"
+    },
+    {
+      "image_id": 487,
+      "sample_id": "validation-48752",
+      "type": "presence"
+    },
+    {
+      "image_id": 501,
+      "sample_id": "validation-50174",
+      "type": "count"
+    },
+    {
+      "image_id": 518,
+      "sample_id": "validation-51839",
+      "type": "presence"
+    },
+    {
+      "image_id": 538,
+      "sample_id": "validation-53918",
+      "type": "presence"
+    },
+    {
+      "image_id": 501,
+      "sample_id": "validation-50157",
+      "type": "presence"
+    },
+    {
+      "image_id": 484,
+      "sample_id": "validation-48492",
+      "type": "count"
+    },
+    {
+      "image_id": 549,
+      "sample_id": "validation-54930",
+      "type": "presence"
+    },
+    {
+      "image_id": 498,
+      "sample_id": "validation-49909",
+      "type": "comp"
+    },
+    {
+      "image_id": 499,
+      "sample_id": "validation-49962",
+      "type": "comp"
+    },
+    {
+      "image_id": 553,
+      "sample_id": "validation-55405",
+      "type": "presence"
+    },
+    {
+      "image_id": 485,
+      "sample_id": "validation-48603",
+      "type": "comp"
+    },
+    {
+      "image_id": 559,
+      "sample_id": "validation-55932",
+      "type": "comp"
+    },
+    {
+      "image_id": 552,
+      "sample_id": "validation-55244",
+      "type": "count"
+    },
+    {
+      "image_id": 478,
+      "sample_id": "validation-47840",
+      "type": "comp"
+    },
+    {
+      "image_id": 483,
+      "sample_id": "validation-48389",
+      "type": "count"
+    },
+    {
+      "image_id": 491,
+      "sample_id": "validation-49121",
+      "type": "count"
+    },
+    {
+      "image_id": 493,
+      "sample_id": "validation-49368",
+      "type": "count"
+    },
+    {
+      "image_id": 486,
+      "sample_id": "validation-48718",
+      "type": "count"
+    },
+    {
+      "image_id": 538,
+      "sample_id": "validation-53822",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 571,
+      "sample_id": "validation-57149",
+      "type": "presence"
+    },
+    {
+      "image_id": 522,
+      "sample_id": "validation-52259",
+      "type": "presence"
+    },
+    {
+      "image_id": 485,
+      "sample_id": "validation-48573",
+      "type": "comp"
+    },
+    {
+      "image_id": 556,
+      "sample_id": "validation-55705",
+      "type": "comp"
+    },
+    {
+      "image_id": 492,
+      "sample_id": "validation-49269",
+      "type": "presence"
+    },
+    {
+      "image_id": 479,
+      "sample_id": "validation-47987",
+      "type": "comp"
+    },
+    {
+      "image_id": 494,
+      "sample_id": "validation-49475",
+      "type": "comp"
+    },
+    {
+      "image_id": 542,
+      "sample_id": "validation-54284",
+      "type": "presence"
+    },
+    {
+      "image_id": 496,
+      "sample_id": "validation-49675",
+      "type": "presence"
+    },
+    {
+      "image_id": 475,
+      "sample_id": "validation-47598",
+      "type": "presence"
+    },
+    {
+      "image_id": 500,
+      "sample_id": "validation-50033",
+      "type": "count"
+    },
+    {
+      "image_id": 532,
+      "sample_id": "validation-53245",
+      "type": "count"
+    },
+    {
+      "image_id": 542,
+      "sample_id": "validation-54321",
+      "type": "comp"
+    },
+    {
+      "image_id": 522,
+      "sample_id": "validation-52276",
+      "type": "comp"
+    },
+    {
+      "image_id": 479,
+      "sample_id": "validation-48007",
+      "type": "presence"
+    },
+    {
+      "image_id": 545,
+      "sample_id": "validation-54563",
+      "type": "presence"
+    },
+    {
+      "image_id": 557,
+      "sample_id": "validation-55809",
+      "type": "count"
+    },
+    {
+      "image_id": 567,
+      "sample_id": "validation-56782",
+      "type": "presence"
+    },
+    {
+      "image_id": 501,
+      "sample_id": "validation-50155",
+      "type": "comp"
+    },
+    {
+      "image_id": 563,
+      "sample_id": "validation-56399",
+      "type": "presence"
+    },
+    {
+      "image_id": 512,
+      "sample_id": "validation-51274",
+      "type": "count"
+    },
+    {
+      "image_id": 569,
+      "sample_id": "validation-56961",
+      "type": "count"
+    },
+    {
+      "image_id": 502,
+      "sample_id": "validation-50308",
+      "type": "presence"
+    },
+    {
+      "image_id": 487,
+      "sample_id": "validation-48728",
+      "type": "count"
+    },
+    {
+      "image_id": 519,
+      "sample_id": "validation-51932",
+      "type": "comp"
+    },
+    {
+      "image_id": 480,
+      "sample_id": "validation-48040",
+      "type": "comp"
+    },
+    {
+      "image_id": 570,
+      "sample_id": "validation-57059",
+      "type": "count"
+    },
+    {
+      "image_id": 504,
+      "sample_id": "validation-50456",
+      "type": "comp"
+    },
+    {
+      "image_id": 557,
+      "sample_id": "validation-55756",
+      "type": "presence"
+    },
+    {
+      "image_id": 486,
+      "sample_id": "validation-48644",
+      "type": "count"
+    },
+    {
+      "image_id": 567,
+      "sample_id": "validation-56798",
+      "type": "comp"
+    },
+    {
+      "image_id": 502,
+      "sample_id": "validation-50223",
+      "type": "count"
+    },
+    {
+      "image_id": 529,
+      "sample_id": "validation-52948",
+      "type": "comp"
+    },
+    {
+      "image_id": 554,
+      "sample_id": "validation-55516",
+      "type": "comp"
+    },
+    {
+      "image_id": 500,
+      "sample_id": "validation-50117",
+      "type": "comp"
+    },
+    {
+      "image_id": 562,
+      "sample_id": "validation-56268",
+      "type": "count"
+    },
+    {
+      "image_id": 544,
+      "sample_id": "validation-54465",
+      "type": "count"
+    },
+    {
+      "image_id": 529,
+      "sample_id": "validation-52991",
+      "type": "count"
+    },
+    {
+      "image_id": 566,
+      "sample_id": "validation-56653",
+      "type": "count"
+    },
+    {
+      "image_id": 525,
+      "sample_id": "validation-52613",
+      "type": "comp"
+    },
+    {
+      "image_id": 540,
+      "sample_id": "validation-54025",
+      "type": "presence"
+    },
+    {
+      "image_id": 558,
+      "sample_id": "validation-55916",
+      "type": "count"
+    },
+    {
+      "image_id": 560,
+      "sample_id": "validation-56066",
+      "type": "comp"
+    },
+    {
+      "image_id": 569,
+      "sample_id": "validation-56970",
+      "type": "comp"
+    },
+    {
+      "image_id": 521,
+      "sample_id": "validation-52148",
+      "type": "presence"
+    },
+    {
+      "image_id": 490,
+      "sample_id": "validation-49093",
+      "type": "comp"
+    },
+    {
+      "image_id": 501,
+      "sample_id": "validation-50201",
+      "type": "comp"
+    },
+    {
+      "image_id": 484,
+      "sample_id": "validation-48433",
+      "type": "comp"
+    },
+    {
+      "image_id": 552,
+      "sample_id": "validation-55315",
+      "type": "count"
+    },
+    {
+      "image_id": 548,
+      "sample_id": "validation-54826",
+      "type": "presence"
+    },
+    {
+      "image_id": 552,
+      "sample_id": "validation-55245",
+      "type": "count"
+    },
+    {
+      "image_id": 487,
+      "sample_id": "validation-48735",
+      "type": "count"
+    },
+    {
+      "image_id": 538,
+      "sample_id": "validation-53908",
+      "type": "comp"
+    },
+    {
+      "image_id": 526,
+      "sample_id": "validation-52698",
+      "type": "comp"
+    },
+    {
+      "image_id": 533,
+      "sample_id": "validation-53362",
+      "type": "count"
+    },
+    {
+      "image_id": 502,
+      "sample_id": "validation-50312",
+      "type": "comp"
+    },
+    {
+      "image_id": 499,
+      "sample_id": "validation-49950",
+      "type": "comp"
+    },
+    {
+      "image_id": 543,
+      "sample_id": "validation-54392",
+      "type": "comp"
+    },
+    {
+      "image_id": 506,
+      "sample_id": "validation-50626",
+      "type": "presence"
+    },
+    {
+      "image_id": 533,
+      "sample_id": "validation-53339",
+      "type": "comp"
+    },
+    {
+      "image_id": 568,
+      "sample_id": "validation-56855",
+      "type": "comp"
+    },
+    {
+      "image_id": 525,
+      "sample_id": "validation-52614",
+      "type": "comp"
+    },
+    {
+      "image_id": 505,
+      "sample_id": "validation-50523",
+      "type": "presence"
+    },
+    {
+      "image_id": 563,
+      "sample_id": "validation-56356",
+      "type": "count"
+    },
+    {
+      "image_id": 513,
+      "sample_id": "validation-51325",
+      "type": "comp"
+    },
+    {
+      "image_id": 488,
+      "sample_id": "validation-48845",
+      "type": "comp"
+    },
+    {
+      "image_id": 542,
+      "sample_id": "validation-54253",
+      "type": "comp"
+    },
+    {
+      "image_id": 518,
+      "sample_id": "validation-51876",
+      "type": "presence"
+    },
+    {
+      "image_id": 531,
+      "sample_id": "validation-53195",
+      "type": "comp"
+    },
+    {
+      "image_id": 500,
+      "sample_id": "validation-50045",
+      "type": "comp"
+    },
+    {
+      "image_id": 508,
+      "sample_id": "validation-50914",
+      "type": "count"
+    },
+    {
+      "image_id": 522,
+      "sample_id": "validation-52273",
+      "type": "presence"
+    },
+    {
+      "image_id": 491,
+      "sample_id": "validation-49212",
+      "type": "presence"
+    },
+    {
+      "image_id": 541,
+      "sample_id": "validation-54126",
+      "type": "presence"
+    },
+    {
+      "image_id": 518,
+      "sample_id": "validation-51875",
+      "type": "comp"
+    },
+    {
+      "image_id": 476,
+      "sample_id": "validation-47714",
+      "type": "presence"
+    },
+    {
+      "image_id": 547,
+      "sample_id": "validation-54789",
+      "type": "count"
+    },
+    {
+      "image_id": 493,
+      "sample_id": "validation-49412",
+      "type": "count"
+    },
+    {
+      "image_id": 508,
+      "sample_id": "validation-50836",
+      "type": "presence"
+    },
+    {
+      "image_id": 493,
+      "sample_id": "validation-49323",
+      "type": "presence"
+    },
+    {
+      "image_id": 536,
+      "sample_id": "validation-53690",
+      "type": "presence"
+    },
+    {
+      "image_id": 554,
+      "sample_id": "validation-55448",
+      "type": "presence"
+    },
+    {
+      "image_id": 523,
+      "sample_id": "validation-52385",
+      "type": "count"
+    },
+    {
+      "image_id": 488,
+      "sample_id": "validation-48863",
+      "type": "presence"
+    },
+    {
+      "image_id": 563,
+      "sample_id": "validation-56386",
+      "type": "comp"
+    },
+    {
+      "image_id": 544,
+      "sample_id": "validation-54463",
+      "type": "comp"
+    },
+    {
+      "image_id": 497,
+      "sample_id": "validation-49768",
+      "type": "comp"
+    },
+    {
+      "image_id": 557,
+      "sample_id": "validation-55817",
+      "type": "count"
+    },
+    {
+      "image_id": 562,
+      "sample_id": "validation-56322",
+      "type": "comp"
+    },
+    {
+      "image_id": 480,
+      "sample_id": "validation-48024",
+      "type": "presence"
+    },
+    {
+      "image_id": 565,
+      "sample_id": "validation-56622",
+      "type": "presence"
+    },
+    {
+      "image_id": 541,
+      "sample_id": "validation-54176",
+      "type": "presence"
+    },
+    {
+      "image_id": 529,
+      "sample_id": "validation-53008",
+      "type": "comp"
+    },
+    {
+      "image_id": 549,
+      "sample_id": "validation-54956",
+      "type": "comp"
+    },
+    {
+      "image_id": 510,
+      "sample_id": "validation-51119",
+      "type": "comp"
+    },
+    {
+      "image_id": 524,
+      "sample_id": "validation-52496",
+      "type": "presence"
+    },
+    {
+      "image_id": 490,
+      "sample_id": "validation-49109",
+      "type": "presence"
+    },
+    {
+      "image_id": 522,
+      "sample_id": "validation-52290",
+      "type": "comp"
+    },
+    {
+      "image_id": 519,
+      "sample_id": "validation-52016",
+      "type": "comp"
+    },
+    {
+      "image_id": 520,
+      "sample_id": "validation-52076",
+      "type": "presence"
+    },
+    {
+      "image_id": 558,
+      "sample_id": "validation-55837",
+      "type": "comp"
+    },
+    {
+      "image_id": 566,
+      "sample_id": "validation-56705",
+      "type": "presence"
+    },
+    {
+      "image_id": 504,
+      "sample_id": "validation-50510",
+      "type": "comp"
+    },
+    {
+      "image_id": 571,
+      "sample_id": "validation-57198",
+      "type": "count"
+    },
+    {
+      "image_id": 567,
+      "sample_id": "validation-56796",
+      "type": "presence"
+    },
+    {
+      "image_id": 538,
+      "sample_id": "validation-53840",
+      "type": "count"
+    },
+    {
+      "image_id": 475,
+      "sample_id": "validation-47575",
+      "type": "count"
+    },
+    {
+      "image_id": 490,
+      "sample_id": "validation-49050",
+      "type": "presence"
+    },
+    {
+      "image_id": 534,
+      "sample_id": "validation-53485",
+      "type": "presence"
+    },
+    {
+      "image_id": 475,
+      "sample_id": "validation-47600",
+      "type": "count"
+    },
+    {
+      "image_id": 554,
+      "sample_id": "validation-55480",
+      "type": "presence"
+    },
+    {
+      "image_id": 472,
+      "sample_id": "validation-47281",
+      "type": "count"
+    },
+    {
+      "image_id": 545,
+      "sample_id": "validation-54565",
+      "type": "presence"
+    },
+    {
+      "image_id": 543,
+      "sample_id": "validation-54332",
+      "type": "presence"
+    },
+    {
+      "image_id": 494,
+      "sample_id": "validation-49473",
+      "type": "presence"
+    },
+    {
+      "image_id": 504,
+      "sample_id": "validation-50481",
+      "type": "count"
+    },
+    {
+      "image_id": 487,
+      "sample_id": "validation-48794",
+      "type": "count"
+    },
+    {
+      "image_id": 533,
+      "sample_id": "validation-53364",
+      "type": "count"
+    },
+    {
+      "image_id": 526,
+      "sample_id": "validation-52695",
+      "type": "count"
+    },
+    {
+      "image_id": 516,
+      "sample_id": "validation-51638",
+      "type": "presence"
+    },
+    {
+      "image_id": 516,
+      "sample_id": "validation-51674",
+      "type": "count"
+    },
+    {
+      "image_id": 477,
+      "sample_id": "validation-47718",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 522,
+      "sample_id": "validation-52254",
+      "type": "count"
+    },
+    {
+      "image_id": 568,
+      "sample_id": "validation-56915",
+      "type": "count"
+    },
+    {
+      "image_id": 554,
+      "sample_id": "validation-55467",
+      "type": "count"
+    },
+    {
+      "image_id": 553,
+      "sample_id": "validation-55360",
+      "type": "count"
+    },
+    {
+      "image_id": 489,
+      "sample_id": "validation-48931",
+      "type": "presence"
+    },
+    {
+      "image_id": 563,
+      "sample_id": "validation-56381",
+      "type": "count"
+    },
+    {
+      "image_id": 517,
+      "sample_id": "validation-51729",
+      "type": "count"
+    },
+    {
+      "image_id": 493,
+      "sample_id": "validation-49319",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 515,
+      "sample_id": "validation-51577",
+      "type": "presence"
+    },
+    {
+      "image_id": 564,
+      "sample_id": "validation-56496",
+      "type": "presence"
+    },
+    {
+      "image_id": 513,
+      "sample_id": "validation-51366",
+      "type": "presence"
+    },
+    {
+      "image_id": 479,
+      "sample_id": "validation-47928",
+      "type": "presence"
+    },
+    {
+      "image_id": 522,
+      "sample_id": "validation-52282",
+      "type": "count"
+    },
+    {
+      "image_id": 541,
+      "sample_id": "validation-54167",
+      "type": "count"
+    },
+    {
+      "image_id": 506,
+      "sample_id": "validation-50625",
+      "type": "count"
+    },
+    {
+      "image_id": 559,
+      "sample_id": "validation-56022",
+      "type": "count"
+    },
+    {
+      "image_id": 567,
+      "sample_id": "validation-56758",
+      "type": "presence"
+    },
+    {
+      "image_id": 533,
+      "sample_id": "validation-53357",
+      "type": "count"
+    },
+    {
+      "image_id": 569,
+      "sample_id": "validation-56986",
+      "type": "count"
+    },
+    {
+      "image_id": 558,
+      "sample_id": "validation-55833",
+      "type": "count"
+    },
+    {
+      "image_id": 516,
+      "sample_id": "validation-51706",
+      "type": "presence"
+    },
+    {
+      "image_id": 522,
+      "sample_id": "validation-52320",
+      "type": "count"
+    },
+    {
+      "image_id": 497,
+      "sample_id": "validation-49798",
+      "type": "count"
+    },
+    {
+      "image_id": 472,
+      "sample_id": "validation-47226",
+      "type": "presence"
+    },
+    {
+      "image_id": 504,
+      "sample_id": "validation-50452",
+      "type": "presence"
+    },
+    {
+      "image_id": 472,
+      "sample_id": "validation-47287",
+      "type": "presence"
+    },
+    {
+      "image_id": 566,
+      "sample_id": "validation-56672",
+      "type": "presence"
+    },
+    {
+      "image_id": 485,
+      "sample_id": "validation-48523",
+      "type": "presence"
+    },
+    {
+      "image_id": 498,
+      "sample_id": "validation-49824",
+      "type": "count"
+    },
+    {
+      "image_id": 540,
+      "sample_id": "validation-54094",
+      "type": "presence"
+    },
+    {
+      "image_id": 530,
+      "sample_id": "validation-53038",
+      "type": "count"
+    },
+    {
+      "image_id": 526,
+      "sample_id": "validation-52680",
+      "type": "count"
+    },
+    {
+      "image_id": 564,
+      "sample_id": "validation-56457",
+      "type": "presence"
+    },
+    {
+      "image_id": 564,
+      "sample_id": "validation-56467",
+      "type": "count"
+    },
+    {
+      "image_id": 524,
+      "sample_id": "validation-52510",
+      "type": "count"
+    },
+    {
+      "image_id": 533,
+      "sample_id": "validation-53327",
+      "type": "count"
+    },
+    {
+      "image_id": 540,
+      "sample_id": "validation-54029",
+      "type": "count"
+    },
+    {
+      "image_id": 536,
+      "sample_id": "validation-53693",
+      "type": "count"
+    },
+    {
+      "image_id": 518,
+      "sample_id": "validation-51830",
+      "type": "count"
+    },
+    {
+      "image_id": 472,
+      "sample_id": "validation-47218",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 537,
+      "sample_id": "validation-53745",
+      "type": "count"
+    },
+    {
+      "image_id": 534,
+      "sample_id": "validation-53442",
+      "type": "count"
+    },
+    {
+      "image_id": 566,
+      "sample_id": "validation-56623",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 498,
+      "sample_id": "validation-49884",
+      "type": "count"
+    },
+    {
+      "image_id": 494,
+      "sample_id": "validation-49419",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 561,
+      "sample_id": "validation-56123",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 571,
+      "sample_id": "validation-57123",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 503,
+      "sample_id": "validation-50320",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 497,
+      "sample_id": "validation-49720",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 558,
+      "sample_id": "validation-55823",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 535,
+      "sample_id": "validation-53521",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 551,
+      "sample_id": "validation-55123",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 491,
+      "sample_id": "validation-49119",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 556,
+      "sample_id": "validation-55623",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 569,
+      "sample_id": "validation-56923",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 480,
+      "sample_id": "validation-48018",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 499,
+      "sample_id": "validation-49920",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 488,
+      "sample_id": "validation-48819",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 557,
+      "sample_id": "validation-55723",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 529,
+      "sample_id": "validation-52921",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 482,
+      "sample_id": "validation-48219",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 473,
+      "sample_id": "validation-47318",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 568,
+      "sample_id": "validation-56823",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 562,
+      "sample_id": "validation-56223",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 515,
+      "sample_id": "validation-51520",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 483,
+      "sample_id": "validation-48319",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 541,
+      "sample_id": "validation-54122",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 545,
+      "sample_id": "validation-54522",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 484,
+      "sample_id": "validation-48419",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 522,
+      "sample_id": "validation-52221",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 533,
+      "sample_id": "validation-53321",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 564,
+      "sample_id": "validation-56423",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 537,
+      "sample_id": "validation-53722",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 487,
+      "sample_id": "validation-48719",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 520,
+      "sample_id": "validation-52021",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 534,
+      "sample_id": "validation-53421",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 501,
+      "sample_id": "validation-50120",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 544,
+      "sample_id": "validation-54422",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 516,
+      "sample_id": "validation-51620",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 513,
+      "sample_id": "validation-51320",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 542,
+      "sample_id": "validation-54222",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 502,
+      "sample_id": "validation-50220",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 532,
+      "sample_id": "validation-53221",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 512,
+      "sample_id": "validation-51220",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 504,
+      "sample_id": "validation-50420",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 567,
+      "sample_id": "validation-56723",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 478,
+      "sample_id": "validation-47818",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 476,
+      "sample_id": "validation-47618",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 543,
+      "sample_id": "validation-54322",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 492,
+      "sample_id": "validation-49219",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 560,
+      "sample_id": "validation-56023",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 524,
+      "sample_id": "validation-52421",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 555,
+      "sample_id": "validation-55523",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 510,
+      "sample_id": "validation-51020",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 523,
+      "sample_id": "validation-52321",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 552,
+      "sample_id": "validation-55223",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 519,
+      "sample_id": "validation-51921",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 500,
+      "sample_id": "validation-50020",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 505,
+      "sample_id": "validation-50520",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 539,
+      "sample_id": "validation-53922",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 554,
+      "sample_id": "validation-55423",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 496,
+      "sample_id": "validation-49619",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 525,
+      "sample_id": "validation-52521",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 548,
+      "sample_id": "validation-54823",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 559,
+      "sample_id": "validation-55923",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 549,
+      "sample_id": "validation-54923",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 475,
+      "sample_id": "validation-47518",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 530,
+      "sample_id": "validation-53021",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 540,
+      "sample_id": "validation-54022",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 536,
+      "sample_id": "validation-53622",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 521,
+      "sample_id": "validation-52121",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 490,
+      "sample_id": "validation-49019",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 514,
+      "sample_id": "validation-51420",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 563,
+      "sample_id": "validation-56323",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 495,
+      "sample_id": "validation-49519",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 485,
+      "sample_id": "validation-48519",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 474,
+      "sample_id": "validation-47418",
+      "type": "rural_urban"
+    },
+    {
+      "image_id": 565,
+      "sample_id": "validation-56523",
+      "type": "rural_urban"
+    }
+  ],
+  "schema_version": 1,
+  "seed": 26167,
+  "selection": "total=1000; types with <= 100 questions taken whole; remaining budget proportional to type size (largest remainder); within a type, ascending sha256(f'{seed}\\0{sample_id}')",
+  "source": "Zenodo record 6344334",
+  "split": "validation",
+  "type_counts": {
+    "comp": 368,
+    "count": 271,
+    "presence": 269,
+    "rural_urban": 92
+  }
+}

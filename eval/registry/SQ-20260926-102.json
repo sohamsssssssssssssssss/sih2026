@@ -1,0 +1,167 @@
+{
+  "adapter_revision": null,
+  "artifact_paths": {
+    "audit": "eval/results/rsvqa-lr-spatial-audit.v1.json"
+  },
+  "command": [
+    "/Users/atharva/satquery-data/venvs/vlm/bin/python -m eval.rsvqa_research audit --dataset-root /Users/atharva/satquery-data/vlm/rsvqa_lr --out /Users/atharva/satquery-data/vlm/scratch/rerun/audit.json"
+  ],
+  "dataset": "RSVQA-LR",
+  "dataset_checksum": {
+    "manifest_sha256": "23a74c573026a26620262eb2440a7effa10168f77010f40dee81a77996fed3e1",
+    "zenodo_md5": {
+      "Images_LR.zip": {
+        "md5": "2329258d74d54600628b8652a0e42672",
+        "size": 95008155
+      },
+      "LR_split_test_answers.json": {
+        "md5": "f925d70eb74bb4094966670cb4c2f840",
+        "size": 1922393
+      },
+      "LR_split_test_images.json": {
+        "md5": "4a5ae90a5686bbcffd1d7ec06ddbb692",
+        "size": 123273
+      },
+      "LR_split_test_questions.json": {
+        "md5": "9bddc53d7399a43378f743ec0ff1f95f",
+        "size": 2717368
+      },
+      "LR_split_train_answers.json": {
+        "md5": "a5ff787f9977b0050b9bbf4e32bbb533",
+        "size": 7428162
+      },
+      "LR_split_train_images.json": {
+        "md5": "7d1e7c099c65e39b3e773578cdabe79a",
+        "size": 585112
+      },
+      "LR_split_train_questions.json": {
+        "md5": "935d59a05d126496fe61c541b4ab2d55",
+        "size": 11940731
+      },
+      "LR_split_val_answers.json": {
+        "md5": "61ba49ece26c989f81a9a1e2fe0d475b",
+        "size": 2690962
+      },
+      "LR_split_val_images.json": {
+        "md5": "7a9f267d2cd106025c45a2b68dce5351",
+        "size": 123258
+      },
+      "LR_split_val_questions.json": {
+        "md5": "67b99979ebd468330355d656bf4d6d29",
+        "size": 3483748
+      },
+      "all_answers.json": {
+        "md5": "9042f398d25413a10ea530b7b2a94dd2",
+        "size": 9169791
+      },
+      "all_questions.json": {
+        "md5": "fed409776edd11790c596ea0848984c7",
+        "size": 15270117
+      }
+    }
+  },
+  "dataset_version": "Zenodo record 6344334",
+  "ended_at": "2026-09-26T09:03:27.073168+00:00",
+  "environment": {
+    "machine": "arm64",
+    "packages": {
+      "accelerate": "1.12.0",
+      "bitsandbytes": null,
+      "numpy": "2.4.2",
+      "peft": "0.18.1",
+      "qwen-vl-utils": "0.0.14",
+      "rasterio": "1.5.1",
+      "torch": "2.14.0",
+      "transformers": "5.1.0"
+    },
+    "platform": "macOS-26.6-arm64-arm-64bit-Mach-O",
+    "processor": "arm",
+    "python": "3.13.0"
+  },
+  "experiment_id": "SQ-20260926-102",
+  "hyperparameters": null,
+  "metrics": {
+    "coordinate_system_finding": "upperleft_map_x/y are EPSG:3857; per-tile linear fit against file-name pixel offsets has zero residual with scale 1.584-1.685 = sec(latitude) within 0.3%",
+    "rerun_byte_identical_to_committed": true,
+    "test_vs_train": {
+      "images": 100,
+      "images_with_any_footprint_overlap": 4,
+      "images_with_overlap_ge_50pct": 1,
+      "images_with_reference_within_10km": 22,
+      "images_with_reference_within_5km": 12,
+      "max_overlap_fraction": 0.5561,
+      "nearest_centre_distance_m": {
+        "max": 49120.6,
+        "median": 23051.8,
+        "min": 1032.0
+      },
+      "overlapping_image_ids": [
+        243,
+        257,
+        297,
+        323
+      ],
+      "questions_in_split": 10004,
+      "questions_on_overlapping_images": 400
+    },
+    "test_vs_validation": {
+      "images": 100,
+      "images_with_any_footprint_overlap": 3,
+      "images_with_overlap_ge_50pct": 0,
+      "images_with_reference_within_10km": 14,
+      "images_with_reference_within_5km": 7,
+      "max_overlap_fraction": 0.3634,
+      "nearest_centre_distance_m": {
+        "max": 99615.5,
+        "median": 37392.2,
+        "min": 1484.5
+      },
+      "overlapping_image_ids": [
+        273,
+        290,
+        328
+      ],
+      "questions_in_split": 10004,
+      "questions_on_overlapping_images": 301
+    },
+    "train_locations_repeated_across_dates": 16,
+    "validation_vs_train": {
+      "images": 100,
+      "images_with_any_footprint_overlap": 8,
+      "images_with_overlap_ge_50pct": 1,
+      "images_with_reference_within_10km": 30,
+      "images_with_reference_within_5km": 18,
+      "max_overlap_fraction": 0.5121,
+      "nearest_centre_distance_m": {
+        "max": 50218.9,
+        "median": 23937.0,
+        "min": 1070.0
+      },
+      "overlapping_image_ids": [
+        481,
+        507,
+        509,
+        511,
+        527,
+        528,
+        546,
+        550
+      ],
+      "questions_in_split": 10005,
+      "questions_on_overlapping_images": 802
+    }
+  },
+  "model_id": null,
+  "model_revision": null,
+  "notes": "Official split is tile-blocked (val=31UGU, test=31UFU) but adjacent MGRS tiles overlap; every overlapping pair shows a pixel-correlation peak (0.58-0.96). Official split unchanged.",
+  "repository": {
+    "url": "https://github.com/AtharvaPatil466/SatAi",
+    "dirty": false,
+    "sha": "1e01729db8073d0b3ded33c9a99575104f2c1305"
+  },
+  "seed": null,
+  "split": "train vs validation vs test",
+  "started_at": "2026-09-26T09:03:24.537480+00:00",
+  "status": "PASSED",
+  "title": "Geographic leakage audit of the official RSVQA-LR split"
+}

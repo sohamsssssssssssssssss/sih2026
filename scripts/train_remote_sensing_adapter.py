@@ -6,6 +6,7 @@ import json
 import os
 import platform
 import sys
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -47,6 +48,14 @@ def _versions() -> dict[str, object]:
     return result
 
 
+def _peak_cuda_memory() -> int | None:
+    try:
+        import torch
+    except ImportError:
+        return None
+    return torch.cuda.max_memory_allocated() if torch.cuda.is_available() else None
+
+
 def build_report(config: TrainingConfig, examples: list, status: str) -> dict:
     return {
         "schema_version": 1,
@@ -55,7 +64,7 @@ def build_report(config: TrainingConfig, examples: list, status: str) -> dict:
         "base_model": {
             "model_id": BASE_MODEL_ID,
             "local_path": str(config.model_path.resolve()),
-            "revision": None,
+            "revision": config.model_revision,
             "sha256": None,
         },
         "dataset": {
@@ -86,6 +95,7 @@ def run(
     component_loader=None,
     collator_factory=None,
 ) -> dict:
+    started = time.perf_counter()
     os.environ["HF_HUB_OFFLINE"] = "1"
     os.environ["TRANSFORMERS_OFFLINE"] = "1"
     config.validate()
@@ -130,6 +140,8 @@ def run(
             logging_steps=1,
             save_strategy="steps",
             save_steps=max(1, config.max_steps if config.max_steps > 0 else 100),
+            # Checkpoints exist only for --resume-from-checkpoint across Kaggle sessions.
+            save_total_limit=2,
             report_to="none",
             remove_unused_columns=False,
             seed=config.seed,
@@ -141,12 +153,19 @@ def run(
             train_dataset=examples,
             data_collator=collator,
         )
-        result = trainer.train()
+        resume = config.resume_from_checkpoint
+        result = trainer.train(resume_from_checkpoint=str(resume) if resume else None)
         adapter_dir = config.output_dir / "adapter"
         model.save_pretrained(adapter_dir)
         processor.save_pretrained(adapter_dir)
         report = build_report(config, examples, "training_complete")
         report["trainer_metrics"] = result.metrics
+        report["trainer_log_history"] = trainer.state.log_history
+        report["adapter_size_bytes"] = sum(
+            path.stat().st_size for path in adapter_dir.rglob("*") if path.is_file()
+        )
+    report["peak_cuda_memory_bytes"] = _peak_cuda_memory()
+    report["wall_clock_seconds"] = time.perf_counter() - started
     config.output_dir.mkdir(parents=True, exist_ok=True)
     (config.output_dir / REPORT_NAME).write_text(
         json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8"
@@ -175,6 +194,8 @@ def parse_args(argv: list[str] | None = None) -> tuple[TrainingConfig, bool]:
     parser.add_argument("--lora-alpha", type=int, default=32)
     parser.add_argument("--lora-dropout", type=float, default=0.05)
     parser.add_argument("--lora-target-modules", default="q_proj,k_proj,v_proj,o_proj")
+    parser.add_argument("--model-revision", help="verified Hugging Face commit of --model-path")
+    parser.add_argument("--resume-from-checkpoint", type=Path)
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args(argv)
     config = TrainingConfig(
@@ -197,6 +218,8 @@ def parse_args(argv: list[str] | None = None) -> tuple[TrainingConfig, bool]:
         lora_alpha=args.lora_alpha,
         lora_dropout=args.lora_dropout,
         lora_target_modules=tuple(item.strip() for item in args.lora_target_modules.split(",") if item.strip()),
+        model_revision=args.model_revision,
+        resume_from_checkpoint=args.resume_from_checkpoint,
     )
     return config, args.dry_run
 

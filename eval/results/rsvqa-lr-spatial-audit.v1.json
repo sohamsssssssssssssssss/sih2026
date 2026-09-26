@@ -1,0 +1,367 @@
+{
+  "method": "Each active image's footprint is the EPSG:3857 box from upperleft_map_x/y with side 2560 m x sec(latitude) (256 px at 10 m). Overlap fraction is relative to the held-out patch area; centre distances are approximate ground metres (3857 distance / sec(mean latitude)). Every overlapping pair is checked in pixels with pixel_agreement(): grey-level correlation over the predicted overlap, searched +/-15 px.",
+  "schema_version": 1,
+  "test_vs_train": {
+    "images": 100,
+    "images_with_any_footprint_overlap": 4,
+    "images_with_overlap_ge_50pct": 1,
+    "images_with_reference_within_10km": 22,
+    "images_with_reference_within_5km": 12,
+    "max_overlap_fraction": 0.5561,
+    "nearest_centre_distance_m": {
+      "max": 49120.6,
+      "median": 23051.8,
+      "min": 1032.0
+    },
+    "overlapping_image_ids": [
+      243,
+      257,
+      297,
+      323
+    ],
+    "overlapping_pairs": [
+      {
+        "held_image_id": 243,
+        "overlap_fraction": 0.0828,
+        "peak_correlation": 0.8103,
+        "peak_region_pixels": 5775,
+        "peak_shift_px": [
+          -2,
+          3
+        ],
+        "reference_image_id": 74,
+        "reference_tile_date": "31UFT@20181010",
+        "window_median_correlation": 0.6863
+      },
+      {
+        "held_image_id": 257,
+        "overlap_fraction": 0.5561,
+        "peak_correlation": 0.7385,
+        "peak_region_pixels": 36424,
+        "peak_shift_px": [
+          2,
+          -3
+        ],
+        "reference_image_id": 365,
+        "reference_tile_date": "31UFV@20160720",
+        "window_median_correlation": 0.1537
+      },
+      {
+        "held_image_id": 297,
+        "overlap_fraction": 0.0342,
+        "peak_correlation": 0.9161,
+        "peak_region_pixels": 2500,
+        "peak_shift_px": [
+          2,
+          -2
+        ],
+        "reference_image_id": 361,
+        "reference_tile_date": "31UFV@20160720",
+        "window_median_correlation": 0.266
+      },
+      {
+        "held_image_id": 323,
+        "overlap_fraction": 0.0302,
+        "peak_correlation": 0.7678,
+        "peak_region_pixels": 2528,
+        "peak_shift_px": [
+          3,
+          -3
+        ],
+        "reference_image_id": 379,
+        "reference_tile_date": "31UFV@20160720",
+        "window_median_correlation": 0.0681
+      },
+      {
+        "held_image_id": 323,
+        "overlap_fraction": 0.0123,
+        "peak_correlation": 0.961,
+        "peak_region_pixels": 777,
+        "peak_shift_px": [
+          2,
+          -3
+        ],
+        "reference_image_id": 746,
+        "reference_tile_date": "32ULE@20160720",
+        "window_median_correlation": 0.1241
+      }
+    ],
+    "questions_in_split": 10004,
+    "questions_on_overlapping_images": 400
+  },
+  "test_vs_validation": {
+    "images": 100,
+    "images_with_any_footprint_overlap": 3,
+    "images_with_overlap_ge_50pct": 0,
+    "images_with_reference_within_10km": 14,
+    "images_with_reference_within_5km": 7,
+    "max_overlap_fraction": 0.3634,
+    "nearest_centre_distance_m": {
+      "max": 99615.5,
+      "median": 37392.2,
+      "min": 1484.5
+    },
+    "overlapping_image_ids": [
+      273,
+      290,
+      328
+    ],
+    "overlapping_pairs": [
+      {
+        "held_image_id": 273,
+        "overlap_fraction": 0.0952,
+        "peak_correlation": 0.963,
+        "peak_region_pixels": 6318,
+        "peak_shift_px": [
+          0,
+          1
+        ],
+        "reference_image_id": 530,
+        "reference_tile_date": "31UGU@20160720",
+        "window_median_correlation": 0.3947
+      },
+      {
+        "held_image_id": 290,
+        "overlap_fraction": 0.1283,
+        "peak_correlation": 0.9432,
+        "peak_region_pixels": 8142,
+        "peak_shift_px": [
+          -1,
+          -1
+        ],
+        "reference_image_id": 506,
+        "reference_tile_date": "31UGU@20160720",
+        "window_median_correlation": 0.1876
+      },
+      {
+        "held_image_id": 328,
+        "overlap_fraction": 0.1126,
+        "peak_correlation": 0.8977,
+        "peak_region_pixels": 7314,
+        "peak_shift_px": [
+          0,
+          0
+        ],
+        "reference_image_id": 530,
+        "reference_tile_date": "31UGU@20160720",
+        "window_median_correlation": 0.1401
+      },
+      {
+        "held_image_id": 328,
+        "overlap_fraction": 0.3634,
+        "peak_correlation": 0.9389,
+        "peak_region_pixels": 23954,
+        "peak_shift_px": [
+          -1,
+          0
+        ],
+        "reference_image_id": 569,
+        "reference_tile_date": "31UGU@20160720",
+        "window_median_correlation": 0.2143
+      }
+    ],
+    "questions_in_split": 10004,
+    "questions_on_overlapping_images": 301
+  },
+  "tiles_by_split": {
+    "test": {
+      "31UFU@20160720/L1C": 100
+    },
+    "train": {
+      "31UET@20180630/L2A": 82,
+      "31UET@20181115/L1C": 77,
+      "31UFT@20181010/L1C": 100,
+      "31UFV@20160720/L1C": 58,
+      "31UGS@20181010/L1C": 55,
+      "31UGT@20181010/L1C": 100,
+      "32ULE@20160720/L1C": 100
+    },
+    "validation": {
+      "31UGU@20160720/L1C": 100
+    }
+  },
+  "train_locations_repeated_across_dates": 16,
+  "validation_vs_train": {
+    "images": 100,
+    "images_with_any_footprint_overlap": 8,
+    "images_with_overlap_ge_50pct": 1,
+    "images_with_reference_within_10km": 30,
+    "images_with_reference_within_5km": 18,
+    "max_overlap_fraction": 0.5121,
+    "nearest_centre_distance_m": {
+      "max": 50218.9,
+      "median": 23937.0,
+      "min": 1070.0
+    },
+    "overlapping_image_ids": [
+      481,
+      507,
+      509,
+      511,
+      527,
+      528,
+      546,
+      550
+    ],
+    "overlapping_pairs": [
+      {
+        "held_image_id": 481,
+        "overlap_fraction": 0.0354,
+        "peak_correlation": 0.5817,
+        "peak_region_pixels": 2490,
+        "peak_shift_px": [
+          -3,
+          3
+        ],
+        "reference_image_id": 576,
+        "reference_tile_date": "31UGT@20181010",
+        "window_median_correlation": 0.0407
+      },
+      {
+        "held_image_id": 507,
+        "overlap_fraction": 0.2909,
+        "peak_correlation": 0.6728,
+        "peak_region_pixels": 18174,
+        "peak_shift_px": [
+          -2,
+          4
+        ],
+        "reference_image_id": 620,
+        "reference_tile_date": "31UGT@20181010",
+        "window_median_correlation": 0.23
+      },
+      {
+        "held_image_id": 509,
+        "overlap_fraction": 0.5121,
+        "peak_correlation": 0.9054,
+        "peak_region_pixels": 33015,
+        "peak_shift_px": [
+          2,
+          -4
+        ],
+        "reference_image_id": 689,
+        "reference_tile_date": "32ULE@20160720",
+        "window_median_correlation": 0.3028
+      },
+      {
+        "held_image_id": 511,
+        "overlap_fraction": 0.1575,
+        "peak_correlation": 0.6077,
+        "peak_region_pixels": 9618,
+        "peak_shift_px": [
+          -3,
+          3
+        ],
+        "reference_image_id": 623,
+        "reference_tile_date": "31UGT@20181010",
+        "window_median_correlation": 0.1874
+      },
+      {
+        "held_image_id": 527,
+        "overlap_fraction": 0.228,
+        "peak_correlation": 0.84,
+        "peak_region_pixels": 15504,
+        "peak_shift_px": [
+          3,
+          -2
+        ],
+        "reference_image_id": 714,
+        "reference_tile_date": "32ULE@20160720",
+        "window_median_correlation": 0.1784
+      },
+      {
+        "held_image_id": 528,
+        "overlap_fraction": 0.2662,
+        "peak_correlation": 0.7879,
+        "peak_region_pixels": 16692,
+        "peak_shift_px": [
+          3,
+          -3
+        ],
+        "reference_image_id": 714,
+        "reference_tile_date": "32ULE@20160720",
+        "window_median_correlation": 0.1182
+      },
+      {
+        "held_image_id": 528,
+        "overlap_fraction": 0.3478,
+        "peak_correlation": 0.7893,
+        "peak_region_pixels": 23079,
+        "peak_shift_px": [
+          4,
+          -2
+        ],
+        "reference_image_id": 740,
+        "reference_tile_date": "32ULE@20160720",
+        "window_median_correlation": 0.2167
+      },
+      {
+        "held_image_id": 546,
+        "overlap_fraction": 0.1767,
+        "peak_correlation": 0.86,
+        "peak_region_pixels": 11639,
+        "peak_shift_px": [
+          3,
+          -3
+        ],
+        "reference_image_id": 740,
+        "reference_tile_date": "32ULE@20160720",
+        "window_median_correlation": 0.1071
+      },
+      {
+        "held_image_id": 546,
+        "overlap_fraction": 0.3225,
+        "peak_correlation": 0.8394,
+        "peak_region_pixels": 21000,
+        "peak_shift_px": [
+          2,
+          -3
+        ],
+        "reference_image_id": 749,
+        "reference_tile_date": "32ULE@20160720",
+        "window_median_correlation": 0.2271
+      },
+      {
+        "held_image_id": 546,
+        "overlap_fraction": 0.2107,
+        "peak_correlation": 0.8362,
+        "peak_region_pixels": 14523,
+        "peak_shift_px": [
+          3,
+          -3
+        ],
+        "reference_image_id": 759,
+        "reference_tile_date": "32ULE@20160720",
+        "window_median_correlation": 0.1593
+      },
+      {
+        "held_image_id": 550,
+        "overlap_fraction": 0.2235,
+        "peak_correlation": 0.9335,
+        "peak_region_pixels": 14744,
+        "peak_shift_px": [
+          3,
+          -3
+        ],
+        "reference_image_id": 682,
+        "reference_tile_date": "32ULE@20160720",
+        "window_median_correlation": 0.6344
+      },
+      {
+        "held_image_id": 550,
+        "overlap_fraction": 0.1415,
+        "peak_correlation": 0.9128,
+        "peak_region_pixels": 9797,
+        "peak_shift_px": [
+          3,
+          -3
+        ],
+        "reference_image_id": 746,
+        "reference_tile_date": "32ULE@20160720",
+        "window_median_correlation": 0.2938
+      }
+    ],
+    "questions_in_split": 10005,
+    "questions_on_overlapping_images": 802
+  }
+}
