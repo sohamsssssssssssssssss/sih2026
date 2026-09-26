@@ -1,0 +1,160 @@
+{
+  "inputs": {
+    "metadata_parquet_sha256": "408911df2da7092da9ecc72071972a808ec486ba09f6cb048f7716793d14ded6",
+    "patches": 480038,
+    "pilot_manifest_sha256": "4bd30aef67b97f100d2076604cde98b010722cd51d92501ea5a54153bc051541",
+    "tiles": 54
+  },
+  "method": {
+    "distance": "great-circle distance between patch centres (spherical Earth, R=6371008.8 m)",
+    "footprint": "S2 tile UL (s2-tile-origins.v1.json) + x_index*1200 m east, y_index*1200 m south",
+    "footprint_verified_against_reference_maps": {
+      "checked": 100,
+      "mismatches": []
+    },
+    "radius_meaning_m": {
+      "10000": "same local landscape",
+      "1200": "edge-adjacent or overlapping",
+      "1700": "includes diagonal neighbours",
+      "50000": "same region",
+      "600": "footprints overlap by >= half a patch on both axes"
+    },
+    "scope": "main metadata.parquet only (480,038 patches); the 69,450 snow/cloud/shadow patches are excluded"
+  },
+  "official_split": {
+    "nearest_train_by_split": {
+      "test": {
+        "nearest_train_m": {
+          "median": 20358.00671970602,
+          "min": 11952.081715716336,
+          "p05": 13154.996391816268
+        },
+        "samples": 119825,
+        "within_radius": {
+          "10000": 0,
+          "1200": 0,
+          "1700": 0,
+          "50000": 119825,
+          "600": 0
+        }
+      },
+      "validation": {
+        "nearest_train_m": {
+          "median": 5984.851102799154,
+          "min": 1195.1765593091604,
+          "p05": 1197.105263183918
+        },
+        "samples": 122342,
+        "within_radius": {
+          "10000": 105036,
+          "1200": 11444,
+          "1700": 14844,
+          "50000": 122342,
+          "600": 0
+        }
+      }
+    },
+    "same_footprint_across_splits": {
+      "footprints_in_multiple_splits": {},
+      "unique_footprints": 233966
+    }
+  },
+  "pilot": {
+    "declared_vs_derived_centre_m": {
+      "max": 2.008414270753655e-09,
+      "median": 0.0
+    },
+    "internal_split": {
+      "bench": {
+        "nearest_train_m": {
+          "median": 57889.082417538564,
+          "min": 15576.950950017026,
+          "p05": 23343.500200475977
+        },
+        "samples": 25,
+        "within_radius": {
+          "10000": 0,
+          "1200": 0,
+          "1700": 0,
+          "50000": 10,
+          "600": 0
+        }
+      },
+      "test": {
+        "nearest_train_m": {
+          "median": 76747.5780144311,
+          "min": 15749.258397037072,
+          "p05": 17201.594662375952
+        },
+        "samples": 25,
+        "within_radius": {
+          "10000": 0,
+          "1200": 0,
+          "1700": 0,
+          "50000": 10,
+          "600": 0
+        }
+      },
+      "validation": {
+        "nearest_train_m": {
+          "median": 32588.13855377403,
+          "min": 10324.50817242014,
+          "p05": 13628.470892165942
+        },
+        "samples": 25,
+        "within_radius": {
+          "10000": 0,
+          "1200": 0,
+          "1700": 0,
+          "50000": 16,
+          "600": 0
+        }
+      }
+    },
+    "versus_full_official_train": {
+      "bench": {
+        "nearest_official_train_m": {
+          "median": 22779.490855323507,
+          "min": 11975.244605807644
+        },
+        "samples": 25,
+        "within_radius": {
+          "10000": 0,
+          "1200": 0,
+          "1700": 0,
+          "50000": 25,
+          "600": 0
+        }
+      },
+      "test": {
+        "nearest_official_train_m": {
+          "median": 14408.540589258006,
+          "min": 11966.664615586189
+        },
+        "samples": 25,
+        "within_radius": {
+          "10000": 0,
+          "1200": 0,
+          "1700": 0,
+          "50000": 25,
+          "600": 0
+        }
+      },
+      "validation": {
+        "nearest_official_train_m": {
+          "median": 5980.522292614199,
+          "min": 1196.0565957769809
+        },
+        "samples": 25,
+        "within_radius": {
+          "10000": 19,
+          "1200": 4,
+          "1700": 4,
+          "50000": 25,
+          "600": 0
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}

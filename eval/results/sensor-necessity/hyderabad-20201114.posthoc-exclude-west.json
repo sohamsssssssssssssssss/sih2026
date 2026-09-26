@@ -1,0 +1,195 @@
+{
+  "case": "hyderabad-20201114",
+  "rule": {
+    "ndwi_formula": "(B03-B08)/(B03+B08)",
+    "ndwi_strictly_greater_than": 0.048095703125,
+    "vv_linear_gamma0_terrain_max": 0.053388334810733795,
+    "vh_linear_gamma0_terrain_max": 0.00929180160164833,
+    "fusion": "optical AND SAR at the same pixel",
+    "component_connectivity": 8,
+    "minimum_component_pixels_inclusive": 64,
+    "target": "one-pixel inner boundary of filtered fused support"
+  },
+  "rule_source": "data/manifests/cdse/sensor-necessity-results.v1.json",
+  "definitions": {
+    "reference_water": "GSW occurrence >= 90, eroded 3 px",
+    "reference_land": "GSW occurrence == 0, eroded 3 px",
+    "obstructed": "S2 SCL in [3, 8, 9, 10]",
+    "min_stratum_pixels_per_class": 500
+  },
+  "input_sha256": {
+    "s2.tif": "9b64a2b1e57a96f75bf5e342d2a89c284a523b7ab26f93b11ae4b724e57d9048",
+    "s1.tif": "bfe2ea3fbc137b46fa3f41cda45f75d09818bee97ac2133f9fe0093ca8198bd0",
+    "scl.tif": "b88c9e0abd37cdd96154c54c79185255ad84e8362a9946870139b6f9a878262b",
+    "gsw_occurrence.tif": "ae56929f9d958bb1615bed549e50bfd1c3e232279a8235d19e4fb64ff132e9c8"
+  },
+  "post_hoc_excluded_columns": [
+    0,
+    700
+  ],
+  "obstructed_fraction_of_valid": 0.011522397681037598,
+  "strata": {
+    "all": {
+      "optical_only": {
+        "reference_water_pixels": 16253,
+        "reference_land_pixels": 2557507,
+        "tp": 16253,
+        "fn": 0,
+        "fp": 3793,
+        "tn": 2553714,
+        "water_recall": 1.0,
+        "land_specificity": 0.9985169151052177,
+        "balanced_accuracy": 0.9992584575526089,
+        "water_iou": 0.8107851940536766,
+        "evaluable": true
+      },
+      "sar_only": {
+        "reference_water_pixels": 16253,
+        "reference_land_pixels": 2557507,
+        "tp": 16028,
+        "fn": 225,
+        "fp": 11182,
+        "tn": 2546325,
+        "water_recall": 0.9861564018950347,
+        "land_specificity": 0.9956277734528195,
+        "balanced_accuracy": 0.9908920876739271,
+        "water_iou": 0.5842172407508657,
+        "evaluable": true
+      },
+      "fusion_and_frozen": {
+        "reference_water_pixels": 16253,
+        "reference_land_pixels": 2557507,
+        "tp": 16028,
+        "fn": 225,
+        "fp": 586,
+        "tn": 2556921,
+        "water_recall": 0.9861564018950347,
+        "land_specificity": 0.9997708706173629,
+        "balanced_accuracy": 0.9929636362561989,
+        "water_iou": 0.9518379951303522,
+        "evaluable": true
+      },
+      "fusion_cloud_gated": {
+        "reference_water_pixels": 16253,
+        "reference_land_pixels": 2557507,
+        "tp": 16253,
+        "fn": 0,
+        "fp": 3515,
+        "tn": 2553992,
+        "water_recall": 1.0,
+        "land_specificity": 0.9986256147099499,
+        "balanced_accuracy": 0.999312807354975,
+        "water_iou": 0.8221873735329825,
+        "evaluable": true
+      }
+    },
+    "optically_clear": {
+      "optical_only": {
+        "reference_water_pixels": 16253,
+        "reference_land_pixels": 2533385,
+        "tp": 16253,
+        "fn": 0,
+        "fp": 3104,
+        "tn": 2530281,
+        "water_recall": 1.0,
+        "land_specificity": 0.9987747618305153,
+        "balanced_accuracy": 0.9993873809152576,
+        "water_iou": 0.8396445730226791,
+        "evaluable": true
+      },
+      "sar_only": {
+        "reference_water_pixels": 16253,
+        "reference_land_pixels": 2533385,
+        "tp": 16028,
+        "fn": 225,
+        "fp": 10771,
+        "tn": 2522614,
+        "water_recall": 0.9861564018950347,
+        "land_specificity": 0.9957483761844331,
+        "balanced_accuracy": 0.9909523890397339,
+        "water_iou": 0.5931024274718768,
+        "evaluable": true
+      },
+      "fusion_and_frozen": {
+        "reference_water_pixels": 16253,
+        "reference_land_pixels": 2533385,
+        "tp": 16028,
+        "fn": 225,
+        "fp": 396,
+        "tn": 2532989,
+        "water_recall": 0.9861564018950347,
+        "land_specificity": 0.9998436873984807,
+        "balanced_accuracy": 0.9930000446467577,
+        "water_iou": 0.9627004624902397,
+        "evaluable": true
+      },
+      "fusion_cloud_gated": {
+        "reference_water_pixels": 16253,
+        "reference_land_pixels": 2533385,
+        "tp": 16253,
+        "fn": 0,
+        "fp": 3104,
+        "tn": 2530281,
+        "water_recall": 1.0,
+        "land_specificity": 0.9987747618305153,
+        "balanced_accuracy": 0.9993873809152576,
+        "water_iou": 0.8396445730226791,
+        "evaluable": true
+      }
+    },
+    "optically_obstructed": {
+      "optical_only": {
+        "reference_water_pixels": 0,
+        "reference_land_pixels": 24122,
+        "tp": 0,
+        "fn": 0,
+        "fp": 689,
+        "tn": 23433,
+        "water_recall": null,
+        "land_specificity": 0.9714368626150403,
+        "balanced_accuracy": null,
+        "water_iou": null,
+        "evaluable": false
+      },
+      "sar_only": {
+        "reference_water_pixels": 0,
+        "reference_land_pixels": 24122,
+        "tp": 0,
+        "fn": 0,
+        "fp": 411,
+        "tn": 23711,
+        "water_recall": null,
+        "land_specificity": 0.9829616118066495,
+        "balanced_accuracy": null,
+        "water_iou": null,
+        "evaluable": false
+      },
+      "fusion_and_frozen": {
+        "reference_water_pixels": 0,
+        "reference_land_pixels": 24122,
+        "tp": 0,
+        "fn": 0,
+        "fp": 190,
+        "tn": 23932,
+        "water_recall": null,
+        "land_specificity": 0.9921233728546555,
+        "balanced_accuracy": null,
+        "water_iou": null,
+        "evaluable": false
+      },
+      "fusion_cloud_gated": {
+        "reference_water_pixels": 0,
+        "reference_land_pixels": 24122,
+        "tp": 0,
+        "fn": 0,
+        "fp": 411,
+        "tn": 23711,
+        "water_recall": null,
+        "land_specificity": 0.9829616118066495,
+        "balanced_accuracy": null,
+        "water_iou": null,
+        "evaluable": false
+      }
+    }
+  }
+}

@@ -1,0 +1,193 @@
+{
+  "adapter_revision": null,
+  "artifact_paths": [
+    "data/manifests/bigearthnet/split-leakage-audit.v1.json",
+    "data/manifests/bigearthnet/s2-tile-origins.v1.json"
+  ],
+  "command": "python -m scripts.audit_bigearthnet_split_leakage --metadata $SATQUERY_DATA/optical-sar/bigearthnet/metadata.parquet",
+  "dataset": "BigEarthNet v2.0 metadata.parquet (Zenodo 10891137 rev 10)",
+  "dataset_checksum": {
+    "metadata_parquet_sha256": "408911df2da7092da9ecc72071972a808ec486ba09f6cb048f7716793d14ded6",
+    "pilot_manifest_sha256": "4bd30aef67b97f100d2076604cde98b010722cd51d92501ea5a54153bc051541"
+  },
+  "dataset_version": "2.0.0",
+  "ended_at": "2026-09-26T13:44:47.833076+00:00",
+  "environment": {
+    "machine": "arm64",
+    "packages": {
+      "accelerate": "1.12.0",
+      "bitsandbytes": null,
+      "numpy": "2.4.2",
+      "peft": "0.18.1",
+      "qwen-vl-utils": null,
+      "rasterio": "1.5.1",
+      "torch": "2.10.0",
+      "transformers": "5.1.0"
+    },
+    "platform": "macOS-26.6-arm64-arm-64bit-Mach-O",
+    "processor": "arm",
+    "python": "3.13.0"
+  },
+  "experiment_id": "SQ-20260926-410",
+  "hyperparameters": {
+    "patch_m": 1200,
+    "radii_m": [
+      600,
+      1200,
+      1700,
+      10000,
+      50000
+    ]
+  },
+  "metrics": {
+    "footprint_mismatches_vs_reference_maps": 0,
+    "official": {
+      "nearest_train_by_split": {
+        "test": {
+          "nearest_train_m": {
+            "median": 20358.00671970602,
+            "min": 11952.081715716336,
+            "p05": 13154.996391816268
+          },
+          "samples": 119825,
+          "within_radius": {
+            "10000": 0,
+            "1200": 0,
+            "1700": 0,
+            "50000": 119825,
+            "600": 0
+          }
+        },
+        "validation": {
+          "nearest_train_m": {
+            "median": 5984.851102799154,
+            "min": 1195.1765593091604,
+            "p05": 1197.105263183918
+          },
+          "samples": 122342,
+          "within_radius": {
+            "10000": 105036,
+            "1200": 11444,
+            "1700": 14844,
+            "50000": 122342,
+            "600": 0
+          }
+        }
+      },
+      "same_footprint_across_splits": {
+        "footprints_in_multiple_splits": {},
+        "unique_footprints": 233966
+      }
+    },
+    "pilot": {
+      "declared_vs_derived_centre_m": {
+        "max": 2.008414270753655e-09,
+        "median": 0.0
+      },
+      "internal_split": {
+        "bench": {
+          "nearest_train_m": {
+            "median": 57889.082417538564,
+            "min": 15576.950950017026,
+            "p05": 23343.500200475977
+          },
+          "samples": 25,
+          "within_radius": {
+            "10000": 0,
+            "1200": 0,
+            "1700": 0,
+            "50000": 10,
+            "600": 0
+          }
+        },
+        "test": {
+          "nearest_train_m": {
+            "median": 76747.5780144311,
+            "min": 15749.258397037072,
+            "p05": 17201.594662375952
+          },
+          "samples": 25,
+          "within_radius": {
+            "10000": 0,
+            "1200": 0,
+            "1700": 0,
+            "50000": 10,
+            "600": 0
+          }
+        },
+        "validation": {
+          "nearest_train_m": {
+            "median": 32588.13855377403,
+            "min": 10324.50817242014,
+            "p05": 13628.470892165942
+          },
+          "samples": 25,
+          "within_radius": {
+            "10000": 0,
+            "1200": 0,
+            "1700": 0,
+            "50000": 16,
+            "600": 0
+          }
+        }
+      },
+      "versus_full_official_train": {
+        "bench": {
+          "nearest_official_train_m": {
+            "median": 22779.490855323507,
+            "min": 11975.244605807644
+          },
+          "samples": 25,
+          "within_radius": {
+            "10000": 0,
+            "1200": 0,
+            "1700": 0,
+            "50000": 25,
+            "600": 0
+          }
+        },
+        "test": {
+          "nearest_official_train_m": {
+            "median": 14408.540589258006,
+            "min": 11966.664615586189
+          },
+          "samples": 25,
+          "within_radius": {
+            "10000": 0,
+            "1200": 0,
+            "1700": 0,
+            "50000": 25,
+            "600": 0
+          }
+        },
+        "validation": {
+          "nearest_official_train_m": {
+            "median": 5980.522292614199,
+            "min": 1196.0565957769809
+          },
+          "samples": 25,
+          "within_radius": {
+            "10000": 19,
+            "1200": 4,
+            "1700": 4,
+            "50000": 25,
+            "600": 0
+          }
+        }
+      }
+    }
+  },
+  "model_id": null,
+  "model_revision": null,
+  "notes": "Re-run byte-identical. Footprints verified exactly on 28/54 tiles (all pilot tiles); other tiles use PC tile origins of the fixed S2 grid.",
+  "repository": {
+    "url": "https://github.com/AtharvaPatil466/SatAi",
+    "dirty": true,
+    "sha": "2986909dc8093b01f83a34e037fdda6bb121c49d"
+  },
+  "seed": null,
+  "split": "official train/validation/test (480,038 patches) + pilot",
+  "started_at": "2026-09-26T13:44:45.566597+00:00",
+  "status": "PASSED",
+  "title": "Geographic leakage audit: official BigEarthNet v2 split and pilot"
+}

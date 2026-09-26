@@ -1,0 +1,68 @@
+{
+  "adapter_revision": null,
+  "artifact_paths": [
+    "data/manifests/bigearthnet/pilot-consistency.v1.json"
+  ],
+  "command": "python -m data.bigearthnet_pilot_consistency",
+  "dataset": "BigEarthNet v2.0 / BigEarthNet.txt pilot",
+  "dataset_checksum": {
+    "pilot_manifest_sha256": "4bd30aef67b97f100d2076604cde98b010722cd51d92501ea5a54153bc051541"
+  },
+  "dataset_version": "pilot-candidates.v1.json",
+  "ended_at": "2026-09-26T13:44:45.523703+00:00",
+  "environment": {
+    "machine": "arm64",
+    "packages": {
+      "accelerate": "1.12.0",
+      "bitsandbytes": null,
+      "numpy": "2.4.2",
+      "peft": "0.18.1",
+      "qwen-vl-utils": null,
+      "rasterio": "1.5.1",
+      "torch": "2.10.0",
+      "transformers": "5.1.0"
+    },
+    "platform": "macOS-26.6-arm64-arm-64bit-Mach-O",
+    "processor": "arm",
+    "python": "3.13.0"
+  },
+  "experiment_id": "SQ-20260926-409",
+  "hyperparameters": {},
+  "metrics": {
+    "abs_s1_s2_separation_hours": {
+      "max": 55.2275,
+      "median": 17.150277777777777,
+      "min": 4.696111111111111
+    },
+    "checks_passed": {
+      "grid_is_120x120_at_10m": 100,
+      "labels_equal_reference_map_classes": 100,
+      "latlon_inside_reference_footprint": 100,
+      "reference_map_present": 100,
+      "reference_time_matches_patch": 100,
+      "same_tile_row_col": 100,
+      "utm_zone_matches_tile": 100
+    },
+    "flagged_cloud_or_shadow": 0,
+    "flagged_seasonal_snow": 0,
+    "issues": 0,
+    "member_lists_match_manifest": {
+      "reference-map-members.v1.txt": true,
+      "s1-members.v1.txt": true,
+      "s2-members.v1.txt": true
+    }
+  },
+  "model_id": null,
+  "model_revision": null,
+  "notes": "Labels equal reference-map classes for 100/100, but both derive from CLC2018; this is consistency, not accuracy. S1/S2 pixels unverified (archives not downloaded).",
+  "repository": {
+    "url": "https://github.com/AtharvaPatil466/SatAi",
+    "dirty": true,
+    "sha": "2986909dc8093b01f83a34e037fdda6bb121c49d"
+  },
+  "seed": null,
+  "split": "all 100 pilot pairs (train/validation/test/bench x25)",
+  "started_at": "2026-09-26T13:44:45.340537+00:00",
+  "status": "PASSED",
+  "title": "BigEarthNet pilot manifest consistency (tracked data only)"
+}

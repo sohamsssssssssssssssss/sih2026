@@ -1,0 +1,63 @@
+{
+  "case": "hyderabad-20200717",
+  "ndwi_threshold": 0.048095703125,
+  "checks": [
+    {
+      "item_id": "S2B_MSIL2A_20200503T050649_R019_T44QKE_20200920T085138",
+      "datetime": "2020-05-03T05:06:49.024000Z",
+      "cloud_cover": 2.464491,
+      "bands": {
+        "west": {
+          "reference_water_pixels": 9362,
+          "ndwi_water_fraction": 0.0
+        },
+        "centre": {
+          "reference_water_pixels": 15960,
+          "ndwi_water_fraction": 0.9997493734335839
+        },
+        "east": {
+          "reference_water_pixels": 293,
+          "ndwi_water_fraction": 0.7610921501706485
+        }
+      }
+    },
+    {
+      "item_id": "S2B_MSIL2A_20200523T050659_R019_T44QKE_20200910T171148",
+      "datetime": "2020-05-23T05:06:59.024000Z",
+      "cloud_cover": 0.086834,
+      "bands": {
+        "west": {
+          "reference_water_pixels": 9362,
+          "ndwi_water_fraction": 0.0
+        },
+        "centre": {
+          "reference_water_pixels": 15960,
+          "ndwi_water_fraction": 0.8459899749373434
+        },
+        "east": {
+          "reference_water_pixels": 293,
+          "ndwi_water_fraction": 0.9965870307167235
+        }
+      }
+    },
+    {
+      "item_id": "S2A_MSIL2A_20200528T050701_R019_T44QKE_20200911T060201",
+      "datetime": "2020-05-28T05:07:01.024000Z",
+      "cloud_cover": 0.718793,
+      "bands": {
+        "west": {
+          "reference_water_pixels": 9358,
+          "ndwi_water_fraction": 0.0
+        },
+        "centre": {
+          "reference_water_pixels": 15960,
+          "ndwi_water_fraction": 0.7016290726817043
+        },
+        "east": {
+          "reference_water_pixels": 70,
+          "ndwi_water_fraction": 0.9857142857142858
+        }
+      }
+    }
+  ]
+}

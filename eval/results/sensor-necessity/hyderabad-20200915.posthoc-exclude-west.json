@@ -1,0 +1,195 @@
+{
+  "case": "hyderabad-20200915",
+  "rule": {
+    "ndwi_formula": "(B03-B08)/(B03+B08)",
+    "ndwi_strictly_greater_than": 0.048095703125,
+    "vv_linear_gamma0_terrain_max": 0.053388334810733795,
+    "vh_linear_gamma0_terrain_max": 0.00929180160164833,
+    "fusion": "optical AND SAR at the same pixel",
+    "component_connectivity": 8,
+    "minimum_component_pixels_inclusive": 64,
+    "target": "one-pixel inner boundary of filtered fused support"
+  },
+  "rule_source": "data/manifests/cdse/sensor-necessity-results.v1.json",
+  "definitions": {
+    "reference_water": "GSW occurrence >= 90, eroded 3 px",
+    "reference_land": "GSW occurrence == 0, eroded 3 px",
+    "obstructed": "S2 SCL in [3, 8, 9, 10]",
+    "min_stratum_pixels_per_class": 500
+  },
+  "input_sha256": {
+    "s2.tif": "bc3dad409b466045bb34eb140ec708049a781db48a39f2bc05192bfe9c96d3b3",
+    "s1.tif": "76826a62f515bf5b56ed8335a6fb0ded00ea27fc09eafe0498211cf6a55c3c7a",
+    "scl.tif": "7874b3ce4c7f881209acbdf4657b1d5ac274c771cdb2261c81eedeb17f6b805f",
+    "gsw_occurrence.tif": "ae56929f9d958bb1615bed549e50bfd1c3e232279a8235d19e4fb64ff132e9c8"
+  },
+  "post_hoc_excluded_columns": [
+    0,
+    700
+  ],
+  "obstructed_fraction_of_valid": 0.9794314907199617,
+  "strata": {
+    "all": {
+      "optical_only": {
+        "reference_water_pixels": 16253,
+        "reference_land_pixels": 2557507,
+        "tp": 11193,
+        "fn": 5060,
+        "fp": 1025317,
+        "tn": 1532190,
+        "water_recall": 0.688672860395004,
+        "land_specificity": 0.5990951344414698,
+        "balanced_accuracy": 0.6438839974182369,
+        "water_iou": 0.010746277254529221,
+        "evaluable": true
+      },
+      "sar_only": {
+        "reference_water_pixels": 16253,
+        "reference_land_pixels": 2557507,
+        "tp": 15779,
+        "fn": 474,
+        "fp": 3932,
+        "tn": 2553575,
+        "water_recall": 0.9708361533255399,
+        "land_specificity": 0.9984625653028516,
+        "balanced_accuracy": 0.9846493593141957,
+        "water_iou": 0.7817190983403517,
+        "evaluable": true
+      },
+      "fusion_and_frozen": {
+        "reference_water_pixels": 16253,
+        "reference_land_pixels": 2557507,
+        "tp": 10903,
+        "fn": 5350,
+        "fp": 1916,
+        "tn": 2555591,
+        "water_recall": 0.670830000615271,
+        "land_specificity": 0.9992508329400467,
+        "balanced_accuracy": 0.8350404167776588,
+        "water_iou": 0.6000880620837691,
+        "evaluable": true
+      },
+      "fusion_cloud_gated": {
+        "reference_water_pixels": 16253,
+        "reference_land_pixels": 2557507,
+        "tp": 15820,
+        "fn": 433,
+        "fp": 4524,
+        "tn": 2552983,
+        "water_recall": 0.973358764535778,
+        "land_specificity": 0.99823108988558,
+        "balanced_accuracy": 0.985794927210679,
+        "water_iou": 0.7614188766424411,
+        "evaluable": true
+      }
+    },
+    "optically_clear": {
+      "optical_only": {
+        "reference_water_pixels": 2162,
+        "reference_land_pixels": 41835,
+        "tp": 2158,
+        "fn": 4,
+        "fp": 780,
+        "tn": 41055,
+        "water_recall": 0.9981498612395929,
+        "land_specificity": 0.9813553244890642,
+        "balanced_accuracy": 0.9897525928643285,
+        "water_iou": 0.7335146159075459,
+        "evaluable": true
+      },
+      "sar_only": {
+        "reference_water_pixels": 2162,
+        "reference_land_pixels": 41835,
+        "tp": 2117,
+        "fn": 45,
+        "fp": 188,
+        "tn": 41647,
+        "water_recall": 0.9791859389454209,
+        "land_specificity": 0.9955061551332616,
+        "balanced_accuracy": 0.9873460470393413,
+        "water_iou": 0.9008510638297872,
+        "evaluable": true
+      },
+      "fusion_and_frozen": {
+        "reference_water_pixels": 2162,
+        "reference_land_pixels": 41835,
+        "tp": 2113,
+        "fn": 49,
+        "fp": 45,
+        "tn": 41790,
+        "water_recall": 0.9773358001850139,
+        "land_specificity": 0.9989243456435999,
+        "balanced_accuracy": 0.9881300729143069,
+        "water_iou": 0.9574082464884458,
+        "evaluable": true
+      },
+      "fusion_cloud_gated": {
+        "reference_water_pixels": 2162,
+        "reference_land_pixels": 41835,
+        "tp": 2158,
+        "fn": 4,
+        "fp": 780,
+        "tn": 41055,
+        "water_recall": 0.9981498612395929,
+        "land_specificity": 0.9813553244890642,
+        "balanced_accuracy": 0.9897525928643285,
+        "water_iou": 0.7335146159075459,
+        "evaluable": true
+      }
+    },
+    "optically_obstructed": {
+      "optical_only": {
+        "reference_water_pixels": 14091,
+        "reference_land_pixels": 2515672,
+        "tp": 9035,
+        "fn": 5056,
+        "fp": 1024537,
+        "tn": 1491135,
+        "water_recall": 0.6411894116812149,
+        "land_specificity": 0.5927382425053822,
+        "balanced_accuracy": 0.6169638270932986,
+        "water_iou": 0.008698975956742934,
+        "evaluable": true
+      },
+      "sar_only": {
+        "reference_water_pixels": 14091,
+        "reference_land_pixels": 2515672,
+        "tp": 13662,
+        "fn": 429,
+        "fp": 3744,
+        "tn": 2511928,
+        "water_recall": 0.9695550351288056,
+        "land_specificity": 0.9985117296690507,
+        "balanced_accuracy": 0.9840333823989281,
+        "water_iou": 0.7660218671152229,
+        "evaluable": true
+      },
+      "fusion_and_frozen": {
+        "reference_water_pixels": 14091,
+        "reference_land_pixels": 2515672,
+        "tp": 8790,
+        "fn": 5301,
+        "fp": 1871,
+        "tn": 2513801,
+        "water_recall": 0.6238024270811156,
+        "land_specificity": 0.9992562623426265,
+        "balanced_accuracy": 0.811529344711871,
+        "water_iou": 0.5506828718205738,
+        "evaluable": true
+      },
+      "fusion_cloud_gated": {
+        "reference_water_pixels": 14091,
+        "reference_land_pixels": 2515672,
+        "tp": 13662,
+        "fn": 429,
+        "fp": 3744,
+        "tn": 2511928,
+        "water_recall": 0.9695550351288056,
+        "land_specificity": 0.9985117296690507,
+        "balanced_accuracy": 0.9840333823989281,
+        "water_iou": 0.7660218671152229,
+        "evaluable": true
+      }
+    }
+  }
+}

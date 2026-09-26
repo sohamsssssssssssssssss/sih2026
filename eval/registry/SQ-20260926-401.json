@@ -1,0 +1,85 @@
+{
+  "adapter_revision": null,
+  "artifact_paths": [
+    "eval/results/sensor-necessity/hyderabad-20200717.json"
+  ],
+  "command": "python -m eval.sensor_necessity $SATQUERY_DATA/optical-sar/hyderabad-20200717 --out eval/results/sensor-necessity/hyderabad-20200717.json",
+  "dataset": "Planetary Computer sentinel-2-l2a + sentinel-1-rtc + jrc-gsw, bounded Hyderabad AOI",
+  "dataset_checksum": {
+    "gsw_occurrence.tif": "ae56929f9d958bb1615bed549e50bfd1c3e232279a8235d19e4fb64ff132e9c8",
+    "s1.tif": "c105289ba25698f5a8bb2dea31c28b3a7e1319ea0669a908ac41c5055a4a0888",
+    "s2.tif": "614d399630be6e732b4581eb46b9e21c46ea89f2ae6a3aa0c0a819f215dd8e46",
+    "scl.tif": "65a160b42c38a229d131109d020848f8b6136cc5b82d3ea0868310138a1fa9a5"
+  },
+  "dataset_version": "data/manifests/optical-sar/hyderabad-2020.v1.json",
+  "ended_at": "2026-09-26T13:32:10.974140+00:00",
+  "environment": {
+    "machine": "arm64",
+    "packages": {
+      "accelerate": "1.12.0",
+      "bitsandbytes": null,
+      "numpy": "2.4.2",
+      "peft": "0.18.1",
+      "qwen-vl-utils": null,
+      "rasterio": "1.5.1",
+      "torch": "2.10.0",
+      "transformers": "5.1.0"
+    },
+    "platform": "macOS-26.6-arm64-arm-64bit-Mach-O",
+    "processor": "arm",
+    "python": "3.13.0"
+  },
+  "experiment_id": "SQ-20260926-401",
+  "hyperparameters": {
+    "min_stratum_pixels_per_class": 500,
+    "ndwi_strictly_greater_than": 0.048095703125,
+    "obstructed_scl_classes": [
+      3,
+      8,
+      9,
+      10
+    ],
+    "reference_erosion_pixels": 3,
+    "reference_water_min_occurrence": 90,
+    "vh_linear_gamma0_terrain_max": 0.00929180160164833,
+    "vv_linear_gamma0_terrain_max": 0.053388334810733795
+  },
+  "metrics": {
+    "balanced_accuracy": {
+      "all": {
+        "fusion_and_frozen": 0.507498929008689,
+        "fusion_cloud_gated": 0.8198722491613244,
+        "optical_only": 0.4804427320921927,
+        "sar_only": 0.8338602401111437
+      },
+      "optically_clear": {
+        "fusion_and_frozen": 0.6430526186727693,
+        "fusion_cloud_gated": 0.6414548817819166,
+        "optical_only": 0.6414548817819166,
+        "sar_only": 0.9937685156517388
+      },
+      "optically_obstructed": {
+        "fusion_and_frozen": 0.5018439177686813,
+        "fusion_cloud_gated": 0.8273137875005616,
+        "optical_only": 0.46936095643245074,
+        "sar_only": 0.8273137875005616
+      }
+    },
+    "obstructed_fraction_of_valid": 0.8257432945233507,
+    "pair_validation_eligible": true,
+    "provider_confidence": null
+  },
+  "model_id": "frozen CDSE NDWI/VV/VH rule (deterministic, not learned)",
+  "model_revision": "data/manifests/cdse/sensor-necessity-results.v1.json git blob 6ba0288d4ecfb543e50ee0f185404ea01e4129b6",
+  "notes": "Pre-registered primary analysis. Reference assumption violated for the west column band (Osman Sagar drawn down; see SQ-20260926-404), which contains 9,362 of 25,615 reference-water pixels. H1 holds; H2 fails (cloud-gated 0.820 < SAR-only 0.834). Timings are from a deterministic verification re-run whose metrics matched the saved result exactly.",
+  "repository": {
+    "url": "https://github.com/AtharvaPatil466/SatAi",
+    "dirty": true,
+    "sha": "259a1477c85149fc14b053b785a02c1f7b1dda80"
+  },
+  "seed": null,
+  "split": "evaluation-only case (cloudy test); no training or tuning on this AOI",
+  "started_at": "2026-09-26T13:32:08.574195+00:00",
+  "status": "INCONCLUSIVE",
+  "title": "Optical/SAR sensor necessity: hyderabad-20200717 (cloudy test)"
+}

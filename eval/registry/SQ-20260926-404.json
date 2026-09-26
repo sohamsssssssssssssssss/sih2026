@@ -1,0 +1,80 @@
+{
+  "adapter_revision": null,
+  "artifact_paths": [
+    "eval/results/sensor-necessity/reference-water-check-premonsoon-2020.json"
+  ],
+  "command": "python -m scripts.check_reference_water_state $SATQUERY_DATA/optical-sar/hyderabad-20200717 --datetime 2020-05-01/2020-07-10 --max-cloud 5.0 --bands '{\"west\": [0, 700], \"centre\": [700, 1500], \"east\": [1500, 2363]}' > eval/results/sensor-necessity/reference-water-check-premonsoon-2020.json",
+  "dataset": "Planetary Computer sentinel-2-l2a (independent clear-sky scenes) + jrc-gsw",
+  "dataset_checksum": {
+    "gsw_occurrence.tif": "ae56929f9d958bb1615bed549e50bfd1c3e232279a8235d19e4fb64ff132e9c8",
+    "s1.tif": "c105289ba25698f5a8bb2dea31c28b3a7e1319ea0669a908ac41c5055a4a0888",
+    "s2.tif": "614d399630be6e732b4581eb46b9e21c46ea89f2ae6a3aa0c0a819f215dd8e46",
+    "scl.tif": "65a160b42c38a229d131109d020848f8b6136cc5b82d3ea0868310138a1fa9a5"
+  },
+  "dataset_version": "data/manifests/optical-sar/hyderabad-2020.v1.json",
+  "ended_at": "2026-09-26T13:32:34.777116+00:00",
+  "environment": {
+    "machine": "arm64",
+    "packages": {
+      "accelerate": "1.12.0",
+      "bitsandbytes": null,
+      "numpy": "2.4.2",
+      "peft": "0.18.1",
+      "qwen-vl-utils": null,
+      "rasterio": "1.5.1",
+      "torch": "2.10.0",
+      "transformers": "5.1.0"
+    },
+    "platform": "macOS-26.6-arm64-arm-64bit-Mach-O",
+    "processor": "arm",
+    "python": "3.13.0"
+  },
+  "experiment_id": "SQ-20260926-404",
+  "hyperparameters": {
+    "column_bands": {
+      "centre": [
+        700,
+        1500
+      ],
+      "east": [
+        1500,
+        2363
+      ],
+      "west": [
+        0,
+        700
+      ]
+    },
+    "max_tile_cloud_percent": 5.0
+  },
+  "metrics": {
+    "S2A_MSIL2A_20200528T050701_R019_T44QKE_20200911T060201": {
+      "centre": 0.7016290726817043,
+      "east": 0.9857142857142858,
+      "west": 0.0
+    },
+    "S2B_MSIL2A_20200503T050649_R019_T44QKE_20200920T085138": {
+      "centre": 0.9997493734335839,
+      "east": 0.7610921501706485,
+      "west": 0.0
+    },
+    "S2B_MSIL2A_20200523T050659_R019_T44QKE_20200910T171148": {
+      "centre": 0.8459899749373434,
+      "east": 0.9965870307167235,
+      "west": 0.0
+    }
+  },
+  "model_id": "NDWI > frozen threshold on SCL-unobstructed reference-water pixels",
+  "model_revision": "data/manifests/cdse/sensor-necessity-results.v1.json git blob 6ba0288d4ecfb543e50ee0f185404ea01e4129b6",
+  "notes": "Independent clear-sky S2: 0% of west-band reference-water pixels are water on 2020-05-03/23/28; centre 70-100%, east 76-100%.",
+  "repository": {
+    "url": "https://github.com/AtharvaPatil466/SatAi",
+    "dirty": true,
+    "sha": "259a1477c85149fc14b053b785a02c1f7b1dda80"
+  },
+  "seed": null,
+  "split": "reference audit; not a model evaluation",
+  "started_at": "2026-09-26T13:32:15.354209+00:00",
+  "status": "PASSED",
+  "title": "GSW permanent-water reference validity check, S2 2020-05-01/2020-07-10"
+}

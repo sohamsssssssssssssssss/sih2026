@@ -1,0 +1,69 @@
+{
+  "adapter_revision": null,
+  "artifact_paths": [],
+  "command": "curl -r range probes of archive head/tail and a 64 MiB body range (see docs/research/bigearthnet-acquisition-strategy.md)",
+  "dataset": "BigEarthNet v2.0 S1/S2 archives (Zenodo 10891137)",
+  "dataset_checksum": {
+    "S1_md5": "a55eaa2cdf6a917e296bd6601ec1e348",
+    "S2_md5": "2245ed2d1a93f6ce637d839bc856396e"
+  },
+  "dataset_version": "2.0.0",
+  "ended_at": "2026-09-26T13:47:02.510886+00:00",
+  "environment": {
+    "machine": "arm64",
+    "packages": {
+      "accelerate": "1.12.0",
+      "bitsandbytes": null,
+      "numpy": "2.4.2",
+      "peft": "0.18.1",
+      "qwen-vl-utils": null,
+      "rasterio": "1.5.1",
+      "torch": "2.10.0",
+      "transformers": "5.1.0"
+    },
+    "platform": "macOS-26.6-arm64-arm-64bit-Mach-O",
+    "processor": "arm",
+    "python": "3.13.0"
+  },
+  "experiment_id": "SQ-20260926-412",
+  "hyperparameters": {
+    "sample_range_bytes": 67108864
+  },
+  "metrics": {
+    "BigEarthNet-S1.tar.zst": {
+      "compressed_bytes": 54439153171,
+      "frame_header_descriptor": "c4",
+      "last4_hex": "80d5b294",
+      "seekable_zstd_footer": false,
+      "single_frame_content_size": 65833062400,
+      "zstd_magic": "28b52ffd"
+    },
+    "BigEarthNet-S2.tar.zst": {
+      "compressed_bytes": 63251710377,
+      "frame_header_descriptor": "c4",
+      "last4_hex": "ea0c0a20",
+      "seekable_zstd_footer": false,
+      "single_frame_content_size": 102406983680,
+      "zstd_magic": "28b52ffd"
+    },
+    "bandwidth_sample": {
+      "bytes": 67108864,
+      "bytes_per_second": 770388.3113251214,
+      "seconds": 87.110439
+    },
+    "full_transfer_hours_at_sample_rate": 42.435621180283434
+  },
+  "model_id": null,
+  "model_revision": null,
+  "notes": "Transferred ~64 MiB plus a few bytes; no archive stored. Bandwidth is one sample on this network at this time.",
+  "repository": {
+    "url": "https://github.com/AtharvaPatil466/SatAi",
+    "dirty": true,
+    "sha": "2986909dc8093b01f83a34e037fdda6bb121c49d"
+  },
+  "seed": null,
+  "split": "n/a (access probe)",
+  "started_at": "2026-09-26T13:45:33.326030+00:00",
+  "status": "PASSED",
+  "title": "BigEarthNet v2 archive random-access and bandwidth probe (Zenodo)"
+}

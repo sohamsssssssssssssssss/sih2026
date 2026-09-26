@@ -1,0 +1,50 @@
+{
+  "adapter_revision": null,
+  "artifact_paths": [
+    "data/manifests/bigearthnet/pc-availability.v1.json"
+  ],
+  "command": "python -m scripts.probe_pc_bigearthnet_availability",
+  "dataset": "Planetary Computer sentinel-2-l2a + sentinel-1-rtc STAC",
+  "dataset_checksum": {
+    "pilot_manifest_sha256": "4bd30aef67b97f100d2076604cde98b010722cd51d92501ea5a54153bc051541"
+  },
+  "dataset_version": "live catalogue at run time",
+  "ended_at": "2026-09-26T13:45:33.291766+00:00",
+  "environment": {
+    "machine": "arm64",
+    "packages": {
+      "accelerate": "1.12.0",
+      "bitsandbytes": null,
+      "numpy": "2.4.2",
+      "peft": "0.18.1",
+      "qwen-vl-utils": null,
+      "rasterio": "1.5.1",
+      "torch": "2.10.0",
+      "transformers": "5.1.0"
+    },
+    "platform": "macOS-26.6-arm64-arm-64bit-Mach-O",
+    "processor": "arm",
+    "python": "3.13.0"
+  },
+  "experiment_id": "SQ-20260926-411",
+  "hyperparameters": {},
+  "metrics": {
+    "both_available": 98,
+    "pairs": 100,
+    "s1_available": 98,
+    "s2_available": 100
+  },
+  "model_id": null,
+  "model_revision": null,
+  "notes": "Availability of the same acquisitions, not of BigEarthNet pixels; processing differs (see caveat in artifact).",
+  "repository": {
+    "url": "https://github.com/AtharvaPatil466/SatAi",
+    "dirty": true,
+    "sha": "2986909dc8093b01f83a34e037fdda6bb121c49d"
+  },
+  "seed": null,
+  "split": "all 100 pilot pairs",
+  "started_at": "2026-09-26T13:44:47.861770+00:00",
+  "status": "PASSED",
+  "title": "Planetary Computer availability of pilot source products (metadata only)"
+}

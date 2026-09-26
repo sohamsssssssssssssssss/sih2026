@@ -1,0 +1,297 @@
+{
+  "schema_version": "1.0",
+  "statement": "bounded co-gridded S1/S2 cases with independent GSW reference; rasters are external and not committed",
+  "roles": {
+    "hyderabad-20200717": "cloudy test",
+    "hyderabad-20200915": "cloudy test",
+    "hyderabad-20201114": "clear-sky control"
+  },
+  "acquisition_command": "python scripts/acquire_pc_s1s2_case.py --s2-id <S2> --s1-id <S1> --bbox 78.28 17.30 78.50 17.45 --out <dir>",
+  "cases": [
+    {
+      "case_id": "hyderabad-20200717",
+      "local_path": "$SATQUERY_DATA/optical-sar/hyderabad-20200717/",
+      "schema_version": "1.0",
+      "source": "https://planetarycomputer.microsoft.com/api/stac/v1",
+      "retrieved_at": "2026-09-26T08:57:12.025105+00:00",
+      "requested_bbox_lonlat": [
+        78.28,
+        17.3,
+        78.5,
+        17.45
+      ],
+      "grid": {
+        "crs": "EPSG:32644",
+        "transform": [
+          10.0,
+          0.0,
+          210840.0,
+          0.0,
+          -10.0,
+          1931400.0
+        ],
+        "width": 2363,
+        "height": 1694,
+        "definition": "native S2 10 m grid of the selected tile, snapped outward around the bbox"
+      },
+      "s2": {
+        "item_id": "S2A_MSIL2A_20200717T050701_R019_T44QKE_20200816T104934",
+        "collection": "sentinel-2-l2a",
+        "datetime": "2020-07-17T05:07:01.024000Z",
+        "product_uri": "S2A_MSIL2A_20200717T050701_N0212_R019_T44QKE_20200816T104934.SAFE",
+        "mgrs_tile": "44QKE",
+        "processing_baseline": "02.12",
+        "dn_offset_applied": 0.0,
+        "reflectance_scale": 0.0001,
+        "tile_cloud_cover_percent": 48.449213,
+        "assets": {
+          "B02": "https://sentinel2l2a01.blob.core.windows.net/sentinel2-l2/44/Q/KE/2020/07/17/S2A_MSIL2A_20200717T050701_N0212_R019_T44QKE_20200816T104934.SAFE/GRANULE/L2A_T44QKE_A026471_20200717T051132/IMG_DATA/R10m/T44QKE_20200717T050701_B02_10m.tif",
+          "B03": "https://sentinel2l2a01.blob.core.windows.net/sentinel2-l2/44/Q/KE/2020/07/17/S2A_MSIL2A_20200717T050701_N0212_R019_T44QKE_20200816T104934.SAFE/GRANULE/L2A_T44QKE_A026471_20200717T051132/IMG_DATA/R10m/T44QKE_20200717T050701_B03_10m.tif",
+          "B04": "https://sentinel2l2a01.blob.core.windows.net/sentinel2-l2/44/Q/KE/2020/07/17/S2A_MSIL2A_20200717T050701_N0212_R019_T44QKE_20200816T104934.SAFE/GRANULE/L2A_T44QKE_A026471_20200717T051132/IMG_DATA/R10m/T44QKE_20200717T050701_B04_10m.tif",
+          "B08": "https://sentinel2l2a01.blob.core.windows.net/sentinel2-l2/44/Q/KE/2020/07/17/S2A_MSIL2A_20200717T050701_N0212_R019_T44QKE_20200816T104934.SAFE/GRANULE/L2A_T44QKE_A026471_20200717T051132/IMG_DATA/R10m/T44QKE_20200717T050701_B08_10m.tif",
+          "SCL": "https://sentinel2l2a01.blob.core.windows.net/sentinel2-l2/44/Q/KE/2020/07/17/S2A_MSIL2A_20200717T050701_N0212_R019_T44QKE_20200816T104934.SAFE/GRANULE/L2A_T44QKE_A026471_20200717T051132/IMG_DATA/R20m/T44QKE_20200717T050701_SCL_20m.tif"
+        },
+        "resampling": "none for B02/B03/B04/B08; nearest 20 m -> 10 m for SCL",
+        "dataMask": "1 where all four DN > 0; clouds are NOT masked (same semantics as CDSE dataMask)",
+        "license": "Copernicus Sentinel data terms (collection license 'proprietary' on Planetary Computer)"
+      },
+      "s1": {
+        "item_id": "S1A_IW_GRDH_1SDV_20200717T003854_20200717T003919_033487_03E166_rtc",
+        "collection": "sentinel-1-rtc",
+        "datetime": "2020-07-17T00:39:07.021981Z",
+        "orbit_state": "descending",
+        "relative_orbit": 165,
+        "polarizations": [
+          "VV",
+          "VH"
+        ],
+        "instrument_mode": "IW",
+        "units": "linear gamma0 terrain-corrected backscatter (Planetary Computer RTC)",
+        "assets": {
+          "vv": "https://sentinel1euwestrtc.blob.core.windows.net/sentinel1-grd-rtc/GRD/2020/7/17/IW/DV/S1A_IW_GRDH_1SDV_20200717T003854_20200717T003919_033487_03E166_2916/measurement/iw-vv.rtc.tiff",
+          "vh": "https://sentinel1euwestrtc.blob.core.windows.net/sentinel1-grd-rtc/GRD/2020/7/17/IW/DV/S1A_IW_GRDH_1SDV_20200717T003854_20200717T003919_033487_03E166_2916/measurement/iw-vh.rtc.tiff"
+        },
+        "resampling": "windowed read on identical grid; no resampling",
+        "license": "CC-BY-4.0 (Planetary Computer sentinel-1-rtc collection)"
+      },
+      "gsw": {
+        "item_id": "70E_20Nv1_3_2020",
+        "collection": "jrc-gsw",
+        "asset": "https://ai4edataeuwest.blob.core.windows.net/jrcglobalwater/occurrence/occurrence_70E_20Nv1_3_2020cog.tif",
+        "units": "percent of valid Landsat observations 1984-2020 classified as water; 255 nodata",
+        "resampling": "nearest EPSG:4326 0.00025 deg -> S2 grid",
+        "license": "JRC Global Surface Water, Pekel et al. 2016, Copernicus programme; attribution required"
+      },
+      "temporal_separation_seconds": 16074.002019,
+      "scl_note": "SCL is retained unmodified; interpretation happens in eval/sensor_necessity.py",
+      "files": {
+        "s2.tif": {
+          "sha256": "614d399630be6e732b4581eb46b9e21c46ea89f2ae6a3aa0c0a819f215dd8e46",
+          "size_bytes": 41473662
+        },
+        "s1.tif": {
+          "sha256": "c105289ba25698f5a8bb2dea31c28b3a7e1319ea0669a908ac41c5055a4a0888",
+          "size_bytes": 32207113
+        },
+        "scl.tif": {
+          "sha256": "65a160b42c38a229d131109d020848f8b6136cc5b82d3ea0868310138a1fa9a5",
+          "size_bytes": 238732
+        },
+        "gsw_occurrence.tif": {
+          "sha256": "ae56929f9d958bb1615bed549e50bfd1c3e232279a8235d19e4fb64ff132e9c8",
+          "size_bytes": 167371
+        }
+      }
+    },
+    {
+      "case_id": "hyderabad-20200915",
+      "local_path": "$SATQUERY_DATA/optical-sar/hyderabad-20200915/",
+      "schema_version": "1.0",
+      "source": "https://planetarycomputer.microsoft.com/api/stac/v1",
+      "retrieved_at": "2026-09-26T08:59:47.948354+00:00",
+      "requested_bbox_lonlat": [
+        78.28,
+        17.3,
+        78.5,
+        17.45
+      ],
+      "grid": {
+        "crs": "EPSG:32644",
+        "transform": [
+          10.0,
+          0.0,
+          210840.0,
+          0.0,
+          -10.0,
+          1931400.0
+        ],
+        "width": 2363,
+        "height": 1694,
+        "definition": "native S2 10 m grid of the selected tile, snapped outward around the bbox"
+      },
+      "s2": {
+        "item_id": "S2A_MSIL2A_20200915T050701_R019_T44QKE_20200918T110717",
+        "collection": "sentinel-2-l2a",
+        "datetime": "2020-09-15T05:07:01.024000Z",
+        "product_uri": "S2A_MSIL2A_20200915T050701_N0212_R019_T44QKE_20200918T110717.SAFE",
+        "mgrs_tile": "44QKE",
+        "processing_baseline": "02.12",
+        "dn_offset_applied": 0.0,
+        "reflectance_scale": 0.0001,
+        "tile_cloud_cover_percent": 91.456403,
+        "assets": {
+          "B02": "https://sentinel2l2a01.blob.core.windows.net/sentinel2-l2/44/Q/KE/2020/09/15/S2A_MSIL2A_20200915T050701_N0212_R019_T44QKE_20200918T110717.SAFE/GRANULE/L2A_T44QKE_A027329_20200915T051345/IMG_DATA/R10m/T44QKE_20200915T050701_B02_10m.tif",
+          "B03": "https://sentinel2l2a01.blob.core.windows.net/sentinel2-l2/44/Q/KE/2020/09/15/S2A_MSIL2A_20200915T050701_N0212_R019_T44QKE_20200918T110717.SAFE/GRANULE/L2A_T44QKE_A027329_20200915T051345/IMG_DATA/R10m/T44QKE_20200915T050701_B03_10m.tif",
+          "B04": "https://sentinel2l2a01.blob.core.windows.net/sentinel2-l2/44/Q/KE/2020/09/15/S2A_MSIL2A_20200915T050701_N0212_R019_T44QKE_20200918T110717.SAFE/GRANULE/L2A_T44QKE_A027329_20200915T051345/IMG_DATA/R10m/T44QKE_20200915T050701_B04_10m.tif",
+          "B08": "https://sentinel2l2a01.blob.core.windows.net/sentinel2-l2/44/Q/KE/2020/09/15/S2A_MSIL2A_20200915T050701_N0212_R019_T44QKE_20200918T110717.SAFE/GRANULE/L2A_T44QKE_A027329_20200915T051345/IMG_DATA/R10m/T44QKE_20200915T050701_B08_10m.tif",
+          "SCL": "https://sentinel2l2a01.blob.core.windows.net/sentinel2-l2/44/Q/KE/2020/09/15/S2A_MSIL2A_20200915T050701_N0212_R019_T44QKE_20200918T110717.SAFE/GRANULE/L2A_T44QKE_A027329_20200915T051345/IMG_DATA/R20m/T44QKE_20200915T050701_SCL_20m.tif"
+        },
+        "resampling": "none for B02/B03/B04/B08; nearest 20 m -> 10 m for SCL",
+        "dataMask": "1 where all four DN > 0; clouds are NOT masked (same semantics as CDSE dataMask)",
+        "license": "Copernicus Sentinel data terms (collection license 'proprietary' on Planetary Computer)"
+      },
+      "s1": {
+        "item_id": "S1A_IW_GRDH_1SDV_20200915T003857_20200915T003922_034362_03FEE7_rtc",
+        "collection": "sentinel-1-rtc",
+        "datetime": "2020-09-15T00:39:10.316322Z",
+        "orbit_state": "descending",
+        "relative_orbit": 165,
+        "polarizations": [
+          "VV",
+          "VH"
+        ],
+        "instrument_mode": "IW",
+        "units": "linear gamma0 terrain-corrected backscatter (Planetary Computer RTC)",
+        "assets": {
+          "vv": "https://sentinel1euwestrtc.blob.core.windows.net/sentinel1-grd-rtc/GRD/2020/9/15/IW/DV/S1A_IW_GRDH_1SDV_20200915T003857_20200915T003922_034362_03FEE7_1111/measurement/iw-vv.rtc.tiff",
+          "vh": "https://sentinel1euwestrtc.blob.core.windows.net/sentinel1-grd-rtc/GRD/2020/9/15/IW/DV/S1A_IW_GRDH_1SDV_20200915T003857_20200915T003922_034362_03FEE7_1111/measurement/iw-vh.rtc.tiff"
+        },
+        "resampling": "windowed read on identical grid; no resampling",
+        "license": "CC-BY-4.0 (Planetary Computer sentinel-1-rtc collection)"
+      },
+      "gsw": {
+        "item_id": "70E_20Nv1_3_2020",
+        "collection": "jrc-gsw",
+        "asset": "https://ai4edataeuwest.blob.core.windows.net/jrcglobalwater/occurrence/occurrence_70E_20Nv1_3_2020cog.tif",
+        "units": "percent of valid Landsat observations 1984-2020 classified as water; 255 nodata",
+        "resampling": "nearest EPSG:4326 0.00025 deg -> S2 grid",
+        "license": "JRC Global Surface Water, Pekel et al. 2016, Copernicus programme; attribution required"
+      },
+      "temporal_separation_seconds": 16070.707678,
+      "scl_note": "SCL is retained unmodified; interpretation happens in eval/sensor_necessity.py",
+      "files": {
+        "s2.tif": {
+          "sha256": "bc3dad409b466045bb34eb140ec708049a781db48a39f2bc05192bfe9c96d3b3",
+          "size_bytes": 38782702
+        },
+        "s1.tif": {
+          "sha256": "76826a62f515bf5b56ed8335a6fb0ded00ea27fc09eafe0498211cf6a55c3c7a",
+          "size_bytes": 32231361
+        },
+        "scl.tif": {
+          "sha256": "7874b3ce4c7f881209acbdf4657b1d5ac274c771cdb2261c81eedeb17f6b805f",
+          "size_bytes": 112762
+        },
+        "gsw_occurrence.tif": {
+          "sha256": "ae56929f9d958bb1615bed549e50bfd1c3e232279a8235d19e4fb64ff132e9c8",
+          "size_bytes": 167371
+        }
+      }
+    },
+    {
+      "case_id": "hyderabad-20201114",
+      "local_path": "$SATQUERY_DATA/optical-sar/hyderabad-20201114/",
+      "schema_version": "1.0",
+      "source": "https://planetarycomputer.microsoft.com/api/stac/v1",
+      "retrieved_at": "2026-09-26T09:02:40.077054+00:00",
+      "requested_bbox_lonlat": [
+        78.28,
+        17.3,
+        78.5,
+        17.45
+      ],
+      "grid": {
+        "crs": "EPSG:32644",
+        "transform": [
+          10.0,
+          0.0,
+          210840.0,
+          0.0,
+          -10.0,
+          1931400.0
+        ],
+        "width": 2363,
+        "height": 1694,
+        "definition": "native S2 10 m grid of the selected tile, snapped outward around the bbox"
+      },
+      "s2": {
+        "item_id": "S2A_MSIL2A_20201114T051051_R019_T44QKE_20201116T113004",
+        "collection": "sentinel-2-l2a",
+        "datetime": "2020-11-14T05:10:51.024000Z",
+        "product_uri": "S2A_MSIL2A_20201114T051051_N0212_R019_T44QKE_20201116T113004.SAFE",
+        "mgrs_tile": "44QKE",
+        "processing_baseline": "02.12",
+        "dn_offset_applied": 0.0,
+        "reflectance_scale": 0.0001,
+        "tile_cloud_cover_percent": 2.532113,
+        "assets": {
+          "B02": "https://sentinel2l2a01.blob.core.windows.net/sentinel2-l2/44/Q/KE/2020/11/14/S2A_MSIL2A_20201114T051051_N0212_R019_T44QKE_20201116T113004.SAFE/GRANULE/L2A_T44QKE_A028187_20201114T051811/IMG_DATA/R10m/T44QKE_20201114T051051_B02_10m.tif",
+          "B03": "https://sentinel2l2a01.blob.core.windows.net/sentinel2-l2/44/Q/KE/2020/11/14/S2A_MSIL2A_20201114T051051_N0212_R019_T44QKE_20201116T113004.SAFE/GRANULE/L2A_T44QKE_A028187_20201114T051811/IMG_DATA/R10m/T44QKE_20201114T051051_B03_10m.tif",
+          "B04": "https://sentinel2l2a01.blob.core.windows.net/sentinel2-l2/44/Q/KE/2020/11/14/S2A_MSIL2A_20201114T051051_N0212_R019_T44QKE_20201116T113004.SAFE/GRANULE/L2A_T44QKE_A028187_20201114T051811/IMG_DATA/R10m/T44QKE_20201114T051051_B04_10m.tif",
+          "B08": "https://sentinel2l2a01.blob.core.windows.net/sentinel2-l2/44/Q/KE/2020/11/14/S2A_MSIL2A_20201114T051051_N0212_R019_T44QKE_20201116T113004.SAFE/GRANULE/L2A_T44QKE_A028187_20201114T051811/IMG_DATA/R10m/T44QKE_20201114T051051_B08_10m.tif",
+          "SCL": "https://sentinel2l2a01.blob.core.windows.net/sentinel2-l2/44/Q/KE/2020/11/14/S2A_MSIL2A_20201114T051051_N0212_R019_T44QKE_20201116T113004.SAFE/GRANULE/L2A_T44QKE_A028187_20201114T051811/IMG_DATA/R20m/T44QKE_20201114T051051_SCL_20m.tif"
+        },
+        "resampling": "none for B02/B03/B04/B08; nearest 20 m -> 10 m for SCL",
+        "dataMask": "1 where all four DN > 0; clouds are NOT masked (same semantics as CDSE dataMask)",
+        "license": "Copernicus Sentinel data terms (collection license 'proprietary' on Planetary Computer)"
+      },
+      "s1": {
+        "item_id": "S1A_IW_GRDH_1SDV_20201114T003858_20201114T003923_035237_041D68_rtc",
+        "collection": "sentinel-1-rtc",
+        "datetime": "2020-11-14T00:39:10.731315Z",
+        "orbit_state": "descending",
+        "relative_orbit": 165,
+        "polarizations": [
+          "VV",
+          "VH"
+        ],
+        "instrument_mode": "IW",
+        "units": "linear gamma0 terrain-corrected backscatter (Planetary Computer RTC)",
+        "assets": {
+          "vv": "https://sentinel1euwestrtc.blob.core.windows.net/sentinel1-grd-rtc/GRD/2020/11/14/IW/DV/S1A_IW_GRDH_1SDV_20201114T003858_20201114T003923_035237_041D68_E8A0/measurement/iw-vv.rtc.tiff",
+          "vh": "https://sentinel1euwestrtc.blob.core.windows.net/sentinel1-grd-rtc/GRD/2020/11/14/IW/DV/S1A_IW_GRDH_1SDV_20201114T003858_20201114T003923_035237_041D68_E8A0/measurement/iw-vh.rtc.tiff"
+        },
+        "resampling": "windowed read on identical grid; no resampling",
+        "license": "CC-BY-4.0 (Planetary Computer sentinel-1-rtc collection)"
+      },
+      "gsw": {
+        "item_id": "70E_20Nv1_3_2020",
+        "collection": "jrc-gsw",
+        "asset": "https://ai4edataeuwest.blob.core.windows.net/jrcglobalwater/occurrence/occurrence_70E_20Nv1_3_2020cog.tif",
+        "units": "percent of valid Landsat observations 1984-2020 classified as water; 255 nodata",
+        "resampling": "nearest EPSG:4326 0.00025 deg -> S2 grid",
+        "license": "JRC Global Surface Water, Pekel et al. 2016, Copernicus programme; attribution required"
+      },
+      "temporal_separation_seconds": 16300.292685,
+      "scl_note": "SCL is retained unmodified; interpretation happens in eval/sensor_necessity.py",
+      "files": {
+        "s2.tif": {
+          "sha256": "9b64a2b1e57a96f75bf5e342d2a89c284a523b7ab26f93b11ae4b724e57d9048",
+          "size_bytes": 39429055
+        },
+        "s1.tif": {
+          "sha256": "bfe2ea3fbc137b46fa3f41cda45f75d09818bee97ac2133f9fe0093ca8198bd0",
+          "size_bytes": 32304151
+        },
+        "scl.tif": {
+          "sha256": "b88c9e0abd37cdd96154c54c79185255ad84e8362a9946870139b6f9a878262b",
+          "size_bytes": 275808
+        },
+        "gsw_occurrence.tif": {
+          "sha256": "ae56929f9d958bb1615bed549e50bfd1c3e232279a8235d19e4fb64ff132e9c8",
+          "size_bytes": 167371
+        }
+      }
+    }
+  ]
+}
