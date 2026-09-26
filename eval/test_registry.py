@@ -2,7 +2,7 @@ import json
 
 import pytest
 
-from eval.registry import REQUIRED_FIELDS, write_record
+from eval.registry import REGISTRY_DIR, REQUIRED_FIELDS, write_record
 
 
 def _record(**overrides):
@@ -53,3 +53,13 @@ def test_caller_supplied_environment_is_preserved(tmp_path):
     path = write_record(_record(environment=remote), registry_dir=tmp_path)
 
     assert json.loads(path.read_text())["environment"] == remote
+
+
+def test_committed_records_have_explicit_repository_provenance():
+    for path in REGISTRY_DIR.glob("SQ-*.json"):
+        record = json.loads(path.read_text())
+        assert set(REQUIRED_FIELDS) <= record.keys(), path
+        assert record["repository"]["url"] in {
+            "https://github.com/AtharvaPatil466/SatAi",
+            "https://github.com/sohamsssssssssssssssss/sih2026",
+        }, path
