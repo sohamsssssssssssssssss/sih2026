@@ -9,7 +9,7 @@ import torch
 from PIL import Image
 
 from scripts.prepare_rsvqa_training_manifest import build_manifest
-from scripts.train_remote_sensing_adapter import run
+from scripts.train_remote_sensing_adapter import parse_args, run
 from training.remote_sensing import (
     ANSWER_INSTRUCTION,
     QwenVQACollator,
@@ -18,6 +18,7 @@ from training.remote_sensing import (
     load_training_components,
     messages,
     select_examples,
+    sha256_file,
 )
 
 
@@ -301,4 +302,49 @@ def test_training_entrypoint_rejects_evaluation_split(tmp_path: Path) -> None:
         split="validation",
     )
     with pytest.raises(ValueError, match="only permits the train split"):
+        run(config, dry_run=True)
+
+
+def test_training_rejects_unexpected_manifest_before_model_load(tmp_path: Path) -> None:
+    dataset = manifest(
+        tmp_path / "samples.jsonl",
+        [record(image(tmp_path / "scene.png"), "one")],
+    )
+    config = TrainingConfig(
+        model_path=tmp_path / "model",
+        dataset_manifest=dataset,
+        image_root=None,
+        output_dir=tmp_path / "out",
+        expected_manifest_sha256="0" * 64,
+    )
+
+    with pytest.raises(ValueError, match="Dataset manifest SHA-256 mismatch"):
+        run(config, component_loader=lambda _: pytest.fail("model loaded before manifest check"))
+    assert not config.output_dir.exists()
+
+    config, _ = parse_args([
+        "--model-path", str(tmp_path / "model"),
+        "--dataset-manifest", str(dataset),
+        "--output-dir", str(tmp_path / "out"),
+        "--expected-manifest-sha256", sha256_file(dataset),
+    ])
+    assert config.expected_manifest_sha256 == sha256_file(dataset)
+    (tmp_path / "model").mkdir()
+    assert run(
+        config,
+        dry_run=True,
+        component_loader=lambda _: (FakeModel(), object()),
+        collator_factory=lambda *_: (lambda _: {"input_ids": torch.tensor([[1]])}),
+    )["status"] == "dry_run_passed"
+
+
+def test_training_rejects_invalid_expected_digest(tmp_path: Path) -> None:
+    config = TrainingConfig(
+        model_path=tmp_path / "model",
+        dataset_manifest=tmp_path / "samples.jsonl",
+        image_root=None,
+        output_dir=tmp_path / "out",
+        expected_manifest_sha256="invalid",
+    )
+    with pytest.raises(ValueError, match="lowercase SHA-256"):
         run(config, dry_run=True)

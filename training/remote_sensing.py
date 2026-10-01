@@ -32,6 +32,7 @@ class TrainingConfig:
     dataset_manifest: Path
     image_root: Path | None
     output_dir: Path
+    expected_manifest_sha256: str | None = None
     split: str = "train"
     seed: int = 17
     max_samples: int = 512
@@ -49,6 +50,11 @@ class TrainingConfig:
     lora_target_modules: tuple[str, ...] = ("q_proj", "k_proj", "v_proj", "o_proj")
 
     def validate(self) -> None:
+        if self.expected_manifest_sha256 is not None and (
+            len(self.expected_manifest_sha256) != 64
+            or any(char not in "0123456789abcdef" for char in self.expected_manifest_sha256)
+        ):
+            raise ValueError("expected_manifest_sha256 must be a lowercase SHA-256 digest")
         if self.split not in SPLITS:
             raise ValueError(f"split must be one of {sorted(SPLITS)}")
         if self.max_samples < 1 or self.image_size < 28 or self.image_size % 28:

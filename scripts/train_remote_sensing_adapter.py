@@ -91,6 +91,10 @@ def run(
     config.validate()
     if config.split != "train":
         raise ValueError("Training entry point only permits the train split")
+    if config.expected_manifest_sha256 is not None:
+        actual = sha256_file(config.dataset_manifest)
+        if actual != config.expected_manifest_sha256:
+            raise ValueError(f"Dataset manifest SHA-256 mismatch: expected {config.expected_manifest_sha256}, got {actual}")
     all_examples = load_manifest(config.dataset_manifest, config.image_root)
     examples = select_examples(all_examples, config.split, config.max_samples, config.seed)
     model, processor = (component_loader or load_training_components)(config)
@@ -158,6 +162,7 @@ def parse_args(argv: list[str] | None = None) -> tuple[TrainingConfig, bool]:
     parser = argparse.ArgumentParser()
     parser.add_argument("--model-path", required=True, type=Path)
     parser.add_argument("--dataset-manifest", required=True, type=Path)
+    parser.add_argument("--expected-manifest-sha256")
     parser.add_argument("--image-root", type=Path)
     parser.add_argument("--output-dir", required=True, type=Path)
     parser.add_argument("--split", choices=("train",), default="train")
@@ -180,6 +185,7 @@ def parse_args(argv: list[str] | None = None) -> tuple[TrainingConfig, bool]:
     config = TrainingConfig(
         model_path=args.model_path,
         dataset_manifest=args.dataset_manifest,
+        expected_manifest_sha256=args.expected_manifest_sha256,
         image_root=args.image_root,
         output_dir=args.output_dir,
         split=args.split,
