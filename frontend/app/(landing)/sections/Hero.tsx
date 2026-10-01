@@ -12,8 +12,7 @@ import {
   Pause, 
   ChevronDown,
   Crosshair,
-  Satellite,
-  Zap
+  Satellite
 } from "lucide-react";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -347,13 +346,8 @@ export default function Hero() {
             </div>
           </div>
 
-          {/* Performance Status & Controls */}
+          {/* Playback Control */}
           <div className="flex items-center gap-2">
-            <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs">
-              <Zap className="w-3 h-3" />
-              <span>GPU CANVAS 60FPS</span>
-            </div>
-
             <button
               onClick={toggleAutoPlay}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/20 border border-white/10 text-white text-xs font-sans transition-colors cursor-pointer"

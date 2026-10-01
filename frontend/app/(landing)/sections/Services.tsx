@@ -17,6 +17,8 @@ const services = [
 
 export default function Services() {
   const sectionRef = useRef<HTMLElement>(null);
+  const typeRegionRef = useRef<HTMLDivElement>(null);
+  const decorativeTypeRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -43,16 +45,23 @@ export default function Services() {
           scrollTrigger: { trigger: ".services-list", start: "top 80%" },
         }
       );
-      // Parallax scrolling background text
-      ScrollTrigger.create({
-        trigger: sectionRef.current,
-        start: "top bottom",
-        end: "bottom top",
-        scrub: 1,
-        onUpdate: (self) => {
-          gsap.set(".services-bg-text", { x: self.progress * -250 });
-        },
-      });
+      gsap.fromTo(
+        decorativeTypeRef.current,
+        { xPercent: 0, yPercent: 12, scale: 1.03, opacity: 1 },
+        {
+          xPercent: -12,
+          yPercent: -22,
+          scale: 0.88,
+          opacity: 0,
+          ease: "none",
+          scrollTrigger: {
+            trigger: typeRegionRef.current,
+            start: "top 92%",
+            end: "bottom 42%",
+            scrub: 0.8,
+          },
+        }
+      );
     }, sectionRef);
 
     return () => ctx.revert();
@@ -64,12 +73,21 @@ export default function Services() {
       id="services"
       className="relative py-24 lg:py-36 bg-white overflow-hidden"
     >
-      {/* Parallax background text */}
-      <div className="services-bg-text absolute top-1/2 -translate-y-1/2 left-0 text-[18vw] font-black text-gray-100 whitespace-nowrap pointer-events-none select-none uppercase tracking-tighter">
-        SERVICES
+      {/* A dedicated mask keeps the editorial type separate from the content. */}
+      <div
+        ref={typeRegionRef}
+        className="services-type-region relative z-0 h-[clamp(9rem,20vw,22rem)] overflow-hidden"
+        aria-hidden="true"
+      >
+        <div
+          ref={decorativeTypeRef}
+          className="services-bg-text absolute inset-x-0 bottom-0 origin-bottom-left whitespace-nowrap px-6 text-[clamp(6.5rem,18vw,21rem)] font-black uppercase leading-[0.78] tracking-tighter text-gray-100 pointer-events-none select-none will-change-transform lg:px-14"
+        >
+          SERVICES
+        </div>
       </div>
 
-      <div className="relative z-10 px-6 lg:px-14">
+      <div className="relative z-20 bg-white px-6 pt-12 lg:px-14 lg:pt-16">
         <div className="services-header mb-16 lg:mb-20 flex flex-col lg:flex-row lg:justify-between lg:items-start gap-8">
           <div>
             <p className="text-xs text-gray-400 uppercase tracking-[0.3em] mb-3 font-medium">OUR</p>
