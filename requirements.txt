@@ -1,6 +1,8 @@
 streamlit
 pyyaml
 numpy
+pandas
+pyarrow
 torch
 pillow
 rasterio

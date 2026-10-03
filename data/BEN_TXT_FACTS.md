@@ -2,6 +2,9 @@
 
 Reconnaissance of the PS-provided corpus, **verified 2026-09-04**.
 
+Current local layout and indexing instructions: [BIGEARTHNET_PREP.md](BIGEARTHNET_PREP.md).
+The paths and acquisition status below record the earlier reconnaissance.
+
 **Provenance.** Every *corpus statistic* here — counts, cardinalities, ratios,
 formats — was reproduced from the parquet itself, not from the paper. The
 *external* facts are marked as such and were read at their source rather than
