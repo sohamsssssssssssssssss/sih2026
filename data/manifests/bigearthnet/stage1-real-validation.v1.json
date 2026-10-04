@@ -1,0 +1,7150 @@
+{
+  "bands": [
+    "B01",
+    "B02",
+    "B03",
+    "B04",
+    "B05",
+    "B06",
+    "B07",
+    "B08",
+    "B8A",
+    "B09",
+    "B11",
+    "B12"
+  ],
+  "failed_patches": 0,
+  "manifest_sha256": "3e5b1d774125c7b48a9454dbb33e6144aee8d990d8966e830987836159bd83ee",
+  "observations": [
+    {
+      "geo_split": "train",
+      "mgrs_tile": "T34UEG",
+      "output": {
+        "dtype": "float32",
+        "finite": true,
+        "shape": [
+          12,
+          120,
+          120
+        ]
+      },
+      "patch_id": "S2B_MSIL2A_20170930T095019_N9999_R079_T34UEG_04_18",
+      "source": {
+        "B01": {
+          "dimensions": [
+            20,
+            20
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            60.0,
+            60.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B02": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B03": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B04": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B05": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B06": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B07": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B08": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B09": {
+          "dimensions": [
+            20,
+            20
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            60.0,
+            60.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B11": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B12": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B8A": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        }
+      },
+      "status": "ok"
+    },
+    {
+      "geo_split": "train",
+      "mgrs_tile": "T34UEG",
+      "output": {
+        "dtype": "float32",
+        "finite": true,
+        "shape": [
+          12,
+          120,
+          120
+        ]
+      },
+      "patch_id": "S2A_MSIL2A_20180413T095031_N9999_R079_T34UEG_56_65",
+      "source": {
+        "B01": {
+          "dimensions": [
+            20,
+            20
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            60.0,
+            60.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B02": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B03": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B04": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B05": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B06": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B07": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B08": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B09": {
+          "dimensions": [
+            20,
+            20
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            60.0,
+            60.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B11": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B12": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B8A": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        }
+      },
+      "status": "ok"
+    },
+    {
+      "geo_split": "train",
+      "mgrs_tile": "T34UEG",
+      "output": {
+        "dtype": "float32",
+        "finite": true,
+        "shape": [
+          12,
+          120,
+          120
+        ]
+      },
+      "patch_id": "S2A_MSIL2A_20180413T095031_N9999_R079_T34UEG_19_24",
+      "source": {
+        "B01": {
+          "dimensions": [
+            20,
+            20
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            60.0,
+            60.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B02": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B03": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B04": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B05": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B06": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B07": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B08": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B09": {
+          "dimensions": [
+            20,
+            20
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            60.0,
+            60.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B11": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B12": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B8A": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        }
+      },
+      "status": "ok"
+    },
+    {
+      "geo_split": "train",
+      "mgrs_tile": "T34UEG",
+      "output": {
+        "dtype": "float32",
+        "finite": true,
+        "shape": [
+          12,
+          120,
+          120
+        ]
+      },
+      "patch_id": "S2B_MSIL2A_20170930T095019_N9999_R079_T34UEG_27_24",
+      "source": {
+        "B01": {
+          "dimensions": [
+            20,
+            20
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            60.0,
+            60.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B02": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B03": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B04": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B05": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B06": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B07": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B08": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B09": {
+          "dimensions": [
+            20,
+            20
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            60.0,
+            60.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B11": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B12": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B8A": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        }
+      },
+      "status": "ok"
+    },
+    {
+      "geo_split": "train",
+      "mgrs_tile": "T34VDN",
+      "output": {
+        "dtype": "float32",
+        "finite": true,
+        "shape": [
+          12,
+          120,
+          120
+        ]
+      },
+      "patch_id": "S2A_MSIL2A_20180419T101031_N9999_R022_T34VDN_45_76",
+      "source": {
+        "B01": {
+          "dimensions": [
+            20,
+            20
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            60.0,
+            60.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B02": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B03": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B04": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B05": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B06": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B07": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B08": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B09": {
+          "dimensions": [
+            20,
+            20
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            60.0,
+            60.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B11": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B12": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B8A": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        }
+      },
+      "status": "ok"
+    },
+    {
+      "geo_split": "train",
+      "mgrs_tile": "T34VDN",
+      "output": {
+        "dtype": "float32",
+        "finite": true,
+        "shape": [
+          12,
+          120,
+          120
+        ]
+      },
+      "patch_id": "S2B_MSIL2A_20170906T101019_N9999_R022_T34VDN_78_65",
+      "source": {
+        "B01": {
+          "dimensions": [
+            20,
+            20
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            60.0,
+            60.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B02": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B03": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B04": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B05": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B06": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B07": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B08": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B09": {
+          "dimensions": [
+            20,
+            20
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            60.0,
+            60.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B11": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B12": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B8A": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        }
+      },
+      "status": "ok"
+    },
+    {
+      "geo_split": "train",
+      "mgrs_tile": "T34VDN",
+      "output": {
+        "dtype": "float32",
+        "finite": true,
+        "shape": [
+          12,
+          120,
+          120
+        ]
+      },
+      "patch_id": "S2B_MSIL2A_20170906T101019_N9999_R022_T34VDN_71_40",
+      "source": {
+        "B01": {
+          "dimensions": [
+            20,
+            20
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            60.0,
+            60.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B02": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B03": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B04": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B05": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B06": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B07": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B08": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B09": {
+          "dimensions": [
+            20,
+            20
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            60.0,
+            60.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B11": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B12": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B8A": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        }
+      },
+      "status": "ok"
+    },
+    {
+      "geo_split": "train",
+      "mgrs_tile": "T34VDN",
+      "output": {
+        "dtype": "float32",
+        "finite": true,
+        "shape": [
+          12,
+          120,
+          120
+        ]
+      },
+      "patch_id": "S2B_MSIL2A_20170906T101019_N9999_R022_T34VDN_41_66",
+      "source": {
+        "B01": {
+          "dimensions": [
+            20,
+            20
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            60.0,
+            60.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B02": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B03": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B04": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B05": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B06": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B07": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B08": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B09": {
+          "dimensions": [
+            20,
+            20
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            60.0,
+            60.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B11": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B12": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B8A": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        }
+      },
+      "status": "ok"
+    },
+    {
+      "geo_split": "train",
+      "mgrs_tile": "T31UGS",
+      "output": {
+        "dtype": "float32",
+        "finite": true,
+        "shape": [
+          12,
+          120,
+          120
+        ]
+      },
+      "patch_id": "S2A_MSIL2A_20180508T104031_N9999_R008_T31UGS_27_85",
+      "source": {
+        "B01": {
+          "dimensions": [
+            20,
+            20
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            60.0,
+            60.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B02": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B03": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B04": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B05": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B06": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B07": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B08": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B09": {
+          "dimensions": [
+            20,
+            20
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            60.0,
+            60.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B11": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B12": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B8A": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        }
+      },
+      "status": "ok"
+    },
+    {
+      "geo_split": "train",
+      "mgrs_tile": "T31UGS",
+      "output": {
+        "dtype": "float32",
+        "finite": true,
+        "shape": [
+          12,
+          120,
+          120
+        ]
+      },
+      "patch_id": "S2B_MSIL2A_20171015T104009_N9999_R008_T31UGS_07_66",
+      "source": {
+        "B01": {
+          "dimensions": [
+            20,
+            20
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            60.0,
+            60.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B02": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B03": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B04": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B05": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B06": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B07": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B08": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B09": {
+          "dimensions": [
+            20,
+            20
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            60.0,
+            60.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B11": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B12": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B8A": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        }
+      },
+      "status": "ok"
+    },
+    {
+      "geo_split": "train",
+      "mgrs_tile": "T31UGS",
+      "output": {
+        "dtype": "float32",
+        "finite": true,
+        "shape": [
+          12,
+          120,
+          120
+        ]
+      },
+      "patch_id": "S2A_MSIL2A_20180508T104031_N9999_R008_T31UGS_13_80",
+      "source": {
+        "B01": {
+          "dimensions": [
+            20,
+            20
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            60.0,
+            60.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B02": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B03": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B04": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B05": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B06": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B07": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B08": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B09": {
+          "dimensions": [
+            20,
+            20
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            60.0,
+            60.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B11": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B12": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B8A": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        }
+      },
+      "status": "ok"
+    },
+    {
+      "geo_split": "train",
+      "mgrs_tile": "T31UGS",
+      "output": {
+        "dtype": "float32",
+        "finite": true,
+        "shape": [
+          12,
+          120,
+          120
+        ]
+      },
+      "patch_id": "S2B_MSIL2A_20171015T104009_N9999_R008_T31UGS_11_74",
+      "source": {
+        "B01": {
+          "dimensions": [
+            20,
+            20
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            60.0,
+            60.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B02": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B03": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B04": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B05": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B06": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B07": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B08": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B09": {
+          "dimensions": [
+            20,
+            20
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            60.0,
+            60.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B11": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B12": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B8A": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        }
+      },
+      "status": "ok"
+    },
+    {
+      "geo_split": "train",
+      "mgrs_tile": "T34TFN",
+      "output": {
+        "dtype": "float32",
+        "finite": true,
+        "shape": [
+          12,
+          120,
+          120
+        ]
+      },
+      "patch_id": "S2B_MSIL2A_20180509T092029_N9999_R093_T34TFN_04_44",
+      "source": {
+        "B01": {
+          "dimensions": [
+            20,
+            20
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            60.0,
+            60.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B02": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B03": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B04": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B05": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B06": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B07": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B08": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B09": {
+          "dimensions": [
+            20,
+            20
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            60.0,
+            60.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B11": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B12": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B8A": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        }
+      },
+      "status": "ok"
+    },
+    {
+      "geo_split": "train",
+      "mgrs_tile": "T34TFN",
+      "output": {
+        "dtype": "float32",
+        "finite": true,
+        "shape": [
+          12,
+          120,
+          120
+        ]
+      },
+      "patch_id": "S2B_MSIL2A_20170911T092019_N9999_R093_T34TFN_05_14",
+      "source": {
+        "B01": {
+          "dimensions": [
+            20,
+            20
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            60.0,
+            60.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B02": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B03": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B04": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B05": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B06": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B07": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B08": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B09": {
+          "dimensions": [
+            20,
+            20
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            60.0,
+            60.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B11": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B12": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B8A": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        }
+      },
+      "status": "ok"
+    },
+    {
+      "geo_split": "train",
+      "mgrs_tile": "T34TFN",
+      "output": {
+        "dtype": "float32",
+        "finite": true,
+        "shape": [
+          12,
+          120,
+          120
+        ]
+      },
+      "patch_id": "S2B_MSIL2A_20170802T092029_N9999_R093_T34TFN_19_26",
+      "source": {
+        "B01": {
+          "dimensions": [
+            20,
+            20
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            60.0,
+            60.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B02": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B03": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B04": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B05": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B06": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B07": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B08": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B09": {
+          "dimensions": [
+            20,
+            20
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            60.0,
+            60.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B11": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B12": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B8A": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        }
+      },
+      "status": "ok"
+    },
+    {
+      "geo_split": "train",
+      "mgrs_tile": "T34TFN",
+      "output": {
+        "dtype": "float32",
+        "finite": true,
+        "shape": [
+          12,
+          120,
+          120
+        ]
+      },
+      "patch_id": "S2B_MSIL2A_20170802T092029_N9999_R093_T34TFN_32_11",
+      "source": {
+        "B01": {
+          "dimensions": [
+            20,
+            20
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            60.0,
+            60.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B02": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B03": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B04": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B05": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B06": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B07": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B08": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B09": {
+          "dimensions": [
+            20,
+            20
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            60.0,
+            60.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B11": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B12": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B8A": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        }
+      },
+      "status": "ok"
+    },
+    {
+      "geo_split": "eval",
+      "mgrs_tile": "T34TEN",
+      "output": {
+        "dtype": "float32",
+        "finite": true,
+        "shape": [
+          12,
+          120,
+          120
+        ]
+      },
+      "patch_id": "S2A_MSIL2A_20171208T093351_N9999_R136_T34TEN_44_82",
+      "source": {
+        "B01": {
+          "dimensions": [
+            20,
+            20
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            60.0,
+            60.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B02": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B03": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B04": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B05": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B06": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B07": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B08": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B09": {
+          "dimensions": [
+            20,
+            20
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            60.0,
+            60.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B11": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B12": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B8A": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        }
+      },
+      "status": "ok"
+    },
+    {
+      "geo_split": "eval",
+      "mgrs_tile": "T34TEN",
+      "output": {
+        "dtype": "float32",
+        "finite": true,
+        "shape": [
+          12,
+          120,
+          120
+        ]
+      },
+      "patch_id": "S2A_MSIL2A_20171208T093351_N9999_R136_T34TEN_54_25",
+      "source": {
+        "B01": {
+          "dimensions": [
+            20,
+            20
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            60.0,
+            60.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B02": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B03": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B04": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B05": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B06": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B07": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B08": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B09": {
+          "dimensions": [
+            20,
+            20
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            60.0,
+            60.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B11": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B12": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B8A": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        }
+      },
+      "status": "ok"
+    },
+    {
+      "geo_split": "eval",
+      "mgrs_tile": "T34TEN",
+      "output": {
+        "dtype": "float32",
+        "finite": true,
+        "shape": [
+          12,
+          120,
+          120
+        ]
+      },
+      "patch_id": "S2A_MSIL2A_20171208T093351_N9999_R136_T34TEN_60_27",
+      "source": {
+        "B01": {
+          "dimensions": [
+            20,
+            20
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            60.0,
+            60.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B02": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B03": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B04": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B05": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B06": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B07": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B08": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B09": {
+          "dimensions": [
+            20,
+            20
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            60.0,
+            60.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B11": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B12": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B8A": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        }
+      },
+      "status": "ok"
+    },
+    {
+      "geo_split": "eval",
+      "mgrs_tile": "T34TEN",
+      "output": {
+        "dtype": "float32",
+        "finite": true,
+        "shape": [
+          12,
+          120,
+          120
+        ]
+      },
+      "patch_id": "S2A_MSIL2A_20171208T093351_N9999_R136_T34TEN_45_00",
+      "source": {
+        "B01": {
+          "dimensions": [
+            20,
+            20
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            60.0,
+            60.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B02": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B03": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B04": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B05": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B06": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B07": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B08": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B09": {
+          "dimensions": [
+            20,
+            20
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            60.0,
+            60.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B11": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B12": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B8A": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        }
+      },
+      "status": "ok"
+    },
+    {
+      "geo_split": "eval",
+      "mgrs_tile": "T33UUP",
+      "output": {
+        "dtype": "float32",
+        "finite": true,
+        "shape": [
+          12,
+          120,
+          120
+        ]
+      },
+      "patch_id": "S2A_MSIL2A_20170613T101031_N9999_R022_T33UUP_47_44",
+      "source": {
+        "B01": {
+          "dimensions": [
+            20,
+            20
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            60.0,
+            60.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B02": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B03": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B04": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B05": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B06": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B07": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B08": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B09": {
+          "dimensions": [
+            20,
+            20
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            60.0,
+            60.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B11": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B12": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B8A": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        }
+      },
+      "status": "ok"
+    },
+    {
+      "geo_split": "eval",
+      "mgrs_tile": "T33UUP",
+      "output": {
+        "dtype": "float32",
+        "finite": true,
+        "shape": [
+          12,
+          120,
+          120
+        ]
+      },
+      "patch_id": "S2A_MSIL2A_20170613T101031_N9999_R022_T33UUP_89_60",
+      "source": {
+        "B01": {
+          "dimensions": [
+            20,
+            20
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            60.0,
+            60.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B02": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B03": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B04": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B05": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B06": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B07": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B08": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B09": {
+          "dimensions": [
+            20,
+            20
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            60.0,
+            60.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B11": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B12": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B8A": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        }
+      },
+      "status": "ok"
+    },
+    {
+      "geo_split": "eval",
+      "mgrs_tile": "T33UUP",
+      "output": {
+        "dtype": "float32",
+        "finite": true,
+        "shape": [
+          12,
+          120,
+          120
+        ]
+      },
+      "patch_id": "S2A_MSIL2A_20170613T101031_N9999_R022_T33UUP_74_32",
+      "source": {
+        "B01": {
+          "dimensions": [
+            20,
+            20
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            60.0,
+            60.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B02": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B03": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B04": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B05": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B06": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B07": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B08": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B09": {
+          "dimensions": [
+            20,
+            20
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            60.0,
+            60.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B11": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B12": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B8A": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        }
+      },
+      "status": "ok"
+    },
+    {
+      "geo_split": "eval",
+      "mgrs_tile": "T33UUP",
+      "output": {
+        "dtype": "float32",
+        "finite": true,
+        "shape": [
+          12,
+          120,
+          120
+        ]
+      },
+      "patch_id": "S2A_MSIL2A_20170613T101031_N9999_R022_T33UUP_90_46",
+      "source": {
+        "B01": {
+          "dimensions": [
+            20,
+            20
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            60.0,
+            60.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B02": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B03": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B04": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B05": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B06": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B07": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B08": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B09": {
+          "dimensions": [
+            20,
+            20
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            60.0,
+            60.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B11": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B12": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B8A": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        }
+      },
+      "status": "ok"
+    },
+    {
+      "geo_split": "eval",
+      "mgrs_tile": "T34UDG",
+      "output": {
+        "dtype": "float32",
+        "finite": true,
+        "shape": [
+          12,
+          120,
+          120
+        ]
+      },
+      "patch_id": "S2A_MSIL2A_20170720T100031_N9999_R122_T34UDG_90_43",
+      "source": {
+        "B01": {
+          "dimensions": [
+            20,
+            20
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            60.0,
+            60.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B02": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B03": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B04": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B05": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B06": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B07": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B08": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B09": {
+          "dimensions": [
+            20,
+            20
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            60.0,
+            60.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B11": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B12": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B8A": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        }
+      },
+      "status": "ok"
+    },
+    {
+      "geo_split": "eval",
+      "mgrs_tile": "T34UDG",
+      "output": {
+        "dtype": "float32",
+        "finite": true,
+        "shape": [
+          12,
+          120,
+          120
+        ]
+      },
+      "patch_id": "S2A_MSIL2A_20170720T100031_N9999_R122_T34UDG_77_22",
+      "source": {
+        "B01": {
+          "dimensions": [
+            20,
+            20
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            60.0,
+            60.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B02": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B03": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B04": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B05": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B06": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B07": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B08": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B09": {
+          "dimensions": [
+            20,
+            20
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            60.0,
+            60.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B11": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B12": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B8A": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        }
+      },
+      "status": "ok"
+    },
+    {
+      "geo_split": "eval",
+      "mgrs_tile": "T34UDG",
+      "output": {
+        "dtype": "float32",
+        "finite": true,
+        "shape": [
+          12,
+          120,
+          120
+        ]
+      },
+      "patch_id": "S2A_MSIL2A_20170720T100031_N9999_R122_T34UDG_69_31",
+      "source": {
+        "B01": {
+          "dimensions": [
+            20,
+            20
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            60.0,
+            60.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B02": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B03": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B04": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B05": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B06": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B07": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B08": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B09": {
+          "dimensions": [
+            20,
+            20
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            60.0,
+            60.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B11": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B12": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B8A": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        }
+      },
+      "status": "ok"
+    },
+    {
+      "geo_split": "eval",
+      "mgrs_tile": "T34UDG",
+      "output": {
+        "dtype": "float32",
+        "finite": true,
+        "shape": [
+          12,
+          120,
+          120
+        ]
+      },
+      "patch_id": "S2A_MSIL2A_20170720T100031_N9999_R122_T34UDG_83_10",
+      "source": {
+        "B01": {
+          "dimensions": [
+            20,
+            20
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            60.0,
+            60.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B02": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B03": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B04": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B05": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B06": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B07": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B08": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B09": {
+          "dimensions": [
+            20,
+            20
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            60.0,
+            60.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B11": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B12": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B8A": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        }
+      },
+      "status": "ok"
+    },
+    {
+      "geo_split": "eval",
+      "mgrs_tile": "T29UPA",
+      "output": {
+        "dtype": "float32",
+        "finite": true,
+        "shape": [
+          12,
+          120,
+          120
+        ]
+      },
+      "patch_id": "S2A_MSIL2A_20170717T113321_N9999_R080_T29UPA_32_77",
+      "source": {
+        "B01": {
+          "dimensions": [
+            20,
+            20
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            60.0,
+            60.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B02": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B03": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B04": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B05": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B06": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B07": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B08": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B09": {
+          "dimensions": [
+            20,
+            20
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            60.0,
+            60.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B11": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B12": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B8A": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        }
+      },
+      "status": "ok"
+    },
+    {
+      "geo_split": "eval",
+      "mgrs_tile": "T29UPA",
+      "output": {
+        "dtype": "float32",
+        "finite": true,
+        "shape": [
+          12,
+          120,
+          120
+        ]
+      },
+      "patch_id": "S2A_MSIL2A_20170717T113321_N9999_R080_T29UPA_50_89",
+      "source": {
+        "B01": {
+          "dimensions": [
+            20,
+            20
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            60.0,
+            60.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B02": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B03": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B04": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B05": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B06": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B07": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B08": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B09": {
+          "dimensions": [
+            20,
+            20
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            60.0,
+            60.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B11": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B12": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B8A": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        }
+      },
+      "status": "ok"
+    },
+    {
+      "geo_split": "eval",
+      "mgrs_tile": "T29UPA",
+      "output": {
+        "dtype": "float32",
+        "finite": true,
+        "shape": [
+          12,
+          120,
+          120
+        ]
+      },
+      "patch_id": "S2A_MSIL2A_20170717T113321_N9999_R080_T29UPA_31_86",
+      "source": {
+        "B01": {
+          "dimensions": [
+            20,
+            20
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            60.0,
+            60.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B02": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B03": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B04": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B05": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B06": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B07": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B08": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B09": {
+          "dimensions": [
+            20,
+            20
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            60.0,
+            60.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B11": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B12": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B8A": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        }
+      },
+      "status": "ok"
+    },
+    {
+      "geo_split": "eval",
+      "mgrs_tile": "T29UPA",
+      "output": {
+        "dtype": "float32",
+        "finite": true,
+        "shape": [
+          12,
+          120,
+          120
+        ]
+      },
+      "patch_id": "S2A_MSIL2A_20170717T113321_N9999_R080_T29UPA_42_79",
+      "source": {
+        "B01": {
+          "dimensions": [
+            20,
+            20
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            60.0,
+            60.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B02": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B03": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B04": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B05": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B06": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B07": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B08": {
+          "dimensions": [
+            120,
+            120
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            10.0,
+            10.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B09": {
+          "dimensions": [
+            20,
+            20
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            60.0,
+            60.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B11": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B12": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        },
+        "B8A": {
+          "dimensions": [
+            60,
+            60
+          ],
+          "dtype": "uint16",
+          "mask_flags": [
+            "nodata"
+          ],
+          "nodata": 0.0,
+          "resolution": [
+            20.0,
+            20.0
+          ],
+          "source_zero_fraction": 0.0
+        }
+      },
+      "status": "ok"
+    }
+  ],
+  "selection_method": "SHA256(a2-real-v1:<tile or patch_id>), four tiles per geo side, four patches per tile",
+  "statistics": {
+    "combined": {
+      "B01": {
+        "max": 2387.0,
+        "mean": 262.14819227430553,
+        "min": 1.0,
+        "p1": 1.0,
+        "p5": 1.0,
+        "p50": 258.0,
+        "p95": 672.0,
+        "p99": 856.0,
+        "std": 201.9246391574314,
+        "zero_fraction": 0.0
+      },
+      "B02": {
+        "max": 10352.0,
+        "mean": 312.8303450520833,
+        "min": 1.0,
+        "p1": 5.0,
+        "p5": 27.0,
+        "p50": 260.0,
+        "p95": 827.0,
+        "p99": 1168.0,
+        "std": 258.1350738966303,
+        "zero_fraction": 0.0
+      },
+      "B03": {
+        "max": 10400.0,
+        "mean": 523.9867252604166,
+        "min": 1.0,
+        "p1": 8.0,
+        "p5": 29.0,
+        "p50": 511.0,
+        "p95": 1116.0,
+        "p99": 1598.0,
+        "std": 347.24322899378154,
+        "zero_fraction": 0.0
+      },
+      "B04": {
+        "max": 10432.0,
+        "mean": 457.45723741319443,
+        "min": 1.0,
+        "p1": 1.0,
+        "p5": 1.0,
+        "p50": 344.0,
+        "p95": 1302.0,
+        "p99": 1876.0,
+        "std": 418.1900472296259,
+        "zero_fraction": 0.0
+      },
+      "B05": {
+        "max": 7923.0,
+        "mean": 836.0152799479166,
+        "min": 1.0,
+        "p1": 1.0,
+        "p5": 1.0,
+        "p50": 882.0,
+        "p95": 1694.0,
+        "p99": 2193.0,
+        "std": 555.3077199534272,
+        "zero_fraction": 0.0
+      },
+      "B06": {
+        "max": 7743.0,
+        "mean": 1779.0389778645833,
+        "min": 1.0,
+        "p1": 1.0,
+        "p5": 1.0,
+        "p50": 1872.0,
+        "p95": 3858.0,
+        "p99": 4535.0,
+        "std": 1318.0867093370553,
+        "zero_fraction": 0.0
+      },
+      "B07": {
+        "max": 7509.0,
+        "mean": 2109.247697482639,
+        "min": 1.0,
+        "p1": 1.0,
+        "p5": 1.0,
+        "p50": 2131.0,
+        "p95": 4684.0,
+        "p99": 5736.0,
+        "std": 1606.0526344381205,
+        "zero_fraction": 0.0
+      },
+      "B08": {
+        "max": 10232.0,
+        "mean": 2255.514526909722,
+        "min": 1.0,
+        "p1": 1.0,
+        "p5": 1.0,
+        "p50": 2316.0,
+        "p95": 4956.0,
+        "p99": 6016.040000000037,
+        "std": 1704.6703326044849,
+        "zero_fraction": 0.0
+      },
+      "B09": {
+        "max": 7589.0,
+        "mean": 2317.459509548611,
+        "min": 1.0,
+        "p1": 1.0,
+        "p5": 1.0,
+        "p50": 2407.0,
+        "p95": 4976.0,
+        "p99": 5758.0,
+        "std": 1709.9642380485022,
+        "zero_fraction": 0.0
+      },
+      "B11": {
+        "max": 7566.0,
+        "mean": 1516.2839887152777,
+        "min": 1.0,
+        "p1": 1.0,
+        "p5": 4.0,
+        "p50": 1819.0,
+        "p95": 2995.0,
+        "p99": 3528.0,
+        "std": 1048.6053706957503,
+        "zero_fraction": 0.0
+      },
+      "B12": {
+        "max": 7325.0,
+        "mean": 894.1834939236111,
+        "min": 1.0,
+        "p1": 3.0,
+        "p5": 7.0,
+        "p50": 935.0,
+        "p95": 2097.0,
+        "p99": 2782.0,
+        "std": 698.2261982395855,
+        "zero_fraction": 0.0
+      },
+      "B8A": {
+        "max": 7719.0,
+        "mean": 2313.5319140625,
+        "min": 1.0,
+        "p1": 1.0,
+        "p5": 1.0,
+        "p50": 2407.0,
+        "p95": 5026.0,
+        "p99": 5989.0,
+        "std": 1725.6687977199451,
+        "zero_fraction": 0.0
+      }
+    },
+    "eval": {
+      "B01": {
+        "max": 2387.0,
+        "mean": 311.5365625,
+        "min": 1.0,
+        "p1": 6.0,
+        "p5": 55.0,
+        "p50": 305.0,
+        "p95": 597.0,
+        "p99": 915.0,
+        "std": 165.90030585976672,
+        "zero_fraction": 0.0
+      },
+      "B02": {
+        "max": 10352.0,
+        "mean": 322.47875,
+        "min": 1.0,
+        "p1": 29.0,
+        "p5": 97.0,
+        "p50": 272.0,
+        "p95": 783.0,
+        "p99": 1222.0200000000186,
+        "std": 240.5064478154351,
+        "zero_fraction": 0.0
+      },
+      "B03": {
+        "max": 10400.0,
+        "mean": 576.0119097222222,
+        "min": 1.0,
+        "p1": 128.0,
+        "p5": 218.0,
+        "p50": 557.0,
+        "p95": 1134.0,
+        "p99": 1708.0,
+        "std": 329.3756329803619,
+        "zero_fraction": 0.0
+      },
+      "B04": {
+        "max": 10432.0,
+        "mean": 486.13629774305554,
+        "min": 29.0,
+        "p1": 98.0,
+        "p5": 109.0,
+        "p50": 394.0,
+        "p95": 1220.0,
+        "p99": 1988.0,
+        "std": 385.8639973463433,
+        "zero_fraction": 0.0
+      },
+      "B05": {
+        "max": 7923.0,
+        "mean": 909.6941753472222,
+        "min": 78.0,
+        "p1": 91.0,
+        "p5": 108.0,
+        "p50": 989.0,
+        "p95": 1704.0,
+        "p99": 2319.0,
+        "std": 527.9858126373111,
+        "zero_fraction": 0.0
+      },
+      "B06": {
+        "max": 7743.0,
+        "mean": 1970.7625130208332,
+        "min": 44.0,
+        "p1": 60.0,
+        "p5": 75.0,
+        "p50": 2070.0,
+        "p95": 4116.049999999988,
+        "p99": 4739.0,
+        "std": 1453.1476246273733,
+        "zero_fraction": 0.0
+      },
+      "B07": {
+        "max": 7509.0,
+        "mean": 2340.996644965278,
+        "min": 47.0,
+        "p1": 58.0,
+        "p5": 71.0,
+        "p50": 2329.0,
+        "p95": 5063.0,
+        "p99": 6126.0,
+        "std": 1785.0607883926452,
+        "zero_fraction": 0.0
+      },
+      "B08": {
+        "max": 10232.0,
+        "mean": 2469.433771701389,
+        "min": 26.0,
+        "p1": 46.0,
+        "p5": 59.0,
+        "p50": 2464.0,
+        "p95": 5304.0,
+        "p99": 6356.0,
+        "std": 1857.9645452704065,
+        "zero_fraction": 0.0
+      },
+      "B09": {
+        "max": 7589.0,
+        "mean": 2553.3748828125,
+        "min": 9.0,
+        "p1": 34.0,
+        "p5": 47.0,
+        "p50": 2684.0,
+        "p95": 5263.0,
+        "p99": 6073.010000000009,
+        "std": 1891.631801173793,
+        "zero_fraction": 0.0
+      },
+      "B11": {
+        "max": 7566.0,
+        "mean": 1597.628224826389,
+        "min": 5.0,
+        "p1": 12.0,
+        "p5": 18.0,
+        "p50": 1944.0,
+        "p95": 2955.0,
+        "p99": 3603.0100000000093,
+        "std": 1017.0439240450071,
+        "zero_fraction": 0.0
+      },
+      "B12": {
+        "max": 7325.0,
+        "mean": 941.3352213541667,
+        "min": 1.0,
+        "p1": 5.0,
+        "p5": 9.0,
+        "p50": 1012.0,
+        "p95": 2014.0,
+        "p99": 2890.0,
+        "std": 663.5651698943791,
+        "zero_fraction": 0.0
+      },
+      "B8A": {
+        "max": 7719.0,
+        "mean": 2551.4964192708335,
+        "min": 20.0,
+        "p1": 42.99000000000024,
+        "p5": 55.0,
+        "p50": 2615.0,
+        "p95": 5362.0,
+        "p99": 6379.0,
+        "std": 1901.251881574885,
+        "zero_fraction": 0.0
+      }
+    },
+    "train": {
+      "B01": {
+        "max": 1169.0,
+        "mean": 212.7598220486111,
+        "min": 1.0,
+        "p1": 1.0,
+        "p5": 1.0,
+        "p50": 152.0,
+        "p95": 704.0,
+        "p99": 838.0,
+        "std": 221.68848884471439,
+        "zero_fraction": 0.0
+      },
+      "B02": {
+        "max": 3072.0,
+        "mean": 303.18194010416664,
+        "min": 1.0,
+        "p1": 1.0,
+        "p5": 17.0,
+        "p50": 236.0,
+        "p95": 849.0,
+        "p99": 1110.0,
+        "std": 274.29527497636735,
+        "zero_fraction": 0.0
+      },
+      "B03": {
+        "max": 3204.0,
+        "mean": 471.9615407986111,
+        "min": 1.0,
+        "p1": 3.0,
+        "p5": 17.0,
+        "p50": 442.0,
+        "p95": 1106.0,
+        "p99": 1412.0,
+        "std": 356.7270285894689,
+        "zero_fraction": 0.0
+      },
+      "B04": {
+        "max": 3672.0,
+        "mean": 428.77817708333333,
+        "min": 1.0,
+        "p1": 1.0,
+        "p5": 1.0,
+        "p50": 273.0,
+        "p95": 1352.0,
+        "p99": 1788.0,
+        "std": 446.35168841724686,
+        "zero_fraction": 0.0
+      },
+      "B05": {
+        "max": 3350.0,
+        "mean": 762.3363845486111,
+        "min": 1.0,
+        "p1": 1.0,
+        "p5": 1.0,
+        "p50": 787.0,
+        "p95": 1687.0,
+        "p99": 2075.0,
+        "std": 571.9328195504629,
+        "zero_fraction": 0.0
+      },
+      "B06": {
+        "max": 4582.0,
+        "mean": 1587.3154427083334,
+        "min": 1.0,
+        "p1": 1.0,
+        "p5": 1.0,
+        "p50": 1828.0,
+        "p95": 3237.0,
+        "p99": 3809.0,
+        "std": 1135.5841227474853,
+        "zero_fraction": 0.0
+      },
+      "B07": {
+        "max": 5711.0,
+        "mean": 1877.49875,
+        "min": 1.0,
+        "p1": 1.0,
+        "p5": 1.0,
+        "p50": 2097.0,
+        "p95": 3960.0,
+        "p99": 4712.010000000009,
+        "std": 1365.6328062827356,
+        "zero_fraction": 0.0
+      },
+      "B08": {
+        "max": 6488.0,
+        "mean": 2041.5952821180556,
+        "min": 1.0,
+        "p1": 1.0,
+        "p5": 1.0,
+        "p50": 2278.0,
+        "p95": 4372.0,
+        "p99": 5140.0,
+        "std": 1506.06996771645,
+        "zero_fraction": 0.0
+      },
+      "B09": {
+        "max": 5750.0,
+        "mean": 2081.5441362847223,
+        "min": 1.0,
+        "p1": 1.0,
+        "p5": 1.0,
+        "p50": 2379.0,
+        "p95": 4185.0,
+        "p99": 5013.0,
+        "std": 1469.1400181443223,
+        "zero_fraction": 0.0
+      },
+      "B11": {
+        "max": 4340.0,
+        "mean": 1434.9397526041666,
+        "min": 1.0,
+        "p1": 1.0,
+        "p5": 2.0,
+        "p50": 1631.0,
+        "p95": 3022.0,
+        "p99": 3453.0,
+        "std": 1073.0956779197638,
+        "zero_fraction": 0.0
+      },
+      "B12": {
+        "max": 4603.0,
+        "mean": 847.0317664930556,
+        "min": 1.0,
+        "p1": 2.0,
+        "p5": 5.0,
+        "p50": 798.0,
+        "p95": 2144.0,
+        "p99": 2634.0,
+        "std": 728.1993836305295,
+        "zero_fraction": 0.0
+      },
+      "B8A": {
+        "max": 6008.0,
+        "mean": 2075.567408854167,
+        "min": 1.0,
+        "p1": 1.0,
+        "p5": 1.0,
+        "p50": 2365.0,
+        "p95": 4288.0,
+        "p99": 5089.010000000009,
+        "std": 1492.5992999389584,
+        "zero_fraction": 0.0
+      }
+    }
+  },
+  "successful_patches": 32
+}

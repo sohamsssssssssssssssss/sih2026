@@ -73,7 +73,7 @@ def test_malformed_band_dtype_is_rejected(patch, dtype):
         load_s2_patch(patch)
 
 
-def test_multiband_and_nodata_are_rejected(patch):
+def test_multiband_and_nonzero_nodata_are_rejected(patch):
     path = patch / f"{patch.name}_B03.tif"
     with rasterio.open(path, "w", driver="GTiff", width=2, height=2, count=2,
                        dtype="uint16", transform=from_origin(0, 2, 1, 1)) as dst:
@@ -83,5 +83,9 @@ def test_multiband_and_nodata_are_rejected(patch):
     with rasterio.open(path, "w", driver="GTiff", width=2, height=2, count=1,
                        dtype="uint16", nodata=0, transform=from_origin(0, 2, 1, 1)) as dst:
         dst.write(np.ones((2, 2), dtype="uint16"), 1)
-    with pytest.raises(ValueError, match="B03 declares nodata"):
+    assert load_s2_patch(patch)[2, 0, 0] == 1
+    with rasterio.open(path, "w", driver="GTiff", width=2, height=2, count=1,
+                       dtype="uint16", nodata=65535, transform=from_origin(0, 2, 1, 1)) as dst:
+        dst.write(np.ones((2, 2), dtype="uint16"), 1)
+    with pytest.raises(ValueError, match="B03 declares unsupported nodata"):
         load_s2_patch(patch)

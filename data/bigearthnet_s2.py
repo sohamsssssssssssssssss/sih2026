@@ -42,7 +42,9 @@ def load_s2_patch(patch_dir: Path) -> torch.Tensor:
         with rasterio.open(paths[band]) as source:
             if source.count != 1 or source.dtypes[0] != "uint16":
                 raise ValueError(f"{band} must be a single-band uint16 TIFF")
-            if source.nodata is not None:
-                raise ValueError(f"{band} declares nodata; masked pixels need an explicit policy")
+            # BigEarthNet V2 declares zero as nodata. Keep zeros in raw DN scale;
+            # rasterio bilinear resampling includes them, without mask filling.
+            if source.nodata not in (None, 0):
+                raise ValueError(f"{band} declares unsupported nodata: {source.nodata}")
             arrays.append(source.read(1, out_shape=(SIZE, SIZE), out_dtype="float32", resampling=Resampling.bilinear))
     return torch.stack([torch.from_numpy(array) for array in arrays])

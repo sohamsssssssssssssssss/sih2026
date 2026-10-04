@@ -84,7 +84,9 @@ patch directory with one `<patch_id>_<band>.tif` per band. Channel order is
 rejected. Each source must be single-band uint16. Rasterio bilinear resampling
 maps each native grid onto 120×120. The result is a float32 tensor in CHW
 layout `[12, 120, 120]` (batch as NCHW for Conv2d), retaining raw
-digital-number scale without clipping or normalization. Add a documented
+digital-number scale without clipping or normalization. BigEarthNet V2 marks
+zero as nodata; the loader preserves zero values and bilinear interpolation
+includes them. Other declared nodata values are rejected. Freeze a nodata and
 normalization policy before training.
 
 `models.qwen_vl.stage1.convert_patch_embed` replaces the 3-channel Conv2d
@@ -94,3 +96,29 @@ old channel weights multiplied by `3/12`, so repeating a common signal over
 module provides parameter groups at vision `1e-5`, patch embed `1e-4`, and
 LM LoRA `1e-4` for a future trainer. Archives remain compressed outside the
 repo. This A.2 infrastructure loop is not a training run.
+
+## Stage A.2 real S2 validation (2026-10-04)
+
+`scripts.validate_bigearthnet_s2` selected four SHA256-ranked MGRS tiles on
+each frozen geographic side, then four SHA256-ranked caption patches per tile
+(16 train, 16 eval). The exact 32 IDs, each source TIFF's metadata and zero
+fraction, and train/eval/combined per-band output statistics are in
+`data/manifests/bigearthnet/stage1-real-validation.v1.json`. Run with
+`python3 -m scripts.validate_bigearthnet_s2 --root <extracted-BigEarthNet-S2-root>
+--manifest data/manifests/bigearthnet/caption-geo-split.v1.csv.gz --output
+<report.json>`. It reads only already extracted patch directories.
+
+Exactly 384 TIFFs (about 5.3 MB of file content) were selectively extracted
+to a temporary directory; the split archives remain compressed. All 32
+patches passed the loader: 12 canonical channels, no B10, finite float32
+`[12,120,120]` output. All 384 TIFFs are uint16 and declare `nodata=0`,
+but none of their source pixels are zero in this sample. All observed native
+grids match the expected pattern: B02/B03/B04/B08 are 120×120 at 10 m;
+B05/B06/B07/B8A/B11/B12 are 60×60 at 20 m; B01/B09 are 20×20 at 60 m.
+The resampled output also has zero fraction 0 for every band on both sides.
+
+Combined output means range from 262.15 (B01) to 2317.46 (B09), while
+maxima range from 2387 (B01) to 10432 (B04). Several train-band p1 values
+are 1 even without zero pixels, and train/eval distributions differ. These
+are sample observations, not population estimates. No normalization or
+clipping was chosen or implemented in this validation loop.
