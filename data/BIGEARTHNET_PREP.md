@@ -43,5 +43,35 @@ annotation batches. The metadata table is loaded once. Omit `annotation_types`
 to keep every annotation type. `summarize(...)` returns the CLI counts, with
 unmatched rows grouped under `<unmatched>` for split and country.
 
-Geographic split construction is the **next loop**. This module preserves the
-official split and country fields; it does not construct or change splits.
+## Caption geographic split (A.1)
+
+`data.bigearthnet_split` parses and validates the complete Sentinel-2 patch
+ID, then groups all caption patches by their MGRS tile. It ranks tiles by
+`SHA256("26167:" + tile)` (hexadecimal digest, tile as tie-breaker), using seed
+`26167`. The eval side takes the ranked tile prefix whose patch count is
+closest to `ceil(0.10 × total captions)`; ties take the longer prefix. The
+remaining tiles are train. Algorithm ID:
+`sha256-tile-rank-closest-prefix-v1`. The official metadata split remains a
+separate `official_split` column in the manifest.
+
+Regenerate the compressed CSV and its JSON sidecar with:
+
+```bash
+python3 -m data.bigearthnet_split \
+  ~/Datasets/BigEarthNet/metadata.parquet \
+  ~/Datasets/BigEarthNet/BigEarthNet.txt.parquet \
+  data/manifests/bigearthnet/caption-geo-split.v1.csv.gz
+```
+
+The manifest contains one sorted row per caption patch: `patch_id`,
+`mgrs_tile`, `geo_split`, `official_split`, `country`. The 1.2 MiB gzip file
+is small enough to version with the code. The sidecar records the algorithm,
+seed, source paths, counts, and SHA256. Local result (2026-10-04): 422,809
+train patches across 48 MGRS tiles; 41,123 eval patches across 6 tiles.
+All 463,932 captions were assigned once; train/eval patch and MGRS sets are
+disjoint. Source official-split counts among captions: train 229,114,
+validation 118,095, test 116,723. Manifest SHA256:
+`3e5b1d774125c7b48a9454dbb33e6144aee8d990d8966e830987836159bd83ee`.
+
+Image decoding, Stage-1 training, and evaluation are outside this preparation
+step.

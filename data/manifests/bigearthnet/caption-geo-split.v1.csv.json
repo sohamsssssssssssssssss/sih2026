@@ -1,0 +1,20 @@
+{
+  "algorithm": "sha256-tile-rank-closest-prefix-v1",
+  "eval_fraction": 0.1,
+  "eval_mgrs_tiles": 6,
+  "eval_patches": 41123,
+  "manifest": "/Users/soham/sih2026/data/manifests/bigearthnet/caption-geo-split.v1.csv.gz",
+  "manifest_sha256": "3e5b1d774125c7b48a9454dbb33e6144aee8d990d8966e830987836159bd83ee",
+  "seed": 26167,
+  "source_annotation_type": "captioning",
+  "source_annotations": "/Users/soham/Datasets/BigEarthNet/BigEarthNet.txt.parquet",
+  "source_metadata": "/Users/soham/Datasets/BigEarthNet/metadata.parquet",
+  "source_official_split_counts": {
+    "test": 116723,
+    "train": 229114,
+    "validation": 118095
+  },
+  "total_patches": 463932,
+  "train_mgrs_tiles": 48,
+  "train_patches": 422809
+}
