@@ -75,3 +75,22 @@ validation 118,095, test 116,723. Manifest SHA256:
 
 Image decoding, Stage-1 training, and evaluation are outside this preparation
 step.
+
+## Stage A.2 sample and patch embedding infrastructure
+
+`data.bigearthnet_s2.load_s2_patch(patch_dir)` reads an already accessible
+patch directory with one `<patch_id>_<band>.tif` per band. Channel order is
+`B01, B02, B03, B04, B05, B06, B07, B08, B8A, B09, B11, B12`; B10 is
+rejected. Each source must be single-band uint16. Rasterio bilinear resampling
+maps each native grid onto 120×120. The result is a float32 tensor in CHW
+layout `[12, 120, 120]` (batch as NCHW for Conv2d), retaining raw
+digital-number scale without clipping or normalization. Add a documented
+normalization policy before training.
+
+`models.qwen_vl.stage1.convert_patch_embed` replaces the 3-channel Conv2d
+with a 12-channel Conv2d. Each new channel receives the mean of the three
+old channel weights multiplied by `3/12`, so repeating a common signal over
+12 channels preserves the old activation scale from three copies. The same
+module provides parameter groups at vision `1e-5`, patch embed `1e-4`, and
+LM LoRA `1e-4` for a future trainer. Archives remain compressed outside the
+repo. This A.2 infrastructure loop is not a training run.
