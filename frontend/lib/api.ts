@@ -67,6 +67,11 @@ export interface HealthResponse {
   };
 }
 
-export function getHealth() {
-  return request<HealthResponse>("/api/health");
+// A 503 from /api/health still carries a HealthResponse body (trace unusable),
+// so read it instead of reporting the backend as unreachable.
+export async function getHealth(): Promise<HealthResponse> {
+  const response = await fetch(`${API_URL}/api/health`, { cache: "no-store" });
+  const body = (await response.json().catch(() => null)) as HealthResponse | null;
+  if (body && typeof body.status === "string") return body;
+  throw new Error(`Request failed (${response.status})`);
 }
