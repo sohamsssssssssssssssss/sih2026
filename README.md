@@ -396,7 +396,7 @@ Finalizing page optimization ...
 | **Provider unavailable (503)** | Required CUDA, dependency, configuration, or local model artifact is absent; or the requested multi-step plan is not executable. | Inspect `/api/capabilities`, provision artifacts offline, or use a supported deterministic single-step capability. |
 | **Upload rejected (422 / 413)** | The upload is corrupt, unsupported, unsafe, or exceeds 20 MiB. | Provide a valid PNG, JPEG, TIFF, or GeoTIFF within the documented limits. |
 | **Frontend cannot connect to backend** | Backend server is stopped or running on a different port. | Ensure backend is active at `http://localhost:8000`. Check with `curl http://localhost:8000/api/health`. |
-| **Trace integrity error (503)** | `trace.jsonl` has been manually edited or corrupted. | The hash chain verifies previous record hashes. Remove `trace.jsonl` to reinitialize a clean audit chain. |
+| **Trace integrity error (503)** | `trace.jsonl` was edited or corrupted somewhere other than its final line. | An incomplete final line from a crash is recovered automatically and its bytes are kept in `trace.jsonl.torn-<timestamp>`. Anything else is treated as tampering and fails closed: check `/api/health` and `POST /api/traces/verify`, inspect the file, and keep a copy as evidence before rotating it. |
 | **`ModuleNotFoundError: No module named 'PIL'`** | Minimal backend venv created without Pillow. | Run `pip install pillow` inside your backend virtual environment. |
 | **`rasterio` build error on macOS** | Missing system GDAL C-libraries. | Install a prebuilt wheel (`pip install --only-binary=:all: rasterio`) or GDAL via Homebrew. Rasterio cannot be omitted: the backend imports it at startup. |
 
