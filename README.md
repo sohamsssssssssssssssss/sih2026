@@ -18,6 +18,7 @@ SatQuery AI is a capability-oriented remote-sensing visual intelligence system b
 - **Pair compatibility**: Optical-SAR and bi-temporal requests are checked for modality, acquisition metadata, overlap, dimensions, CRS, and affine grid before dispatch.
 - **Deterministic optical-SAR analysis**: Joint Sentinel-2 index and Sentinel-1 backscatter summaries consume both co-registered inputs. This is not a learned fusion model.
 - **Deterministic change analysis**: Co-registered multispectral or RGB pairs produce heuristic magnitude, changed-pixel, coverage, and spatial-extent evidence. This is not semantic change understanding.
+- **Sentinel-1 water change**: Two co-registered VV/VH/dataMask SAR scenes sent to `change_vqa` report new and receded open water in hectares and as GeoJSON polygons, from a pooled-Otsu baseline that abstains when the scene has no open-water mode. Confidence is `null`. See `docs/change-baseline.md`.
 - **Cryptographic audit trace**: Live and cached-result executions are distinguished in a SHA-256 hash-chained trace.
 - **Explicit cached replay**: The designated committed VQA result is returned only when the caller requests `execution_mode: "cached_result"`; live failure never silently falls back.
 
@@ -25,6 +26,7 @@ Historical Kaggle Tesla T4 smoke verification passed through the repository prov
 
 ### PARTIAL / BLOCKED ON GPU OR DATA
 - **Remote-sensing adaptation**: The offline RSVQA-LR QLoRA pipeline and held-out comparison runner are ready. No adapter has been trained and no improvement is claimed.
+- **Sentinel-1 fetch from CDSE**: `python -m backend.sentinel1 --bbox W S E N --before START END --after START END` (needs `CDSE_CLIENT_ID` and `CDSE_CLIENT_SECRET`) picks a same-orbit-track pair, renders terrain-corrected gamma0 for both dates on one UTM grid and ingests them as scenes. Tested only against a mocked Sentinel Hub; the first live run is pending credentials.
 - **Multi-step change-to-grounding execution**: The plan can be represented, but execution remains explicitly unavailable until an intermediate spatial artifact contract exists.
 - **Benchmark and ISRO/SAC evidence**: Existing frozen evaluations and runners do not establish adapted-model, CDVQA, optical-SAR, national, or ISRO/SAC performance.
 

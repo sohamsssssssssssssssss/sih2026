@@ -372,7 +372,11 @@ def ingest_scene(
     data: bytes,
     filename: str,
     metadata: dict[str, str | None] | None = None,
+    *,
+    provenance: str = "user_declared_upload",
+    acquisition_id: str | None = None,
 ) -> dict[str, Any]:
+    """Store a scene and its manifest. Server-side fetchers name their own provenance."""
     if not data:
         raise InvalidImageUpload("The uploaded image is empty.")
     declared = _declared_metadata(metadata)
@@ -430,7 +434,7 @@ def ingest_scene(
             assert native_temporary is not None
             native_temporary.write_bytes(data)
         canonical.save(temporary, format="PNG")
-        provenance = {field: "user_declared_upload" for field in declared}
+        field_provenance = {field: provenance for field in declared}
         manifest: SceneManifest = {
             "version": SCENE_MANIFEST_VERSION,
             "scene_id": scene_id,
@@ -457,11 +461,11 @@ def ingest_scene(
             "identity": {
                 "sensor": declared.get("sensor"),
                 "modality": declared.get("modality", "unknown"),
-                "acquisition_id": None,
+                "acquisition_id": acquisition_id,
                 "acquisition_time": declared.get("acquisition_timestamp"),
                 "polarizations": declared.get("polarizations", []),
                 "benchmark_source": declared.get("benchmark_source"),
-                "provenance": provenance,
+                "provenance": field_provenance,
             },
             "grouping": {
                 "geographic_group": None,
