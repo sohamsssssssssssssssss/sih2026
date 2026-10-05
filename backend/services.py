@@ -2,6 +2,7 @@
 
 import hashlib
 import json
+import logging
 import os
 import re
 import warnings
@@ -30,6 +31,7 @@ from backend.scene_pack import (
 from data.dataset import SCENE_MANIFEST_VERSION, SceneManifest, validate_scene_manifest
 from data.pairing import evaluate_compatibility
 from models.base import ModelReadiness
+from models.paths import public_path
 
 # Keep model resolution offline before importing the model registry.
 os.environ["HF_HUB_OFFLINE"] = "1"
@@ -64,6 +66,8 @@ from orchestrator.router import (  # noqa: E402
 from orchestrator.trace import TraceIntegrityError, append_record  # noqa: E402
 from demo_gui.golden_assets import local_golden_image  # noqa: E402
 
+logger = logging.getLogger(__name__)
+
 ROOT = Path(__file__).resolve().parents[1]
 MODEL_NAME = "qwen2.5vl-3b"
 RESULTS_RELATIVE_PATH = "results/qwen2.5vl-3b__ladder__rescored__20260904.json"
@@ -81,6 +85,15 @@ MAX_RASTER_PIXELS = 100_000_000
 MAX_RASTER_BANDS = 32
 MAX_PREVIEW_DIMENSION = 2048
 MODEL_EXECUTION_TIMEOUT_SECONDS = 120.0
+
+
+LOG_EXCERPT_CHARS = 60
+
+
+def log_excerpt(text: str | None, limit: int = LOG_EXCERPT_CHARS) -> str:
+    """Short single-line form of user text that is safe to put in server logs."""
+    value = " ".join((text or "").split())
+    return value if len(value) <= limit else value[:limit] + "..."
 
 
 class ArtifactError(RuntimeError):
@@ -502,6 +515,8 @@ def _cached_response(
     if not isinstance(answer, str) or not answer.strip():
         raise ArtifactError("The committed cached result is invalid.")
     model = get(MODEL_NAME)
+    # The committed artifact records the absolute paths of the machine that produced it.
+    image_paths = [public_path(path) for path in cached.get("image_paths", [])]
     try:
         trace = append_record(
             {
@@ -518,9 +533,9 @@ def _cached_response(
                     "sensor": sensor,
                 },
                 "input_summary": {
-                    "image_paths": cached.get("image_paths", []),
+                    "image_paths": image_paths,
                     "question": cached["question"],
-                    "n_images": len(cached.get("image_paths", [])),
+                    "n_images": len(image_paths),
                 },
                 "timestamp_iso": datetime.now(timezone.utc).isoformat(),
             }
@@ -818,6 +833,13 @@ def analyze_scene(
     except (CapabilityUnavailable, UnknownCapability):
         raise
     except ModelExecutionTimeout as exc:
+        logger.warning(
+            "Model execution timed out after %ss (capability=%s, question=%r)",
+            MODEL_EXECUTION_TIMEOUT_SECONDS,
+            plan.selected_capability,
+            log_excerpt(question),
+            exc_info=True,
+        )
         raise ModelUnavailable from exc
     except Exception as exc:
         unavailable = any(
@@ -830,8 +852,20 @@ def analyze_scene(
                 "checkpoint could not be loaded",
             )
         )
-        error = ModelUnavailable if unavailable else ModelExecutionError
-        raise error from exc
+        if unavailable:
+            logger.warning(
+                "Live model inference unavailable (capability=%s, question=%r)",
+                plan.selected_capability,
+                log_excerpt(question),
+                exc_info=True,
+            )
+            raise ModelUnavailable from exc
+        logger.exception(
+            "Model execution failed (capability=%s, question=%r)",
+            plan.selected_capability,
+            log_excerpt(question),
+        )
+        raise ModelExecutionError from exc
 
 
 def _scene_ids(scene_id: str, scene_id_2: str | None) -> tuple[str, ...]:

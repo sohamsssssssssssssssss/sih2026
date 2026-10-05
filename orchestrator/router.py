@@ -6,6 +6,7 @@ from datetime import datetime, timezone
 from threading import Event
 from typing import Any
 
+from models.paths import public_path
 from orchestrator.capabilities import ResolvedProvider, require_provider_ready
 from orchestrator.registry import get
 from orchestrator.trace import TraceIntegrityError, append_record
@@ -169,7 +170,7 @@ def route(
                 "model_version": model_version,
                 "params": traced_params,
                 "input_summary": {
-                    "image_paths": image_paths,
+                    "image_paths": [public_path(path) for path in image_paths],
                     "question": question,
                     "n_images": len(image_paths),
                 },

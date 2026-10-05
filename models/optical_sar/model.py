@@ -10,6 +10,7 @@ import numpy as np
 import rasterio
 
 from models.base import Model, ModelReadiness
+from models.paths import public_path
 
 
 OPTICAL_BANDS = ("B02", "B03", "B04", "B08", "dataMask")
@@ -124,7 +125,7 @@ class OpticalSARModel(Model):
                 {
                     "type": "optical_statistics",
                     "modality": "optical",
-                    "source": {"path": str(optical_path), "sha256": _sha256(optical_path)},
+                    "source": {"path": public_path(optical_path), "sha256": _sha256(optical_path)},
                     "bands": list(OPTICAL_BANDS),
                     "valid_pixels": int(np.count_nonzero(optical_valid)),
                     "total_pixels": total,
@@ -137,7 +138,7 @@ class OpticalSARModel(Model):
                 {
                     "type": "sar_statistics",
                     "modality": "sar",
-                    "source": {"path": str(sar_path), "sha256": _sha256(sar_path)},
+                    "source": {"path": public_path(sar_path), "sha256": _sha256(sar_path)},
                     "bands": list(SAR_BANDS),
                     "valid_pixels": int(np.count_nonzero(sar_valid)),
                     "total_pixels": total,

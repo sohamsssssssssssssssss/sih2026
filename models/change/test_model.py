@@ -100,9 +100,24 @@ def test_both_temporal_inputs_are_recorded(identical_pair) -> None:
         [str(path) for path in identical_pair], "What changed?"
     )["evidence"][0]
 
-    assert inputs["t1"]["path"] == str(identical_pair[0])
-    assert inputs["t2"]["path"] == str(identical_pair[1])
+    # Paths outside the repository are reduced to their file name.
+    assert inputs["t1"]["path"] == identical_pair[0].name == "t1.tif"
+    assert inputs["t2"]["path"] == identical_pair[1].name == "t2.tif"
     assert inputs["t1"]["sha256"] != ""
+
+
+def test_temporal_inputs_use_repo_relative_paths(identical_pair, monkeypatch) -> None:
+    import models.paths
+
+    monkeypatch.setattr(models.paths, "REPO_ROOT", identical_pair[0].parent.parent)
+    inputs = ChangeModel().infer(
+        [str(path) for path in identical_pair], "What changed?"
+    )["evidence"][0]
+
+    folder = identical_pair[0].parent.name
+    assert inputs["t1"]["path"] == f"{folder}/t1.tif"
+    assert inputs["t2"]["path"] == f"{folder}/t2.tif"
+    assert str(identical_pair[0].parent) not in str(inputs)
     assert inputs["temporal_order"] == "input_1_is_t1_input_2_is_t2"
 
 
