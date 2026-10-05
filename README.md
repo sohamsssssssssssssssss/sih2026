@@ -233,7 +233,7 @@ curl -X POST http://localhost:8000/api/plan \
 ```
 
 ### 3. Analyze
-Execute single-image visual question answering:
+Execute single-image visual question answering. `execution_mode` defaults to `"live"`, which needs CUDA and local Qwen weights; without them the request fails closed with `503`. The example below explicitly requests the pinned cached result so it works on any machine:
 
 ```bash
 curl -X POST http://localhost:8000/api/analyze \
@@ -241,7 +241,8 @@ curl -X POST http://localhost:8000/api/analyze \
   -d '{
     "scene_id": "loveda_LoveDA_images_png_0_gsd0.3",
     "question": "Is there a building in this image?",
-    "sensor": "optical"
+    "sensor": "optical",
+    "execution_mode": "cached_result"
   }'
 ```
 
@@ -380,7 +381,7 @@ Finalizing page optimization ...
 | **Frontend cannot connect to backend** | Backend server is stopped or running on a different port. | Ensure backend is active at `http://localhost:8000`. Check with `curl http://localhost:8000/api/health`. |
 | **Trace integrity error (503)** | `trace.jsonl` has been manually edited or corrupted. | The hash chain verifies previous record hashes. Remove `trace.jsonl` to reinitialize a clean audit chain. |
 | **`ModuleNotFoundError: No module named 'PIL'`** | Minimal backend venv created without Pillow. | Run `pip install pillow` inside your backend virtual environment. |
-| **`rasterio` build error on macOS** | Missing system GDAL C-libraries. | Omit `rasterio` for local API/frontend development; core pathways do not depend on it. |
+| **`rasterio` build error on macOS** | Missing system GDAL C-libraries. | Install a prebuilt wheel (`pip install --only-binary=:all: rasterio`) or GDAL via Homebrew. Rasterio cannot be omitted: the backend imports it at startup. |
 
 ---
 
