@@ -20,6 +20,7 @@ class GroundingDINOModel(Model):
 
     name = "grounding-dino-swint"
     version = "ShilongLiu/GroundingDINO:groundingdino_swint_ogc.pth"
+    isolated = True
 
     def __init__(
         self,

@@ -1,35 +1,58 @@
 """Capability-oriented routing through the public Model interface only."""
 
 from collections.abc import Mapping
-from concurrent.futures import ThreadPoolExecutor, TimeoutError as FutureTimeoutError
 from datetime import datetime, timezone
-from threading import Event
+from threading import Thread
 from typing import Any
 
+from models.paths import public_path
+from orchestrator import worker as inference_worker
 from orchestrator.capabilities import ResolvedProvider, require_provider_ready
 from orchestrator.registry import get
 from orchestrator.trace import TraceIntegrityError, append_record
-
-# ponytail: one worker protects the singleton model; process workers are needed for cancellation.
-_INFERENCE_EXECUTOR = ThreadPoolExecutor(max_workers=1)
+from orchestrator.worker import (  # noqa: F401 - re-exported for callers
+    ModelExecutionTimeout,
+    RemoteInferenceError,
+    WorkerCrashed,
+)
 
 
 class InvalidModelOutput(RuntimeError):
     """The model returned data outside its public response contract."""
 
 
-class ModelExecutionTimeout(RuntimeError):
-    """The request stopped waiting for an in-flight model execution."""
-
-
 class TracePersistenceError(RuntimeError):
     """A validated execution could not be recorded safely."""
 
 
-def _infer(model: Any, image_paths: list[str], question: str, abandoned: Event) -> Any:
-    if abandoned.is_set():
+def _infer_in_thread(
+    model: Any, image_paths: list[str], question: str, timeout_seconds: float
+) -> Any:
+    """Bounded wait for a lightweight, in-process model.
+
+    Each call gets its own daemon thread, so an execution that overruns its
+    timeout is abandoned without blocking any later request (the old single
+    shared executor slot did exactly that). Only non-isolated models take this
+    path: deterministic, CPU-only and stateless, so a rare abandoned thread
+    finishes on its own and concurrent calls are safe. Heavyweight models that
+    can genuinely hang are ``isolated`` and run in a killable worker process.
+    """
+    outcome: dict[str, Any] = {}
+
+    def target() -> None:
+        try:
+            outcome["result"] = model.infer(image_paths=image_paths, question=question)
+        except BaseException as exc:  # noqa: BLE001 - re-raised in the caller
+            outcome["error"] = exc
+
+    thread = Thread(target=target, name="satquery-inference", daemon=True)
+    thread.start()
+    thread.join(timeout_seconds)
+    if thread.is_alive():
         raise ModelExecutionTimeout
-    return model.infer(image_paths=image_paths, question=question)
+    if "error" in outcome:
+        raise outcome["error"]
+    return outcome["result"]
 
 
 def _validate_result(result: Any) -> dict[str, Any]:
@@ -88,17 +111,14 @@ def route(
     model = get(resolved.model_name)
     if timeout_seconds is None:
         result = model.infer(image_paths=image_paths, question=question)
-    else:
-        abandoned = Event()
-        future = _INFERENCE_EXECUTOR.submit(
-            _infer, model, image_paths, question, abandoned
+    elif getattr(model, "isolated", False) is True:
+        # Killable worker process; the in-process instance above still supplies
+        # the truthful version metadata (a class attribute, no weights loaded).
+        result = inference_worker.run(
+            resolved.model_name, image_paths, question, timeout_seconds
         )
-        try:
-            result = future.result(timeout=timeout_seconds)
-        except FutureTimeoutError as exc:
-            abandoned.set()
-            future.cancel()
-            raise ModelExecutionTimeout from exc
+    else:
+        result = _infer_in_thread(model, image_paths, question, timeout_seconds)
     validated = _validate_result(result)
     validated_params = _validate_execution_mode(validated, params)
     model_version = _model_version(resolved, model)
@@ -169,7 +189,7 @@ def route(
                 "model_version": model_version,
                 "params": traced_params,
                 "input_summary": {
-                    "image_paths": image_paths,
+                    "image_paths": [public_path(path) for path in image_paths],
                     "question": question,
                     "n_images": len(image_paths),
                 },

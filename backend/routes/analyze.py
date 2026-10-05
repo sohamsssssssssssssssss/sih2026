@@ -1,3 +1,5 @@
+import logging
+
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile, status
 from fastapi.responses import FileResponse
 
@@ -6,7 +8,9 @@ from backend.schemas import (
     AnalyzeResponse,
     CapabilitiesResponse,
     PlanResponse,
+    SceneCatalogResponse,
     SceneUploadResponse,
+    UploadedScene,
 )
 from backend.services import (
     AnalysisUnavailable,
@@ -21,15 +25,33 @@ from backend.services import (
     capabilities_overview,
     ingest_scene,
     local_scene_image,
+    log_excerpt,
     plan_analysis,
+    uploaded_scene,
+    uploaded_scenes,
 )
 from backend.scene_pack import ScenePackError, scene_catalog
 from orchestrator.capabilities import CapabilityUnavailable, ProviderNotReady, UnknownCapability
 from orchestrator.planner import InvalidPlanRequest
 from orchestrator.router import InvalidModelOutput, TracePersistenceError
 
+logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api", tags=["analysis"])
 MAX_UPLOAD_BYTES = 20 * 1024 * 1024
+
+
+def _request_context(request: AnalyzeRequest) -> str:
+    """Identify a failed request in logs without recording the full question."""
+    fields = {
+        "capability": request.capability,
+        "scene_id": request.scene_id,
+        "scene_id_2": request.scene_id_2,
+        "question": request.question,
+    }
+    return " ".join(
+        f"{name}={log_excerpt(value) if value is not None else None!r}"
+        for name, value in fields.items()
+    )
 
 
 @router.post("/scenes", response_model=SceneUploadResponse, status_code=status.HTTP_201_CREATED)
@@ -63,15 +85,30 @@ async def upload_scene(
     except InvalidImageUpload as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
     except SceneStorageError as exc:
+        logger.exception(
+            "Scene upload could not be stored (filename=%r, size=%d bytes)",
+            log_excerpt(file.filename),
+            len(data),
+        )
         raise HTTPException(status_code=500, detail="The uploaded image could not be stored.") from exc
 
 
-@router.get("/scenes")
-def scenes() -> dict:
+@router.get("/scenes", response_model=SceneCatalogResponse)
+def scenes() -> SceneCatalogResponse:
     try:
-        return scene_catalog()
+        catalog = scene_catalog()
     except ScenePackError as exc:
+        logger.exception("Curated scene pack is unavailable")
         raise HTTPException(status_code=503, detail="Curated scene pack is unavailable.") from exc
+    return SceneCatalogResponse.model_validate({**catalog, "uploads": uploaded_scenes()})
+
+
+@router.get("/scenes/uploads/{scene_id}", response_model=UploadedScene)
+def uploaded_scene_detail(scene_id: str) -> UploadedScene:
+    scene = uploaded_scene(scene_id)
+    if scene is None:
+        raise HTTPException(status_code=404, detail="Uploaded scene not found.")
+    return UploadedScene.model_validate(scene)
 
 
 @router.get("/capabilities", response_model=CapabilitiesResponse)
@@ -111,6 +148,7 @@ def analyze(request: AnalyzeRequest) -> AnalyzeResponse:
             )
         )
     except ArtifactError as exc:
+        logger.exception("Analysis artifact unavailable (%s)", _request_context(request))
         raise HTTPException(
             status_code=503, detail="Required analysis artifacts are temporarily unavailable."
         ) from exc
@@ -123,6 +161,14 @@ def analyze(request: AnalyzeRequest) -> AnalyzeResponse:
     except UnknownCapability as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
     except ProviderNotReady as exc:
+        logger.warning(
+            "Provider not ready: %s/%s reason=%s (%s)",
+            exc.capability,
+            exc.provider,
+            exc.reason_code,
+            _request_context(request),
+            exc_info=True,
+        )
         raise HTTPException(
             status_code=503,
             detail={
@@ -133,22 +179,30 @@ def analyze(request: AnalyzeRequest) -> AnalyzeResponse:
             },
         ) from exc
     except CapabilityUnavailable as exc:
+        logger.warning(
+            "Capability unavailable (%s)", _request_context(request), exc_info=True
+        )
         raise HTTPException(
             status_code=503,
             detail="Required capability is not currently available.",
         ) from exc
+    # ModelUnavailable / ModelExecutionError are logged with tracebacks where
+    # backend.services raises them, so they are not logged again here.
     except ModelUnavailable as exc:
         raise HTTPException(status_code=503, detail="Live model inference is unavailable.") from exc
     except ModelExecutionError as exc:
         raise HTTPException(status_code=502, detail="Model execution failed.") from exc
     except InvalidModelOutput as exc:
+        logger.exception("Model returned invalid output (%s)", _request_context(request))
         raise HTTPException(status_code=502, detail="Model returned an invalid response.") from exc
     except TracePersistenceError as exc:
+        logger.exception("Execution trace persistence failed (%s)", _request_context(request))
         raise HTTPException(
             status_code=503,
             detail="Execution trace is temporarily unavailable.",
         ) from exc
     except Exception as exc:
+        logger.exception("Unexpected analysis failure (%s)", _request_context(request))
         raise HTTPException(status_code=502, detail="Model execution failed.") from exc
 
 

@@ -29,6 +29,7 @@ class QwenVLModel(Model):
 
     name = "qwen2.5vl-3b"
     version = "Qwen/Qwen2.5-VL-3B-Instruct"
+    isolated = True
 
     def __init__(self, model_id: str = version, max_new_tokens: int = 50) -> None:
         self.model_id = model_id
