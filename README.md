@@ -379,6 +379,12 @@ Finalizing page optimization ...
 
 ---
 
+## Deploy
+
+To run the full stack on one NVIDIA GPU VM behind one public URL (Docker Compose with a Caddy reverse proxy and automatic HTTPS), run `make docker-gpu` and then `make deploy-smoke`. A CPU-only variant is `make docker-cpu`. Before you start, read [`docs/deploy.md`](docs/deploy.md). It covers VM sizing, offline provisioning of model artifacts, and the demo-day checklist, and it lists which parts have not yet been tested on a GPU.
+
+---
+
 ## Runtime Data & Hygiene
 
 - **Uploaded Scenes**: Stored in `data/runtime/scenes/<scene_id>.png`.

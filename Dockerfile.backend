@@ -1,0 +1,99 @@
+# syntax=docker/dockerfile:1
+#
+# SatQuery backend image. Build context: repository root.
+#
+#   docker build -f Dockerfile.backend --target cpu -t satquery-backend:cpu .
+#   docker build -f Dockerfile.backend --target gpu -t satquery-backend:gpu .
+#
+# cpu  python:3.11-slim + backend/requirements.txt. Runs everything that needs
+#      no GPU: upload/plan, deterministic change and optical-SAR analysis, and
+#      explicit cached replay. Qwen and Grounding DINO report
+#      DEPENDENCY_UNAVAILABLE and fail closed with 503, as designed.
+# gpu  cpu dependencies + deploy/requirements-gpu.txt (torch 2.10.0 CUDA 12.8
+#      wheels, transformers, qwen-vl-utils, accelerate, groundingdino-py).
+#      CUDA user-space libraries come from torch's nvidia-*-cu12 wheels; the
+#      host driver is injected by the NVIDIA Container Toolkit. Nothing is
+#      compiled: groundingdino-py 0.4.0 ships no custom CUDA op.
+#
+# Model weights are NEVER baked in. They are mounted read-only at /models (see
+# docs/deploy.md). Runtime state lives in two volumes:
+#   /app/state         trace.jsonl (via the /app/trace.jsonl symlink)
+#   /app/data/runtime  uploaded scenes, rasters and scene manifests
+
+ARG PYTHON_IMAGE=python:3.11-slim
+
+# ---------------------------------------------------------------- dependencies
+FROM ${PYTHON_IMAGE} AS deps-cpu
+ENV PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1
+RUN python -m venv /opt/venv
+ENV PATH=/opt/venv/bin:$PATH
+COPY backend/requirements.txt /tmp/requirements-backend.txt
+RUN pip install -r /tmp/requirements-backend.txt
+
+FROM deps-cpu AS deps-gpu
+COPY deploy/requirements-gpu.txt /tmp/requirements-gpu.txt
+# One resolve over both files so pip sees the backend's numpy/pillow bounds.
+RUN pip install -r /tmp/requirements-backend.txt -r /tmp/requirements-gpu.txt
+
+# -------------------------------------------------------------- shared runtime
+FROM ${PYTHON_IMAGE} AS runtime
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PYTHONPATH=/app \
+    PATH=/opt/venv/bin:$PATH \
+    HOME=/home/app
+# The rasterio manylinux wheel bundles GDAL but links the system libexpat,
+# which python:3.11-slim does not ship (import fails without it).
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends libexpat1 \
+ && rm -rf /var/lib/apt/lists/*
+RUN groupadd --system --gid 10001 app \
+ && useradd --system --uid 10001 --gid app --home-dir /home/app --create-home --shell /usr/sbin/nologin app
+WORKDIR /app
+
+COPY --chown=root:root . /app
+COPY --chown=root:root deploy/backend-entrypoint.sh /usr/local/bin/satquery-entrypoint
+# /app stays root-owned so the app user cannot rewrite code. It is group-writable
+# with the sticky bit only so crash recovery can create its quarantine file
+# (trace.jsonl.torn-*) next to the trace symlink; the sticky bit stops the app
+# user from deleting or renaming any root-owned file in /app.
+RUN chmod 0755 /usr/local/bin/satquery-entrypoint \
+ && mkdir -p /app/state /app/data/runtime \
+ && ln -sfn /app/state/trace.jsonl /app/trace.jsonl \
+ && chown app:app /app/state /app/data/runtime \
+ && chown root:app /app && chmod 1775 /app
+
+EXPOSE 8000
+# 200 = ready or degraded (trace intact); 503 = trace unusable. urlopen raises on
+# 503, so the container is unhealthy exactly when /api/analyze cannot work.
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+  CMD ["python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/health', timeout=8)"]
+ENTRYPOINT ["satquery-entrypoint"]
+# Exactly one worker: the trace hash chain is held in process memory behind a
+# thread lock, so a second worker process would fork the audit chain.
+CMD ["uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "1"]
+
+# ------------------------------------------------------------------ cpu target
+FROM runtime AS cpu
+COPY --from=deps-cpu /opt/venv /opt/venv
+USER app
+VOLUME ["/app/state", "/app/data/runtime"]
+
+# ------------------------------------------------------------------ gpu target
+FROM runtime AS gpu
+# opencv-python (pulled in by groundingdino-py) needs libGL and glib at import.
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends libgl1 libglib2.0-0 \
+ && rm -rf /var/lib/apt/lists/*
+COPY --from=deps-gpu /opt/venv /opt/venv
+ENV NVIDIA_VISIBLE_DEVICES=all \
+    NVIDIA_DRIVER_CAPABILITIES=compute,utility \
+    HF_HUB_OFFLINE=1 \
+    TRANSFORMERS_OFFLINE=1 \
+    HF_HUB_DISABLE_TELEMETRY=1 \
+    SATQUERY_QWEN_MODEL_DIR=/models/qwen2.5-vl-3b-instruct \
+    SATQUERY_GROUNDING_CHECKPOINT=/models/groundingdino_swint_ogc.pth \
+    HF_HUB_CACHE=/models/huggingface/hub
+USER app
+VOLUME ["/app/state", "/app/data/runtime"]

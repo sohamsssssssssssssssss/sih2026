@@ -1,0 +1,38 @@
+# GPU override: live Qwen2.5-VL-3B and Grounding DINO on one NVIDIA GPU.
+#
+#   docker compose -f docker-compose.yml -f docker-compose.gpu.yml up -d --build
+#
+# Requires the NVIDIA driver (CUDA 12.8 capable, R570+) and the NVIDIA Container
+# Toolkit on the host, and model artifacts provisioned under SATQUERY_MODELS_DIR
+# (layout in docs/deploy.md). The directory is mounted read-only; weights are
+# never part of the image.
+
+services:
+  backend:
+    build:
+      target: gpu
+    image: satquery-backend:gpu
+    # Compose >= 2.30. Older Compose: use deploy.resources.reservations.devices
+    # with driver: nvidia, count: all, capabilities: [gpu].
+    gpus: all
+    environment:
+      # Same values the gpu image sets; repeated here so the contract is visible.
+      HF_HUB_OFFLINE: "1"
+      TRANSFORMERS_OFFLINE: "1"
+      SATQUERY_QWEN_MODEL_DIR: /models/qwen2.5-vl-3b-instruct
+      SATQUERY_GROUNDING_CHECKPOINT: /models/groundingdino_swint_ogc.pth
+      # Grounding DINO's packaged config builds its text encoder from
+      # "bert-base-uncased"; offline, transformers resolves it from this cache.
+      HF_HUB_CACHE: /models/huggingface/hub
+    volumes:
+      - type: bind
+        source: ${SATQUERY_MODELS_DIR:-/srv/satquery/models}
+        target: /models
+        read_only: true
+        bind:
+          # Fail at `up` if the directory is missing instead of silently
+          # mounting an empty, root-owned directory.
+          create_host_path: false
+    healthcheck:
+      # Readiness imports torch on first call; give the first probe more time.
+      start_period: 120s
