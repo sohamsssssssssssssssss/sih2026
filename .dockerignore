@@ -1,0 +1,44 @@
+# Build context for Dockerfile.backend (repo root). The frontend has its own
+# context (frontend/) and .dockerignore, so it is excluded here entirely.
+.git
+.github
+.claude
+.streamlit
+**/__pycache__
+**/*.py[cod]
+**/.pytest_cache
+.venv
+**/.venv
+.coverage
+.coverage.*
+.DS_Store
+
+frontend/
+
+# Runtime state lives in volumes, never in an image layer.
+trace.jsonl
+trace.jsonl.*
+data/runtime/
+deploy/state/
+
+# Weights and datasets are mounted read-only at run time, never baked in.
+models-artifacts/
+**/*.pth
+**/*.safetensors
+**/*.bin
+**/*.parquet
+**/*.tar.gz*
+**/*.tar.zst
+data/raw/
+data/external/
+data/sar_gate/raw/
+
+# Not needed by the API or the GPU smoke.
+docs/
+reviews/
+kaggle/
+training/
+outputs/
+PROJECT_OVERVIEW.pdf
+.env
+.env.*

@@ -1,0 +1,24 @@
+# Live-inference stack for the GPU image, installed on top of
+# backend/requirements.txt. Pinned to the versions recorded by the verified
+# Kaggle T4 smoke (docs/gpu-smoke.md): torch 2.10.0+cu128, transformers 4.49.0,
+# accelerate 1.13.0, qwen-vl-utils 0.0.14, groundingdino-py 0.4.0,
+# huggingface-hub 0.36.2.
+#
+# The Linux x86_64 torch 2.10.0 wheel on PyPI is the CUDA 12.8 build (it depends
+# on the nvidia-*-cu12 12.8.x runtime wheels), i.e. the same build as Kaggle's
+# 2.10.0+cu128. The host needs an NVIDIA driver that supports CUDA 12.8
+# (R570 or newer); no CUDA toolkit is needed on the host or in the image.
+torch==2.10.0
+# torchvision 0.25.x is the release paired with torch 2.10; qwen-vl-utils
+# imports it without declaring it, and Grounding DINO needs torchvision.ops.
+torchvision==0.25.0
+transformers==4.49.0
+accelerate==1.13.0
+qwen-vl-utils==0.0.14
+huggingface-hub==0.36.2
+# Pure-Python release: its setup.py has the custom CUDA-op build commented out
+# and MSDeformAttn always takes the PyTorch path, so nothing is compiled at
+# install time and no CUDA toolkit (nvcc) is needed in the image. It pulls
+# opencv-python (needs libGL/glib from apt), supervision==0.6.0, pycocotools,
+# timm, addict and yapf.
+groundingdino-py==0.4.0
