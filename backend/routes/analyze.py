@@ -8,7 +8,9 @@ from backend.schemas import (
     AnalyzeResponse,
     CapabilitiesResponse,
     PlanResponse,
+    SceneCatalogResponse,
     SceneUploadResponse,
+    UploadedScene,
 )
 from backend.services import (
     AnalysisUnavailable,
@@ -25,6 +27,8 @@ from backend.services import (
     local_scene_image,
     log_excerpt,
     plan_analysis,
+    uploaded_scene,
+    uploaded_scenes,
 )
 from backend.scene_pack import ScenePackError, scene_catalog
 from orchestrator.capabilities import CapabilityUnavailable, ProviderNotReady, UnknownCapability
@@ -89,13 +93,22 @@ async def upload_scene(
         raise HTTPException(status_code=500, detail="The uploaded image could not be stored.") from exc
 
 
-@router.get("/scenes")
-def scenes() -> dict:
+@router.get("/scenes", response_model=SceneCatalogResponse)
+def scenes() -> SceneCatalogResponse:
     try:
-        return scene_catalog()
+        catalog = scene_catalog()
     except ScenePackError as exc:
         logger.exception("Curated scene pack is unavailable")
         raise HTTPException(status_code=503, detail="Curated scene pack is unavailable.") from exc
+    return SceneCatalogResponse.model_validate({**catalog, "uploads": uploaded_scenes()})
+
+
+@router.get("/scenes/uploads/{scene_id}", response_model=UploadedScene)
+def uploaded_scene_detail(scene_id: str) -> UploadedScene:
+    scene = uploaded_scene(scene_id)
+    if scene is None:
+        raise HTTPException(status_code=404, detail="Uploaded scene not found.")
+    return UploadedScene.model_validate(scene)
 
 
 @router.get("/capabilities", response_model=CapabilitiesResponse)

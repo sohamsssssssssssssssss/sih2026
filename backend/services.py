@@ -84,6 +84,7 @@ INGESTED_SCENE_ID = re.compile(r"scene_[0-9a-f]{32}")
 MAX_RASTER_PIXELS = 100_000_000
 MAX_RASTER_BANDS = 32
 MAX_PREVIEW_DIMENSION = 2048
+MAX_LISTED_UPLOADS = 200
 MODEL_EXECUTION_TIMEOUT_SECONDS = 120.0
 
 
@@ -470,8 +471,14 @@ def ingest_scene(
             },
         }
         validate_scene_manifest(manifest)
+        # validate_scene_manifest ignores unknown keys, so the upload time is
+        # persisted alongside the versioned schema without changing it.
+        stored: dict[str, Any] = {
+            **manifest,
+            "uploaded_at": datetime.now(timezone.utc).isoformat(),
+        }
         manifest_temporary.write_text(
-            json.dumps(manifest, indent=2, sort_keys=True) + "\n",
+            json.dumps(stored, indent=2, sort_keys=True) + "\n",
             encoding="utf-8",
         )
         if native_target and native_temporary:
@@ -505,6 +512,97 @@ def ingest_scene(
         "location": None,
         "acquisition_date": declared.get("acquisition_timestamp"),
     }
+
+
+def _uploaded_at(value: object, manifest_path: Path) -> datetime:
+    """Prefer the persisted upload time; older manifests fall back to file mtime."""
+    if isinstance(value, str):
+        try:
+            parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+        except ValueError:
+            parsed = None
+        if parsed is not None and parsed.tzinfo is not None:
+            return parsed.astimezone(timezone.utc)
+    return datetime.fromtimestamp(manifest_path.stat().st_mtime, tz=timezone.utc)
+
+
+def _uploaded_scene(manifest_path: Path) -> tuple[datetime, dict[str, Any]]:
+    """Summarise one runtime manifest; raises ValueError/OSError when unusable."""
+    value = json.loads(manifest_path.read_text(encoding="utf-8"))
+    if not isinstance(value, dict):
+        raise ValueError("Scene manifest is not an object")
+    manifest = validate_scene_manifest(value)  # type: ignore[arg-type]
+    scene_id = manifest["scene_id"]
+    if manifest_path.name != f"{scene_id}.json":
+        raise ValueError("Scene manifest filename does not match its id")
+    if not (INGESTED_SCENE_DIR / f"{scene_id}.png").is_file():
+        raise ValueError("Scene preview is missing")
+    source, preview, raster = manifest["source"], manifest["preview"], manifest["raster"]
+    identity = manifest["identity"]
+    dimensions = raster if raster is not None else preview
+    sensor = identity.get("sensor")
+    acquisition_time = identity.get("acquisition_time")
+    filename = source.get("filename")
+    uploaded_at = _uploaded_at(value.get("uploaded_at"), manifest_path)
+    return uploaded_at, {
+        "scene_id": scene_id,
+        "filename": filename if isinstance(filename, str) and filename else "upload",
+        "format": source["format"],
+        "width": dimensions["width"],
+        "height": dimensions["height"],
+        "modality": identity["modality"],
+        "sensor": sensor if isinstance(sensor, str) else None,
+        "acquisition_time": acquisition_time if isinstance(acquisition_time, str) else None,
+        "has_native_raster": source.get("native_path") is not None
+        and (INGESTED_RASTER_DIR / f"{scene_id}.tif").is_file(),
+        "georeferenced": raster is not None and raster.get("pairing_ready") is True,
+        "uploaded_at": uploaded_at.isoformat(),
+    }
+
+
+def uploaded_scene(scene_id: str) -> dict[str, Any] | None:
+    """Return one stored upload's summary, or None when unknown or unusable."""
+    if not INGESTED_SCENE_ID.fullmatch(scene_id):
+        return None
+    path = SCENE_MANIFEST_DIR / f"{scene_id}.json"
+    if not path.is_file():
+        return None
+    try:
+        return _uploaded_scene(path)[1]
+    except (OSError, ValueError, TypeError, KeyError) as exc:
+        logger.warning("Skipping unusable scene manifest %s: %s", path.name, exc)
+        return None
+
+
+def uploaded_scenes(limit: int | None = None) -> list[dict[str, Any]]:
+    """List stored uploads newest first, skipping (and logging) unusable manifests."""
+    limit = MAX_LISTED_UPLOADS if limit is None else limit
+    try:
+        candidates = [
+            (entry.stat().st_mtime, entry)
+            for entry in SCENE_MANIFEST_DIR.iterdir()
+            if entry.suffix == ".json"
+            and INGESTED_SCENE_ID.fullmatch(entry.stem)
+            and entry.is_file()
+        ]
+    except FileNotFoundError:
+        return []
+    except OSError:
+        logger.warning("Scene manifest directory could not be read", exc_info=True)
+        return []
+    # Manifests are written at upload time, so mtime bounds the work to the most
+    # recent files; the final order uses the persisted upload timestamp.
+    candidates.sort(key=lambda item: item[0], reverse=True)
+    scenes: list[tuple[datetime, dict[str, Any]]] = []
+    for _, path in candidates:
+        if len(scenes) >= limit:
+            break
+        try:
+            scenes.append(_uploaded_scene(path))
+        except (OSError, ValueError, TypeError, KeyError) as exc:
+            logger.warning("Skipping unusable scene manifest %s: %s", path.name, exc)
+    scenes.sort(key=lambda item: (item[0], item[1]["scene_id"]), reverse=True)
+    return [scene for _, scene in scenes]
 
 
 def _cached_response(

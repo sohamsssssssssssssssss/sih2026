@@ -38,6 +38,28 @@ class SceneUploadResponse(BaseModel):
     acquisition_date: str | None = None
 
 
+class UploadedScene(BaseModel):
+    scene_id: str
+    filename: str
+    format: Literal["PNG", "JPEG", "TIFF"]
+    width: int
+    height: int
+    modality: Literal["optical", "multispectral", "sar", "unknown"]
+    sensor: str | None
+    acquisition_time: str | None
+    has_native_raster: bool
+    georeferenced: bool
+    uploaded_at: str = Field(description="ISO 8601 UTC upload time.")
+
+
+class SceneCatalogResponse(BaseModel):
+    version: str
+    scenes: list[dict[str, Any]] = Field(description="Curated scene-pack entries.")
+    uploads: list[UploadedScene] = Field(
+        description="Scenes uploaded through POST /api/scenes, newest first (capped)."
+    )
+
+
 class ModelInfo(BaseModel):
     name: str
     version: str
