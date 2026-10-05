@@ -2022,6 +2022,33 @@ def test_model_timeout_logs_warning_with_traceback(
     assert "timed out" in records[0].getMessage()
 
 
+def test_inference_worker_crash_returns_503_and_logs_error(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch, caplog: pytest.LogCaptureFixture
+) -> None:
+    from orchestrator.worker import WorkerCrashed
+
+    created = upload(client, "scene.png", image_bytes("PNG")).json()
+
+    def crash(**_: object) -> None:
+        raise WorkerCrashed("Inference worker exited with code -9 while running test")
+
+    monkeypatch.setattr(
+        model_router, "get", lambda _: SimpleNamespace(version="test", infer=crash)
+    )
+
+    with caplog.at_level(logging.WARNING):
+        response = client.post(
+            "/api/analyze",
+            json={"scene_id": created["scene_id"], "question": "What is visible?"},
+        )
+
+    assert response.status_code == 503
+    assert response.json() == {"detail": "Live model inference is unavailable."}
+    records = [record for record in caplog.records if record.name == services.logger.name]
+    assert [record.levelno for record in records] == [logging.ERROR]
+    assert "worker crashed" in records[0].getMessage()
+
+
 def test_log_excerpt_truncates_and_flattens_user_text() -> None:
     assert services.log_excerpt("short question") == "short question"
     assert services.log_excerpt(None) == ""

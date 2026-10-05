@@ -64,6 +64,7 @@ from orchestrator.router import (  # noqa: E402
     route,
 )
 from orchestrator.trace import TraceIntegrityError, append_record  # noqa: E402
+from orchestrator.worker import WorkerCrashed  # noqa: E402
 from demo_gui.golden_assets import local_golden_image  # noqa: E402
 
 logger = logging.getLogger(__name__)
@@ -934,6 +935,16 @@ def analyze_scene(
         logger.warning(
             "Model execution timed out after %ss (capability=%s, question=%r)",
             MODEL_EXECUTION_TIMEOUT_SECONDS,
+            plan.selected_capability,
+            log_excerpt(question),
+            exc_info=True,
+        )
+        raise ModelUnavailable from exc
+    except WorkerCrashed as exc:
+        # The worker respawns on the next request, so a crash (e.g. GPU OOM)
+        # is a retryable outage, not a model failure.
+        logger.error(
+            "Inference worker crashed (capability=%s, question=%r)",
             plan.selected_capability,
             log_excerpt(question),
             exc_info=True,
