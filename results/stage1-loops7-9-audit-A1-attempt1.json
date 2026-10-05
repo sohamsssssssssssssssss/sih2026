@@ -1,0 +1,20 @@
+{
+  "kind": "independent Stage-1 shard hash audit A1",
+  "git_sha": "1ceb9d161e1f654da96b1f57b31724e48ac29250",
+  "split_name": "caption-geo-split.v1/train + eval",
+  "n": 152000,
+  "seed": 26169,
+  "device": "CPU",
+  "timestamp_utc": "2026-10-05T04:10:24.423529+00:00",
+  "revision": "66285546d2b821cf421d4f5eb2576359d3770cd3",
+  "weight_sha256": {
+    "model-00001-of-00002.safetensors": "41a8895c164b4d32bae6b302f4603fcbc1797f32dafa45c7e9bcda23c6755df8",
+    "model-00002-of-00002.safetensors": "365531ff8752420e89dee707b79d021fb2d6e25abafe486f080555a4fe6972e4"
+  },
+  "status": "audit script failed before shard hashing",
+  "shards": [],
+  "problems": [
+    "FileNotFoundError: data/shards/train-150000/shards-manifest.json"
+  ],
+  "scope_note": "Additional local-manifest equality assumption was not in A1 preregistration. Published manifest is the preregistered hash source; no integrity gate changed."
+}

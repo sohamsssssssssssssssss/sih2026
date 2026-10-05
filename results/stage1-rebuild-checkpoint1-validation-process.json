@@ -1,0 +1,954 @@
+{
+  "kind": "independent controls of completed first shard; no further build attempt",
+  "timestamp_utc": "2026-10-05T11:54:17.871646+00:00",
+  "git_sha": "1ceb9d161e1f654da96b1f57b31724e48ac29250",
+  "dirty_tree": true,
+  "git_status_short": " M .gitignore\n M configs/model_artifacts.json\n M data/BIGEARTHNET_PREP.md\n M data/bigearthnet_s2.py\n M data/test_bigearthnet_s2.py\n M docs/plan/ANNEX-A-phase0-audit.md\n M docs/plan/ANNEX-D-science.md\n M models/qwen_vl/stage1.py\n M models/qwen_vl/test_stage1.py\n?? data/bigearthnet_shards.py\n?? data/manifests/bigearthnet/norm_contract.json\n?? data/manifests/bigearthnet/stage1-loop3-checks.v1.json\n?? data/manifests/bigearthnet/stage1-loop4-contract-audit.json\n?? data/manifests/bigearthnet/stage1-loop4-preregistration.json\n?? data/manifests/bigearthnet/stage1-norm-loader-check.v1.json\n?? data/manifests/bigearthnet/stage1-norm-options.v1.json\n?? data/manifests/bigearthnet/stage1-norm-study.v1.json\n?? data/manifests/bigearthnet/stage1-norm-train-ids.v1.json\n?? data/manifests/bigearthnet/stage1-shards-eval-2000.v1.json\n?? data/manifests/bigearthnet/stage1-shards-train-150000.attempt1-aborted-archive-order.v1.json\n?? data/manifests/bigearthnet/stage1-shards-train-150000.v1.json\n?? data/manifests/bigearthnet/stage1-shards-train-2000.v1.json\n?? data/manifests/bigearthnet/stage1-split-verification.v1.json\n?? data/manifests/bigearthnet/stage1-train-rebuild-ids-loop10.v1.json\n?? data/manifests/bigearthnet/stage1-train-selection-150000.v1.json\n?? data/manifests/bigearthnet/stage1-train-shard-ids-audit.v1.json\n?? data/test_bigearthnet_shards.py\n?? docs/research/stage1-gate-eval-band-mapping.md\n?? packages/\n?? results/stage1-loop10-checks.json\n?? results/stage1-loop10-focused-attempt1.json\n?? results/stage1-loop10-focused-attempt2.json\n?? results/stage1-loop10-frozen-checks.json\n?? results/stage1-loop10-full-suite-attempt1.json\n?? results/stage1-loop10-git-status.txt\n?? results/stage1-loop10-old-shard-cli-exit.json\n?? results/stage1-loop10-old-shard-submanifest.json\n?? results/stage1-loop10-old-shard-verifier-attempt2.json\n?? results/stage1-loop10-old-shard-verifier.json\n?? results/stage1-loop10-package-pairing.json\n?? results/stage1-loop10-preregistration.json\n?? results/stage1-loop10-rebuild-plan.json\n?? results/stage1-loop10-resource-estimates.json\n?? results/stage1-loop10-root-cause-attempt1.json\n?? results/stage1-loop10-root-cause-attempt2.json\n?? results/stage1-loop10-selection-reproduction.json\n?? results/stage1-loop10-summary.json\n?? results/stage1-loop10-training-audit.json\n?? results/stage1-loop10-training-test-preregistration.json\n?? results/stage1-loop10-writer-fixed-attempt2.json\n?? results/stage1-loop10-writer-fixed.json\n?? results/stage1-loop10-writer-old-failure.json\n?? results/stage1-loop4-checkpoint-preflight.json\n?? results/stage1-loop4-equivalence.json\n?? results/stage1-loop4-selected-captions.json\n?? results/stage1-loop4b-checks.json\n?? results/stage1-loop4b-diagnostics-attempt1.json\n?? results/stage1-loop4b-diagnostics.json\n?? results/stage1-loop4b-forward.json\n?? results/stage1-loop4b-preregistration.json\n?? results/stage1-loop5-canary-amendment.json\n?? results/stage1-loop5-canary-attempt1.json\n?? results/stage1-loop5-canary-attempt2.json\n?? results/stage1-loop5-canary.json\n?? results/stage1-loop5-checks.json\n?? results/stage1-loop5-preregistration.json\n?? results/stage1-loop6-canary-explanation-attempt1.json\n?? results/stage1-loop6-canary-explanation-attempt2.json\n?? results/stage1-loop6-canary-explanation.json\n?? results/stage1-loop6-cpu-trend-attempt1.json\n?? results/stage1-loop6-cpu-trend.yaml\n?? results/stage1-loop6-forward-attempt1.json\n?? results/stage1-loop6-forward-attempt2.json\n?? results/stage1-loop6-preregistration.json\n?? results/stage1-loop6-summary.json\n?? results/stage1-loop7-preregistration.json\n?? results/stage1-loop7-summary.json\n?? results/stage1-loop8-eval-shard-build.json\n?? results/stage1-loop8-preregistration.json\n?? results/stage1-loop8-shard-build-attempt1-failure.json\n?? results/stage1-loop8-shard-build-attempt2-failure.json\n?? results/stage1-loop8-shard-build.json\n?? results/stage1-loop8-shard-loader-check.json\n?? results/stage1-loop8-shard-manifest-publication.json\n?? results/stage1-loop8-summary.json\n?? results/stage1-loop9-build-report.json\n?? results/stage1-loop9-preregistration.json\n?? results/stage1-loop9-shard-verification.json\n?? results/stage1-loop9-summary.json\n?? results/stage1-loop9-upload-plan.json\n?? results/stage1-loop9-upload-sha256/\n?? results/stage1-loops7-9-audit-A1-attempt1.json\n?? results/stage1-loops7-9-audit-A1-attempt2.json\n?? results/stage1-loops7-9-audit-A1.json\n?? results/stage1-loops7-9-audit-A2-attempt1.json\n?? results/stage1-loops7-9-audit-A3.json\n?? results/stage1-loops7-9-audit-A4A5.json\n?? results/stage1-loops7-9-audit-preregistration.json\n?? results/stage1-loops7-9-audit-summary.json\n?? results/stage1-normalization-quicklooks/\n?? scripts/build_stage1_shards.py\n?? scripts/build_stage1_train_shards.py\n?? scripts/check_bigearthnet_norm.py\n?? scripts/check_qwen_s2_canary.py\n?? scripts/check_qwen_s2_equivalence.py\n?? scripts/diagnose_qwen_s2_equivalence.py\n?? scripts/explain_qwen_s2_canary.py\n?? scripts/extract_selected_s2.py\n?? scripts/freeze_bigearthnet_norm.py\n?? scripts/plan_stage1_kaggle_upload.py\n?? scripts/run_stage1_full.py\n?? scripts/run_stage1_qwen_forward.py\n?? scripts/run_stage1_smoke.py\n?? scripts/run_stage1_t4.py\n?? scripts/study_bigearthnet_s2.py\n?? scripts/test_extract_selected_s2.py\n?? scripts/test_stage1_full.py\n?? scripts/test_stage1_smoke.py\n?? scripts/test_stage1_t4_package.py\n?? scripts/test_study_bigearthnet_s2.py\n?? scripts/verify_stage1_train_shards.py\n",
+  "split_name": "caption-geo-split.v1/train",
+  "seed": 26168,
+  "n": 2000,
+  "device": "CPU",
+  "plan_sha256": "42f6a23ce7f70fe4aa3c3256248abb2678b10b830a23abc11dfe0f4c2fc563b7",
+  "immutable_file_sha256": {
+    "data/bigearthnet_shards.py": "f8f4f3eecf3d56fad5664471b24bb7d18319aad3623a156b641d5c3ede24469b",
+    "scripts/verify_stage1_train_shards.py": "091d80f3afab40aea3ca356481db871df0251a4d24698db263c3e292542d65a8",
+    "scripts/build_stage1_train_shards.py": "0112e8d8f42eba52ec472c923e2a81858008a18d15d70638cb9597fb50f51608",
+    "data/manifests/bigearthnet/stage1-train-rebuild-ids-loop10.v1.json": "495fca3db7919fd627a937632bd5479337ad588f665e50d1551f418bdc37067f",
+    "models/qwen_vl/stage1.py": "54d3d22f8a90c01b23e63c9e8b8158fed2e835686bda5821e00e23315b3078e3",
+    "data/bigearthnet_s2.py": "870092ae9ac0bdea0869cc8a9ba10ded1e14c304a9c0fa8cd1fd93d1268975d0",
+    "data/manifests/bigearthnet/norm_contract.json": "ab02179d2b4cf33c320a897d75318484189b249d99fff6cdd386016df908912d",
+    "data/manifests/bigearthnet/caption-geo-split.v1.csv.gz": "3e5b1d774125c7b48a9454dbb33e6144aee8d990d8966e830987836159bd83ee",
+    "configs/model_artifacts.json": "72527fa9bb644cac71513b40a1a7e836a2044aae71ca6fb7095d4df643753e41",
+    "packages/stage1-t4-smoke/patches.tar.gz": "b77d21791a91ff81328408e9701fb2b7ce48874fbf962d153c8ad3ecf520fa65",
+    "packages/stage1-t4-smoke/captions.json": "7f762060e7814542ce95186db97aa2cc2847519f677a725a93bc8416429882b6"
+  },
+  "approved_deletion_files": [
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00000.npz",
+      "bytes": 320002878,
+      "sha256_expected": "b2f563399ac96b4ae0752a1bb59f99449329ceb57729978aa0f7742b8bc82d27",
+      "kind": "npz"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00000.json",
+      "bytes": 1829567,
+      "sha256_expected": null,
+      "kind": "sidecar"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00001.npz",
+      "bytes": 320002878,
+      "sha256_expected": "aeae7655703a55caf555309302b39c10b8c1975537305394f681ae46635ac10b",
+      "kind": "npz"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00001.json",
+      "bytes": 1835982,
+      "sha256_expected": null,
+      "kind": "sidecar"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00002.npz",
+      "bytes": 320002878,
+      "sha256_expected": "39274dbf967e8b04888097596f59c0b3b9e9796c037de80868be229bb0ceedf9",
+      "kind": "npz"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00002.json",
+      "bytes": 1829728,
+      "sha256_expected": null,
+      "kind": "sidecar"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00003.npz",
+      "bytes": 320002878,
+      "sha256_expected": "048efbd2812d9674105ac7d1e4b34cd76efb449b2956d2f03a93faee808df968",
+      "kind": "npz"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00003.json",
+      "bytes": 1844100,
+      "sha256_expected": null,
+      "kind": "sidecar"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00004.npz",
+      "bytes": 320002878,
+      "sha256_expected": "aee09b94183e08e52ab5a2ead75bb920ae50df0e363acc4e608a935fbc8d9e52",
+      "kind": "npz"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00004.json",
+      "bytes": 1815502,
+      "sha256_expected": null,
+      "kind": "sidecar"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00005.npz",
+      "bytes": 320002878,
+      "sha256_expected": "20e2510b1381a435ea851b9194f8814d55dc819316973b5a8bb981ff340f5a92",
+      "kind": "npz"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00005.json",
+      "bytes": 1815009,
+      "sha256_expected": null,
+      "kind": "sidecar"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00006.npz",
+      "bytes": 320002878,
+      "sha256_expected": "a56a67086644fe3f61cda0444062dd31b3173456f91a764cbe9b0549140318c3",
+      "kind": "npz"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00006.json",
+      "bytes": 1822371,
+      "sha256_expected": null,
+      "kind": "sidecar"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00007.npz",
+      "bytes": 320002878,
+      "sha256_expected": "edcc46d1e0c6a643591ae3fab2cab08c33df17e9307637bfafa0e89eba09b7ca",
+      "kind": "npz"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00007.json",
+      "bytes": 1816460,
+      "sha256_expected": null,
+      "kind": "sidecar"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00008.npz",
+      "bytes": 320002878,
+      "sha256_expected": "5c78e8705922fa5bdbbb7aff4e2aca251b2b94d416568879baae046fbd2db1b8",
+      "kind": "npz"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00008.json",
+      "bytes": 1831894,
+      "sha256_expected": null,
+      "kind": "sidecar"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00009.npz",
+      "bytes": 320002878,
+      "sha256_expected": "683b357b1f8cc05e037876b2833e54bc3ee32e6d1567b70462a09bba82aaf70e",
+      "kind": "npz"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00009.json",
+      "bytes": 1815119,
+      "sha256_expected": null,
+      "kind": "sidecar"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00010.npz",
+      "bytes": 320002878,
+      "sha256_expected": "d1b7178f06d6226e29e3e96411f2dd410698405310926ecbcd5d07184b872bfa",
+      "kind": "npz"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00010.json",
+      "bytes": 1844062,
+      "sha256_expected": null,
+      "kind": "sidecar"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00011.npz",
+      "bytes": 320002878,
+      "sha256_expected": "dc53741a89d247f4360e5ec66915855e46d1d7fa9d5a0fc7486e0cbfffab1ba9",
+      "kind": "npz"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00011.json",
+      "bytes": 1833930,
+      "sha256_expected": null,
+      "kind": "sidecar"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00012.npz",
+      "bytes": 320002878,
+      "sha256_expected": "a28cc75f18c92c140200d9bb8cd73d549537e8b7d0e672a956653ae6befeb294",
+      "kind": "npz"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00012.json",
+      "bytes": 1842013,
+      "sha256_expected": null,
+      "kind": "sidecar"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00013.npz",
+      "bytes": 320002878,
+      "sha256_expected": "f86d371ff52499d6cb97d31768c63774edfe5b1a8562aac2f71d951797b44f01",
+      "kind": "npz"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00013.json",
+      "bytes": 1839508,
+      "sha256_expected": null,
+      "kind": "sidecar"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00014.npz",
+      "bytes": 320002878,
+      "sha256_expected": "65f6bcf342b6124ab2c6ab5436152f748f3a258d41fd169b261740e126857189",
+      "kind": "npz"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00014.json",
+      "bytes": 1803360,
+      "sha256_expected": null,
+      "kind": "sidecar"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00015.npz",
+      "bytes": 320002878,
+      "sha256_expected": "ac914ae6be611d1fc6fd0aa3f32cdcf67fef0b2ba4b5ab09538dd15f7188a3a3",
+      "kind": "npz"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00015.json",
+      "bytes": 1840472,
+      "sha256_expected": null,
+      "kind": "sidecar"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00016.npz",
+      "bytes": 320002878,
+      "sha256_expected": "983bda404d8626b83f92bb48989a35d5ef9e1e11b38d83b66772965ab68ed8d0",
+      "kind": "npz"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00016.json",
+      "bytes": 1841400,
+      "sha256_expected": null,
+      "kind": "sidecar"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00017.npz",
+      "bytes": 320002878,
+      "sha256_expected": "adcba640f88ec07f2f937ab9cb18fce03b1eb5f6733fbedaf5e81cd4a1e987f5",
+      "kind": "npz"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00017.json",
+      "bytes": 1837630,
+      "sha256_expected": null,
+      "kind": "sidecar"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00018.npz",
+      "bytes": 320002878,
+      "sha256_expected": "5ba092ce0d1f7ceebebdab037f476eb561307aa73fb86f512d33e9506e59d5a9",
+      "kind": "npz"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00018.json",
+      "bytes": 1843090,
+      "sha256_expected": null,
+      "kind": "sidecar"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00019.npz",
+      "bytes": 320002878,
+      "sha256_expected": "a908b9aace43e925cf914750fe9cdccadba1051e41f20d681b2768e10f445cf5",
+      "kind": "npz"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00019.json",
+      "bytes": 1822975,
+      "sha256_expected": null,
+      "kind": "sidecar"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00020.npz",
+      "bytes": 320002878,
+      "sha256_expected": "163283e0884034798d0deef665d7711f4f676739ab12956a3db8e290074baae0",
+      "kind": "npz"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00020.json",
+      "bytes": 1827093,
+      "sha256_expected": null,
+      "kind": "sidecar"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00021.npz",
+      "bytes": 320002878,
+      "sha256_expected": "fff12a95e8e4e2c1a42a08b113ef3a834ee9d308651b32a884c6b7f69f9e87d4",
+      "kind": "npz"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00021.json",
+      "bytes": 1840027,
+      "sha256_expected": null,
+      "kind": "sidecar"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00022.npz",
+      "bytes": 320002878,
+      "sha256_expected": "2b5426b0a2dfeee1637b82cdea7b75546a339af087798b6d5908fd2442b9f962",
+      "kind": "npz"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00022.json",
+      "bytes": 1830718,
+      "sha256_expected": null,
+      "kind": "sidecar"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00023.npz",
+      "bytes": 320002878,
+      "sha256_expected": "d57f2fda6ac5bc9ecbe1a8048bc66b2c960b5477c91e06044a0b9c6f0dd60f9b",
+      "kind": "npz"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00023.json",
+      "bytes": 1819997,
+      "sha256_expected": null,
+      "kind": "sidecar"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00024.npz",
+      "bytes": 320002878,
+      "sha256_expected": "9031114d3c8e3da61f7f9ec7277ee1cd6c528d6bc9d65cf13b1f1d43a8b2ba47",
+      "kind": "npz"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00024.json",
+      "bytes": 1842070,
+      "sha256_expected": null,
+      "kind": "sidecar"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00025.npz",
+      "bytes": 320002878,
+      "sha256_expected": "f47fdbbe86128e8aa1adc309e91e8c612159fe3d7e73835797af25084280c9a6",
+      "kind": "npz"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00025.json",
+      "bytes": 1852788,
+      "sha256_expected": null,
+      "kind": "sidecar"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00026.npz",
+      "bytes": 320002878,
+      "sha256_expected": "31763ceb0224cf182218aa564e3506b38d85deeff64cbd60585cd4ba11481848",
+      "kind": "npz"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00026.json",
+      "bytes": 1831580,
+      "sha256_expected": null,
+      "kind": "sidecar"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00027.npz",
+      "bytes": 320002878,
+      "sha256_expected": "f5ef95cdc077a439975575795c8e9a045c509c670405267dd1041fde957295b9",
+      "kind": "npz"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00027.json",
+      "bytes": 1845387,
+      "sha256_expected": null,
+      "kind": "sidecar"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00028.npz",
+      "bytes": 320002878,
+      "sha256_expected": "78c71d41e7057b04657d82ead85ff7a19c9fd998d54f72417fe33a48ee339f4c",
+      "kind": "npz"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00028.json",
+      "bytes": 1883692,
+      "sha256_expected": null,
+      "kind": "sidecar"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00029.npz",
+      "bytes": 320002878,
+      "sha256_expected": "31a73d6bd76015d4312af371cdfc0ddc3a6ac26b8228264eca70684979280b75",
+      "kind": "npz"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00029.json",
+      "bytes": 1843070,
+      "sha256_expected": null,
+      "kind": "sidecar"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00030.npz",
+      "bytes": 320002878,
+      "sha256_expected": "f37127f8c053e68a36dd01569768f1ac7a644b3dea121e1c6a5f8d5bbc37a6f9",
+      "kind": "npz"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00030.json",
+      "bytes": 1858886,
+      "sha256_expected": null,
+      "kind": "sidecar"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00031.npz",
+      "bytes": 320002878,
+      "sha256_expected": "0a69bbc5cec1fc790a4a2df9c53f29ba287765c0c98a1092d1a36db47a3029ca",
+      "kind": "npz"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00031.json",
+      "bytes": 1835348,
+      "sha256_expected": null,
+      "kind": "sidecar"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00032.npz",
+      "bytes": 320002878,
+      "sha256_expected": "420f66c0f5d8561b630070ac33cfbf5d1ca358d3e04df29ce820e3d5b3aa7cab",
+      "kind": "npz"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00032.json",
+      "bytes": 1850740,
+      "sha256_expected": null,
+      "kind": "sidecar"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00033.npz",
+      "bytes": 320002878,
+      "sha256_expected": "c867e78e7bd1b0182603f4a8d406d0eb25aa0c3a7168a40bae6b79e53ebbd0d5",
+      "kind": "npz"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00033.json",
+      "bytes": 1831486,
+      "sha256_expected": null,
+      "kind": "sidecar"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00034.npz",
+      "bytes": 320002878,
+      "sha256_expected": "c452ead4337f970bebcb4dfc4a95dd4b86b60b72bcd72b8d999b8273bb5082a2",
+      "kind": "npz"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00034.json",
+      "bytes": 1842676,
+      "sha256_expected": null,
+      "kind": "sidecar"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00035.npz",
+      "bytes": 320002878,
+      "sha256_expected": "bb69b29f21e591bae2374ce71031d9126d05cc3a2a6138cababeaa551be0c1c7",
+      "kind": "npz"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00035.json",
+      "bytes": 1837783,
+      "sha256_expected": null,
+      "kind": "sidecar"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00036.npz",
+      "bytes": 320002878,
+      "sha256_expected": "6ce1c08a4108809db9c67ac8e8f4282775c9637b7b9eef8e26e2faa1ef60da14",
+      "kind": "npz"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00036.json",
+      "bytes": 1837518,
+      "sha256_expected": null,
+      "kind": "sidecar"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00037.npz",
+      "bytes": 320002878,
+      "sha256_expected": "4694b1ef23b552e016200ed26a0b2ba5b7edbb8cbae252405fab71e7d9f48c10",
+      "kind": "npz"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00037.json",
+      "bytes": 1852750,
+      "sha256_expected": null,
+      "kind": "sidecar"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00038.npz",
+      "bytes": 320002878,
+      "sha256_expected": "6f757428572abc23aa8423c32209c78205b62b61507d1a22a94a3fe584994b8e",
+      "kind": "npz"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00038.json",
+      "bytes": 1850825,
+      "sha256_expected": null,
+      "kind": "sidecar"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00039.npz",
+      "bytes": 320002878,
+      "sha256_expected": "052131c0cb0ef025563448d5135b3c63e8957a4f4512f0ca9042d7867a9bf30d",
+      "kind": "npz"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00039.json",
+      "bytes": 1838717,
+      "sha256_expected": null,
+      "kind": "sidecar"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00040.npz",
+      "bytes": 320002878,
+      "sha256_expected": "c284562f30c662144af91895e97efd5a0d7238b72bb467546093d4204396058b",
+      "kind": "npz"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00040.json",
+      "bytes": 1849256,
+      "sha256_expected": null,
+      "kind": "sidecar"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00041.npz",
+      "bytes": 320002878,
+      "sha256_expected": "ff816bb4487df1e14a609b8fbc4449439c54703233cba7be1fefbecdc8519a10",
+      "kind": "npz"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00041.json",
+      "bytes": 1840326,
+      "sha256_expected": null,
+      "kind": "sidecar"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00042.npz",
+      "bytes": 320002878,
+      "sha256_expected": "3e56996c5d2a2791cba96c727ebb56179deedf1a30d095795e0eed3349c5feee",
+      "kind": "npz"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00042.json",
+      "bytes": 1855999,
+      "sha256_expected": null,
+      "kind": "sidecar"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00043.npz",
+      "bytes": 320002878,
+      "sha256_expected": "eb2efd817a53d70957fdedce499582b421f92e8b699b109e0c42be61f87180e1",
+      "kind": "npz"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00043.json",
+      "bytes": 1882915,
+      "sha256_expected": null,
+      "kind": "sidecar"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00044.npz",
+      "bytes": 320002878,
+      "sha256_expected": "723b2b8458cef8458eea18e802f42660c4d14303d9e8a7a6ec7c678ae732bb3d",
+      "kind": "npz"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00044.json",
+      "bytes": 1849663,
+      "sha256_expected": null,
+      "kind": "sidecar"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00045.npz",
+      "bytes": 320002878,
+      "sha256_expected": "b7d148870efe341b8506c847ce48984d46be84e20bb10e69a13cdd6934246d87",
+      "kind": "npz"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00045.json",
+      "bytes": 1851185,
+      "sha256_expected": null,
+      "kind": "sidecar"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00046.npz",
+      "bytes": 320002878,
+      "sha256_expected": "4bdb178440610fc60044aa64eaa6b2a45e1b46c38edbc640674a071c90141151",
+      "kind": "npz"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00046.json",
+      "bytes": 1858138,
+      "sha256_expected": null,
+      "kind": "sidecar"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00047.npz",
+      "bytes": 320002878,
+      "sha256_expected": "eca030cdf5a6e48dffcd45a6d722baadbfaf33c893bb723ca1712ec3b1a96d77",
+      "kind": "npz"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00047.json",
+      "bytes": 1846385,
+      "sha256_expected": null,
+      "kind": "sidecar"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00048.npz",
+      "bytes": 320002878,
+      "sha256_expected": "4ae67ee1b582a7e873f8e587e8398d821684680d8c716e90cc315a8c9b71a862",
+      "kind": "npz"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00048.json",
+      "bytes": 1852560,
+      "sha256_expected": null,
+      "kind": "sidecar"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00049.npz",
+      "bytes": 320002878,
+      "sha256_expected": "f654af0f066b2392d055c9d5d7c7be18fa84386278bcbaf10a4de879716773af",
+      "kind": "npz"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00049.json",
+      "bytes": 1860127,
+      "sha256_expected": null,
+      "kind": "sidecar"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00050.npz",
+      "bytes": 320002878,
+      "sha256_expected": "524acc83c1c3931be785b7bc83c23fad7980323e886f35139ebb6e12c227e1f9",
+      "kind": "npz"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00050.json",
+      "bytes": 1873958,
+      "sha256_expected": null,
+      "kind": "sidecar"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00051.npz",
+      "bytes": 320002878,
+      "sha256_expected": "5c31d75a7f21e814bc00911524e139359688a5c8b10fe798ef88a75a8aa7c195",
+      "kind": "npz"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00051.json",
+      "bytes": 1852711,
+      "sha256_expected": null,
+      "kind": "sidecar"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00052.npz",
+      "bytes": 320002878,
+      "sha256_expected": "13ce7a85e9aaa2980ec0cf53e92734c169b395f8b06332f0d2276de5cc0fa585",
+      "kind": "npz"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00052.json",
+      "bytes": 1872869,
+      "sha256_expected": null,
+      "kind": "sidecar"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00053.npz",
+      "bytes": 320002878,
+      "sha256_expected": "87005e6e4caec11b2ffde50673ca2cc093c80bff9d3adde7ecac679ff5428e08",
+      "kind": "npz"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00053.json",
+      "bytes": 1860678,
+      "sha256_expected": null,
+      "kind": "sidecar"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00054.npz",
+      "bytes": 320002878,
+      "sha256_expected": "f4ea976eca26e4a33b301241a95a9f3a6334c72c3c3fa66135aa8104038c000d",
+      "kind": "npz"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00054.json",
+      "bytes": 1828772,
+      "sha256_expected": null,
+      "kind": "sidecar"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00055.npz",
+      "bytes": 320002878,
+      "sha256_expected": "742a772ca83586b2a26b6672fb8f4bc35ac46cbe821fd8db78303cc7a11a7592",
+      "kind": "npz"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00055.json",
+      "bytes": 1837153,
+      "sha256_expected": null,
+      "kind": "sidecar"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00056.npz",
+      "bytes": 320002878,
+      "sha256_expected": "284d0cec53324e6e4968f7de757d5e68750c23b7e1a963aa2f12fd31353f4338",
+      "kind": "npz"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00056.json",
+      "bytes": 1840442,
+      "sha256_expected": null,
+      "kind": "sidecar"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00057.npz",
+      "bytes": 320002878,
+      "sha256_expected": "2a363106833288bab0d2ed4d09e151f3fb4f26213b265c14d3fe39903f26511e",
+      "kind": "npz"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00057.json",
+      "bytes": 1832607,
+      "sha256_expected": null,
+      "kind": "sidecar"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00058.npz",
+      "bytes": 320002878,
+      "sha256_expected": "68a396194977e5a634b24b3feb466f96e7dbf653110bda96b87a0eb05e8885db",
+      "kind": "npz"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00058.json",
+      "bytes": 1827713,
+      "sha256_expected": null,
+      "kind": "sidecar"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00059.npz",
+      "bytes": 320002878,
+      "sha256_expected": "a280961081dfdd65d71a790922c97de29c1d0b8d4245bf2bf232471e21b453bb",
+      "kind": "npz"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00059.json",
+      "bytes": 1821544,
+      "sha256_expected": null,
+      "kind": "sidecar"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00060.npz",
+      "bytes": 320002878,
+      "sha256_expected": "eac51f4cb5eb50e1934320ea787ac59d4a76b874b529e7adc65db2b5d4429cab",
+      "kind": "npz"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00060.json",
+      "bytes": 1871243,
+      "sha256_expected": null,
+      "kind": "sidecar"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00061.npz",
+      "bytes": 320002878,
+      "sha256_expected": "466f70d1773f59ea81ee930933c883a414e3dd7a3526a16ef198af80ada6bef0",
+      "kind": "npz"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00061.json",
+      "bytes": 1839393,
+      "sha256_expected": null,
+      "kind": "sidecar"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00062.npz",
+      "bytes": 320002878,
+      "sha256_expected": "e50da0ab5a81cc27db08f73d4f6089b0c5b3da44eaf097c3b05c4c30cb6d34e3",
+      "kind": "npz"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00062.json",
+      "bytes": 1838667,
+      "sha256_expected": null,
+      "kind": "sidecar"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00063.npz",
+      "bytes": 320002878,
+      "sha256_expected": "d08b4a9ece411b4ca9a17e93121adce354a7c2ab9c0640955d2f099044be5f7e",
+      "kind": "npz"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00063.json",
+      "bytes": 1839610,
+      "sha256_expected": null,
+      "kind": "sidecar"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00064.npz",
+      "bytes": 320002878,
+      "sha256_expected": "b697a41189e67041f87a5ec7b215a3ff28ec64d1c480c9439d7674a7d7758a0e",
+      "kind": "npz"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00064.json",
+      "bytes": 1840235,
+      "sha256_expected": null,
+      "kind": "sidecar"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00065.npz",
+      "bytes": 320002878,
+      "sha256_expected": "02c149f5a0818baf34d4e5ac6313947b39f39cb43244ba4095b1bb94bc4a1ed4",
+      "kind": "npz"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00065.json",
+      "bytes": 1808194,
+      "sha256_expected": null,
+      "kind": "sidecar"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00066.npz",
+      "bytes": 320002878,
+      "sha256_expected": "55f906ebebfdfd6d631d3edccf0336f9d1441a2c9217b6a9538c977e15616b2c",
+      "kind": "npz"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00066.json",
+      "bytes": 1849711,
+      "sha256_expected": null,
+      "kind": "sidecar"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00067.npz",
+      "bytes": 320002878,
+      "sha256_expected": "0dc5453df6930e16eec181ca049147020fddcda4edc604db02d140cbc3479a87",
+      "kind": "npz"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00067.json",
+      "bytes": 1853159,
+      "sha256_expected": null,
+      "kind": "sidecar"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00068.npz",
+      "bytes": 320002878,
+      "sha256_expected": "d91ef0b3a85df457d1609795acb911d2f2cfab202e65abc29dfad1e60ab739e7",
+      "kind": "npz"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00068.json",
+      "bytes": 1842836,
+      "sha256_expected": null,
+      "kind": "sidecar"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00069.npz",
+      "bytes": 320002878,
+      "sha256_expected": "3383af987ea234b88f0bdd4d2c03bf79656980c0e87a93fff9f6242ccf4992b6",
+      "kind": "npz"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00069.json",
+      "bytes": 1836927,
+      "sha256_expected": null,
+      "kind": "sidecar"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00070.npz",
+      "bytes": 320002878,
+      "sha256_expected": "342faa319ee932c3031a2fb59ddb1b487570da4d5b3e5415fbc2d3858f52c74e",
+      "kind": "npz"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00070.json",
+      "bytes": 1850570,
+      "sha256_expected": null,
+      "kind": "sidecar"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00071.npz",
+      "bytes": 320002878,
+      "sha256_expected": "37b2974600313df35528b6e43e7a825db5b7bd76d7bd7eaab35f7603862ee559",
+      "kind": "npz"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00071.json",
+      "bytes": 1878393,
+      "sha256_expected": null,
+      "kind": "sidecar"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00072.npz",
+      "bytes": 320002878,
+      "sha256_expected": "aa8d0fc017f77e6d18f6c34a61647e73f0910bb192e7392cad4cc20af956c97b",
+      "kind": "npz"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00072.json",
+      "bytes": 1879624,
+      "sha256_expected": null,
+      "kind": "sidecar"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00073.npz",
+      "bytes": 320002878,
+      "sha256_expected": "f244b7b00f5e2c8e2741d46ad413a4929d356a353e40b72c30ca7427956eb331",
+      "kind": "npz"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00073.json",
+      "bytes": 1855926,
+      "sha256_expected": null,
+      "kind": "sidecar"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00074.npz",
+      "bytes": 320002878,
+      "sha256_expected": "c8ae565a6b4fb8a1c4b23203fb2f54dea0ccdd1627c27b8687292745835ec5ad",
+      "kind": "npz"
+    },
+    {
+      "path": "/Users/soham/sih2026/data/shards/train-150000/shard-00074.json",
+      "bytes": 1873224,
+      "sha256_expected": null,
+      "kind": "sidecar"
+    }
+  ],
+  "approved_total_bytes": 24138425886,
+  "matches_plan": true,
+  "positive_control": {
+    "all_row_checksums": true,
+    "raw_sample_min": 100,
+    "sample_seed": 26170,
+    "native_mismatches_allowed": 0,
+    "caption_mismatches_allowed": 0,
+    "required_exit": 0
+  },
+  "smoke_control": {
+    "n": 16,
+    "bands_each": 12,
+    "native_mismatches_allowed": 0,
+    "caption_mismatches_allowed": 0
+  },
+  "disk_guard_bytes": 45000000000,
+  "free_bytes_before_delete": 57344000000,
+  "stop_after": "first-shard verifier plus16 smoke-patch comparisons; report before phase1",
+  "phase2_forbidden": true,
+  "controller_sha256": "71564db422df9c3e9163ca9774fb36f468102d3c114f7e8e4d8cc95ce55fd634",
+  "attempt": 2,
+  "reason": "Attempt1 failed before any shard write: OpenMP shared-memory sandbox access. Retry same unchanged core files outside restriction.",
+  "build_cli_error": "relative_to(ROOT) called on a relative --published-manifest argument after completed write",
+  "continuation": "verify existing shard and16 smoke patches only; preserve both failed build attempts",
+  "pid": 30116,
+  "log": "results/stage1-rebuild-checkpoint1-validation.log"
+}

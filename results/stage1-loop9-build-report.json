@@ -1,0 +1,65 @@
+{
+  "kind": "loop 9 train shard build report",
+  "git_sha": "1ceb9d161e1f654da96b1f57b31724e48ac29250",
+  "seed": 26168,
+  "n_total_requested": 150000,
+  "device": "CPU-only preparation (Apple M5 MacBook Pro, py3.11.15 .venv-stage1)",
+  "published_manifest": "data/manifests/bigearthnet/stage1-shards-train-150000.v1.json",
+  "selection_record": "data/manifests/bigearthnet/stage1-train-selection-150000.v1.json",
+  "prefix_tile_balance": {
+    "10000": {
+      "tiles_present": 48,
+      "min": 40,
+      "max": 212,
+      "spread": 172,
+      "max_deviation_pp": 1.9460000000000002
+    },
+    "50000": {
+      "tiles_present": 48,
+      "min": 40,
+      "max": 1113,
+      "spread": 1073,
+      "max_deviation_pp": 1.4586666666666663
+    },
+    "100000": {
+      "tiles_present": 48,
+      "min": 40,
+      "max": 2390,
+      "spread": 2350,
+      "max_deviation_pp": 0.790666666666667
+    },
+    "150000": {
+      "tiles_present": 48,
+      "min": 40,
+      "max": 3845,
+      "spread": 3805,
+      "max_deviation_pp": 0.0
+    }
+  },
+  "status": "complete",
+  "stopped_reason": null,
+  "shards": 75,
+  "n_patches": 150000,
+  "total_bytes": 24000215850,
+  "verified_shards_after_build": 75,
+  "verification_problems": [],
+  "rejected_this_run": 0,
+  "rejected_count_total": 0,
+  "rejection_fraction_this_run": 0.0,
+  "rejected_by_reason": {},
+  "seconds_elapsed": 2297.3219296250027,
+  "seconds_per_patch": 0.015238560037499993,
+  "archive_bytes_streamed": 317560228590,
+  "free_bytes_before": 85882961920,
+  "free_bytes_after": 58416676864,
+  "free_bytes_min": 57661681664,
+  "extraction_temp_bytes": 0,
+  "extraction_temp_note": "selected members are decoded from rasterio MemoryFile and never written to disk; no temporary extraction directory exists",
+  "peak_process_rss_bytes": 4248309858304,
+  "guards": {
+    "min_free_bytes": 45000000000,
+    "speed_guard_after_shards": 10,
+    "speed_guard_max_seconds_per_patch": 0.288,
+    "max_rejection_fraction": 0.01
+  }
+}

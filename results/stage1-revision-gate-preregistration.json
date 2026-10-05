@@ -1,0 +1,57 @@
+{
+  "kind": "revision-gate small loop preregistration; separate from loop10",
+  "timestamp_utc": "2026-10-05T12:28:51.496686+00:00",
+  "git_sha": "1ceb9d161e1f654da96b1f57b31724e48ac29250",
+  "seed": 0,
+  "n": 0,
+  "device": "CPU mocks only; no model loaded",
+  "revision": "66285546d2b821cf421d4f5eb2576359d3770cd3",
+  "max_attempts_per_problem": 2,
+  "revision_gate": {
+    "weights": "all expected shards present and exact SHA256 match; nonempty map",
+    "source_order": [
+      "config.json _commit_hash if present",
+      "hf --local-dir .cache/huggingface/download/config.json.metadata first line",
+      "missing => FAIL"
+    ],
+    "revision": "exact pinned hash equality; never default to pin",
+    "fields": [
+      "weights_match",
+      "revision_source",
+      "revision_matches",
+      "passed"
+    ]
+  },
+  "memory_variants": {
+    "control": "existing config unchanged: full vision unfrozen",
+    "variant": "vision_trainable_last_n_blocks=4; patch embed and LM LoRA remain trainable; merger and earlier vision blocks frozen",
+    "fallback": "same variant vision_fp32=true, only on failure; at most2 attempts per variant",
+    "estimation": "header-derived counts; frozen vision2bytes/param, trainable master4+grad4+autocast2, original Adafactor allowance and4GB workspace; estimate not measurement",
+    "gate": "finite losses and vision; log peak memory and OOM; no new accuracy threshold"
+  },
+  "throughput": {
+    "producer": "bounded shard-backed smoke using SAME full config identity+manifest; no 16-image throughput substitution",
+    "measured_steps": 50,
+    "gate": "finite positive sample rate, exact config/manifest/device/dtype match, completed steps; full refuses absent record"
+  },
+  "storage": {
+    "keep_last": 2,
+    "cap_bytes": 16106127360,
+    "scope": "future managed training checkpoints only; no deletion executed this loop",
+    "gate": "whole working directory projected usage including temporary checkpoint must stay STRICTLY below cap; refuse write otherwise; preserve failure JSONs; rotate only after successful atomic save"
+  },
+  "resume": "rehash pinned base weights+revision before any model construction, including resumes; report seconds/bytes in result",
+  "tests": "old revision tests first (expected red), new focused at most2 attempts then full once at end; CPU mocked only",
+  "frozen_sha256": {
+    "data/bigearthnet_shards.py": "f8f4f3eecf3d56fad5664471b24bb7d18319aad3623a156b641d5c3ede24469b",
+    "scripts/verify_stage1_train_shards.py": "091d80f3afab40aea3ca356481db871df0251a4d24698db263c3e292542d65a8",
+    "scripts/build_stage1_train_shards.py": "0112e8d8f42eba52ec472c923e2a81858008a18d15d70638cb9597fb50f51608",
+    "scripts/build_stage1_shards.py": "cafd3d7aa5abe11f3c2ecb887e0f2ae5b7827cb9c4fdcf326ef88b090936d273",
+    "models/qwen_vl/stage1.py": "54d3d22f8a90c01b23e63c9e8b8158fed2e835686bda5821e00e23315b3078e3",
+    "data/manifests/bigearthnet/norm_contract.json": "ab02179d2b4cf33c320a897d75318484189b249d99fff6cdd386016df908912d",
+    "data/manifests/bigearthnet/caption-geo-split.v1.csv.gz": "3e5b1d774125c7b48a9454dbb33e6144aee8d990d8966e830987836159bd83ee",
+    "data/manifests/bigearthnet/stage1-train-rebuild-ids-loop10.v1.json": "495fca3db7919fd627a937632bd5479337ad588f665e50d1551f418bdc37067f",
+    "configs/model_artifacts.json": "72527fa9bb644cac71513b40a1a7e836a2044aae71ca6fb7095d4df643753e41"
+  },
+  "build_pid_do_not_kill": 30903
+}

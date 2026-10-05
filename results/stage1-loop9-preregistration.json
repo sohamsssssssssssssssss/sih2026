@@ -1,0 +1,208 @@
+{
+  "kind": "loop 9 preregistration (local train-shard build plus plan-from-throughput guard; prepare and build only)",
+  "git_sha": "1ceb9d161e1f654da96b1f57b31724e48ac29250",
+  "split_name": "caption-geo-split.v1/train",
+  "n": 150000,
+  "seed": 26168,
+  "device": "CPU-only preparation (Apple M5 MacBook Pro, py3.11.15 .venv-stage1); no GPU, no Kaggle session, no training run",
+  "timestamp_utc": "2026-10-05T05:05:00+00:00",
+  "revision": "66285546d2b821cf421d4f5eb2576359d3770cd3",
+  "weight_sha256": {
+    "model-00001-of-00002.safetensors": "41a8895c164b4d32bae6b302f4603fcbc1797f32dafa45c7e9bcda23c6755df8",
+    "model-00002-of-00002.safetensors": "365531ff8752420e89dee707b79d021fb2d6e25abafe486f080555a4fe6972e4"
+  },
+  "frozen_contract_sha256": "ab02179d2b4cf33c320a897d75318484189b249d99fff6cdd386016df908912d",
+  "frozen_split_sha256": "3e5b1d774125c7b48a9454dbb33e6144aee8d990d8966e830987836159bd83ee",
+  "scope": {
+    "commit": false,
+    "push": false,
+    "kaggle_upload": false,
+    "training_run": false,
+    "downloads": false,
+    "archive_extraction_to_disk": false,
+    "deletes": false,
+    "unchanged_by_this_loop": [
+      "data/manifests/bigearthnet/norm_contract.json",
+      "data/manifests/bigearthnet/caption-geo-split.v1.csv.gz",
+      "data/manifests/bigearthnet/stage1-shards-eval-2000.v1.json and its pixels",
+      "models/qwen_vl/stage1.py patch-embed initialization",
+      "configs/model_artifacts.json pinned checkpoint",
+      "all loop-7 and loop-8 artifacts, including the loop-8 shard manifests and their shards"
+    ],
+    "numbers_recorded_by_this_loop": "CPU build timings, shard bytes, SHA256 values, tile histograms, and unit-test outcomes only. No training, throughput, memory, or accuracy number is produced here."
+  },
+  "carried_over_measurements": {
+    "source": "results/stage1-loop8-shard-build.json and results/stage1-loop8-eval-shard-build.json",
+    "shard_patches": 2000,
+    "raw_bytes_per_shard": 320000000,
+    "raw_bytes_per_patch": 160000,
+    "npz_bytes_per_shard": 320002878,
+    "deflated_bytes_per_shard_eval": 223894663,
+    "deflate_ratio_eval": 0.699671,
+    "seconds_per_shard_measured": 288.1,
+    "seconds_per_patch_loop8_figure": 0.144,
+    "seconds_per_patch_caveat": "the loop-8 figure is one full 63.5 GB archive stream amortised over 2,000 patches, so it is dominated by stream decompression, not by per-patch work. A single multi-shard pass amortises that stream once, so the observed per-patch rate is expected to be lower. The speed guard below is written against the loop-8 figure as instructed, and the discrepancy is reported rather than hidden.",
+    "projection_150k_deflated": "about 16.8 GB, labelled a projection, not a measurement"
+  },
+  "step_1_prefix_stratification": {
+    "question": "is the loop-8 selection order prefix-stratified, i.e. is any prefix of the shard list roughly balanced across the 48 train tiles?",
+    "method": "selection list only; no archive member is read",
+    "prefixes_to_report": [
+      10000,
+      50000,
+      100000,
+      150000
+    ],
+    "gate": {
+      "name": "prefix_tile_balance",
+      "rule": "for every reported prefix, (max per-tile count - min per-tile count) <= 1 once the prefix covers all 48 tiles at least once",
+      "threshold": 1
+    },
+    "if_violated": "change the selection ordering only (round-robin interleaving across tiles, same seed and same per-tile quota rule), keep the loop-8 selection function and its artifacts untouched as separate files, add a test, and record the new selection as its own manifest",
+    "expected": "the loop-8 function returns tiles grouped in sorted order, so long prefixes are expected to be tile-blocked and therefore to fail this gate"
+  },
+  "step_2_build": {
+    "n_total_ceiling": 150000,
+    "patches_per_shard": 2000,
+    "shards_expected": 75,
+    "output_dir": "data/shards/train-150000",
+    "published_manifest": "data/manifests/bigearthnet/stage1-shards-train-150000.v1.json",
+    "incremental": "the manifest is rewritten after every completed shard, so an interrupted build leaves a valid prefix",
+    "resumable": "a rerun re-streams the archive, re-verifies every existing shard against the manifest by SHA256 and size, skips verified shards, and continues with the first unverified one",
+    "guards": {
+      "disk": {
+        "rule": "before writing each shard require shutil.disk_usage free >= 45 GB, otherwise stop cleanly, report the last verified shard, and leave all existing shards valid",
+        "threshold_bytes": 45000000000,
+        "on_violation": "stop cleanly; do not delete or truncate anything"
+      },
+      "speed": {
+        "rule": "after the first 10 completed shards in this process, mean seconds per patch must be <= 2 x the loop-8 figure of 0.144 s/patch, i.e. 0.288 s/patch; otherwise stop and report",
+        "threshold_seconds_per_patch": 0.288,
+        "checked_after_shard": 10
+      },
+      "rejection_fraction": {
+        "rule": "cumulative candidate rejection fraction must stay <= 0.01 (the loop-4 figure); a breach stops the build and is reported with the per-reason counts",
+        "max_fraction": 0.01
+      }
+    },
+    "per_shard_assertions": [
+      "0 patch IDs whose frozen-split geo_split is eval, and 0 tiles from the 6 eval tiles",
+      "0 duplicate patch IDs within the shard, against every prior shard in this build, and against the published eval shard",
+      "all 12 bands present at their native sizes, verified by re-reading the written npz",
+      "caption joined for every row: exactly the type=='captioning' BigEarthNet.txt output for that patch_id"
+    ],
+    "per_shard_record": [
+      "bytes",
+      "npz sha256",
+      "seconds",
+      "accepted",
+      "rejected",
+      "rejected by reason",
+      "tile counts",
+      "mean/max/min tile count"
+    ],
+    "extraction_temp_space": {
+      "rule": "selected members are decoded from memory through rasterio MemoryFile and never written to disk; no temporary extraction directory is created",
+      "expected_peak_temp_bytes": 0,
+      "verification": "no temporary directory is created under the output dir or the system temp dir during the build; the log records the process RSS peak instead"
+    },
+    "execution": "caffeinate -i, nice, one log file, one progress line per shard, no more than one heavy process",
+    "on_early_stop": "whatever shards exist must still pass the full step-3 verification and be usable as a prefix"
+  },
+  "step_3_verification": {
+    "checks": [
+      "re-hash every shard file against the manifest SHA256 and byte size",
+      "split purity: no eval-side patch ID and no eval tile in any shard",
+      "no duplicate patch IDs within or across shards, and none shared with the eval shard",
+      "caption coverage: every row has a non-empty caption and one per patch_id",
+      "native band arrays present for all 12 bands with the expected shapes",
+      "total bytes, measured seconds per patch, measured tile balance across the whole build",
+      "rejection fraction and the per-reason breakdown at scale"
+    ],
+    "threshold": "any integrity, purity, duplication, or caption failure fails verification; the build is reported as failed prefix and is not uploaded"
+  },
+  "step_4_upload_plan": {
+    "upload": false,
+    "rule": "split the shard set into parts of at most 5 GB each, listing part name, shard index range, byte size, and a SHA256 list file per part",
+    "outputs": [
+      "results/stage1-loop9-upload-plan.json",
+      "results/stage1-loop9-upload-sha256-<part>.txt"
+    ],
+    "kaggle_limits": "UNVERIFIED in this loop: no Kaggle documentation was fetched and nothing was uploaded. The 5 GB part size is the instruction's bound, not a measured platform limit; the per-dataset total limit is also unverified and must be checked before any upload",
+    "measured_total_to_report": "from the built manifest, not projected"
+  },
+  "step_5_plan_from_throughput": {
+    "problem": "config-full.yaml currently ships placeholder step counts that were never measured; a session could start a multi-hour run sized by a guess",
+    "design": [
+      "the 'full' stage refuses to start unless a throughput JSON produced by the T4 smoke stage is supplied",
+      "required throughput fields: measured samples_per_second, the shard manifest SHA256, and the config identity it was measured under",
+      "max_optimizer_steps = floor(budget_seconds x measured_samples_per_second / effective_batch), where effective_batch = batch_size x gradient_accumulation_steps",
+      "budget_seconds and the wall-clock guard are configurable; the wall-clock guard additionally bounds steps_per_session = floor((limit - reserve) x measured_samples_per_second / effective_batch)",
+      "N_used, steps, epochs = steps x effective_batch / N_used, and the throughput provenance are written into the results JSON before the first optimizer step",
+      "config-full.yaml carries steps: null and max_steps_per_session: null explicitly, so no placeholder number can be used by accident"
+    ],
+    "tests": "CPU, mocked model: refusal without a throughput JSON, the floor arithmetic, refusal when the throughput manifest SHA256 does not match, N_used clamping to the shard manifest, and the pre-training write of the plan into the results JSON",
+    "no_placeholder_left": "any remaining numeric step default in code or config is a defect and must be removed rather than kept as a fallback"
+  },
+  "attempt_budget": "max 2 attempts per problem; every failed attempt is kept as its own file",
+  "tests_planned": {
+    "touched_files": [
+      "data/test_bigearthnet_shards.py",
+      "scripts/test_stage1_full.py"
+    ],
+    "covers": [
+      "prefix-stratified ordering of the new selection for several prefixes",
+      "the old selection function is unchanged and still passes its loop-8 tests",
+      "resumable shard-set build: verified shards are skipped and the run continues",
+      "per-shard gates: eval purity, duplicate IDs across shards and against the eval shard, twelve bands, caption join",
+      "disk guard stops cleanly and leaves a valid prefix",
+      "speed guard stops cleanly after its checkpoint",
+      "the multi-shard builder and the loop-8 single-shard builder produce identical shard bytes for identical input",
+      "plan-from-throughput: refusal, arithmetic, manifest mismatch, clamping, pre-training plan write"
+    ],
+    "focused_then_full": true
+  },
+  "amendments": [
+    {
+      "index": 0,
+      "timestamp_utc": "2026-10-05T05:20:00+00:00",
+      "trigger": "step 1 measurement on the selection list alone (no pixel read): train-tile availability is heavily skewed, so an equal-quota selection cannot have max-min <= 1 per tile. Measured availability over the 48 train tiles: min 40, p25 2,712, median 6,543, p75 12,643, max 31,770, total 422,809; one tile holds only 40 captioning train patches.",
+      "gate_as_written": "max - min <= 1 per tile across all 48 tiles",
+      "gate_result_as_written": "unattainable by construction; it would cap every tile at 40 patches and cap N at 1,920",
+      "replacement_gate": {
+        "name": "prefix_proportional_balance",
+        "rule": "for every reported prefix, each tile's share of the prefix must match its share of the full selection within 3 percentage points; and every prefix must touch all 48 tiles",
+        "max_percentage_point_deviation": 3.0,
+        "tiles_touched": 48,
+        "why": "the instruction's intent is that any prefix of shards is roughly balanced across the 48 train tiles; with availability spanning 40 to 31,770 patches, 'balanced' can only mean proportional to availability, not equal"
+      },
+      "also_changed": "the selection ordering is the new interleaved one (data.bigearthnet_shards.select_patch_ids_interleaved); select_patch_ids and every loop-8 artifact stay untouched as separate files, and their tests still pass",
+      "gates_loosened": "none of the build, disk, speed, rejection, purity, or duplicate gates; only the definition of prefix balance changed, and the original definition and its measured failure are recorded above rather than deleted"
+    },
+    {
+      "id": 1,
+      "title": "shard membership must follow the selection, so the builder costs one archive pass per shard window",
+      "recorded_before": "attempt 2 build",
+      "problem": "A prefix-stratified selection cannot be written by a single-stream writer that keeps one shard buffer: shard membership is fixed by selection rank, the archive is tile-major, and a shard is only complete once the pass reaches its last patch. With one buffer the membership is forced to follow archive order (attempt 1) or all 75 shards (24 GB) must be buffered at once.",
+      "change": "build_shard_set takes shard_window (default: 30% of physical memory / 320 MB = 16 shards on this 16 GB host, i.e. 5 passes). It buffers `shard_window` shards per pass and assigns each accepted patch to shard = selection_rank // patches_per_shard. Rows inside a shard are sorted by selection rank, so on-disk row order equals the selection.",
+      "cost": "ceil(75/16) = 5 archive passes over the 63.5 GB stream instead of 1. Total build time rises; per-patch throughput FALLS because the stream cost is amortised over fewer patches per pass. The pre-registered speed guard (0.288 s/patch after 10 shards) is therefore evaluated against a pessimistic rate and is not loosened.",
+      "gates_loosened": "none",
+      "tests_added": [
+        "test_build_shard_set_membership_follows_the_selection_not_the_archive",
+        "test_build_shard_set_windows_produce_identical_shards"
+      ]
+    }
+  ],
+  "attempt_1_aborted": {
+    "recorded_utc": "2026-10-04T22:49:52+00:00",
+    "command": "scripts/build_stage1_train_shards.py --n-total 150000 --out data/shards/train-150000 --exclude-shards data/shards/eval-2000",
+    "outcome": "aborted after 40 shards / 80000 patches / 12800115120 B",
+    "kept_artifacts": [
+      "data/manifests/bigearthnet/stage1-shards-train-150000.attempt1-aborted-archive-order.v1.json",
+      "logs/loop9-build.attempt1-aborted.log"
+    ],
+    "deleted_artifacts": "data/shards/train-150000/shard-000{00..39}.{npz,json} (12.8 GB, unusable)",
+    "failure": "build_shard_set appended accepted patches in tar arrival order. The archive is tile-major, so shard-00000 held 2000 patches of T34VER alone (tile_counts {'T34VER': 2000}) and every shard prefix was tile-blocked. The selection was correct; the builder did not honour it.",
+    "gates_loosened": "none"
+  }
+}

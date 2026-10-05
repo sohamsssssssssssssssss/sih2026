@@ -1,0 +1,105 @@
+{
+  "git_sha": "1ceb9d161e1f654da96b1f57b31724e48ac29250",
+  "revision": "66285546d2b821cf421d4f5eb2576359d3770cd3",
+  "seed": 0,
+  "n": 0,
+  "device": "CPU mocks only; no model loaded",
+  "kind": "revision-gate package rebuild evidence",
+  "timestamp_utc": "2026-10-05T12:44:11.660797+00:00",
+  "manifest_sha256": "293ea65c72dbac618e6c78f3b8055158e76cafcb824c6493f04e546420e016f6",
+  "files": {
+    "README.md": {
+      "bytes": 12416,
+      "sha256": "92ab0597e28f9410cdcc8bd06b824e6218fb24b9677f705368455f0c6d755406"
+    },
+    "captions.json": {
+      "bytes": 14439,
+      "sha256": "7f762060e7814542ce95186db97aa2cc2847519f677a725a93bc8416429882b6"
+    },
+    "config-full-last4.yaml": {
+      "bytes": 1736,
+      "sha256": "a8fd345b2eb9bd5f0bbf3bbb95aa3f8c6aff92f92e8e6aa336e2cd34f7af7914"
+    },
+    "config-full.yaml": {
+      "bytes": 1641,
+      "sha256": "1327c9411d3f54275ac95ca577bfd87b5ca88fe86b93cd381e5ac468d3c564b3"
+    },
+    "config-last4-vision-fp32.yaml": {
+      "bytes": 1077,
+      "sha256": "53b8b6ea9267f9c3e3ea5315510623100c3e708b5afe9dbcade97265197d63c2"
+    },
+    "config-last4.yaml": {
+      "bytes": 1080,
+      "sha256": "e70b430f5db56a657ff756ab6dc5ed4949dd49013606e225dc798d2725708430"
+    },
+    "config-vision-fp32.yaml": {
+      "bytes": 982,
+      "sha256": "7c3a8368f306e3592cc9d7c6522559d8a51c2ed179ffee06094766c58935b34f"
+    },
+    "config.yaml": {
+      "bytes": 985,
+      "sha256": "91aa6e3edde296ec6f05325e3874827813b3ddfde0454d8b6ee010c936e6265f"
+    },
+    "norm_contract.json": {
+      "bytes": 1777,
+      "sha256": "ab02179d2b4cf33c320a897d75318484189b249d99fff6cdd386016df908912d"
+    },
+    "patches.tar.gz": {
+      "bytes": 1592788,
+      "sha256": "b77d21791a91ff81328408e9701fb2b7ce48874fbf962d153c8ad3ecf520fa65"
+    },
+    "requirements.txt": {
+      "bytes": 101,
+      "sha256": "9a7e2666f9572c077b1ab226e364c2c6310998649a41889568ffb7706ed03712"
+    },
+    "revision.json": {
+      "bytes": 721,
+      "sha256": "cc164a18abf30dbf70dc5437d5088fe688dbaad081d082791266ae7ad85c066d"
+    },
+    "run.py": {
+      "bytes": 2047,
+      "sha256": "a538eca0deda8c00cdf590dddbb6ee752d3b611ede507d39e04a99bd0e2ecf3a"
+    },
+    "src/data/bigearthnet_s2.py": {
+      "bytes": 6798,
+      "sha256": "870092ae9ac0bdea0869cc8a9ba10ded1e14c304a9c0fa8cd1fd93d1268975d0"
+    },
+    "src/data/bigearthnet_shards.py": {
+      "bytes": 54348,
+      "sha256": "f8f4f3eecf3d56fad5664471b24bb7d18319aad3623a156b641d5c3ede24469b"
+    },
+    "src/models/qwen_vl/stage1.py": {
+      "bytes": 3375,
+      "sha256": "54d3d22f8a90c01b23e63c9e8b8158fed2e835686bda5821e00e23315b3078e3"
+    },
+    "src/scripts/run_stage1_full.py": {
+      "bytes": 29046,
+      "sha256": "ea14a3b22f4aa9966f1b4ee668bc9b171eab1d0ebca92339bd7325d5844856bc"
+    },
+    "src/scripts/run_stage1_smoke.py": {
+      "bytes": 24281,
+      "sha256": "07dcb1fc2b48096b27b7f7e24d6c2b81dd8b1c6c4214c1fe16d6f2b78a48db22"
+    },
+    "src/scripts/run_stage1_t4.py": {
+      "bytes": 23091,
+      "sha256": "abfc10dbacc494c0ac516f6f8eced1fc3a75b6b030274d9526f5ddac2a4960af"
+    },
+    "src/scripts/stage1_runtime.py": {
+      "bytes": 6461,
+      "sha256": "0fdc80c338eb9be8179807f9498a31c2e036a21e3030c3994d644592cfb416c2"
+    }
+  },
+  "listed_payload_bytes": 1779190,
+  "zip_path": "packages/stage1-t4-smoke-revision-gate.zip",
+  "zip_bytes": 1653118,
+  "zip_sha256": "049c8d7568292a658c001032a88558a1d8f3ca61ed0ca567ad7420f255c93b28",
+  "requirements": {
+    "packages/stage1-t4-smoke/requirements.txt": "transformers==4.49.0\naccelerate==1.5.2\npeft==0.15.2\nrasterio==1.4.3\nPyYAML==6.0.3\nsafetensors==0.5.3\n",
+    "requirements.txt": "streamlit\npyyaml\nnumpy\npandas\npyarrow\ntorch\npillow\nrasterio\nscipy\nmatplotlib\ngdown\ntransformers>=4.49\nqwen-vl-utils\n# qwen-vl-utils imports torchvision but does not declare it, so without this line\n# `from qwen_vl_utils import process_vision_info` raises ModuleNotFoundError and the\n# live Qwen path fails before it ever reaches the accelerator check.\ntorchvision\naccelerate\nasf_search\nhyp3_sdk\npyarrow>=17,<23\n",
+    "requirements-training.txt": "torch\ntransformers>=4.49\nqwen-vl-utils\naccelerate\npeft\nbitsandbytes\npillow\n"
+  },
+  "torch_omission": "deliberate; preserve host CUDA build; no pins changed",
+  "uploaded": false,
+  "listed_package_bytes_including_manifest": 1783564,
+  "file_count_including_manifest": 21
+}

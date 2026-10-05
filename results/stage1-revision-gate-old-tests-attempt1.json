@@ -1,0 +1,18 @@
+{
+  "git_sha": "1ceb9d161e1f654da96b1f57b31724e48ac29250",
+  "revision": "66285546d2b821cf421d4f5eb2576359d3770cd3",
+  "seed": 0,
+  "device": "CPU mocks only; no model loaded",
+  "kind": "old-tests-attempt1",
+  "n": 5,
+  "timestamp_utc": "2026-10-05T12:29:47.860584+00:00",
+  "counts": {
+    "passed": 0,
+    "failed": 5,
+    "warnings": 0
+  },
+  "exit_code": 1,
+  "log": "results/stage1-revision-gate-old-tests-attempt1.txt",
+  "expected_red": true,
+  "failure_reason": null
+}

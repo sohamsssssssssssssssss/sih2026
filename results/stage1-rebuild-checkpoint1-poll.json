@@ -1,0 +1,12 @@
+{
+  "git_sha": "1ceb9d161e1f654da96b1f57b31724e48ac29250",
+  "dirty_tree": true,
+  "n": 2000,
+  "seed": 26168,
+  "device": "CPU",
+  "split_name": "caption-geo-split.v1/train",
+  "timestamp_utc": "2026-10-05T11:56:59.023502+00:00",
+  "immutable_hashes_match": true,
+  "stage": "verifying first shard",
+  "disk_free_bytes": 80281600000
+}

@@ -1,0 +1,797 @@
+{
+  "kind": "independent Stage-1 shard hash audit A1",
+  "git_sha": "1ceb9d161e1f654da96b1f57b31724e48ac29250",
+  "split_name": "caption-geo-split.v1/train + eval",
+  "n": 152000,
+  "seed": 26169,
+  "device": "CPU",
+  "timestamp_utc": "2026-10-05T04:11:17.834281+00:00",
+  "revision": "66285546d2b821cf421d4f5eb2576359d3770cd3",
+  "weight_sha256": {
+    "model-00001-of-00002.safetensors": "41a8895c164b4d32bae6b302f4603fcbc1797f32dafa45c7e9bcda23c6755df8",
+    "model-00002-of-00002.safetensors": "365531ff8752420e89dee707b79d021fb2d6e25abafe486f080555a4fe6972e4"
+  },
+  "status": "pass",
+  "shards": [
+    {
+      "side": "train",
+      "index": 0,
+      "npz": "shard-00000.npz",
+      "bytes": 320002878,
+      "sha256": "b2f563399ac96b4ae0752a1bb59f99449329ceb57729978aa0f7742b8bc82d27",
+      "expected_bytes": 320002878,
+      "expected_sha256": "b2f563399ac96b4ae0752a1bb59f99449329ceb57729978aa0f7742b8bc82d27",
+      "pass": true
+    },
+    {
+      "side": "train",
+      "index": 1,
+      "npz": "shard-00001.npz",
+      "bytes": 320002878,
+      "sha256": "aeae7655703a55caf555309302b39c10b8c1975537305394f681ae46635ac10b",
+      "expected_bytes": 320002878,
+      "expected_sha256": "aeae7655703a55caf555309302b39c10b8c1975537305394f681ae46635ac10b",
+      "pass": true
+    },
+    {
+      "side": "train",
+      "index": 2,
+      "npz": "shard-00002.npz",
+      "bytes": 320002878,
+      "sha256": "39274dbf967e8b04888097596f59c0b3b9e9796c037de80868be229bb0ceedf9",
+      "expected_bytes": 320002878,
+      "expected_sha256": "39274dbf967e8b04888097596f59c0b3b9e9796c037de80868be229bb0ceedf9",
+      "pass": true
+    },
+    {
+      "side": "train",
+      "index": 3,
+      "npz": "shard-00003.npz",
+      "bytes": 320002878,
+      "sha256": "048efbd2812d9674105ac7d1e4b34cd76efb449b2956d2f03a93faee808df968",
+      "expected_bytes": 320002878,
+      "expected_sha256": "048efbd2812d9674105ac7d1e4b34cd76efb449b2956d2f03a93faee808df968",
+      "pass": true
+    },
+    {
+      "side": "train",
+      "index": 4,
+      "npz": "shard-00004.npz",
+      "bytes": 320002878,
+      "sha256": "aee09b94183e08e52ab5a2ead75bb920ae50df0e363acc4e608a935fbc8d9e52",
+      "expected_bytes": 320002878,
+      "expected_sha256": "aee09b94183e08e52ab5a2ead75bb920ae50df0e363acc4e608a935fbc8d9e52",
+      "pass": true
+    },
+    {
+      "side": "train",
+      "index": 5,
+      "npz": "shard-00005.npz",
+      "bytes": 320002878,
+      "sha256": "20e2510b1381a435ea851b9194f8814d55dc819316973b5a8bb981ff340f5a92",
+      "expected_bytes": 320002878,
+      "expected_sha256": "20e2510b1381a435ea851b9194f8814d55dc819316973b5a8bb981ff340f5a92",
+      "pass": true
+    },
+    {
+      "side": "train",
+      "index": 6,
+      "npz": "shard-00006.npz",
+      "bytes": 320002878,
+      "sha256": "a56a67086644fe3f61cda0444062dd31b3173456f91a764cbe9b0549140318c3",
+      "expected_bytes": 320002878,
+      "expected_sha256": "a56a67086644fe3f61cda0444062dd31b3173456f91a764cbe9b0549140318c3",
+      "pass": true
+    },
+    {
+      "side": "train",
+      "index": 7,
+      "npz": "shard-00007.npz",
+      "bytes": 320002878,
+      "sha256": "edcc46d1e0c6a643591ae3fab2cab08c33df17e9307637bfafa0e89eba09b7ca",
+      "expected_bytes": 320002878,
+      "expected_sha256": "edcc46d1e0c6a643591ae3fab2cab08c33df17e9307637bfafa0e89eba09b7ca",
+      "pass": true
+    },
+    {
+      "side": "train",
+      "index": 8,
+      "npz": "shard-00008.npz",
+      "bytes": 320002878,
+      "sha256": "5c78e8705922fa5bdbbb7aff4e2aca251b2b94d416568879baae046fbd2db1b8",
+      "expected_bytes": 320002878,
+      "expected_sha256": "5c78e8705922fa5bdbbb7aff4e2aca251b2b94d416568879baae046fbd2db1b8",
+      "pass": true
+    },
+    {
+      "side": "train",
+      "index": 9,
+      "npz": "shard-00009.npz",
+      "bytes": 320002878,
+      "sha256": "683b357b1f8cc05e037876b2833e54bc3ee32e6d1567b70462a09bba82aaf70e",
+      "expected_bytes": 320002878,
+      "expected_sha256": "683b357b1f8cc05e037876b2833e54bc3ee32e6d1567b70462a09bba82aaf70e",
+      "pass": true
+    },
+    {
+      "side": "train",
+      "index": 10,
+      "npz": "shard-00010.npz",
+      "bytes": 320002878,
+      "sha256": "d1b7178f06d6226e29e3e96411f2dd410698405310926ecbcd5d07184b872bfa",
+      "expected_bytes": 320002878,
+      "expected_sha256": "d1b7178f06d6226e29e3e96411f2dd410698405310926ecbcd5d07184b872bfa",
+      "pass": true
+    },
+    {
+      "side": "train",
+      "index": 11,
+      "npz": "shard-00011.npz",
+      "bytes": 320002878,
+      "sha256": "dc53741a89d247f4360e5ec66915855e46d1d7fa9d5a0fc7486e0cbfffab1ba9",
+      "expected_bytes": 320002878,
+      "expected_sha256": "dc53741a89d247f4360e5ec66915855e46d1d7fa9d5a0fc7486e0cbfffab1ba9",
+      "pass": true
+    },
+    {
+      "side": "train",
+      "index": 12,
+      "npz": "shard-00012.npz",
+      "bytes": 320002878,
+      "sha256": "a28cc75f18c92c140200d9bb8cd73d549537e8b7d0e672a956653ae6befeb294",
+      "expected_bytes": 320002878,
+      "expected_sha256": "a28cc75f18c92c140200d9bb8cd73d549537e8b7d0e672a956653ae6befeb294",
+      "pass": true
+    },
+    {
+      "side": "train",
+      "index": 13,
+      "npz": "shard-00013.npz",
+      "bytes": 320002878,
+      "sha256": "f86d371ff52499d6cb97d31768c63774edfe5b1a8562aac2f71d951797b44f01",
+      "expected_bytes": 320002878,
+      "expected_sha256": "f86d371ff52499d6cb97d31768c63774edfe5b1a8562aac2f71d951797b44f01",
+      "pass": true
+    },
+    {
+      "side": "train",
+      "index": 14,
+      "npz": "shard-00014.npz",
+      "bytes": 320002878,
+      "sha256": "65f6bcf342b6124ab2c6ab5436152f748f3a258d41fd169b261740e126857189",
+      "expected_bytes": 320002878,
+      "expected_sha256": "65f6bcf342b6124ab2c6ab5436152f748f3a258d41fd169b261740e126857189",
+      "pass": true
+    },
+    {
+      "side": "train",
+      "index": 15,
+      "npz": "shard-00015.npz",
+      "bytes": 320002878,
+      "sha256": "ac914ae6be611d1fc6fd0aa3f32cdcf67fef0b2ba4b5ab09538dd15f7188a3a3",
+      "expected_bytes": 320002878,
+      "expected_sha256": "ac914ae6be611d1fc6fd0aa3f32cdcf67fef0b2ba4b5ab09538dd15f7188a3a3",
+      "pass": true
+    },
+    {
+      "side": "train",
+      "index": 16,
+      "npz": "shard-00016.npz",
+      "bytes": 320002878,
+      "sha256": "983bda404d8626b83f92bb48989a35d5ef9e1e11b38d83b66772965ab68ed8d0",
+      "expected_bytes": 320002878,
+      "expected_sha256": "983bda404d8626b83f92bb48989a35d5ef9e1e11b38d83b66772965ab68ed8d0",
+      "pass": true
+    },
+    {
+      "side": "train",
+      "index": 17,
+      "npz": "shard-00017.npz",
+      "bytes": 320002878,
+      "sha256": "adcba640f88ec07f2f937ab9cb18fce03b1eb5f6733fbedaf5e81cd4a1e987f5",
+      "expected_bytes": 320002878,
+      "expected_sha256": "adcba640f88ec07f2f937ab9cb18fce03b1eb5f6733fbedaf5e81cd4a1e987f5",
+      "pass": true
+    },
+    {
+      "side": "train",
+      "index": 18,
+      "npz": "shard-00018.npz",
+      "bytes": 320002878,
+      "sha256": "5ba092ce0d1f7ceebebdab037f476eb561307aa73fb86f512d33e9506e59d5a9",
+      "expected_bytes": 320002878,
+      "expected_sha256": "5ba092ce0d1f7ceebebdab037f476eb561307aa73fb86f512d33e9506e59d5a9",
+      "pass": true
+    },
+    {
+      "side": "train",
+      "index": 19,
+      "npz": "shard-00019.npz",
+      "bytes": 320002878,
+      "sha256": "a908b9aace43e925cf914750fe9cdccadba1051e41f20d681b2768e10f445cf5",
+      "expected_bytes": 320002878,
+      "expected_sha256": "a908b9aace43e925cf914750fe9cdccadba1051e41f20d681b2768e10f445cf5",
+      "pass": true
+    },
+    {
+      "side": "train",
+      "index": 20,
+      "npz": "shard-00020.npz",
+      "bytes": 320002878,
+      "sha256": "163283e0884034798d0deef665d7711f4f676739ab12956a3db8e290074baae0",
+      "expected_bytes": 320002878,
+      "expected_sha256": "163283e0884034798d0deef665d7711f4f676739ab12956a3db8e290074baae0",
+      "pass": true
+    },
+    {
+      "side": "train",
+      "index": 21,
+      "npz": "shard-00021.npz",
+      "bytes": 320002878,
+      "sha256": "fff12a95e8e4e2c1a42a08b113ef3a834ee9d308651b32a884c6b7f69f9e87d4",
+      "expected_bytes": 320002878,
+      "expected_sha256": "fff12a95e8e4e2c1a42a08b113ef3a834ee9d308651b32a884c6b7f69f9e87d4",
+      "pass": true
+    },
+    {
+      "side": "train",
+      "index": 22,
+      "npz": "shard-00022.npz",
+      "bytes": 320002878,
+      "sha256": "2b5426b0a2dfeee1637b82cdea7b75546a339af087798b6d5908fd2442b9f962",
+      "expected_bytes": 320002878,
+      "expected_sha256": "2b5426b0a2dfeee1637b82cdea7b75546a339af087798b6d5908fd2442b9f962",
+      "pass": true
+    },
+    {
+      "side": "train",
+      "index": 23,
+      "npz": "shard-00023.npz",
+      "bytes": 320002878,
+      "sha256": "d57f2fda6ac5bc9ecbe1a8048bc66b2c960b5477c91e06044a0b9c6f0dd60f9b",
+      "expected_bytes": 320002878,
+      "expected_sha256": "d57f2fda6ac5bc9ecbe1a8048bc66b2c960b5477c91e06044a0b9c6f0dd60f9b",
+      "pass": true
+    },
+    {
+      "side": "train",
+      "index": 24,
+      "npz": "shard-00024.npz",
+      "bytes": 320002878,
+      "sha256": "9031114d3c8e3da61f7f9ec7277ee1cd6c528d6bc9d65cf13b1f1d43a8b2ba47",
+      "expected_bytes": 320002878,
+      "expected_sha256": "9031114d3c8e3da61f7f9ec7277ee1cd6c528d6bc9d65cf13b1f1d43a8b2ba47",
+      "pass": true
+    },
+    {
+      "side": "train",
+      "index": 25,
+      "npz": "shard-00025.npz",
+      "bytes": 320002878,
+      "sha256": "f47fdbbe86128e8aa1adc309e91e8c612159fe3d7e73835797af25084280c9a6",
+      "expected_bytes": 320002878,
+      "expected_sha256": "f47fdbbe86128e8aa1adc309e91e8c612159fe3d7e73835797af25084280c9a6",
+      "pass": true
+    },
+    {
+      "side": "train",
+      "index": 26,
+      "npz": "shard-00026.npz",
+      "bytes": 320002878,
+      "sha256": "31763ceb0224cf182218aa564e3506b38d85deeff64cbd60585cd4ba11481848",
+      "expected_bytes": 320002878,
+      "expected_sha256": "31763ceb0224cf182218aa564e3506b38d85deeff64cbd60585cd4ba11481848",
+      "pass": true
+    },
+    {
+      "side": "train",
+      "index": 27,
+      "npz": "shard-00027.npz",
+      "bytes": 320002878,
+      "sha256": "f5ef95cdc077a439975575795c8e9a045c509c670405267dd1041fde957295b9",
+      "expected_bytes": 320002878,
+      "expected_sha256": "f5ef95cdc077a439975575795c8e9a045c509c670405267dd1041fde957295b9",
+      "pass": true
+    },
+    {
+      "side": "train",
+      "index": 28,
+      "npz": "shard-00028.npz",
+      "bytes": 320002878,
+      "sha256": "78c71d41e7057b04657d82ead85ff7a19c9fd998d54f72417fe33a48ee339f4c",
+      "expected_bytes": 320002878,
+      "expected_sha256": "78c71d41e7057b04657d82ead85ff7a19c9fd998d54f72417fe33a48ee339f4c",
+      "pass": true
+    },
+    {
+      "side": "train",
+      "index": 29,
+      "npz": "shard-00029.npz",
+      "bytes": 320002878,
+      "sha256": "31a73d6bd76015d4312af371cdfc0ddc3a6ac26b8228264eca70684979280b75",
+      "expected_bytes": 320002878,
+      "expected_sha256": "31a73d6bd76015d4312af371cdfc0ddc3a6ac26b8228264eca70684979280b75",
+      "pass": true
+    },
+    {
+      "side": "train",
+      "index": 30,
+      "npz": "shard-00030.npz",
+      "bytes": 320002878,
+      "sha256": "f37127f8c053e68a36dd01569768f1ac7a644b3dea121e1c6a5f8d5bbc37a6f9",
+      "expected_bytes": 320002878,
+      "expected_sha256": "f37127f8c053e68a36dd01569768f1ac7a644b3dea121e1c6a5f8d5bbc37a6f9",
+      "pass": true
+    },
+    {
+      "side": "train",
+      "index": 31,
+      "npz": "shard-00031.npz",
+      "bytes": 320002878,
+      "sha256": "0a69bbc5cec1fc790a4a2df9c53f29ba287765c0c98a1092d1a36db47a3029ca",
+      "expected_bytes": 320002878,
+      "expected_sha256": "0a69bbc5cec1fc790a4a2df9c53f29ba287765c0c98a1092d1a36db47a3029ca",
+      "pass": true
+    },
+    {
+      "side": "train",
+      "index": 32,
+      "npz": "shard-00032.npz",
+      "bytes": 320002878,
+      "sha256": "420f66c0f5d8561b630070ac33cfbf5d1ca358d3e04df29ce820e3d5b3aa7cab",
+      "expected_bytes": 320002878,
+      "expected_sha256": "420f66c0f5d8561b630070ac33cfbf5d1ca358d3e04df29ce820e3d5b3aa7cab",
+      "pass": true
+    },
+    {
+      "side": "train",
+      "index": 33,
+      "npz": "shard-00033.npz",
+      "bytes": 320002878,
+      "sha256": "c867e78e7bd1b0182603f4a8d406d0eb25aa0c3a7168a40bae6b79e53ebbd0d5",
+      "expected_bytes": 320002878,
+      "expected_sha256": "c867e78e7bd1b0182603f4a8d406d0eb25aa0c3a7168a40bae6b79e53ebbd0d5",
+      "pass": true
+    },
+    {
+      "side": "train",
+      "index": 34,
+      "npz": "shard-00034.npz",
+      "bytes": 320002878,
+      "sha256": "c452ead4337f970bebcb4dfc4a95dd4b86b60b72bcd72b8d999b8273bb5082a2",
+      "expected_bytes": 320002878,
+      "expected_sha256": "c452ead4337f970bebcb4dfc4a95dd4b86b60b72bcd72b8d999b8273bb5082a2",
+      "pass": true
+    },
+    {
+      "side": "train",
+      "index": 35,
+      "npz": "shard-00035.npz",
+      "bytes": 320002878,
+      "sha256": "bb69b29f21e591bae2374ce71031d9126d05cc3a2a6138cababeaa551be0c1c7",
+      "expected_bytes": 320002878,
+      "expected_sha256": "bb69b29f21e591bae2374ce71031d9126d05cc3a2a6138cababeaa551be0c1c7",
+      "pass": true
+    },
+    {
+      "side": "train",
+      "index": 36,
+      "npz": "shard-00036.npz",
+      "bytes": 320002878,
+      "sha256": "6ce1c08a4108809db9c67ac8e8f4282775c9637b7b9eef8e26e2faa1ef60da14",
+      "expected_bytes": 320002878,
+      "expected_sha256": "6ce1c08a4108809db9c67ac8e8f4282775c9637b7b9eef8e26e2faa1ef60da14",
+      "pass": true
+    },
+    {
+      "side": "train",
+      "index": 37,
+      "npz": "shard-00037.npz",
+      "bytes": 320002878,
+      "sha256": "4694b1ef23b552e016200ed26a0b2ba5b7edbb8cbae252405fab71e7d9f48c10",
+      "expected_bytes": 320002878,
+      "expected_sha256": "4694b1ef23b552e016200ed26a0b2ba5b7edbb8cbae252405fab71e7d9f48c10",
+      "pass": true
+    },
+    {
+      "side": "train",
+      "index": 38,
+      "npz": "shard-00038.npz",
+      "bytes": 320002878,
+      "sha256": "6f757428572abc23aa8423c32209c78205b62b61507d1a22a94a3fe584994b8e",
+      "expected_bytes": 320002878,
+      "expected_sha256": "6f757428572abc23aa8423c32209c78205b62b61507d1a22a94a3fe584994b8e",
+      "pass": true
+    },
+    {
+      "side": "train",
+      "index": 39,
+      "npz": "shard-00039.npz",
+      "bytes": 320002878,
+      "sha256": "052131c0cb0ef025563448d5135b3c63e8957a4f4512f0ca9042d7867a9bf30d",
+      "expected_bytes": 320002878,
+      "expected_sha256": "052131c0cb0ef025563448d5135b3c63e8957a4f4512f0ca9042d7867a9bf30d",
+      "pass": true
+    },
+    {
+      "side": "train",
+      "index": 40,
+      "npz": "shard-00040.npz",
+      "bytes": 320002878,
+      "sha256": "c284562f30c662144af91895e97efd5a0d7238b72bb467546093d4204396058b",
+      "expected_bytes": 320002878,
+      "expected_sha256": "c284562f30c662144af91895e97efd5a0d7238b72bb467546093d4204396058b",
+      "pass": true
+    },
+    {
+      "side": "train",
+      "index": 41,
+      "npz": "shard-00041.npz",
+      "bytes": 320002878,
+      "sha256": "ff816bb4487df1e14a609b8fbc4449439c54703233cba7be1fefbecdc8519a10",
+      "expected_bytes": 320002878,
+      "expected_sha256": "ff816bb4487df1e14a609b8fbc4449439c54703233cba7be1fefbecdc8519a10",
+      "pass": true
+    },
+    {
+      "side": "train",
+      "index": 42,
+      "npz": "shard-00042.npz",
+      "bytes": 320002878,
+      "sha256": "3e56996c5d2a2791cba96c727ebb56179deedf1a30d095795e0eed3349c5feee",
+      "expected_bytes": 320002878,
+      "expected_sha256": "3e56996c5d2a2791cba96c727ebb56179deedf1a30d095795e0eed3349c5feee",
+      "pass": true
+    },
+    {
+      "side": "train",
+      "index": 43,
+      "npz": "shard-00043.npz",
+      "bytes": 320002878,
+      "sha256": "eb2efd817a53d70957fdedce499582b421f92e8b699b109e0c42be61f87180e1",
+      "expected_bytes": 320002878,
+      "expected_sha256": "eb2efd817a53d70957fdedce499582b421f92e8b699b109e0c42be61f87180e1",
+      "pass": true
+    },
+    {
+      "side": "train",
+      "index": 44,
+      "npz": "shard-00044.npz",
+      "bytes": 320002878,
+      "sha256": "723b2b8458cef8458eea18e802f42660c4d14303d9e8a7a6ec7c678ae732bb3d",
+      "expected_bytes": 320002878,
+      "expected_sha256": "723b2b8458cef8458eea18e802f42660c4d14303d9e8a7a6ec7c678ae732bb3d",
+      "pass": true
+    },
+    {
+      "side": "train",
+      "index": 45,
+      "npz": "shard-00045.npz",
+      "bytes": 320002878,
+      "sha256": "b7d148870efe341b8506c847ce48984d46be84e20bb10e69a13cdd6934246d87",
+      "expected_bytes": 320002878,
+      "expected_sha256": "b7d148870efe341b8506c847ce48984d46be84e20bb10e69a13cdd6934246d87",
+      "pass": true
+    },
+    {
+      "side": "train",
+      "index": 46,
+      "npz": "shard-00046.npz",
+      "bytes": 320002878,
+      "sha256": "4bdb178440610fc60044aa64eaa6b2a45e1b46c38edbc640674a071c90141151",
+      "expected_bytes": 320002878,
+      "expected_sha256": "4bdb178440610fc60044aa64eaa6b2a45e1b46c38edbc640674a071c90141151",
+      "pass": true
+    },
+    {
+      "side": "train",
+      "index": 47,
+      "npz": "shard-00047.npz",
+      "bytes": 320002878,
+      "sha256": "eca030cdf5a6e48dffcd45a6d722baadbfaf33c893bb723ca1712ec3b1a96d77",
+      "expected_bytes": 320002878,
+      "expected_sha256": "eca030cdf5a6e48dffcd45a6d722baadbfaf33c893bb723ca1712ec3b1a96d77",
+      "pass": true
+    },
+    {
+      "side": "train",
+      "index": 48,
+      "npz": "shard-00048.npz",
+      "bytes": 320002878,
+      "sha256": "4ae67ee1b582a7e873f8e587e8398d821684680d8c716e90cc315a8c9b71a862",
+      "expected_bytes": 320002878,
+      "expected_sha256": "4ae67ee1b582a7e873f8e587e8398d821684680d8c716e90cc315a8c9b71a862",
+      "pass": true
+    },
+    {
+      "side": "train",
+      "index": 49,
+      "npz": "shard-00049.npz",
+      "bytes": 320002878,
+      "sha256": "f654af0f066b2392d055c9d5d7c7be18fa84386278bcbaf10a4de879716773af",
+      "expected_bytes": 320002878,
+      "expected_sha256": "f654af0f066b2392d055c9d5d7c7be18fa84386278bcbaf10a4de879716773af",
+      "pass": true
+    },
+    {
+      "side": "train",
+      "index": 50,
+      "npz": "shard-00050.npz",
+      "bytes": 320002878,
+      "sha256": "524acc83c1c3931be785b7bc83c23fad7980323e886f35139ebb6e12c227e1f9",
+      "expected_bytes": 320002878,
+      "expected_sha256": "524acc83c1c3931be785b7bc83c23fad7980323e886f35139ebb6e12c227e1f9",
+      "pass": true
+    },
+    {
+      "side": "train",
+      "index": 51,
+      "npz": "shard-00051.npz",
+      "bytes": 320002878,
+      "sha256": "5c31d75a7f21e814bc00911524e139359688a5c8b10fe798ef88a75a8aa7c195",
+      "expected_bytes": 320002878,
+      "expected_sha256": "5c31d75a7f21e814bc00911524e139359688a5c8b10fe798ef88a75a8aa7c195",
+      "pass": true
+    },
+    {
+      "side": "train",
+      "index": 52,
+      "npz": "shard-00052.npz",
+      "bytes": 320002878,
+      "sha256": "13ce7a85e9aaa2980ec0cf53e92734c169b395f8b06332f0d2276de5cc0fa585",
+      "expected_bytes": 320002878,
+      "expected_sha256": "13ce7a85e9aaa2980ec0cf53e92734c169b395f8b06332f0d2276de5cc0fa585",
+      "pass": true
+    },
+    {
+      "side": "train",
+      "index": 53,
+      "npz": "shard-00053.npz",
+      "bytes": 320002878,
+      "sha256": "87005e6e4caec11b2ffde50673ca2cc093c80bff9d3adde7ecac679ff5428e08",
+      "expected_bytes": 320002878,
+      "expected_sha256": "87005e6e4caec11b2ffde50673ca2cc093c80bff9d3adde7ecac679ff5428e08",
+      "pass": true
+    },
+    {
+      "side": "train",
+      "index": 54,
+      "npz": "shard-00054.npz",
+      "bytes": 320002878,
+      "sha256": "f4ea976eca26e4a33b301241a95a9f3a6334c72c3c3fa66135aa8104038c000d",
+      "expected_bytes": 320002878,
+      "expected_sha256": "f4ea976eca26e4a33b301241a95a9f3a6334c72c3c3fa66135aa8104038c000d",
+      "pass": true
+    },
+    {
+      "side": "train",
+      "index": 55,
+      "npz": "shard-00055.npz",
+      "bytes": 320002878,
+      "sha256": "742a772ca83586b2a26b6672fb8f4bc35ac46cbe821fd8db78303cc7a11a7592",
+      "expected_bytes": 320002878,
+      "expected_sha256": "742a772ca83586b2a26b6672fb8f4bc35ac46cbe821fd8db78303cc7a11a7592",
+      "pass": true
+    },
+    {
+      "side": "train",
+      "index": 56,
+      "npz": "shard-00056.npz",
+      "bytes": 320002878,
+      "sha256": "284d0cec53324e6e4968f7de757d5e68750c23b7e1a963aa2f12fd31353f4338",
+      "expected_bytes": 320002878,
+      "expected_sha256": "284d0cec53324e6e4968f7de757d5e68750c23b7e1a963aa2f12fd31353f4338",
+      "pass": true
+    },
+    {
+      "side": "train",
+      "index": 57,
+      "npz": "shard-00057.npz",
+      "bytes": 320002878,
+      "sha256": "2a363106833288bab0d2ed4d09e151f3fb4f26213b265c14d3fe39903f26511e",
+      "expected_bytes": 320002878,
+      "expected_sha256": "2a363106833288bab0d2ed4d09e151f3fb4f26213b265c14d3fe39903f26511e",
+      "pass": true
+    },
+    {
+      "side": "train",
+      "index": 58,
+      "npz": "shard-00058.npz",
+      "bytes": 320002878,
+      "sha256": "68a396194977e5a634b24b3feb466f96e7dbf653110bda96b87a0eb05e8885db",
+      "expected_bytes": 320002878,
+      "expected_sha256": "68a396194977e5a634b24b3feb466f96e7dbf653110bda96b87a0eb05e8885db",
+      "pass": true
+    },
+    {
+      "side": "train",
+      "index": 59,
+      "npz": "shard-00059.npz",
+      "bytes": 320002878,
+      "sha256": "a280961081dfdd65d71a790922c97de29c1d0b8d4245bf2bf232471e21b453bb",
+      "expected_bytes": 320002878,
+      "expected_sha256": "a280961081dfdd65d71a790922c97de29c1d0b8d4245bf2bf232471e21b453bb",
+      "pass": true
+    },
+    {
+      "side": "train",
+      "index": 60,
+      "npz": "shard-00060.npz",
+      "bytes": 320002878,
+      "sha256": "eac51f4cb5eb50e1934320ea787ac59d4a76b874b529e7adc65db2b5d4429cab",
+      "expected_bytes": 320002878,
+      "expected_sha256": "eac51f4cb5eb50e1934320ea787ac59d4a76b874b529e7adc65db2b5d4429cab",
+      "pass": true
+    },
+    {
+      "side": "train",
+      "index": 61,
+      "npz": "shard-00061.npz",
+      "bytes": 320002878,
+      "sha256": "466f70d1773f59ea81ee930933c883a414e3dd7a3526a16ef198af80ada6bef0",
+      "expected_bytes": 320002878,
+      "expected_sha256": "466f70d1773f59ea81ee930933c883a414e3dd7a3526a16ef198af80ada6bef0",
+      "pass": true
+    },
+    {
+      "side": "train",
+      "index": 62,
+      "npz": "shard-00062.npz",
+      "bytes": 320002878,
+      "sha256": "e50da0ab5a81cc27db08f73d4f6089b0c5b3da44eaf097c3b05c4c30cb6d34e3",
+      "expected_bytes": 320002878,
+      "expected_sha256": "e50da0ab5a81cc27db08f73d4f6089b0c5b3da44eaf097c3b05c4c30cb6d34e3",
+      "pass": true
+    },
+    {
+      "side": "train",
+      "index": 63,
+      "npz": "shard-00063.npz",
+      "bytes": 320002878,
+      "sha256": "d08b4a9ece411b4ca9a17e93121adce354a7c2ab9c0640955d2f099044be5f7e",
+      "expected_bytes": 320002878,
+      "expected_sha256": "d08b4a9ece411b4ca9a17e93121adce354a7c2ab9c0640955d2f099044be5f7e",
+      "pass": true
+    },
+    {
+      "side": "train",
+      "index": 64,
+      "npz": "shard-00064.npz",
+      "bytes": 320002878,
+      "sha256": "b697a41189e67041f87a5ec7b215a3ff28ec64d1c480c9439d7674a7d7758a0e",
+      "expected_bytes": 320002878,
+      "expected_sha256": "b697a41189e67041f87a5ec7b215a3ff28ec64d1c480c9439d7674a7d7758a0e",
+      "pass": true
+    },
+    {
+      "side": "train",
+      "index": 65,
+      "npz": "shard-00065.npz",
+      "bytes": 320002878,
+      "sha256": "02c149f5a0818baf34d4e5ac6313947b39f39cb43244ba4095b1bb94bc4a1ed4",
+      "expected_bytes": 320002878,
+      "expected_sha256": "02c149f5a0818baf34d4e5ac6313947b39f39cb43244ba4095b1bb94bc4a1ed4",
+      "pass": true
+    },
+    {
+      "side": "train",
+      "index": 66,
+      "npz": "shard-00066.npz",
+      "bytes": 320002878,
+      "sha256": "55f906ebebfdfd6d631d3edccf0336f9d1441a2c9217b6a9538c977e15616b2c",
+      "expected_bytes": 320002878,
+      "expected_sha256": "55f906ebebfdfd6d631d3edccf0336f9d1441a2c9217b6a9538c977e15616b2c",
+      "pass": true
+    },
+    {
+      "side": "train",
+      "index": 67,
+      "npz": "shard-00067.npz",
+      "bytes": 320002878,
+      "sha256": "0dc5453df6930e16eec181ca049147020fddcda4edc604db02d140cbc3479a87",
+      "expected_bytes": 320002878,
+      "expected_sha256": "0dc5453df6930e16eec181ca049147020fddcda4edc604db02d140cbc3479a87",
+      "pass": true
+    },
+    {
+      "side": "train",
+      "index": 68,
+      "npz": "shard-00068.npz",
+      "bytes": 320002878,
+      "sha256": "d91ef0b3a85df457d1609795acb911d2f2cfab202e65abc29dfad1e60ab739e7",
+      "expected_bytes": 320002878,
+      "expected_sha256": "d91ef0b3a85df457d1609795acb911d2f2cfab202e65abc29dfad1e60ab739e7",
+      "pass": true
+    },
+    {
+      "side": "train",
+      "index": 69,
+      "npz": "shard-00069.npz",
+      "bytes": 320002878,
+      "sha256": "3383af987ea234b88f0bdd4d2c03bf79656980c0e87a93fff9f6242ccf4992b6",
+      "expected_bytes": 320002878,
+      "expected_sha256": "3383af987ea234b88f0bdd4d2c03bf79656980c0e87a93fff9f6242ccf4992b6",
+      "pass": true
+    },
+    {
+      "side": "train",
+      "index": 70,
+      "npz": "shard-00070.npz",
+      "bytes": 320002878,
+      "sha256": "342faa319ee932c3031a2fb59ddb1b487570da4d5b3e5415fbc2d3858f52c74e",
+      "expected_bytes": 320002878,
+      "expected_sha256": "342faa319ee932c3031a2fb59ddb1b487570da4d5b3e5415fbc2d3858f52c74e",
+      "pass": true
+    },
+    {
+      "side": "train",
+      "index": 71,
+      "npz": "shard-00071.npz",
+      "bytes": 320002878,
+      "sha256": "37b2974600313df35528b6e43e7a825db5b7bd76d7bd7eaab35f7603862ee559",
+      "expected_bytes": 320002878,
+      "expected_sha256": "37b2974600313df35528b6e43e7a825db5b7bd76d7bd7eaab35f7603862ee559",
+      "pass": true
+    },
+    {
+      "side": "train",
+      "index": 72,
+      "npz": "shard-00072.npz",
+      "bytes": 320002878,
+      "sha256": "aa8d0fc017f77e6d18f6c34a61647e73f0910bb192e7392cad4cc20af956c97b",
+      "expected_bytes": 320002878,
+      "expected_sha256": "aa8d0fc017f77e6d18f6c34a61647e73f0910bb192e7392cad4cc20af956c97b",
+      "pass": true
+    },
+    {
+      "side": "train",
+      "index": 73,
+      "npz": "shard-00073.npz",
+      "bytes": 320002878,
+      "sha256": "f244b7b00f5e2c8e2741d46ad413a4929d356a353e40b72c30ca7427956eb331",
+      "expected_bytes": 320002878,
+      "expected_sha256": "f244b7b00f5e2c8e2741d46ad413a4929d356a353e40b72c30ca7427956eb331",
+      "pass": true
+    },
+    {
+      "side": "train",
+      "index": 74,
+      "npz": "shard-00074.npz",
+      "bytes": 320002878,
+      "sha256": "c8ae565a6b4fb8a1c4b23203fb2f54dea0ccdd1627c27b8687292745835ec5ad",
+      "expected_bytes": 320002878,
+      "expected_sha256": "c8ae565a6b4fb8a1c4b23203fb2f54dea0ccdd1627c27b8687292745835ec5ad",
+      "pass": true
+    },
+    {
+      "side": "eval",
+      "index": 0,
+      "npz": "shard-00000.npz",
+      "bytes": 320002878,
+      "sha256": "8b679cc14a45688f5feff9b70f6f3561eb526705527aa20b33035400f46d233a",
+      "expected_bytes": 320002878,
+      "expected_sha256": "8b679cc14a45688f5feff9b70f6f3561eb526705527aa20b33035400f46d233a",
+      "pass": true
+    }
+  ],
+  "problems": [],
+  "attempt": 2,
+  "published_manifest_is_authority": true,
+  "manifests": [
+    {
+      "side": "train",
+      "published_manifest_sha256": "fc061b15616330dd1d7cdacfeb6a9c87ebf3719ae9aa92344955efbfae097d44",
+      "local_manifest_present": false,
+      "shards": 75
+    },
+    {
+      "side": "eval",
+      "published_manifest_sha256": "985570801a055f9a5fed50ba0e9d51694ece4fd557901419342a8ed5e1bb84b2",
+      "local_manifest_present": true,
+      "shards": 1,
+      "local_manifest_sha256": "febd73286b312fac98e6da8e23b1bc36c6ee15a04a6741e499f0a73875b9623a",
+      "local_manifest_equal": false
+    }
+  ],
+  "pass": true
+}

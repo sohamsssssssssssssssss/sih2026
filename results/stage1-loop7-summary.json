@@ -1,0 +1,86 @@
+{
+  "kind": "loop 7 measured summary (package preparation only; no T4 run, no training)",
+  "git_sha": "1ceb9d161e1f654da96b1f57b31724e48ac29250",
+  "split_name": "caption-geo-split.v1/train",
+  "n": 16,
+  "seed": 0,
+  "device": "CPU only (Apple M5 MacBook Pro; environment /Users/soham/sih2026/.venv-stage1: python 3.11.15, torch 2.6.0, transformers 4.49.0, peft 0.15.2, accelerate 1.5.2, rasterio 1.4.3 — matches results/stage1-loop4-checkpoint-preflight.json exactly)",
+  "dtype": "not applicable (no model loaded this loop)",
+  "timestamp_utc": "2026-10-04T19:17:20+00:00",
+  "revision": "66285546d2b821cf421d4f5eb2576359d3770cd3",
+  "weight_sha256": {
+    "model-00001-of-00002.safetensors": "41a8895c164b4d32bae6b302f4603fcbc1797f32dafa45c7e9bcda23c6755df8",
+    "model-00002-of-00002.safetensors": "365531ff8752420e89dee707b79d021fb2d6e25abafe486f080555a4fe6972e4"
+  },
+  "preregistration": "results/stage1-loop7-preregistration.json",
+  "runner": {
+    "path": "packages/stage1-t4-smoke/run.py -> src/scripts/run_stage1_t4.py",
+    "stages": [
+      "verify (config.json _commit_hash + SHA256 of both safetensors vs revision.json; abort on mismatch)",
+      "smoke (50 optimizer steps from config.yaml; finite loss + finite vision; auto-fallback to config-vision-fp32.yaml recorded and reused by later stages)",
+      "resume (train to 25, checkpoint final step, reload in continuation run to 50, independent uninterrupted 0-50 run; max abs loss diff over steps 26-50 <= 0.05, per-step LR equality, canonical optimizer-state SHA256 digests recorded)",
+      "overfit (N = floor(1200s / smoke seconds-per-optimizer-step), recorded; gates: final <= 0.2x initial, no NaN, no >2x spike in first 50 steps, greedy decode >= 12/16 with fp32-vision generation fallback attempt, image-shuffle control eval-only at the trained state: shuffled loss > 1.10x true loss)",
+      "extrapolate (epoch hours for 463,932 captions from measured smoke samples/s; labeled extrapolation; 2xT4 DDP explicitly not extrapolated without a measured run)"
+    ],
+    "requirements_note": "requirements.txt pins accelerate==1.5.2; from_pretrained(device_map=...) in transformers 4.49 hard-requires it, and the first session pip install must therefore include it",
+    "stop_on_first_failed_stage": true,
+    "json_per_stage": true,
+    "max_attempts_per_problem": 2,
+    "run_in_repo": false,
+    "t4_run": false
+  },
+  "tests": {
+    "focused": "18 passed (scripts/test_stage1_t4_package.py 16 + scripts/test_stage1_smoke.py 2); mocked runs only, no model load",
+    "full_suite_passed": 441,
+    "full_suite_failed": 0,
+    "full_suite_previous": 424,
+    "note": "424 prior + 17 new = 441, arithmetic consistent; exit status captured explicitly (PIPESTATUS) for focused and full runs, both 0",
+    "test_gaps_fixed_during_development": [
+      "runner LR-continuity originally indexed resumed losses assuming entries start at step 1; fixed to match by global step number",
+      "shuffle control originally reused trainer continuation runs (a checkpoint already past the target silently runs 0 steps); replaced with a dedicated eval-only loss measurement so both arms are measured identically at the trained state"
+    ]
+  },
+  "package": {
+    "path": "packages/stage1-t4-smoke",
+    "file_count": 13,
+    "total_bytes": 1665191,
+    "manifest_sha256": "400e4945ae037f59228bad6fcb831fd41cef7a9777bd94f069e61268f837255d",
+    "uploaded": false,
+    "weights_bundled": false,
+    "readme_weights_options": [
+      "HF download at pinned revision with internet ON (hf download --revision ...); verify stage cross-checks config.json _commit_hash so a re-saved copy at a different revision is caught",
+      "private Kaggle dataset of the verified weight files with internet OFF"
+    ]
+  },
+  "frozen_sha256_unchanged": {
+    "contract": "ab02179d2b4cf33c320a897d75318484189b249d99fff6cdd386016df908912d",
+    "split": "3e5b1d774125c7b48a9454dbb33e6144aee8d990d8966e830987836159bd83ee",
+    "model_artifacts": "72527fa9bb644cac71513b40a1a7e836a2044aae71ca6fb7095d4df643753e41"
+  },
+  "baseline_scoping": {
+    "run": false,
+    "code_changes": false,
+    "stage0_baseline_definition": "results/qwen2.5vl-3b__rsvqa__20260903T175900Z.json: frozen Qwen2.5-VL-3B, RSVQA-LR official test split, n=10004 (binary 6957, open 3047), accuracy 0.5131, open_accuracy 0.16508, git_sha 777707a (short), Tesla T4, fp16; the gate metric is open_accuracy",
+    "split_source": "official RSVQA-LR test JSONs from Zenodo record 6344334 (LR_split_test_*.json); RSVQA-LR carries NO MGRS tiles and NO BigEarthNet patch IDs — it is a separate non-BEN-derived benchmark, so it is not leaky with respect to the BEN geographic split, but it is also not geo-blocked and is a Domain shift vs Sentinel-2 BEN captions",
+    "what_must_change_to_run_frozen_model_at_pinned_rev": [
+      "models/qwen_vl/model.py loads via local_files_only with torchvision-free processor; artifact comes from configs/model_artifacts.json providers.qwen2.5vl-3b (SATQUERY_QWEN_MODEL_DIR or default /kaggle/input/satquery-models/qwen2.5-vl-3b-instruct, or HF snapshot cache)",
+      "artifact validation (models/artifacts.py) checks presence and index but does NOT verify weight SHA256 — to claim the frozen pinned rev, add SHA256 check against configs/model_artifacts.json weight_sha256 (or record that hashes were verified externally); no code change made in this loop",
+      "eval/eval.py git_sha() records only the repo SHA; the pinned revision is not written into result JSONs — add provenance if the new number must be tied to the pin",
+      "split choice: SUITE_SPLITS defines rsvqa as the official test split; a geo-blocked RSVQA variant would need a new split file plus a new suite loader (none exists today)"
+    ],
+    "n": 10004,
+    "runtime": "UNKNOWN (not measured in this loop; per models/qwen_vl/model.py it is greedy generation, max_new_tokens 50, one question per forward pass)",
+    "files_needed": [
+      "RSVQA-LR download via eval/suites/rsvqa.py download_rsvqa_lr() (zenodo, MD5-checked) — local data/raw/rsvqa_lr is currently absent/empty",
+      "checkpoint directory per configs/model_artifacts.json (dataset upload or HF cache)"
+    ]
+  },
+  "disk_free_bytes": 80530636800,
+  "open_issues": [
+    "MPS training backward still fails (scalar-type error recorded in loop 6; unchanged, not reopened)",
+    "T4 run not performed: package built and tested on CPU only; upload/run stays intentionally out of this loop's scope",
+    "overfit decode gate uses exact normalized string match; a near-miss (one differing character) counts as non-reproduced — threshold 12/16 absorbs this but it is strict",
+    "smoke trigger for the vision-fp32 fallback is any failure of attempt 1 (not only FloatingPointError); the traceback is recorded so the true cause is visible",
+    "legacy baseline 0.1651 remains unrecorded-revision (short SHA only) and must not be compared with future pinned-rev numbers"
+  ]
+}

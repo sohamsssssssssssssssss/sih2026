@@ -1,0 +1,35 @@
+{
+  "kind": "stage-1 train selection record",
+  "git_sha": "1ceb9d161e1f654da96b1f57b31724e48ac29250",
+  "seed": 26168,
+  "n_total": 8000,
+  "split_name": "caption-geo-split.v1/train",
+  "algorithm": "numpy.random.default_rng([seed, tile_index]) per tile; patch IDs sorted within a tile; round-robin equal quotas dealt one at a time across the side's tiles in sorted order and capped by each tile's available count; the selection is then emitted round-robin across tiles, so every prefix is tile-balanced",
+  "prefix_tile_balance": {},
+  "prefix_balance_gate": "max - min <= 1 per tile for every reported prefix",
+  "first_ten_ids": [
+    "S2A_MSIL2A_20171201T112431_N9999_R037_T29SNB_07_90",
+    "S2B_MSIL2A_20180515T112109_N9999_R037_T29SNC_29_30",
+    "S2A_MSIL2A_20171121T112351_N9999_R037_T29SND_75_70",
+    "S2A_MSIL2A_20180529T115401_N9999_R023_T29UNB_08_80",
+    "S2B_MSIL2A_20170718T115359_N9999_R023_T29UPB_03_61",
+    "S2B_MSIL2A_20171112T114339_N9999_R123_T29UPU_59_59",
+    "S2B_MSIL2A_20180220T114339_N9999_R123_T29UPV_72_43",
+    "S2B_MSIL2A_20180225T105019_N9999_R051_T31UER_89_09",
+    "S2B_MSIL2A_20171015T104009_N9999_R008_T31UGR_20_29",
+    "S2A_MSIL2A_20180508T104031_N9999_R008_T31UGS_17_89"
+  ],
+  "last_ten_ids": [
+    "S2B_MSIL2A_20180225T105019_N9999_R051_T31UER_48_11",
+    "S2A_MSIL2A_20180508T104031_N9999_R008_T31UGR_04_45",
+    "S2A_MSIL2A_20180508T104031_N9999_R008_T31UGS_11_73",
+    "S2A_MSIL2A_20170818T103021_N9999_R108_T32TMT_15_73",
+    "S2B_MSIL2A_20170824T100019_N9999_R122_T33TWM_07_07",
+    "S2B_MSIL2A_20171219T095409_N9999_R079_T33TWN_64_76",
+    "S2B_MSIL2A_20170801T095029_N9999_R079_T33TXN_15_22",
+    "S2A_MSIL2A_20180506T100031_N9999_R122_T33UWP_10_49",
+    "S2B_MSIL2A_20180421T100029_N9999_R122_T33UWQ_09_76",
+    "S2A_MSIL2A_20171015T095031_N9999_R079_T33UXP_32_23"
+  ],
+  "note": "the full ID list is not stored here; rerun select_patch_ids_interleaved with this seed and n_total to reproduce it, and the per-shard sidecars carry the IDs that were actually written"
+}

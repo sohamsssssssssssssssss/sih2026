@@ -1,0 +1,403 @@
+{
+  "kind": "stage-1 loop 9 summary: local train shard build + throughput-gated full stage",
+  "git_sha": "1ceb9d161e1f654da96b1f57b31724e48ac29250",
+  "split_name": "caption-geo-split.v1/train",
+  "n": 150000,
+  "seed": 26168,
+  "device": "CPU (py3.11.15, torch 2.6.0) on the local mac, caffeinate -i nice -n 10, single heavy process",
+  "dtype": "uint16 (native resolution; contract applied at load time)",
+  "timestamp_utc": "2026-10-05T02:51:32+00:00",
+  "preregistration": "results/stage1-loop9-preregistration.json",
+  "preregistration_amendments": [
+    {
+      "index": 0,
+      "timestamp_utc": "2026-10-05T05:20:00+00:00",
+      "trigger": "step 1 measurement on the selection list alone (no pixel read): train-tile availability is heavily skewed, so an equal-quota selection cannot have max-min <= 1 per tile. Measured availability over the 48 train tiles: min 40, p25 2,712, median 6,543, p75 12,643, max 31,770, total 422,809; one tile holds only 40 captioning train patches.",
+      "gate_as_written": "max - min <= 1 per tile across all 48 tiles",
+      "gate_result_as_written": "unattainable by construction; it would cap every tile at 40 patches and cap N at 1,920",
+      "replacement_gate": {
+        "name": "prefix_proportional_balance",
+        "rule": "for every reported prefix, each tile's share of the prefix must match its share of the full selection within 3 percentage points; and every prefix must touch all 48 tiles",
+        "max_percentage_point_deviation": 3.0,
+        "tiles_touched": 48,
+        "why": "the instruction's intent is that any prefix of shards is roughly balanced across the 48 train tiles; with availability spanning 40 to 31,770 patches, 'balanced' can only mean proportional to availability, not equal"
+      },
+      "also_changed": "the selection ordering is the new interleaved one (data.bigearthnet_shards.select_patch_ids_interleaved); select_patch_ids and every loop-8 artifact stay untouched as separate files, and their tests still pass",
+      "gates_loosened": "none of the build, disk, speed, rejection, purity, or duplicate gates; only the definition of prefix balance changed, and the original definition and its measured failure are recorded above rather than deleted"
+    },
+    {
+      "id": 1,
+      "title": "shard membership must follow the selection, so the builder costs one archive pass per shard window",
+      "recorded_before": "attempt 2 build",
+      "problem": "A prefix-stratified selection cannot be written by a single-stream writer that keeps one shard buffer: shard membership is fixed by selection rank, the archive is tile-major, and a shard is only complete once the pass reaches its last patch. With one buffer the membership is forced to follow archive order (attempt 1) or all 75 shards (24 GB) must be buffered at once.",
+      "change": "build_shard_set takes shard_window (default: 30% of physical memory / 320 MB = 16 shards on this 16 GB host, i.e. 5 passes). It buffers `shard_window` shards per pass and assigns each accepted patch to shard = selection_rank // patches_per_shard. Rows inside a shard are sorted by selection rank, so on-disk row order equals the selection.",
+      "cost": "ceil(75/16) = 5 archive passes over the 63.5 GB stream instead of 1. Total build time rises; per-patch throughput FALLS because the stream cost is amortised over fewer patches per pass. The pre-registered speed guard (0.288 s/patch after 10 shards) is therefore evaluated against a pessimistic rate and is not loosened.",
+      "gates_loosened": "none",
+      "tests_added": [
+        "test_build_shard_set_membership_follows_the_selection_not_the_archive",
+        "test_build_shard_set_windows_produce_identical_shards"
+      ]
+    }
+  ],
+  "attempt_1_aborted": {
+    "recorded_utc": "2026-10-04T22:49:52+00:00",
+    "command": "scripts/build_stage1_train_shards.py --n-total 150000 --out data/shards/train-150000 --exclude-shards data/shards/eval-2000",
+    "outcome": "aborted after 40 shards / 80000 patches / 12800115120 B",
+    "kept_artifacts": [
+      "data/manifests/bigearthnet/stage1-shards-train-150000.attempt1-aborted-archive-order.v1.json",
+      "logs/loop9-build.attempt1-aborted.log"
+    ],
+    "deleted_artifacts": "data/shards/train-150000/shard-000{00..39}.{npz,json} (12.8 GB, unusable)",
+    "failure": "build_shard_set appended accepted patches in tar arrival order. The archive is tile-major, so shard-00000 held 2000 patches of T34VER alone (tile_counts {'T34VER': 2000}) and every shard prefix was tile-blocked. The selection was correct; the builder did not honour it.",
+    "gates_loosened": "none"
+  },
+  "step_1_prefix_stratification": {
+    "gate": {
+      "name": "prefix_tile_balance",
+      "rule": "for every reported prefix, (max per-tile count - min per-tile count) <= 1 once the prefix covers all 48 tiles at least once",
+      "threshold": 1
+    },
+    "gate_definition": "max - min <= 1 per tile for every reported prefix",
+    "selection_record": "data/manifests/bigearthnet/stage1-train-selection-150000.v1.json",
+    "old_order_kept_as": "select_patch_ids (loop-8 function, unchanged); its blocked measurement is in step_1's recorded failure",
+    "prefix_table_from_selection_list": {
+      "10000": {
+        "tiles_present": 48,
+        "min": 40,
+        "max": 212,
+        "spread": 172,
+        "max_deviation_pp": 1.9460000000000002
+      },
+      "50000": {
+        "tiles_present": 48,
+        "min": 40,
+        "max": 1113,
+        "spread": 1073,
+        "max_deviation_pp": 1.4586666666666663
+      },
+      "100000": {
+        "tiles_present": 48,
+        "min": 40,
+        "max": 2390,
+        "spread": 2350,
+        "max_deviation_pp": 0.790666666666667
+      },
+      "150000": {
+        "tiles_present": 48,
+        "min": 40,
+        "max": 3845,
+        "spread": 3805,
+        "max_deviation_pp": 0.0
+      }
+    },
+    "prefix_table_read_back_from_written_shards": {
+      "1": {
+        "patches": 2000,
+        "tiles_present": 48,
+        "min": 40,
+        "max": 42
+      },
+      "5": {
+        "patches": 10000,
+        "tiles_present": 48,
+        "min": 40,
+        "max": 212
+      },
+      "10": {
+        "patches": 20000,
+        "tiles_present": 48,
+        "min": 40,
+        "max": 429
+      },
+      "25": {
+        "patches": 50000,
+        "tiles_present": 48,
+        "min": 40,
+        "max": 1113
+      },
+      "50": {
+        "patches": 100000,
+        "tiles_present": 48,
+        "min": 40,
+        "max": 2390
+      },
+      "75": {
+        "patches": 150000,
+        "tiles_present": 48,
+        "min": 40,
+        "max": 3845
+      }
+    },
+    "on_disk_matches_selection": true,
+    "pass": true
+  },
+  "step_2_build": {
+    "attempt": 2,
+    "out_dir": "data/shards/train-150000",
+    "published_manifest": "data/manifests/bigearthnet/stage1-shards-train-150000.v1.json",
+    "manifest_sha256": "fc061b15616330dd1d7cdacfeb6a9c87ebf3719ae9aa92344955efbfae097d44",
+    "status": "complete",
+    "shards_written": 75,
+    "shards_expected": 75,
+    "patches": 150000,
+    "total_bytes": 24000215850,
+    "raw_pixel_bytes": 24000000000,
+    "archive_passes": 5,
+    "pass_seconds": [
+      452.04,
+      446.82,
+      446.42,
+      498.28,
+      435.49
+    ],
+    "archive_bytes_streamed": 317560228590,
+    "seconds_elapsed": 2285.784005624999,
+    "seconds_per_patch": 0.015238560037499993,
+    "bytes_per_second": 10499774.165423673,
+    "guards": {
+      "disk_free_before_each_shard_min_bytes": 57661681664,
+      "disk_free_before_each_shard_min_gb": 57.66,
+      "disk_required_bytes": 45000000000,
+      "disk_margin_bytes": 12661681664,
+      "speed_checkpoint_after_shards": 10,
+      "speed_seconds_per_patch_at_checkpoint": 0.022408500000000005,
+      "speed_limit_seconds_per_patch": 0.288,
+      "speed_passed": true,
+      "speed_margin_x_under_limit": 12.852265881250414,
+      "rejection_fraction_limit": 0.01,
+      "rejection_fraction_observed": 0.0,
+      "rejected_count_total": 0,
+      "rejected_by_reason": {},
+      "guards_triggered": null
+    },
+    "per_shard_assertions": {
+      "eval_tile_patches": 0,
+      "duplicate_ids_vs_prior_shards_and_eval": 0,
+      "bands_per_shard": 12,
+      "captions_joined": 150000,
+      "independent_verification": "results/stage1-loop9-shard-verification.json"
+    },
+    "process_rules": {
+      "caffeinate_i": true,
+      "nice_level": 10,
+      "log_file": "logs/loop9-build.attempt2.log",
+      "progress_lines_per_shard": 1,
+      "heavy_processes": 1
+    },
+    "extraction_temp": {
+      "peak_temp_bytes": 0,
+      "cleaned_after": true,
+      "note": "Patches are decoded through rasterio MemoryFile in RAM and never written to disk, so extraction temp footprint is 0 by construction. find over TMPDIR for *.tif/*.npz returned 0 leftovers after the run. Peak RSS was not instrumented continuously; sampled values during the run were 1.20 GB and 1.78 GB."
+    },
+    "projection_vs_measured": {
+      "loop8_projection_label": "projection",
+      "projection_build_hours": 6,
+      "projection_deflate_gb": 16.8,
+      "measured_build_seconds": 2285.784005624999,
+      "measured_deflate_bytes": null,
+      "note": "The loop-8 projection assumed a single amortized 0.144 s/patch across a full 63.5 GB pass. The windowed builder streams 5 x 63.5 GB but only decodes each selected patch once, so the measured 0.0152 s/patch is 9.4x lower. Deflate bytes were not measured this loop."
+    },
+    "stopped_early_prefix_usable": true
+  },
+  "step_3_verification": {
+    "report": "results/stage1-loop9-shard-verification.json",
+    "all_passed": true,
+    "checks": {
+      "hashes_match_manifest": true,
+      "sizes_match_manifest": true,
+      "split_pure": true,
+      "no_duplicate_ids": true,
+      "no_overlap_with_excluded_shards": true,
+      "all_bands_present": true,
+      "captions_joined": true,
+      "rows_match_manifest": true
+    },
+    "rehashed_shards": 75,
+    "total_bytes": 24000215850,
+    "n_patches": 150000,
+    "split_pure": true,
+    "duplicate_ids": 0,
+    "caption_coverage": 1.0,
+    "actual_seconds_per_patch": 0.015238560037499993,
+    "tile_counts": {
+      "T29SNB": 3845,
+      "T29SNC": 3845,
+      "T29SND": 3845,
+      "T29UNB": 3571,
+      "T29UPB": 1151,
+      "T29UPU": 3844,
+      "T29UPV": 3844,
+      "T31UER": 3844,
+      "T31UGR": 3844,
+      "T31UGS": 1371,
+      "T32TMT": 3844,
+      "T33TWM": 3844,
+      "T33TWN": 3844,
+      "T33TXN": 3844,
+      "T33UWP": 3844,
+      "T33UWQ": 1723,
+      "T33UXP": 3844,
+      "T33UXQ": 654,
+      "T34TCR": 3844,
+      "T34TCS": 1684,
+      "T34TEQ": 3844,
+      "T34TFN": 3844,
+      "T34UEG": 3844,
+      "T34VDM": 3844,
+      "T34VDN": 3844,
+      "T34VDR": 3844,
+      "T34VER": 3844,
+      "T34WFS": 3844,
+      "T34WFT": 40,
+      "T34WFU": 3844,
+      "T34WFV": 2399,
+      "T35ULA": 3844,
+      "T35ULB": 3844,
+      "T35UMA": 2660,
+      "T35UMB": 3844,
+      "T35VLG": 3570,
+      "T35VLJ": 2712,
+      "T35VNH": 3844,
+      "T35VNJ": 3844,
+      "T35VNK": 3844,
+      "T35VNL": 3844,
+      "T35VPJ": 3844,
+      "T35VPK": 3844,
+      "T35WPN": 2891,
+      "T35WPP": 813,
+      "T35WPR": 545,
+      "T36VVQ": 959,
+      "T36VVR": 246
+    },
+    "tiles_present": 48,
+    "tile_min": 40,
+    "tile_max": 3845,
+    "per_shard_tiles_present_min": 32,
+    "per_shard_tiles_present_max": 48,
+    "rejection_fraction_at_scale": 0.0,
+    "rejected_count": 0
+  },
+  "step_4_upload_plan": {
+    "plan": "results/stage1-loop9-upload-plan.json",
+    "sha256_lists": [
+      "results/stage1-loop9-upload-sha256/satquery-stage1-train-shards-part01.sha256.txt",
+      "results/stage1-loop9-upload-sha256/satquery-stage1-train-shards-part02.sha256.txt",
+      "results/stage1-loop9-upload-sha256/satquery-stage1-train-shards-part03.sha256.txt",
+      "results/stage1-loop9-upload-sha256/satquery-stage1-train-shards-part04.sha256.txt",
+      "results/stage1-loop9-upload-sha256/satquery-stage1-train-shards-part05.sha256.txt"
+    ],
+    "part_count": 5,
+    "parts": [
+      {
+        "part": "satquery-stage1-train-shards-part01",
+        "shards": "00000-00014",
+        "bytes": 4827461775,
+        "gb": 4.83
+      },
+      {
+        "part": "satquery-stage1-train-shards-part02",
+        "shards": "00015-00029",
+        "bytes": 4827645159,
+        "gb": 4.83
+      },
+      {
+        "part": "satquery-stage1-train-shards-part03",
+        "shards": "00030-00044",
+        "bytes": 4827758058,
+        "gb": 4.83
+      },
+      {
+        "part": "satquery-stage1-train-shards-part04",
+        "shards": "00045-00059",
+        "bytes": 4827760012,
+        "gb": 4.83
+      },
+      {
+        "part": "satquery-stage1-train-shards-part05",
+        "shards": "00060-00074",
+        "bytes": 4827800882,
+        "gb": 4.83
+      }
+    ],
+    "measured_total_bytes": 24000215850,
+    "upload_performed": false,
+    "kaggle_limits_verified": false,
+    "kaggle_limits_note": "Kaggle dataset and per-file size limits were NOT retrieved or checked in this loop; the 5 GB part size is a project choice, not a verified Kaggle limit."
+  },
+  "step_5_plan_from_throughput": {
+    "file": "scripts/run_stage1_full.py",
+    "design": [
+      "THROUGHPUT_REQUIRED_FIELDS = (measured_samples_per_second, shard_manifest_sha256, config_sha256, device, dtype); load_throughput() raises on a missing field, a non-positive or NaN rate, a shard-manifest mismatch, or a config mismatch.",
+      "plan_from_throughput(config, throughput, n_available, budget_seconds=None) computes max_steps = floor(budget_seconds x measured_samples_per_second / effective_batch) and refuses a zero-step plan instead of falling back.",
+      "run_full() takes --throughput-json and --budget-seconds and raises before any optimizer step if the throughput record is absent; budget and guard are configurable and override the config's budget_seconds.",
+      "plan, n_used, steps_planned and epochs_planned are written into the results JSON before the first training step, with the throughput record's own provenance alongside.",
+      "config-full.yaml carries steps: null and max_steps_per_session: null (explicit null, no hidden placeholder step counts) and budget_seconds: 180000."
+    ],
+    "config_full_keys": {
+      "path": "packages/stage1-t4-smoke/config-full.yaml",
+      "steps": "null",
+      "max_steps_per_session": "null",
+      "budget_seconds": "180000"
+    },
+    "tests": {
+      "file": "scripts/test_stage1_full.py",
+      "count": 16,
+      "cpu_only": true,
+      "throughput_records_mocked": true,
+      "coverage": [
+        "floor arithmetic for steps",
+        "budget override and zero-step refusal",
+        "loader rejections for missing/invalid/mismatched fields",
+        "refusal without a throughput JSON and plan written first",
+        "config identity ignores the null step keys",
+        "config-full.yaml contains no placeholder step count"
+      ]
+    },
+    "t4_throughput_available": false,
+    "t4_throughput_note": "No T4 has run yet, so no real throughput record exists; the guard is tested only against mocked records in this loop."
+  },
+  "frozen_artifacts": {
+    "norm_contract.json": "ab02179d2b4cf33c320a897d75318484189b249d99fff6cdd386016df908912d",
+    "caption-geo-split.v1.csv.gz": "3e5b1d774125c7b48a9454dbb33e6144aee8d990d8966e830987836159bd83ee",
+    "configs/model_artifacts.json": "72527fa9bb644cac71513b40a1a7e836a2044aae71ca6fb7095d4df643753e41",
+    "eval_shard_manifest": "data/manifests/bigearthnet/stage1-shards-eval-2000.v1.json",
+    "eval_shard_npz_sha256": "8b679cc14a45688f5feff9b70f6f3561eb526705527aa20b33035400f46d233a",
+    "all_unchanged": true
+  },
+  "tests": {
+    "focused": {
+      "command": "pytest data/test_bigearthnet_shards.py scripts/test_stage1_full.py scripts/test_stage1_t4_package.py scripts/test_stage1_smoke.py -q",
+      "passed": 62,
+      "exit_code": 0,
+      "loop8_baseline": 46
+    },
+    "full": {
+      "command": "pytest -q",
+      "passed": 485,
+      "exit_code": 0,
+      "loop8_baseline": 469
+    },
+    "loop9_tests_added": [
+      "test_build_shard_set_membership_follows_the_selection_not_the_archive",
+      "test_build_shard_set_windows_produce_identical_shards"
+    ]
+  },
+  "package": {
+    "path": "packages/stage1-t4-smoke",
+    "mirrored": [
+      "src/scripts/run_stage1_full.py",
+      "src/data/bigearthnet_shards.py"
+    ],
+    "file_count": 16,
+    "total_bytes": 1749491,
+    "manifest_sha256": "4f8d7c83cc35f86143dfd5d936e03b491f3298e5d77196666d07165a8203df37"
+  },
+  "open_issues": [
+    "Kaggle size limits are UNVERIFIED; the 5 GB part size is a project choice.",
+    "No T4 throughput record exists, so plan-from-throughput has never been exercised on real measurements.",
+    "The 24 GB shard set is local-only; the Kaggle part archives are not assembled (no extra 24 GB of disk, no upload).",
+    "Per-shard 'seconds' now measures time-to-next-write inside a window, not per-shard cost, so the build rate must be taken from seconds_elapsed / n_patches.",
+    "loop9-build.attempt2.log is block-buffered (stdout redirected to a file), so shard lines appear only when the buffer flushes; the published manifest was the live progress record.",
+    "Deflate byte total for the 75 shards was not measured this loop; loop 8 measured 0.699 on two shards."
+  ]
+}

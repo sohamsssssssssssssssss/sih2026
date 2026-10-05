@@ -1,0 +1,11 @@
+{
+  "pid": 29594,
+  "timestamp_utc": "2026-10-05T11:45:26.364697+00:00",
+  "git_sha": "1ceb9d161e1f654da96b1f57b31724e48ac29250",
+  "dirty_tree": true,
+  "n": 2000,
+  "seed": 26168,
+  "device": "CPU",
+  "split_name": "caption-geo-split.v1/train",
+  "log": "results/stage1-rebuild-checkpoint1.log"
+}

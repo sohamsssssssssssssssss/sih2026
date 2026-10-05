@@ -1,0 +1,98 @@
+{
+  "kind": "loop10 frozen-artifact checks",
+  "git_sha": "1ceb9d161e1f654da96b1f57b31724e48ac29250",
+  "split_name": "caption-geo-split.v1/train + eval",
+  "n_train": 150000,
+  "n_eval": 2000,
+  "seed": 26170,
+  "device": "CPU only",
+  "timestamp_utc": "2026-10-05T06:48:48.851551+00:00",
+  "revision": "66285546d2b821cf421d4f5eb2576359d3770cd3",
+  "weight_sha256": {
+    "model-00001-of-00002.safetensors": "41a8895c164b4d32bae6b302f4603fcbc1797f32dafa45c7e9bcda23c6755df8",
+    "model-00002-of-00002.safetensors": "365531ff8752420e89dee707b79d021fb2d6e25abafe486f080555a4fe6972e4"
+  },
+  "frozen_sha256": {
+    "contract": "ab02179d2b4cf33c320a897d75318484189b249d99fff6cdd386016df908912d",
+    "split": "3e5b1d774125c7b48a9454dbb33e6144aee8d990d8966e830987836159bd83ee",
+    "model_artifacts": "72527fa9bb644cac71513b40a1a7e836a2044aae71ca6fb7095d4df643753e41"
+  },
+  "attempt_cap_per_problem": 2,
+  "root_cause": {
+    "bad_shard_index": 0,
+    "arrival_mapped_patch_checks": 10,
+    "native_array_mismatches_allowed": 0,
+    "loop8_patch_checks": 10,
+    "eval_patch_checks": 10,
+    "package_patch_checks": 3,
+    "archive_source": "existing split S2 archive read-only, independent rasterio MemoryFile decode, no extraction",
+    "show_row_mapping": true
+  },
+  "writer": {
+    "record_coupling": "id caption tile and all 12 native uint16 arrays move together under any sort",
+    "per_patch_sha256": "canonical band order, band name + dtype + shape + contiguous uint16 bytes; source-read before shard write",
+    "regression": "synthetic archive arrival order differs from selection order; old code must fail and fixed code pass; zero row/pixel mismatches"
+  },
+  "verifier": {
+    "checksum_all_rows_required": true,
+    "checksum_mismatches_allowed": 0,
+    "raw_sample_rule": "at least max(100,40*ceil(shards/10)) distinct shard rows, spread across shard groups, fixed seed 26170",
+    "raw_native_mismatches_allowed": 0,
+    "caption_source_mismatches_allowed": 0,
+    "old_shard_expected_exit": "nonzero; preserve report",
+    "source_archive_read_only": true
+  },
+  "rebuild_plan": {
+    "new_dir": "data/shards/train-150000-v2",
+    "phase1_patches": 100000,
+    "phase1_shards": 50,
+    "phase2_patches": 50000,
+    "phase2_shards": 25,
+    "seconds_per_patch_projection_assumption": 0.144,
+    "label": "projection from user-specified rate, not a measured rebuild",
+    "disk_guard_bytes": 45000000000,
+    "no_delete_or_rebuild_without_user_text": true
+  },
+  "package_pairing": {
+    "sample_count": 3,
+    "native_mismatch_allowed": 0,
+    "caption_id_tiff_id_mismatch_allowed": 0
+  },
+  "training_audit": {
+    "B1": "caption tokens only, EOS included, padding ignored",
+    "B2": "frozen fp16 base, fp32 trainable masters, autocast and GradScaler",
+    "B3": "three distinct LRs, cosine 3% warmup from planned total, accumulation boundaries",
+    "B4": "vision requires_grad and labeled T4 peak memory estimate",
+    "B5": "adapter, full patch embed, unfrozen vision, optimizer, scaler, scheduler, RNG, data state, step and checkpoint size",
+    "B6": "CPU mocked continuous loss/LR/data order across resume",
+    "B7": "wall guard saves and clean exit; eval shard only no_grad same preprocessing; throughput required",
+    "B8": "package source hash equals repo; requirements no torch install and accelerate pin"
+  },
+  "scope": "no commit/push/upload/Kaggle/training/GPU/deletes/downloads/shard rebuild; contract/split/init/pinned checkpoint/eval shard unchanged",
+  "failed_attempts": "write separate files; never overwrite a failed result",
+  "checks": {
+    "contract": {
+      "expected": "ab02179d2b4cf33c320a897d75318484189b249d99fff6cdd386016df908912d",
+      "actual": "ab02179d2b4cf33c320a897d75318484189b249d99fff6cdd386016df908912d",
+      "unchanged": true
+    },
+    "split": {
+      "expected": "3e5b1d774125c7b48a9454dbb33e6144aee8d990d8966e830987836159bd83ee",
+      "actual": "3e5b1d774125c7b48a9454dbb33e6144aee8d990d8966e830987836159bd83ee",
+      "unchanged": true
+    },
+    "model_artifacts": {
+      "expected": "72527fa9bb644cac71513b40a1a7e836a2044aae71ca6fb7095d4df643753e41",
+      "actual": "72527fa9bb644cac71513b40a1a7e836a2044aae71ca6fb7095d4df643753e41",
+      "unchanged": true
+    },
+    "eval_npz": [
+      {
+        "file": "shard-00000.npz",
+        "expected": "8b679cc14a45688f5feff9b70f6f3561eb526705527aa20b33035400f46d233a",
+        "actual": "8b679cc14a45688f5feff9b70f6f3561eb526705527aa20b33035400f46d233a",
+        "unchanged": true
+      }
+    ]
+  }
+}

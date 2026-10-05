@@ -1,0 +1,12 @@
+.........................................................                [100%]
+=============================== warnings summary ===============================
+scripts/test_stage1_full.py: 17 warnings
+  /Users/soham/sih2026/.venv-stage1/lib/python3.11/site-packages/rasterio/io.py:143: NotGeoreferencedWarning: Dataset has no geotransform, gcps, or rpcs. The identity matrix will be returned.
+    rd = writer(
+
+scripts/test_stage1_full.py: 17 warnings
+  /Users/soham/sih2026/.venv-stage1/lib/python3.11/site-packages/rasterio/io.py:140: NotGeoreferencedWarning: Dataset has no geotransform, gcps, or rpcs. The identity matrix will be returned.
+    rd = DatasetReader(mempath, driver=driver, sharing=sharing, **kwargs)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+57 passed, 34 warnings in 7.97s

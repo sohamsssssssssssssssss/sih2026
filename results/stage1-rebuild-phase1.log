@@ -1,0 +1,409 @@
+phase1 started; shard0 verified; phase2 forbidden
+building shard00001; prefix=4000
+COMMAND ["/Users/soham/sih2026/.venv-stage1/bin/python", "-u", "/Users/soham/sih2026/scripts/build_stage1_train_shards.py", "--out", "/Users/soham/sih2026/data/shards/train-150000-v2", "--selection-id-list", "/Users/soham/sih2026/data/manifests/bigearthnet/stage1-train-rebuild-ids-loop10.v1.json", "--seed", "26168", "--patches-per-shard", "2000", "--n-total", "4000", "--published-manifest", "/Users/soham/sih2026/data/manifests/bigearthnet/stage1-shards-train-150000.v2.json", "--selection-record", "/Users/soham/sih2026/results/stage1-rebuild-phase1/prefix-004000-selection.json", "--exclude-shards", "/Users/soham/sih2026/data/shards/eval-2000", "--min-free-bytes", "45000000000", "--shard-window", "1", "--report", "/Users/soham/sih2026/results/stage1-rebuild-phase1/prefix-004000-build.json"]
+selection 4000 patches, 48 tiles
+excluding 2000 patch IDs from /Users/soham/sih2026/data/shards/eval-2000
+captions joined for 4000 patches; projected raw 640000000 B; free 79317409792 B
+shards 00000-00000 already verified; skipping pass
+pass 1/2: shards 00001-00001, 1 shards (0.3 GB) in RAM
+shard 00001 rows=2000 bytes=320002878 s=334.4 tiles=42-43 free=81.0GB total=0.64GB
+window 00001-00001 pass done in 334.6s (pass 1)
+complete: 2 shards, 4000 patches, 640005756 bytes
+{
+  "status": "complete",
+  "shards": 2,
+  "n_patches": 4000,
+  "total_bytes": 640005756,
+  "seconds_per_patch": 0.16788228383299428,
+  "rejected_this_run": 0,
+  "free_bytes_min": 79322824704
+}
+verifying shard00001; no next build until exit0
+COMMAND ["/Users/soham/sih2026/.venv-stage1/bin/python", "-u", "/Users/soham/sih2026/scripts/verify_stage1_train_shards.py", "--shards", "/Users/soham/sih2026/data/shards/train-150000-v2", "--manifest", "/Users/soham/sih2026/results/stage1-rebuild-phase1/shard-00001-manifest.json", "--exclude-shards", "/Users/soham/sih2026/data/shards/eval-2000", "--captions", "/Users/soham/Datasets/BigEarthNet/BigEarthNet.txt.parquet", "--split", "/Users/soham/sih2026/data/manifests/bigearthnet/caption-geo-split.v1.csv.gz", "--archive-part", "/Users/soham/Datasets/BigEarthNet/V2/BigEarthNet-S2.tar.gzaa", "--archive-part", "/Users/soham/Datasets/BigEarthNet/V2/BigEarthNet-S2.tar.gzab", "--report", "/Users/soham/sih2026/results/stage1-rebuild-phase1/shard-00001-verifier.json"]
+1/1 shards, 2000 patches, 320002878 bytes, all_passed=True
+  PASS hashes_match_manifest
+  PASS sizes_match_manifest
+  PASS split_pure
+  PASS no_duplicate_ids
+  PASS no_overlap_with_excluded_shards
+  PASS all_bands_present
+  PASS captions_joined
+  PASS rows_match_manifest
+  PASS native_checksums_match
+  PASS raw_pixels_match
+  PASS raw_sample_complete
+  PASS source_captions_match
+shard00001 verified; prefix=4000
+building shard00002; prefix=6000
+COMMAND ["/Users/soham/sih2026/.venv-stage1/bin/python", "-u", "/Users/soham/sih2026/scripts/build_stage1_train_shards.py", "--out", "/Users/soham/sih2026/data/shards/train-150000-v2", "--selection-id-list", "/Users/soham/sih2026/data/manifests/bigearthnet/stage1-train-rebuild-ids-loop10.v1.json", "--seed", "26168", "--patches-per-shard", "2000", "--n-total", "6000", "--published-manifest", "/Users/soham/sih2026/data/manifests/bigearthnet/stage1-shards-train-150000.v2.json", "--selection-record", "/Users/soham/sih2026/results/stage1-rebuild-phase1/prefix-006000-selection.json", "--exclude-shards", "/Users/soham/sih2026/data/shards/eval-2000", "--min-free-bytes", "45000000000", "--shard-window", "1", "--report", "/Users/soham/sih2026/results/stage1-rebuild-phase1/prefix-006000-build.json"]
+selection 6000 patches, 48 tiles
+excluding 2000 patch IDs from /Users/soham/sih2026/data/shards/eval-2000
+captions joined for 6000 patches; projected raw 960000000 B; free 81119891456 B
+shards 00000-00000 already verified; skipping pass
+shards 00001-00001 already verified; skipping pass
+pass 1/3: shards 00002-00002, 1 shards (0.3 GB) in RAM
+shard 00002 rows=2000 bytes=320002878 s=337.7 tiles=42-43 free=80.8GB total=0.96GB
+window 00002-00002 pass done in 338.5s (pass 1)
+complete: 3 shards, 6000 patches, 960008634 bytes
+{
+  "status": "complete",
+  "shards": 3,
+  "n_patches": 6000,
+  "total_bytes": 960008634,
+  "seconds_per_patch": 0.16986871275000157,
+  "rejected_this_run": 0,
+  "free_bytes_min": 80777822208
+}
+verifying shard00002; no next build until exit0
+COMMAND ["/Users/soham/sih2026/.venv-stage1/bin/python", "-u", "/Users/soham/sih2026/scripts/verify_stage1_train_shards.py", "--shards", "/Users/soham/sih2026/data/shards/train-150000-v2", "--manifest", "/Users/soham/sih2026/results/stage1-rebuild-phase1/shard-00002-manifest.json", "--exclude-shards", "/Users/soham/sih2026/data/shards/eval-2000", "--captions", "/Users/soham/Datasets/BigEarthNet/BigEarthNet.txt.parquet", "--split", "/Users/soham/sih2026/data/manifests/bigearthnet/caption-geo-split.v1.csv.gz", "--archive-part", "/Users/soham/Datasets/BigEarthNet/V2/BigEarthNet-S2.tar.gzaa", "--archive-part", "/Users/soham/Datasets/BigEarthNet/V2/BigEarthNet-S2.tar.gzab", "--report", "/Users/soham/sih2026/results/stage1-rebuild-phase1/shard-00002-verifier.json"]
+1/1 shards, 2000 patches, 320002878 bytes, all_passed=True
+  PASS hashes_match_manifest
+  PASS sizes_match_manifest
+  PASS split_pure
+  PASS no_duplicate_ids
+  PASS no_overlap_with_excluded_shards
+  PASS all_bands_present
+  PASS captions_joined
+  PASS rows_match_manifest
+  PASS native_checksums_match
+  PASS raw_pixels_match
+  PASS raw_sample_complete
+  PASS source_captions_match
+shard00002 verified; prefix=6000
+building shard00003; prefix=8000
+COMMAND ["/Users/soham/sih2026/.venv-stage1/bin/python", "-u", "/Users/soham/sih2026/scripts/build_stage1_train_shards.py", "--out", "/Users/soham/sih2026/data/shards/train-150000-v2", "--selection-id-list", "/Users/soham/sih2026/data/manifests/bigearthnet/stage1-train-rebuild-ids-loop10.v1.json", "--seed", "26168", "--patches-per-shard", "2000", "--n-total", "8000", "--published-manifest", "/Users/soham/sih2026/data/manifests/bigearthnet/stage1-shards-train-150000.v2.json", "--selection-record", "/Users/soham/sih2026/results/stage1-rebuild-phase1/prefix-008000-selection.json", "--exclude-shards", "/Users/soham/sih2026/data/shards/eval-2000", "--min-free-bytes", "45000000000", "--shard-window", "1", "--report", "/Users/soham/sih2026/results/stage1-rebuild-phase1/prefix-008000-build.json"]
+selection 8000 patches, 48 tiles
+excluding 2000 patch IDs from /Users/soham/sih2026/data/shards/eval-2000
+captions joined for 8000 patches; projected raw 1280000000 B; free 80829734912 B
+shards 00000-00000 already verified; skipping pass
+shards 00001-00001 already verified; skipping pass
+shards 00002-00002 already verified; skipping pass
+pass 1/4: shards 00003-00003, 1 shards (0.3 GB) in RAM
+shard 00003 rows=2000 bytes=320002878 s=331.3 tiles=42-43 free=80.5GB total=1.28GB
+window 00003-00003 pass done in 331.5s (pass 1)
+complete: 4 shards, 8000 patches, 1280011512 bytes
+{
+  "status": "complete",
+  "shards": 4,
+  "n_patches": 8000,
+  "total_bytes": 1280011512,
+  "seconds_per_patch": 0.16626438677099942,
+  "rejected_this_run": 0,
+  "free_bytes_min": 80484855808
+}
+verifying shard00003; no next build until exit0
+COMMAND ["/Users/soham/sih2026/.venv-stage1/bin/python", "-u", "/Users/soham/sih2026/scripts/verify_stage1_train_shards.py", "--shards", "/Users/soham/sih2026/data/shards/train-150000-v2", "--manifest", "/Users/soham/sih2026/results/stage1-rebuild-phase1/shard-00003-manifest.json", "--exclude-shards", "/Users/soham/sih2026/data/shards/eval-2000", "--captions", "/Users/soham/Datasets/BigEarthNet/BigEarthNet.txt.parquet", "--split", "/Users/soham/sih2026/data/manifests/bigearthnet/caption-geo-split.v1.csv.gz", "--archive-part", "/Users/soham/Datasets/BigEarthNet/V2/BigEarthNet-S2.tar.gzaa", "--archive-part", "/Users/soham/Datasets/BigEarthNet/V2/BigEarthNet-S2.tar.gzab", "--report", "/Users/soham/sih2026/results/stage1-rebuild-phase1/shard-00003-verifier.json"]
+1/1 shards, 2000 patches, 320002878 bytes, all_passed=True
+  PASS hashes_match_manifest
+  PASS sizes_match_manifest
+  PASS split_pure
+  PASS no_duplicate_ids
+  PASS no_overlap_with_excluded_shards
+  PASS all_bands_present
+  PASS captions_joined
+  PASS rows_match_manifest
+  PASS native_checksums_match
+  PASS raw_pixels_match
+  PASS raw_sample_complete
+  PASS source_captions_match
+shard00003 verified; prefix=8000
+building shard00004; prefix=10000
+COMMAND ["/Users/soham/sih2026/.venv-stage1/bin/python", "-u", "/Users/soham/sih2026/scripts/build_stage1_train_shards.py", "--out", "/Users/soham/sih2026/data/shards/train-150000-v2", "--selection-id-list", "/Users/soham/sih2026/data/manifests/bigearthnet/stage1-train-rebuild-ids-loop10.v1.json", "--seed", "26168", "--patches-per-shard", "2000", "--n-total", "10000", "--published-manifest", "/Users/soham/sih2026/data/manifests/bigearthnet/stage1-shards-train-150000.v2.json", "--selection-record", "/Users/soham/sih2026/results/stage1-rebuild-phase1/prefix-010000-selection.json", "--exclude-shards", "/Users/soham/sih2026/data/shards/eval-2000", "--min-free-bytes", "45000000000", "--shard-window", "1", "--report", "/Users/soham/sih2026/results/stage1-rebuild-phase1/prefix-010000-build.json"]
+selection 10000 patches, 48 tiles
+  prefix 10000: tiles=48 min=40 max=212 spread=172
+excluding 2000 patch IDs from /Users/soham/sih2026/data/shards/eval-2000
+captions joined for 10000 patches; projected raw 1600000000 B; free 80400052224 B
+shards 00000-00000 already verified; skipping pass
+shards 00001-00001 already verified; skipping pass
+shards 00002-00002 already verified; skipping pass
+shards 00003-00003 already verified; skipping pass
+pass 1/5: shards 00004-00004, 1 shards (0.3 GB) in RAM
+shard 00004 rows=2000 bytes=320002878 s=325.6 tiles=42-43 free=80.1GB total=1.60GB
+window 00004-00004 pass done in 325.7s (pass 1)
+complete: 5 shards, 10000 patches, 1600014390 bytes
+{
+  "status": "complete",
+  "shards": 5,
+  "n_patches": 10000,
+  "total_bytes": 1600014390,
+  "seconds_per_patch": 0.16336997800000244,
+  "rejected_this_run": 0,
+  "free_bytes_min": 80077778944
+}
+verifying shard00004; no next build until exit0
+COMMAND ["/Users/soham/sih2026/.venv-stage1/bin/python", "-u", "/Users/soham/sih2026/scripts/verify_stage1_train_shards.py", "--shards", "/Users/soham/sih2026/data/shards/train-150000-v2", "--manifest", "/Users/soham/sih2026/results/stage1-rebuild-phase1/shard-00004-manifest.json", "--exclude-shards", "/Users/soham/sih2026/data/shards/eval-2000", "--captions", "/Users/soham/Datasets/BigEarthNet/BigEarthNet.txt.parquet", "--split", "/Users/soham/sih2026/data/manifests/bigearthnet/caption-geo-split.v1.csv.gz", "--archive-part", "/Users/soham/Datasets/BigEarthNet/V2/BigEarthNet-S2.tar.gzaa", "--archive-part", "/Users/soham/Datasets/BigEarthNet/V2/BigEarthNet-S2.tar.gzab", "--report", "/Users/soham/sih2026/results/stage1-rebuild-phase1/shard-00004-verifier.json"]
+1/1 shards, 2000 patches, 320002878 bytes, all_passed=True
+  PASS hashes_match_manifest
+  PASS sizes_match_manifest
+  PASS split_pure
+  PASS no_duplicate_ids
+  PASS no_overlap_with_excluded_shards
+  PASS all_bands_present
+  PASS captions_joined
+  PASS rows_match_manifest
+  PASS native_checksums_match
+  PASS raw_pixels_match
+  PASS raw_sample_complete
+  PASS source_captions_match
+shard00004 verified; prefix=10000
+building shard00005; prefix=12000
+COMMAND ["/Users/soham/sih2026/.venv-stage1/bin/python", "-u", "/Users/soham/sih2026/scripts/build_stage1_train_shards.py", "--out", "/Users/soham/sih2026/data/shards/train-150000-v2", "--selection-id-list", "/Users/soham/sih2026/data/manifests/bigearthnet/stage1-train-rebuild-ids-loop10.v1.json", "--seed", "26168", "--patches-per-shard", "2000", "--n-total", "12000", "--published-manifest", "/Users/soham/sih2026/data/manifests/bigearthnet/stage1-shards-train-150000.v2.json", "--selection-record", "/Users/soham/sih2026/results/stage1-rebuild-phase1/prefix-012000-selection.json", "--exclude-shards", "/Users/soham/sih2026/data/shards/eval-2000", "--min-free-bytes", "45000000000", "--shard-window", "1", "--report", "/Users/soham/sih2026/results/stage1-rebuild-phase1/prefix-012000-build.json"]
+selection 12000 patches, 48 tiles
+  prefix 10000: tiles=48 min=40 max=212 spread=172
+excluding 2000 patch IDs from /Users/soham/sih2026/data/shards/eval-2000
+captions joined for 12000 patches; projected raw 1920000000 B; free 80091115520 B
+shards 00000-00000 already verified; skipping pass
+shards 00001-00001 already verified; skipping pass
+shards 00002-00002 already verified; skipping pass
+shards 00003-00003 already verified; skipping pass
+shards 00004-00004 already verified; skipping pass
+pass 1/6: shards 00005-00005, 1 shards (0.3 GB) in RAM
+shard 00005 rows=2000 bytes=320002878 s=324.9 tiles=35-43 free=79.8GB total=1.92GB
+window 00005-00005 pass done in 325.0s (pass 1)
+complete: 6 shards, 12000 patches, 1920017268 bytes
+{
+  "status": "complete",
+  "shards": 6,
+  "n_patches": 12000,
+  "total_bytes": 1920017268,
+  "seconds_per_patch": 0.16301360460399883,
+  "rejected_this_run": 0,
+  "free_bytes_min": 79781928960
+}
+verifying shard00005; no next build until exit0
+COMMAND ["/Users/soham/sih2026/.venv-stage1/bin/python", "-u", "/Users/soham/sih2026/scripts/verify_stage1_train_shards.py", "--shards", "/Users/soham/sih2026/data/shards/train-150000-v2", "--manifest", "/Users/soham/sih2026/results/stage1-rebuild-phase1/shard-00005-manifest.json", "--exclude-shards", "/Users/soham/sih2026/data/shards/eval-2000", "--captions", "/Users/soham/Datasets/BigEarthNet/BigEarthNet.txt.parquet", "--split", "/Users/soham/sih2026/data/manifests/bigearthnet/caption-geo-split.v1.csv.gz", "--archive-part", "/Users/soham/Datasets/BigEarthNet/V2/BigEarthNet-S2.tar.gzaa", "--archive-part", "/Users/soham/Datasets/BigEarthNet/V2/BigEarthNet-S2.tar.gzab", "--report", "/Users/soham/sih2026/results/stage1-rebuild-phase1/shard-00005-verifier.json"]
+1/1 shards, 2000 patches, 320002878 bytes, all_passed=True
+  PASS hashes_match_manifest
+  PASS sizes_match_manifest
+  PASS split_pure
+  PASS no_duplicate_ids
+  PASS no_overlap_with_excluded_shards
+  PASS all_bands_present
+  PASS captions_joined
+  PASS rows_match_manifest
+  PASS native_checksums_match
+  PASS raw_pixels_match
+  PASS raw_sample_complete
+  PASS source_captions_match
+shard00005 verified; prefix=12000
+building shard00006; prefix=14000
+COMMAND ["/Users/soham/sih2026/.venv-stage1/bin/python", "-u", "/Users/soham/sih2026/scripts/build_stage1_train_shards.py", "--out", "/Users/soham/sih2026/data/shards/train-150000-v2", "--selection-id-list", "/Users/soham/sih2026/data/manifests/bigearthnet/stage1-train-rebuild-ids-loop10.v1.json", "--seed", "26168", "--patches-per-shard", "2000", "--n-total", "14000", "--published-manifest", "/Users/soham/sih2026/data/manifests/bigearthnet/stage1-shards-train-150000.v2.json", "--selection-record", "/Users/soham/sih2026/results/stage1-rebuild-phase1/prefix-014000-selection.json", "--exclude-shards", "/Users/soham/sih2026/data/shards/eval-2000", "--min-free-bytes", "45000000000", "--shard-window", "1", "--report", "/Users/soham/sih2026/results/stage1-rebuild-phase1/prefix-014000-build.json"]
+selection 14000 patches, 48 tiles
+  prefix 10000: tiles=48 min=40 max=212 spread=172
+excluding 2000 patch IDs from /Users/soham/sih2026/data/shards/eval-2000
+captions joined for 14000 patches; projected raw 2240000000 B; free 79765950464 B
+shards 00000-00000 already verified; skipping pass
+shards 00001-00001 already verified; skipping pass
+shards 00002-00002 already verified; skipping pass
+shards 00003-00003 already verified; skipping pass
+shards 00004-00004 already verified; skipping pass
+shards 00005-00005 already verified; skipping pass
+pass 1/7: shards 00006-00006, 1 shards (0.3 GB) in RAM
+shard 00006 rows=2000 bytes=320002878 s=324.3 tiles=43-44 free=79.4GB total=2.24GB
+window 00006-00006 pass done in 324.3s (pass 1)
+complete: 7 shards, 14000 patches, 2240020146 bytes
+{
+  "status": "complete",
+  "shards": 7,
+  "n_patches": 14000,
+  "total_bytes": 2240020146,
+  "seconds_per_patch": 0.16265884141650166,
+  "rejected_this_run": 0,
+  "free_bytes_min": 79436578816
+}
+verifying shard00006; no next build until exit0
+COMMAND ["/Users/soham/sih2026/.venv-stage1/bin/python", "-u", "/Users/soham/sih2026/scripts/verify_stage1_train_shards.py", "--shards", "/Users/soham/sih2026/data/shards/train-150000-v2", "--manifest", "/Users/soham/sih2026/results/stage1-rebuild-phase1/shard-00006-manifest.json", "--exclude-shards", "/Users/soham/sih2026/data/shards/eval-2000", "--captions", "/Users/soham/Datasets/BigEarthNet/BigEarthNet.txt.parquet", "--split", "/Users/soham/sih2026/data/manifests/bigearthnet/caption-geo-split.v1.csv.gz", "--archive-part", "/Users/soham/Datasets/BigEarthNet/V2/BigEarthNet-S2.tar.gzaa", "--archive-part", "/Users/soham/Datasets/BigEarthNet/V2/BigEarthNet-S2.tar.gzab", "--report", "/Users/soham/sih2026/results/stage1-rebuild-phase1/shard-00006-verifier.json"]
+1/1 shards, 2000 patches, 320002878 bytes, all_passed=True
+  PASS hashes_match_manifest
+  PASS sizes_match_manifest
+  PASS split_pure
+  PASS no_duplicate_ids
+  PASS no_overlap_with_excluded_shards
+  PASS all_bands_present
+  PASS captions_joined
+  PASS rows_match_manifest
+  PASS native_checksums_match
+  PASS raw_pixels_match
+  PASS raw_sample_complete
+  PASS source_captions_match
+shard00006 verified; prefix=14000
+building shard00007; prefix=16000
+COMMAND ["/Users/soham/sih2026/.venv-stage1/bin/python", "-u", "/Users/soham/sih2026/scripts/build_stage1_train_shards.py", "--out", "/Users/soham/sih2026/data/shards/train-150000-v2", "--selection-id-list", "/Users/soham/sih2026/data/manifests/bigearthnet/stage1-train-rebuild-ids-loop10.v1.json", "--seed", "26168", "--patches-per-shard", "2000", "--n-total", "16000", "--published-manifest", "/Users/soham/sih2026/data/manifests/bigearthnet/stage1-shards-train-150000.v2.json", "--selection-record", "/Users/soham/sih2026/results/stage1-rebuild-phase1/prefix-016000-selection.json", "--exclude-shards", "/Users/soham/sih2026/data/shards/eval-2000", "--min-free-bytes", "45000000000", "--shard-window", "1", "--report", "/Users/soham/sih2026/results/stage1-rebuild-phase1/prefix-016000-build.json"]
+selection 16000 patches, 48 tiles
+  prefix 10000: tiles=48 min=40 max=212 spread=172
+excluding 2000 patch IDs from /Users/soham/sih2026/data/shards/eval-2000
+captions joined for 16000 patches; projected raw 2560000000 B; free 79436787712 B
+shards 00000-00000 already verified; skipping pass
+shards 00001-00001 already verified; skipping pass
+shards 00002-00002 already verified; skipping pass
+shards 00003-00003 already verified; skipping pass
+shards 00004-00004 already verified; skipping pass
+shards 00005-00005 already verified; skipping pass
+shards 00006-00006 already verified; skipping pass
+pass 1/8: shards 00007-00007, 1 shards (0.3 GB) in RAM
+shard 00007 rows=2000 bytes=320002878 s=330.5 tiles=43-44 free=79.1GB total=2.56GB
+window 00007-00007 pass done in 330.7s (pass 1)
+complete: 8 shards, 16000 patches, 2560023024 bytes
+{
+  "status": "complete",
+  "shards": 8,
+  "n_patches": 16000,
+  "total_bytes": 2560023024,
+  "seconds_per_patch": 0.1658704001455044,
+  "rejected_this_run": 0,
+  "free_bytes_min": 79118413824
+}
+verifying shard00007; no next build until exit0
+COMMAND ["/Users/soham/sih2026/.venv-stage1/bin/python", "-u", "/Users/soham/sih2026/scripts/verify_stage1_train_shards.py", "--shards", "/Users/soham/sih2026/data/shards/train-150000-v2", "--manifest", "/Users/soham/sih2026/results/stage1-rebuild-phase1/shard-00007-manifest.json", "--exclude-shards", "/Users/soham/sih2026/data/shards/eval-2000", "--captions", "/Users/soham/Datasets/BigEarthNet/BigEarthNet.txt.parquet", "--split", "/Users/soham/sih2026/data/manifests/bigearthnet/caption-geo-split.v1.csv.gz", "--archive-part", "/Users/soham/Datasets/BigEarthNet/V2/BigEarthNet-S2.tar.gzaa", "--archive-part", "/Users/soham/Datasets/BigEarthNet/V2/BigEarthNet-S2.tar.gzab", "--report", "/Users/soham/sih2026/results/stage1-rebuild-phase1/shard-00007-verifier.json"]
+1/1 shards, 2000 patches, 320002878 bytes, all_passed=True
+  PASS hashes_match_manifest
+  PASS sizes_match_manifest
+  PASS split_pure
+  PASS no_duplicate_ids
+  PASS no_overlap_with_excluded_shards
+  PASS all_bands_present
+  PASS captions_joined
+  PASS rows_match_manifest
+  PASS native_checksums_match
+  PASS raw_pixels_match
+  PASS raw_sample_complete
+  PASS source_captions_match
+shard00007 verified; prefix=16000
+building shard00008; prefix=18000
+COMMAND ["/Users/soham/sih2026/.venv-stage1/bin/python", "-u", "/Users/soham/sih2026/scripts/build_stage1_train_shards.py", "--out", "/Users/soham/sih2026/data/shards/train-150000-v2", "--selection-id-list", "/Users/soham/sih2026/data/manifests/bigearthnet/stage1-train-rebuild-ids-loop10.v1.json", "--seed", "26168", "--patches-per-shard", "2000", "--n-total", "18000", "--published-manifest", "/Users/soham/sih2026/data/manifests/bigearthnet/stage1-shards-train-150000.v2.json", "--selection-record", "/Users/soham/sih2026/results/stage1-rebuild-phase1/prefix-018000-selection.json", "--exclude-shards", "/Users/soham/sih2026/data/shards/eval-2000", "--min-free-bytes", "45000000000", "--shard-window", "1", "--report", "/Users/soham/sih2026/results/stage1-rebuild-phase1/prefix-018000-build.json"]
+selection 18000 patches, 48 tiles
+  prefix 10000: tiles=48 min=40 max=212 spread=172
+excluding 2000 patch IDs from /Users/soham/sih2026/data/shards/eval-2000
+captions joined for 18000 patches; projected raw 2880000000 B; free 79110393856 B
+shards 00000-00000 already verified; skipping pass
+shards 00001-00001 already verified; skipping pass
+shards 00002-00002 already verified; skipping pass
+shards 00003-00003 already verified; skipping pass
+shards 00004-00004 already verified; skipping pass
+shards 00005-00005 already verified; skipping pass
+shards 00006-00006 already verified; skipping pass
+shards 00007-00007 already verified; skipping pass
+pass 1/9: shards 00008-00008, 1 shards (0.3 GB) in RAM
+shard 00008 rows=2000 bytes=320002878 s=324.8 tiles=43-44 free=78.8GB total=2.88GB
+window 00008-00008 pass done in 325.7s (pass 1)
+complete: 9 shards, 18000 patches, 2880025902 bytes
+{
+  "status": "complete",
+  "shards": 9,
+  "n_patches": 18000,
+  "total_bytes": 2880025902,
+  "seconds_per_patch": 0.16337713220799924,
+  "rejected_this_run": 0,
+  "free_bytes_min": 78779289600
+}
+verifying shard00008; no next build until exit0
+COMMAND ["/Users/soham/sih2026/.venv-stage1/bin/python", "-u", "/Users/soham/sih2026/scripts/verify_stage1_train_shards.py", "--shards", "/Users/soham/sih2026/data/shards/train-150000-v2", "--manifest", "/Users/soham/sih2026/results/stage1-rebuild-phase1/shard-00008-manifest.json", "--exclude-shards", "/Users/soham/sih2026/data/shards/eval-2000", "--captions", "/Users/soham/Datasets/BigEarthNet/BigEarthNet.txt.parquet", "--split", "/Users/soham/sih2026/data/manifests/bigearthnet/caption-geo-split.v1.csv.gz", "--archive-part", "/Users/soham/Datasets/BigEarthNet/V2/BigEarthNet-S2.tar.gzaa", "--archive-part", "/Users/soham/Datasets/BigEarthNet/V2/BigEarthNet-S2.tar.gzab", "--report", "/Users/soham/sih2026/results/stage1-rebuild-phase1/shard-00008-verifier.json"]
+1/1 shards, 2000 patches, 320002878 bytes, all_passed=True
+  PASS hashes_match_manifest
+  PASS sizes_match_manifest
+  PASS split_pure
+  PASS no_duplicate_ids
+  PASS no_overlap_with_excluded_shards
+  PASS all_bands_present
+  PASS captions_joined
+  PASS rows_match_manifest
+  PASS native_checksums_match
+  PASS raw_pixels_match
+  PASS raw_sample_complete
+  PASS source_captions_match
+shard00008 verified; prefix=18000
+building shard00009; prefix=20000
+COMMAND ["/Users/soham/sih2026/.venv-stage1/bin/python", "-u", "/Users/soham/sih2026/scripts/build_stage1_train_shards.py", "--out", "/Users/soham/sih2026/data/shards/train-150000-v2", "--selection-id-list", "/Users/soham/sih2026/data/manifests/bigearthnet/stage1-train-rebuild-ids-loop10.v1.json", "--seed", "26168", "--patches-per-shard", "2000", "--n-total", "20000", "--published-manifest", "/Users/soham/sih2026/data/manifests/bigearthnet/stage1-shards-train-150000.v2.json", "--selection-record", "/Users/soham/sih2026/results/stage1-rebuild-phase1/prefix-020000-selection.json", "--exclude-shards", "/Users/soham/sih2026/data/shards/eval-2000", "--min-free-bytes", "45000000000", "--shard-window", "1", "--report", "/Users/soham/sih2026/results/stage1-rebuild-phase1/prefix-020000-build.json"]
+selection 20000 patches, 48 tiles
+  prefix 10000: tiles=48 min=40 max=212 spread=172
+excluding 2000 patch IDs from /Users/soham/sih2026/data/shards/eval-2000
+captions joined for 20000 patches; projected raw 3200000000 B; free 78776619008 B
+shards 00000-00000 already verified; skipping pass
+shards 00001-00001 already verified; skipping pass
+shards 00002-00002 already verified; skipping pass
+shards 00003-00003 already verified; skipping pass
+shards 00004-00004 already verified; skipping pass
+shards 00005-00005 already verified; skipping pass
+shards 00006-00006 already verified; skipping pass
+shards 00007-00007 already verified; skipping pass
+shards 00008-00008 already verified; skipping pass
+pass 1/10: shards 00009-00009, 1 shards (0.3 GB) in RAM
+shard 00009 rows=2000 bytes=320002878 s=324.6 tiles=43-44 free=78.5GB total=3.20GB
+window 00009-00009 pass done in 324.8s (pass 1)
+complete: 10 shards, 20000 patches, 3200028780 bytes
+{
+  "status": "complete",
+  "shards": 10,
+  "n_patches": 20000,
+  "total_bytes": 3200028780,
+  "seconds_per_patch": 0.16287836785450055,
+  "rejected_this_run": 0,
+  "free_bytes_min": 78462423040
+}
+verifying shard00009; no next build until exit0
+COMMAND ["/Users/soham/sih2026/.venv-stage1/bin/python", "-u", "/Users/soham/sih2026/scripts/verify_stage1_train_shards.py", "--shards", "/Users/soham/sih2026/data/shards/train-150000-v2", "--manifest", "/Users/soham/sih2026/results/stage1-rebuild-phase1/shard-00009-manifest.json", "--exclude-shards", "/Users/soham/sih2026/data/shards/eval-2000", "--captions", "/Users/soham/Datasets/BigEarthNet/BigEarthNet.txt.parquet", "--split", "/Users/soham/sih2026/data/manifests/bigearthnet/caption-geo-split.v1.csv.gz", "--archive-part", "/Users/soham/Datasets/BigEarthNet/V2/BigEarthNet-S2.tar.gzaa", "--archive-part", "/Users/soham/Datasets/BigEarthNet/V2/BigEarthNet-S2.tar.gzab", "--report", "/Users/soham/sih2026/results/stage1-rebuild-phase1/shard-00009-verifier.json"]
+1/1 shards, 2000 patches, 320002878 bytes, all_passed=True
+  PASS hashes_match_manifest
+  PASS sizes_match_manifest
+  PASS split_pure
+  PASS no_duplicate_ids
+  PASS no_overlap_with_excluded_shards
+  PASS all_bands_present
+  PASS captions_joined
+  PASS rows_match_manifest
+  PASS native_checksums_match
+  PASS raw_pixels_match
+  PASS raw_sample_complete
+  PASS source_captions_match
+shard00009 verified; prefix=20000
+building shard00010; prefix=22000
+COMMAND ["/Users/soham/sih2026/.venv-stage1/bin/python", "-u", "/Users/soham/sih2026/scripts/build_stage1_train_shards.py", "--out", "/Users/soham/sih2026/data/shards/train-150000-v2", "--selection-id-list", "/Users/soham/sih2026/data/manifests/bigearthnet/stage1-train-rebuild-ids-loop10.v1.json", "--seed", "26168", "--patches-per-shard", "2000", "--n-total", "22000", "--published-manifest", "/Users/soham/sih2026/data/manifests/bigearthnet/stage1-shards-train-150000.v2.json", "--selection-record", "/Users/soham/sih2026/results/stage1-rebuild-phase1/prefix-022000-selection.json", "--exclude-shards", "/Users/soham/sih2026/data/shards/eval-2000", "--min-free-bytes", "45000000000", "--shard-window", "1", "--report", "/Users/soham/sih2026/results/stage1-rebuild-phase1/prefix-022000-build.json"]
+selection 22000 patches, 48 tiles
+  prefix 10000: tiles=48 min=40 max=212 spread=172
+excluding 2000 patch IDs from /Users/soham/sih2026/data/shards/eval-2000
+captions joined for 22000 patches; projected raw 3520000000 B; free 78465687552 B
+shards 00000-00000 already verified; skipping pass
+shards 00001-00001 already verified; skipping pass
+shards 00002-00002 already verified; skipping pass
+shards 00003-00003 already verified; skipping pass
+shards 00004-00004 already verified; skipping pass
+shards 00005-00005 already verified; skipping pass
+shards 00006-00006 already verified; skipping pass
+shards 00007-00007 already verified; skipping pass
+shards 00008-00008 already verified; skipping pass
+shards 00009-00009 already verified; skipping pass
+pass 1/11: shards 00010-00010, 1 shards (0.3 GB) in RAM
+shard 00010 rows=2000 bytes=320002878 s=323.8 tiles=43-44 free=78.1GB total=3.52GB
+window 00010-00010 pass done in 323.9s (pass 1)
+complete: 11 shards, 22000 patches, 3520031658 bytes
+{
+  "status": "complete",
+  "shards": 11,
+  "n_patches": 22000,
+  "total_bytes": 3520031658,
+  "seconds_per_patch": 0.16245412306250365,
+  "rejected_this_run": 0,
+  "free_bytes_min": 78136131584
+}
+verifying shard00010; no next build until exit0
+COMMAND ["/Users/soham/sih2026/.venv-stage1/bin/python", "-u", "/Users/soham/sih2026/scripts/verify_stage1_train_shards.py", "--shards", "/Users/soham/sih2026/data/shards/train-150000-v2", "--manifest", "/Users/soham/sih2026/results/stage1-rebuild-phase1/shard-00010-manifest.json", "--exclude-shards", "/Users/soham/sih2026/data/shards/eval-2000", "--captions", "/Users/soham/Datasets/BigEarthNet/BigEarthNet.txt.parquet", "--split", "/Users/soham/sih2026/data/manifests/bigearthnet/caption-geo-split.v1.csv.gz", "--archive-part", "/Users/soham/Datasets/BigEarthNet/V2/BigEarthNet-S2.tar.gzaa", "--archive-part", "/Users/soham/Datasets/BigEarthNet/V2/BigEarthNet-S2.tar.gzab", "--report", "/Users/soham/sih2026/results/stage1-rebuild-phase1/shard-00010-verifier.json"]
+1/1 shards, 2000 patches, 320002878 bytes, all_passed=True
+  PASS hashes_match_manifest
+  PASS sizes_match_manifest
+  PASS split_pure
+  PASS no_duplicate_ids
+  PASS no_overlap_with_excluded_shards
+  PASS all_bands_present
+  PASS captions_joined
+  PASS rows_match_manifest
+  PASS native_checksums_match
+  PASS raw_pixels_match
+  PASS raw_sample_complete
+  PASS source_captions_match
+shard00010 verified; prefix=22000
+STOPPED ON FIRST FAILURE; no further build
+Traceback (most recent call last):
+  File "/private/tmp/stage1_phase1_gated.py", line 50, in <module>
+    if prefix>=20000 and build_seconds/built_rows>0.288:raise RuntimeError('Existing speed guard exceeded after10shards')
+                                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: Existing speed guard exceeded after10shards

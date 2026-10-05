@@ -1,0 +1,34 @@
+validating completed shard despite CLI report-format failure; no rebuild
+verifying first shard
+COMMAND ["/Users/soham/sih2026/.venv-stage1/bin/python", "-u", "scripts/verify_stage1_train_shards.py", "--shards", "data/shards/train-150000-v2", "--manifest", "data/manifests/bigearthnet/stage1-shards-train-150000.v2.json", "--exclude-shards", "data/shards/eval-2000", "--captions", "/Users/soham/Datasets/BigEarthNet/BigEarthNet.txt.parquet", "--split", "data/manifests/bigearthnet/caption-geo-split.v1.csv.gz", "--archive-part", "/Users/soham/Datasets/BigEarthNet/V2/BigEarthNet-S2.tar.gzaa", "--archive-part", "/Users/soham/Datasets/BigEarthNet/V2/BigEarthNet-S2.tar.gzab", "--report", "results/stage1-rebuild-checkpoint1-attempt2-verifier.json"]
+1/1 shards, 2000 patches, 320002878 bytes, all_passed=True
+  PASS hashes_match_manifest
+  PASS sizes_match_manifest
+  PASS split_pure
+  PASS no_duplicate_ids
+  PASS no_overlap_with_excluded_shards
+  PASS all_bands_present
+  PASS captions_joined
+  PASS rows_match_manifest
+  PASS native_checksums_match
+  PASS raw_pixels_match
+  PASS raw_sample_complete
+  PASS source_captions_match
+first-shard positive control PASS; checking all16 smoke patches
+PASS S2A_MSIL2A_20180413T095031_N9999_R079_T34UEG_19_24
+PASS S2A_MSIL2A_20180413T095031_N9999_R079_T34UEG_56_65
+PASS S2A_MSIL2A_20180419T101031_N9999_R022_T34VDN_45_76
+PASS S2A_MSIL2A_20180508T104031_N9999_R008_T31UGS_13_80
+PASS S2A_MSIL2A_20180508T104031_N9999_R008_T31UGS_27_85
+PASS S2B_MSIL2A_20170802T092029_N9999_R093_T34TFN_19_26
+PASS S2B_MSIL2A_20170802T092029_N9999_R093_T34TFN_32_11
+PASS S2B_MSIL2A_20170906T101019_N9999_R022_T34VDN_41_66
+PASS S2B_MSIL2A_20170906T101019_N9999_R022_T34VDN_71_40
+PASS S2B_MSIL2A_20170906T101019_N9999_R022_T34VDN_78_65
+PASS S2B_MSIL2A_20170911T092019_N9999_R093_T34TFN_05_14
+PASS S2B_MSIL2A_20170930T095019_N9999_R079_T34UEG_04_18
+PASS S2B_MSIL2A_20170930T095019_N9999_R079_T34UEG_27_24
+PASS S2B_MSIL2A_20171015T104009_N9999_R008_T31UGS_07_66
+PASS S2B_MSIL2A_20171015T104009_N9999_R008_T31UGS_11_74
+PASS S2B_MSIL2A_20180509T092029_N9999_R093_T34TFN_04_44
+CONTROLS PASS; stopped before phase1 for checkpoint report

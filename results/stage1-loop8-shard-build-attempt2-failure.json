@@ -1,0 +1,18 @@
+{
+  "kind": "loop 8 shard-build attempt 2 (failed; kept for the record)",
+  "git_sha": "1ceb9d161e1f654da96b1f57b31724e48ac29250",
+  "split_name": "caption-geo-split.v1/train",
+  "n_requested": 2000,
+  "n_built": 0,
+  "seed": 26168,
+  "device": "CPU-only preparation (Apple M5 MacBook Pro, py3.11.15 .venv-stage1)",
+  "timestamp_utc": "2026-10-04T20:31:00+00:00",
+  "status": "failed",
+  "exit_code": 1,
+  "error": "ValueError: No selected patch could be built: 2000 rejected",
+  "phase": "streaming archive pass; no shard bytes were written",
+  "diagnosis": "The uniform 120x120 acceptance rule from amendment 0 rejected every selected patch. A read-only diagnostic decoded the first 400 S2 members of the archive and measured the real band geometry: uint16 (120,120) for the 10 m bands, (60,60) for the 20 m bands, (20,20) for the 60 m bands. BigEarthNet V2 stores each band at its own GSD, which is exactly why the frozen loader upsamples everything to 120x120 with rasterio bilinear and why loop 3 noted coarse 60 m texture in B01/B09.",
+  "attempt_accounting": "This was attempt 2 under the uniform-size rule. The third build run is attempt 1 of the corrected problem (native per-band GSD, amendment 2), whose root cause was measured rather than guessed; both failures are recorded here and attempt 1, and no pre-registered threshold was changed.",
+  "no_gate_change": "native_resolution remains a zero-violation gate; it is now defined per band's native size. The raw DN 0 rejection rule, the split-purity gate, and the determinism gate are unchanged.",
+  "note": "No shards, no manifest, and no measured byte numbers were produced by this attempt; nothing downstream may cite it."
+}

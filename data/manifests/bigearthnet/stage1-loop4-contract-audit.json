@@ -1,0 +1,115 @@
+{
+  "all_band_dn1_fraction": 0.00014440972222222223,
+  "contract_sha256": "ab02179d2b4cf33c320a897d75318484189b249d99fff6cdd386016df908912d",
+  "derivation": "For each band, remove the q fraction of pixels with raw DN 1 (scaled/clipped x=0.0001) from population first and second moments; no pixel reread.",
+  "device": "none; analytical audit of saved train statistics",
+  "fit_included_all_band_dn1": true,
+  "git_sha": "1ceb9d161e1f654da96b1f57b31724e48ac29250",
+  "held_out_evidence": "Only three disjoint 1000-patch subset spread measurements from the same 4000-patch train fit sample; no independent held-out pixel sample.",
+  "loader_check_is_in_sample": true,
+  "max_abs_mean_delta": 3.29849802805926e-05,
+  "max_abs_std_delta": 1.898910579473112e-05,
+  "n": 4000,
+  "per_band": {
+    "B01": {
+      "excluded_mean": 0.045824483868558946,
+      "excluded_std": 0.08858633933791944,
+      "included_mean": 0.045817880808544736,
+      "included_std": 0.08858164671195663,
+      "mean_delta_excluded_minus_included": 6.6030600142097384e-06,
+      "std_delta_excluded_minus_included": 4.692625962809949e-06
+    },
+    "B02": {
+      "excluded_mean": 0.05266876256076704,
+      "excluded_std": 0.09376666789952774,
+      "included_mean": 0.052661171120368076,
+      "included_std": 0.09376202507705389,
+      "mean_delta_excluded_minus_included": 7.591440398961591e-06,
+      "std_delta_excluded_minus_included": 4.64282247385206e-06
+    },
+    "B03": {
+      "excluded_mean": 0.06816580943291678,
+      "excluded_std": 0.0897175403956887,
+      "included_mean": 0.06815598006828374,
+      "included_std": 0.0897147903837958,
+      "mean_delta_excluded_minus_included": 9.829364633034965e-06,
+      "std_delta_excluded_minus_included": 2.75001189289914e-06
+    },
+    "B04": {
+      "excluded_mean": 0.06356547807685123,
+      "excluded_std": 0.09380886322216397,
+      "included_mean": 0.06355631304479145,
+      "included_std": 0.09380518950343043,
+      "mean_delta_excluded_minus_included": 9.165032059776923e-06,
+      "std_delta_excluded_minus_included": 3.6737187335406096e-06
+    },
+    "B05": {
+      "excluded_mean": 0.09927373808614971,
+      "excluded_std": 0.09508526149997379,
+      "included_mean": 0.09925941643418096,
+      "included_std": 0.09508586352862942,
+      "mean_delta_excluded_minus_included": 1.4321651968754456e-05,
+      "std_delta_excluded_minus_included": -6.020286556357446e-07
+    },
+    "B06": {
+      "excluded_mean": 0.1836588331395589,
+      "excluded_std": 0.11956911507895732,
+      "included_mean": 0.1836323254594538,
+      "included_std": 0.11958082498410444,
+      "mean_delta_excluded_minus_included": 2.6507680105120057e-05,
+      "std_delta_excluded_minus_included": -1.1709905147122557e-05
+    },
+    "B07": {
+      "excluded_mean": 0.21056569767861036,
+      "excluded_std": 0.13223245656318022,
+      "included_mean": 0.2105353043856713,
+      "included_std": 0.13224709193614867,
+      "mean_delta_excluded_minus_included": 3.0393292939051575e-05,
+      "std_delta_excluded_minus_included": -1.4635372968446747e-05
+    },
+    "B08": {
+      "excluded_mean": 0.2250385940233911,
+      "excluded_std": 0.14293826449208782,
+      "included_mean": 0.22500611070351115,
+      "included_std": 0.14295349827106799,
+      "mean_delta_excluded_minus_included": 3.2483319879955674e-05,
+      "std_delta_excluded_minus_included": -1.5233778980161539e-05
+    },
+    "B09": {
+      "excluded_mean": 0.22851246263083722,
+      "excluded_std": 0.13204484433347216,
+      "included_mean": 0.22847947765055662,
+      "included_std": 0.1320638334392669,
+      "mean_delta_excluded_minus_included": 3.29849802805926e-05,
+      "std_delta_excluded_minus_included": -1.898910579473112e-05
+    },
+    "B11": {
+      "excluded_mean": 0.13945584123994514,
+      "excluded_std": 0.09749600302937382,
+      "included_mean": 0.13943571690162165,
+      "included_std": 0.09750334334493992,
+      "mean_delta_excluded_minus_included": 2.0124338323490587e-05,
+      "std_delta_excluded_minus_included": -7.340315566095601e-06
+    },
+    "B12": {
+      "excluded_mean": 0.08724260285178016,
+      "excluded_std": 0.07363786947025601,
+      "included_mean": 0.08723001861270863,
+      "included_std": 0.0736399974077367,
+      "mean_delta_excluded_minus_included": 1.2584239071536385e-05,
+      "std_delta_excluded_minus_included": -2.1279374806948415e-06
+    },
+    "B8A": {
+      "excluded_mean": 0.2276989046019691,
+      "excluded_std": 0.1375706264619556,
+      "included_mean": 0.22766603710737746,
+      "included_std": 0.13758787642387704,
+      "mean_delta_excluded_minus_included": 3.28674945916374e-05,
+      "std_delta_excluded_minus_included": -1.7249961921456114e-05
+    }
+  },
+  "seed": 0,
+  "split_name": "caption-geo-split.v1/train",
+  "study_sha256": "be5c4b4e73a1faba504c0059574c6854cf494bf21cefc9a110724116d812e476",
+  "timestamp_utc": "2026-10-04T12:31:45.104683+00:00"
+}

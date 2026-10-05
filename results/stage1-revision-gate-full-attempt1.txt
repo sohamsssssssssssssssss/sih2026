@@ -1,0 +1,69 @@
+........................................................................ [ 14%]
+........................................................................ [ 28%]
+........................................................................ [ 42%]
+........................................................................ [ 56%]
+........................................................................ [ 70%]
+........................................................................ [ 84%]
+........................................................................ [ 98%]
+........                                                                 [100%]
+=============================== warnings summary ===============================
+.venv-stage1/lib/python3.11/site-packages/starlette/testclient.py:37
+  /Users/soham/sih2026/.venv-stage1/lib/python3.11/site-packages/starlette/testclient.py:37: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = typing.Callable[[], typing.ContextManager[anyio.abc.BlockingPortal]]
+
+.venv-stage1/lib/python3.11/site-packages/rasterio/transform.py:178: 1 warning
+backend/test_api.py: 12 warnings
+data/test_bigearthnet_s2.py: 109 warnings
+models/change/test_model.py: 24 warnings
+models/optical_sar/test_model.py: 28 warnings
+scripts/test_validate_bigearthnet_s2.py: 13 warnings
+  /Users/soham/sih2026/.venv-stage1/lib/python3.11/site-packages/rasterio/transform.py:178: PendingDeprecationWarning: Use `@` matmul instead of `*` mul operator for matrix multiplication
+    return Affine.translation(west, north) * Affine.scale(xsize, -ysize)
+
+backend/test_api.py: 1 warning
+data/test_bigearthnet_s2.py: 6 warnings
+data/test_bigearthnet_shards.py: 21 warnings
+scripts/test_stage1_full.py: 17 warnings
+scripts/test_validate_bigearthnet_s2.py: 1 warning
+  /Users/soham/sih2026/.venv-stage1/lib/python3.11/site-packages/rasterio/io.py:143: NotGeoreferencedWarning: Dataset has no geotransform, gcps, or rpcs. The identity matrix will be returned.
+    rd = writer(
+
+data/test_bigearthnet_s2.py: 6 warnings
+data/test_bigearthnet_shards.py: 20 warnings
+scripts/test_stage1_full.py: 17 warnings
+scripts/test_validate_bigearthnet_s2.py: 1 warning
+  /Users/soham/sih2026/.venv-stage1/lib/python3.11/site-packages/rasterio/io.py:140: NotGeoreferencedWarning: Dataset has no geotransform, gcps, or rpcs. The identity matrix will be returned.
+    rd = DatasetReader(mempath, driver=driver, sharing=sharing, **kwargs)
+
+data/test_bigearthnet_shards.py::test_shard_pixels_match_the_extracted_directory_loader
+  /Users/soham/sih2026/.venv-stage1/lib/python3.11/site-packages/rasterio/__init__.py:356: NotGeoreferencedWarning: Dataset has no geotransform, gcps, or rpcs. The identity matrix will be returned.
+    dataset = DatasetReader(path, driver=driver, sharing=sharing, **kwargs)
+
+demo_gui/test_capability_status.py::CapabilityStatusTests::test_capabilities_render_in_distinct_maturity_groups
+  /Users/soham/sih2026/.venv-stage1/lib/python3.11/site-packages/matplotlib/_fontconfig_pattern.py:64: PyparsingDeprecationWarning: 'oneOf' deprecated - use 'one_of'
+    prop = Group((name + Suppress("=") + comma_separated(value)) | oneOf(_CONSTANTS))
+
+demo_gui/test_capability_status.py::CapabilityStatusTests::test_capabilities_render_in_distinct_maturity_groups
+demo_gui/test_capability_status.py::CapabilityStatusTests::test_capabilities_render_in_distinct_maturity_groups
+demo_gui/test_capability_status.py::CapabilityStatusTests::test_capabilities_render_in_distinct_maturity_groups
+demo_gui/test_capability_status.py::CapabilityStatusTests::test_capabilities_render_in_distinct_maturity_groups
+demo_gui/test_capability_status.py::CapabilityStatusTests::test_capabilities_render_in_distinct_maturity_groups
+demo_gui/test_capability_status.py::CapabilityStatusTests::test_capabilities_render_in_distinct_maturity_groups
+  /Users/soham/sih2026/.venv-stage1/lib/python3.11/site-packages/matplotlib/_fontconfig_pattern.py:85: PyparsingDeprecationWarning: 'parseString' deprecated - use 'parse_string'
+    parse = parser.parseString(pattern)
+
+demo_gui/test_capability_status.py::CapabilityStatusTests::test_capabilities_render_in_distinct_maturity_groups
+demo_gui/test_capability_status.py::CapabilityStatusTests::test_capabilities_render_in_distinct_maturity_groups
+demo_gui/test_capability_status.py::CapabilityStatusTests::test_capabilities_render_in_distinct_maturity_groups
+demo_gui/test_capability_status.py::CapabilityStatusTests::test_capabilities_render_in_distinct_maturity_groups
+demo_gui/test_capability_status.py::CapabilityStatusTests::test_capabilities_render_in_distinct_maturity_groups
+demo_gui/test_capability_status.py::CapabilityStatusTests::test_capabilities_render_in_distinct_maturity_groups
+  /Users/soham/sih2026/.venv-stage1/lib/python3.11/site-packages/matplotlib/_fontconfig_pattern.py:89: PyparsingDeprecationWarning: 'resetCache' deprecated - use 'reset_cache'
+    parser.resetCache()
+
+demo_gui/test_capability_status.py::CapabilityStatusTests::test_capabilities_render_in_distinct_maturity_groups
+  /Users/soham/sih2026/.venv-stage1/lib/python3.11/site-packages/matplotlib/_mathtext.py:45: PyparsingDeprecationWarning: 'enablePackrat' deprecated - use 'enable_packrat'
+    ParserElement.enablePackrat()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+512 passed, 293 warnings in 17.99s

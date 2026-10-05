@@ -1,0 +1,211 @@
+{
+  "kind": "loop10 training-code audit B1-B8",
+  "git_sha": "1ceb9d161e1f654da96b1f57b31724e48ac29250",
+  "split_name": "caption-geo-split.v1/train + eval",
+  "n_train": 150000,
+  "n_eval": 2000,
+  "seed": 26170,
+  "device": "CPU only",
+  "timestamp_utc": "2026-10-05T06:48:48.851551+00:00",
+  "revision": "66285546d2b821cf421d4f5eb2576359d3770cd3",
+  "weight_sha256": {
+    "model-00001-of-00002.safetensors": "41a8895c164b4d32bae6b302f4603fcbc1797f32dafa45c7e9bcda23c6755df8",
+    "model-00002-of-00002.safetensors": "365531ff8752420e89dee707b79d021fb2d6e25abafe486f080555a4fe6972e4"
+  },
+  "frozen_sha256": {
+    "contract": "ab02179d2b4cf33c320a897d75318484189b249d99fff6cdd386016df908912d",
+    "split": "3e5b1d774125c7b48a9454dbb33e6144aee8d990d8966e830987836159bd83ee",
+    "model_artifacts": "72527fa9bb644cac71513b40a1a7e836a2044aae71ca6fb7095d4df643753e41"
+  },
+  "attempt_cap_per_problem": 2,
+  "root_cause": {
+    "bad_shard_index": 0,
+    "arrival_mapped_patch_checks": 10,
+    "native_array_mismatches_allowed": 0,
+    "loop8_patch_checks": 10,
+    "eval_patch_checks": 10,
+    "package_patch_checks": 3,
+    "archive_source": "existing split S2 archive read-only, independent rasterio MemoryFile decode, no extraction",
+    "show_row_mapping": true
+  },
+  "writer": {
+    "record_coupling": "id caption tile and all 12 native uint16 arrays move together under any sort",
+    "per_patch_sha256": "canonical band order, band name + dtype + shape + contiguous uint16 bytes; source-read before shard write",
+    "regression": "synthetic archive arrival order differs from selection order; old code must fail and fixed code pass; zero row/pixel mismatches"
+  },
+  "verifier": {
+    "checksum_all_rows_required": true,
+    "checksum_mismatches_allowed": 0,
+    "raw_sample_rule": "at least max(100,40*ceil(shards/10)) distinct shard rows, spread across shard groups, fixed seed 26170",
+    "raw_native_mismatches_allowed": 0,
+    "caption_source_mismatches_allowed": 0,
+    "old_shard_expected_exit": "nonzero; preserve report",
+    "source_archive_read_only": true
+  },
+  "rebuild_plan": {
+    "new_dir": "data/shards/train-150000-v2",
+    "phase1_patches": 100000,
+    "phase1_shards": 50,
+    "phase2_patches": 50000,
+    "phase2_shards": 25,
+    "seconds_per_patch_projection_assumption": 0.144,
+    "label": "projection from user-specified rate, not a measured rebuild",
+    "disk_guard_bytes": 45000000000,
+    "no_delete_or_rebuild_without_user_text": true
+  },
+  "package_pairing": {
+    "sample_count": 3,
+    "native_mismatch_allowed": 0,
+    "caption_id_tiff_id_mismatch_allowed": 0
+  },
+  "training_audit": {
+    "B1": "caption tokens only, EOS included, padding ignored",
+    "B2": "frozen fp16 base, fp32 trainable masters, autocast and GradScaler",
+    "B3": "three distinct LRs, cosine 3% warmup from planned total, accumulation boundaries",
+    "B4": "vision requires_grad and labeled T4 peak memory estimate",
+    "B5": "adapter, full patch embed, unfrozen vision, optimizer, scaler, scheduler, RNG, data state, step and checkpoint size",
+    "B6": "CPU mocked continuous loss/LR/data order across resume",
+    "B7": "wall guard saves and clean exit; eval shard only no_grad same preprocessing; throughput required",
+    "B8": "package source hash equals repo; requirements no torch install and accelerate pin"
+  },
+  "scope": "no commit/push/upload/Kaggle/training/GPU/deletes/downloads/shard rebuild; contract/split/init/pinned checkpoint/eval shard unchanged",
+  "failed_attempts": "write separate files; never overwrite a failed result",
+  "n": 16,
+  "source_hashes": {
+    "data/bigearthnet_s2.py": {
+      "repo_exists": true,
+      "package_sha256": "870092ae9ac0bdea0869cc8a9ba10ded1e14c304a9c0fa8cd1fd93d1268975d0",
+      "repo_sha256": "870092ae9ac0bdea0869cc8a9ba10ded1e14c304a9c0fa8cd1fd93d1268975d0",
+      "equal": true
+    },
+    "data/bigearthnet_shards.py": {
+      "repo_exists": true,
+      "package_sha256": "f8f4f3eecf3d56fad5664471b24bb7d18319aad3623a156b641d5c3ede24469b",
+      "repo_sha256": "f8f4f3eecf3d56fad5664471b24bb7d18319aad3623a156b641d5c3ede24469b",
+      "equal": true
+    },
+    "models/qwen_vl/stage1.py": {
+      "repo_exists": true,
+      "package_sha256": "54d3d22f8a90c01b23e63c9e8b8158fed2e835686bda5821e00e23315b3078e3",
+      "repo_sha256": "54d3d22f8a90c01b23e63c9e8b8158fed2e835686bda5821e00e23315b3078e3",
+      "equal": true
+    },
+    "scripts/run_stage1_full.py": {
+      "repo_exists": true,
+      "package_sha256": "4d6ddefe1cb7dc6c4fe08e3b6916a8f072b99cc0cd923777ed02abd8d1f5a82a",
+      "repo_sha256": "4d6ddefe1cb7dc6c4fe08e3b6916a8f072b99cc0cd923777ed02abd8d1f5a82a",
+      "equal": true
+    },
+    "scripts/run_stage1_smoke.py": {
+      "repo_exists": true,
+      "package_sha256": "e09d8827b85873402e0916dae58e122cdaca03207f9d0755c74a6ead5a2103e0",
+      "repo_sha256": "e09d8827b85873402e0916dae58e122cdaca03207f9d0755c74a6ead5a2103e0",
+      "equal": true
+    },
+    "scripts/run_stage1_t4.py": {
+      "repo_exists": true,
+      "package_sha256": "e055baf3f5f8eb0258f7be315fa7ff31bb3958d0829375f91837ebf4fb6f62ce",
+      "repo_sha256": "e055baf3f5f8eb0258f7be315fa7ff31bb3958d0829375f91837ebf4fb6f62ce",
+      "equal": true
+    }
+  },
+  "requirements_lines": [
+    "transformers==4.49.0",
+    "accelerate==1.5.2",
+    "peft==0.15.2",
+    "rasterio==1.4.3",
+    "PyYAML==6.0.3",
+    "safetensors==0.5.3"
+  ],
+  "results": {
+    "B1": {
+      "result": "PASS (code + CPU mock)",
+      "evidence": [
+        "scripts/run_stage1_full.py:make_sample",
+        "scripts/run_stage1_smoke.py:load_samples",
+        "scripts/test_stage1_full.py:test_caption_only_mask_includes_eos"
+      ],
+      "finding": "All prompt tokens -100; caption plus im_end supervised; batch=1, no padding; other batch sizes refused."
+    },
+    "B2": {
+      "result": "PASS in code/CPU mocks; CUDA execution unverified",
+      "evidence": [
+        "scripts/run_stage1_smoke.py:build_model/amp_context/make_scaler",
+        "scripts/test_stage1_smoke.py:test_fp32_trainable_masters_and_complete_checkpoint"
+      ],
+      "finding": "Frozen LM fp16, all trainable visual/patch/LoRA fp32; forward autocast, scaled backward, unscale before grad clip, scaler step/update; fp32 visual fallback disables autocast."
+    },
+    "B3": {
+      "result": "PASS (code + CPU mock)",
+      "evidence": [
+        "models/qwen_vl/stage1.py:stage1_parameter_groups (unchanged)",
+        "scripts/run_stage1_full.py:build_optimizer_scheduler",
+        "scripts/test_stage1_full.py:test_scheduler_preserves_distinct_group_ratios",
+        "scripts/test_stage1_full.py:test_checkpoint_complete_and_resume_lr_weights_exact"
+      ],
+      "learning_rates": {
+        "vision": 1e-05,
+        "patch_embed": 0.0001,
+        "lm_lora": 0.0001
+      },
+      "warmup_fraction": 0.03,
+      "finding": "Cosine/warmup uses original planned total; all micro-losses divided by accumulation before backward; one clip/update/scheduler per optimizer step; batch size other than1 refused."
+    },
+    "B4": {
+      "result": "FLAG: vision fully unfrozen; estimate above15GB",
+      "evidence": [
+        "scripts/run_stage1_smoke.py:build_model",
+        "results/stage1-loop10-resource-estimates.json"
+      ],
+      "peak_bytes_estimate": 17664665600,
+      "finding": "Header-derived memory estimate, including explicit4GB activation/workspace allowance; not a measured T4 peak."
+    },
+    "B5": {
+      "result": "PASS contents; FLAG retry storage budget",
+      "evidence": [
+        "scripts/run_stage1_full.py:save_checkpoint",
+        "scripts/run_stage1_smoke.py:trainable_state/rng_state",
+        "scripts/test_stage1_full.py:test_checkpoint_complete_and_resume_lr_weights_exact",
+        "results/stage1-loop10-resource-estimates.json"
+      ],
+      "finding": "LoRA, full patch and all visual params; optimizer/scaler/scheduler; CPU/CUDA/numpy/python RNG; data position; original total and completed step. Frozen weights omitted and reconstructed from pin. Retries can exceed20GB; mounted weights recommended."
+    },
+    "B6": {
+      "result": "PASS (CPU mocked exactness)",
+      "evidence": [
+        "scripts/test_stage1_full.py:test_resume_reproduces_the_uninterrupted_sample_sequence",
+        "scripts/test_stage1_full.py:test_checkpoint_complete_and_resume_lr_weights_exact"
+      ],
+      "tolerance": 0,
+      "finding": "Same sample hash chain, exact losses/LRs and final trainable weights across interruption; no claim of CUDA bitwise equivalence."
+    },
+    "B7": {
+      "result": "PASS safeguards; FLAG throughput producer gap",
+      "evidence": [
+        "scripts/test_stage1_full.py:test_wall_clock_guard_exits_cleanly_with_a_final_checkpoint",
+        "scripts/test_stage1_full.py:test_periodic_eval_uses_eval_shards_only",
+        "scripts/test_stage1_full.py:test_eval_no_grad_and_wall_budget_interrupt",
+        "scripts/test_stage1_full.py:test_run_full_refuses_without_throughput_and_writes_the_plan_first"
+      ],
+      "finding": "Wall guard saves final checkpoint; eval side/tile guards/no_grad/common frozen preprocessing; eval stops between samples at guard budget. Full run requires matching measured throughput JSON; current16-image smoke does not create it."
+    },
+    "B8": {
+      "result": "PASS",
+      "evidence": [
+        "results/stage1-loop10-training-audit.json",
+        "scripts/test_stage1_t4_package.py:test_package_manifest_integrity"
+      ],
+      "finding": "Every packaged src Python file matches repository copy; torch install removed, accelerate==1.5.2 preserved. Added repo copy of previously package-only runner."
+    }
+  },
+  "config_full_budget_seconds": 180000,
+  "open_issues": [
+    "Invalid old train shards must not be used; rebuild awaits explicit approval.",
+    "T4 resource estimate exceeds15GB; actual AMP/T4 numerical behavior untested.",
+    "Checkpoint retry storage can exceed20GB; no cleanup authorized.",
+    "Matching sharded/full-config throughput producer is absent;16-image smoke is not substitute.",
+    "Full config budget180000seconds is not an authorized30-hour run.",
+    "Full entry does not itself rehash checkpoint weights; pin verification must precede it.",
+    "Existing immutable eval sidecars lack new checksums; retain separate independent eval pixel evidence."
+  ]
+}

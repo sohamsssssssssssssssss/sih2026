@@ -1,0 +1,30 @@
+{
+  "kind": "engineering checkpoint (pinned rev); loop 4b diagnostics",
+  "git_sha": "1ceb9d161e1f654da96b1f57b31724e48ac29250",
+  "split_name": "caption-geo-split.v1/train",
+  "n": 4,
+  "seed": 0,
+  "device": "CPU float32 and float64; pinned bfloat16 vision weights",
+  "timestamp_utc": "2026-10-04T15:47:04.477236+00:00",
+  "revision": "66285546d2b821cf421d4f5eb2576359d3770cd3",
+  "weight_sha256": {
+    "model-00001-of-00002.safetensors": "41a8895c164b4d32bae6b302f4603fcbc1797f32dafa45c7e9bcda23c6755df8",
+    "model-00002-of-00002.safetensors": "365531ff8752420e89dee707b79d021fb2d6e25abafe486f080555a4fe6972e4"
+  },
+  "preregistration": "results/stage1-loop4b-preregistration.json",
+  "original_failed_result_sha256": "44b593832d334282ccf7b0b325f649526d339934704a8dca3b275be31825a38b",
+  "input": {
+    "gray": "torch manual_seed(0), randn [1,120,120], bicubic 112x112, replicate 3 or 12 channels and both temporal frames; Qwen packed C,T,14,14",
+    "real_patch_ids": [
+      "S2A_MSIL2A_20180413T095031_N9999_R079_T34UEG_19_24",
+      "S2A_MSIL2A_20180413T095031_N9999_R079_T34UEG_56_65",
+      "S2A_MSIL2A_20180419T101031_N9999_R022_T34VDN_45_76",
+      "S2A_MSIL2A_20180508T104031_N9999_R008_T31UGS_13_80"
+    ],
+    "real_input": "frozen-contract normalized float32 [12,120,120], bicubic pack to 112x112, cast to float64 for analytic projection; m is mean over 12 channel dimension for each temporal/spatial element"
+  },
+  "status": "diagnostic error; stop before forward",
+  "visual_parameter_count": 668684288,
+  "visual_weight_source_dtype": "bfloat16",
+  "error": "RuntimeError: Tensor on device meta is not on the expected device cpu!"
+}

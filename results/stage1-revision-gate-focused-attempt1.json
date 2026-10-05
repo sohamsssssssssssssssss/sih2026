@@ -1,0 +1,18 @@
+{
+  "git_sha": "1ceb9d161e1f654da96b1f57b31724e48ac29250",
+  "revision": "66285546d2b821cf421d4f5eb2576359d3770cd3",
+  "seed": 0,
+  "device": "CPU mocks only; no model loaded",
+  "kind": "focused-attempt1",
+  "n": 56,
+  "timestamp_utc": "2026-10-05T12:39:05.483390+00:00",
+  "counts": {
+    "passed": 55,
+    "failed": 1,
+    "warnings": 17
+  },
+  "exit_code": 1,
+  "log": "results/stage1-revision-gate-focused-attempt1.txt",
+  "expected_red": false,
+  "failure_reason": "sandbox OpenMP SHM subprocess error"
+}

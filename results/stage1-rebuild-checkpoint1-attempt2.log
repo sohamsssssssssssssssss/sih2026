@@ -1,0 +1,25 @@
+building first shard only
+COMMAND ["/Users/soham/sih2026/.venv-stage1/bin/python", "-u", "scripts/build_stage1_train_shards.py", "--out", "data/shards/train-150000-v2", "--selection-id-list", "data/manifests/bigearthnet/stage1-train-rebuild-ids-loop10.v1.json", "--seed", "26168", "--patches-per-shard", "2000", "--n-total", "2000", "--published-manifest", "data/manifests/bigearthnet/stage1-shards-train-150000.v2.json", "--selection-record", "results/stage1-rebuild-checkpoint1-attempt2-selection.json", "--exclude-shards", "data/shards/eval-2000", "--min-free-bytes", "45000000000", "--shard-window", "1", "--report", "results/stage1-rebuild-checkpoint1-attempt2-build.json"]
+selection 2000 patches, 48 tiles
+excluding 2000 patch IDs from data/shards/eval-2000
+captions joined for 2000 patches; projected raw 320000000 B; free 81798889472 B
+pass 1/1: shards 00000-00000, 1 shards (0.3 GB) in RAM
+shard 00000 rows=2000 bytes=320002878 s=331.1 tiles=40-42 free=80.4GB total=0.32GB
+window 00000-00000 pass done in 332.0s (pass 1)
+complete: 1 shards, 2000 patches, 320002878 bytes
+Traceback (most recent call last):
+  File "/Users/soham/sih2026/scripts/build_stage1_train_shards.py", line 219, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/Users/soham/sih2026/scripts/build_stage1_train_shards.py", line 175, in main
+    "published_manifest": str(published.relative_to(ROOT)),
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.15_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/pathlib.py", line 730, in relative_to
+    raise ValueError("{!r} is not in the subpath of {!r}"
+ValueError: 'data/manifests/bigearthnet/stage1-shards-train-150000.v2.json' is not in the subpath of '/Users/soham/sih2026' OR one path is relative and the other is absolute.
+STOPPED ON FAILURE
+Traceback (most recent call last):
+  File "/private/tmp/stage1_checkpoint1_controller_attempt2.py", line 31, in <module>
+    if code:raise RuntimeError('Build CLI failed')
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: Build CLI failed

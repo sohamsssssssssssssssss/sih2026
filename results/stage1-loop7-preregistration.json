@@ -1,0 +1,131 @@
+{
+  "kind": "loop 7 preregistration (package preparation only; all T4 stages run later on Kaggle)",
+  "git_sha": "1ceb9d161e1f654da96b1f57b31724e48ac29250",
+  "split_name": "caption-geo-split.v1/train",
+  "n": 16,
+  "seed": 0,
+  "device": "package preparation on CPU (Apple M5 MacBook Pro, py3.11.15 .venv-stage1)",
+  "timestamp_utc": "2026-10-04T19:17:20+00:00",
+  "revision": "66285546d2b821cf421d4f5eb2576359d3770cd3",
+  "weight_sha256": {
+    "model-00001-of-00002.safetensors": "41a8895c164b4d32bae6b302f4603fcbc1797f32dafa45c7e9bcda23c6755df8",
+    "model-00002-of-00002.safetensors": "365531ff8752420e89dee707b79d021fb2d6e25abafe486f080555a4fe6972e4"
+  },
+  "frozen_contract_sha256": "ab02179d2b4cf33c320a897d75318484189b249d99fff6cdd386016df908912d",
+  "frozen_split_sha256": "3e5b1d774125c7b48a9454dbb33e6144aee8d990d8966e830987836159bd83ee",
+  "scope": {
+    "upload": false,
+    "t4_run_from_this_session": false,
+    "no_global_py314": true,
+    "numbers_recorded_by_this_loop": "CPU unit-test outcomes and file hashes only; every T4 number comes later from the runner's own per-stage JSONs on Kaggle"
+  },
+  "runner_design": {
+    "entry": "run.py --mode all",
+    "stages_in_order": [
+      "verify",
+      "smoke",
+      "resume",
+      "overfit",
+      "extrapolate"
+    ],
+    "stop_on_first_failed_stage": true,
+    "json_output_per_stage": true,
+    "provenance_required_per_json": [
+      "git_sha",
+      "revision",
+      "split_name",
+      "n",
+      "seed",
+      "device",
+      "dtype",
+      "timestamp_utc"
+    ],
+    "max_attempts_per_problem": 2,
+    "no_threshold_changed_after_first_T4_step": true
+  },
+  "verify_stage": {
+    "checks": [
+      "config.json revision matches revision.json",
+      "SHA256 of both safetensors files matches revision.json"
+    ],
+    "on_mismatch": "abort; no stage runs"
+  },
+  "smoke_stage": {
+    "config": "config.yaml",
+    "steps": 50,
+    "batch_size": 1,
+    "gradient_accumulation_steps": 8,
+    "optimizer_steps": 50,
+    "precision": "fp16",
+    "attention": "sdpa",
+    "vision_fp32_fallback_config": "config-vision-fp32.yaml",
+    "gates": [
+      {"name": "finite_loss", "rule": "every micro-batch loss finite", "max_attempts": 2},
+      {"name": "vision_outputs_finite", "rule": "vision tower output has no inf/NaN; on failure rerun once with vision_fp32 fallback config and record which config ran; if the fallback also fails, abort", "max_attempts": 2}
+    ],
+    "record": ["samples_per_second", "peak_memory_bytes", "tokens_per_sample", "vision_dtype_used"]
+  },
+  "resume_stage": {
+    "purpose": "prove checkpoint/reload continuity because a real 463,932-caption run exceeds the Kaggle 12h session limit",
+    "plan": [
+      "fresh run steps 0-25; checkpoint at 25",
+      "new process: resume from step-25 checkpoint, continue to 50",
+      "rerun steps 0-25 with continue-beyond-25 logic (same seed) to get uninterrupted steps 0-50"
+    ],
+    "gates": [
+      {"name": "loss_continuity", "rule": "max |loss_resumed - loss_uninterrupted| over steps 26-50 <= 0.05 absolute", "threshold": 0.05},
+      {"name": "lr_schedule_continuity", "rule": "resumed per-step LR equals uninterrupted per-step LR within 1e-12 relative"},
+      {"name": "optimizer_state_continuity", "rule": "optimizer state tensors equal elementwise (exact) after reload"}
+    ],
+    "scheduler_steps_definition": "50 total, cosine over 50, 3% warmup (ceil(1.5) = 2 steps), identical in interrupted and uninterrupted runs",
+    "max_attempts": 2
+  },
+  "overfit_stage": {
+    "config": "config-overfit.yaml",
+    "patches": 16,
+    "optimizer_steps_budget_minutes": 20,
+    "step_sizing_rule": "N = floor(20*60 / (smoke seconds per optimizer step)) = floor(1200 * smoke samples_per_second / 8); recorded in the stage JSON; not tuned after the run starts",
+    "gates": [
+      {"name": "final_loss_ratio", "rule": "final optimizer-step mean loss <= 0.2 x initial optimizer-step mean loss", "threshold_ratio": 0.2},
+      {"name": "no_nan", "rule": "every micro-batch loss finite; final status completed"},
+      {"name": "no_early_spike", "rule": "no optimizer-step mean loss > 2x the first optimizer-step mean loss within the first 50 optimizer steps"},
+      {"name": "greedy_decode_reproduction", "rule": "greedy decode of >= 12 of 16 patch captions reproduces the package caption (normalized: lowercase, collapse whitespace); model falls back to the vision-fp32 config for generation if the fp16 vision output is nonfinite"},
+      {"name": "image_shuffle_control", "rule": "mean loss on 16 caption-paired shuffled-image patches > 1.10 x mean loss on the 16 true-image patches measured in the same session with identical decoding"}
+    ],
+    "shuffle_control_threshold_rationale": "guard against a 1.10x pass driven by noise; the ratio must also be recorded",
+    "max_attempts": 2
+  },
+  "extrapolate_stage": {
+    "formula": "epoch_hours = train_caption_count / measured_smoke_samples_per_second / 3600",
+    "train_caption_count": 463932,
+    "labels_output_extrapolation": true,
+    "ddp_note": "2xT4 DDP is NOT included; include only if a measured DDP run exists",
+    "gradient_accumulation_consistency": "measured samples_per_second already reflects gradient_accumulation_steps=8",
+    "no_gate": "this stage records a number only and cannot fail the package"
+  },
+  "readme_requirements": {
+    "weights_source_options": [
+      "HF hub download at pinned revision (internet ON at session start)",
+      "private Kaggle dataset of the pinned weights (internet OFF)"
+    ],
+    "runner_verifies_hash_both_ways": true,
+    "do_not_download_in_this_repo_session": true
+  },
+  "tests_planned": {
+    "new": "scripts/test_stage1_t4_package.py (CPU, mocked model)",
+    "covers": ["stage order and stop-on-fail", "abort-on-mismatch", "resume continuity logic", "manifest integrity"],
+    "focused_then_full": true,
+    "full_suite_expected_min_pass": 441,
+    "amendment_note": "min count raised from 424+16 to 424+17 during final verification when an explicit stage-order test was added; thresholds above were never changed"
+  },
+  "baseline_scoping": {
+    "run": false,
+    "code_changes": false,
+    "questions": [
+      "what is the Stage-0 baseline under the blocked split",
+      "does RSVQA-LR carry MGRS or BEN patch IDs",
+      "what must change to run the frozen pinned-rev model",
+      "n and runtime status"
+    ]
+  }
+}

@@ -887,7 +887,7 @@ Why it is also the *scientifically correct* choice, not merely the convenient on
 - Train/val/test are split **by image** (772 images total), so there is no image leakage into the
   test split that produced the Stage 0 baseline.
 - **CC-BY-4.0**, verified from the Zenodo record — safe to publish numbers from.
-- The frozen baseline on its test split is already measured at `open_accuracy = 0.1651`,
+- The `open_accuracy = 0.1651` result is legacy: its checkpoint revision was unrecorded and is unrecoverable. Do not compare a new engineering checkpoint to it; rerun a baseline at the pinned revision on the blocked split in a separate loop.
   `n = 10004`. **The before/after comparison already has its "before."**
 
 **Fallback: VRSBench** (CC-BY-4.0, 37,409 VQA rows, ships both train and val imagery —
@@ -927,7 +927,7 @@ rollback is deleting a file.
 | | |
 |---|---|
 | Primary | The Phase 7 slice metric (predicted: `binary_accuracy` + `pred_yes_rate_on_binary` at the 5 m and 10 m rungs, where the baseline shows total collapse at yes-rate 0.975 / 1.000) |
-| Secondary | RSVQA-LR test `--full` (n=10,004): `open_accuracy` vs the 0.1651 baseline |
+| Secondary | RSVQA-LR test `--full` (n=10,004): `open_accuracy` against a separately rerun baseline at the pinned revision |
 | **Regression guard** | **Every other ladder rung.** A fine-tune that fixes 10 m and breaks 0.3 m has not improved the system. This is the floor rule expressed as a metric. |
 | Degeneracy guard | The existing two-sided guard, per rung. A fine-tune that teaches the model to always say "no" would *raise* accuracy on a no-heavy slice — `degenerate()` catches exactly this, which is why it must run on the after-run too. |
 | Sample size | The Phase 7 regenerated ladder at 1,000 sources = 2,000/rung → MDE ≈ 6 points. At the original 200 sources the MDE is ≈13 points, which cannot resolve a realistic fine-tuning effect. **This is why §5.1 lifts the cap.** |

@@ -1,0 +1,151 @@
+{
+  "git_sha": "1ceb9d161e1f654da96b1f57b31724e48ac29250",
+  "revision": "66285546d2b821cf421d4f5eb2576359d3770cd3",
+  "seed": 0,
+  "device": "CPU mocks only; no model loaded",
+  "kind": "revision-gate small-loop result; separate from loop10",
+  "n": 0,
+  "timestamp_utc": "2026-10-05T12:46:17.659953+00:00",
+  "preregistration": "results/stage1-revision-gate-preregistration.json",
+  "frozen_files_unchanged": {
+    "data/bigearthnet_shards.py": true,
+    "scripts/verify_stage1_train_shards.py": true,
+    "scripts/build_stage1_train_shards.py": true,
+    "scripts/build_stage1_shards.py": true,
+    "models/qwen_vl/stage1.py": true,
+    "data/manifests/bigearthnet/norm_contract.json": true,
+    "data/manifests/bigearthnet/caption-geo-split.v1.csv.gz": true,
+    "data/manifests/bigearthnet/stage1-train-rebuild-ids-loop10.v1.json": true,
+    "configs/model_artifacts.json": true
+  },
+  "package_controls_unchanged": {
+    "config.yaml": true,
+    "config-vision-fp32.yaml": true,
+    "config-full.yaml": true,
+    "requirements.txt": true,
+    "revision.json": true,
+    "norm_contract.json": true,
+    "patches.tar.gz": true,
+    "captions.json": true
+  },
+  "old-tests-attempt1": {
+    "git_sha": "1ceb9d161e1f654da96b1f57b31724e48ac29250",
+    "revision": "66285546d2b821cf421d4f5eb2576359d3770cd3",
+    "seed": 0,
+    "device": "CPU mocks only; no model loaded",
+    "kind": "old-tests-attempt1",
+    "n": 5,
+    "timestamp_utc": "2026-10-05T12:29:47.860584+00:00",
+    "counts": {
+      "passed": 0,
+      "failed": 5,
+      "warnings": 0
+    },
+    "exit_code": 1,
+    "log": "results/stage1-revision-gate-old-tests-attempt1.txt",
+    "expected_red": true,
+    "failure_reason": null
+  },
+  "focused-attempt1": {
+    "git_sha": "1ceb9d161e1f654da96b1f57b31724e48ac29250",
+    "revision": "66285546d2b821cf421d4f5eb2576359d3770cd3",
+    "seed": 0,
+    "device": "CPU mocks only; no model loaded",
+    "kind": "focused-attempt1",
+    "n": 56,
+    "timestamp_utc": "2026-10-05T12:39:05.483390+00:00",
+    "counts": {
+      "passed": 55,
+      "failed": 1,
+      "warnings": 17
+    },
+    "exit_code": 1,
+    "log": "results/stage1-revision-gate-focused-attempt1.txt",
+    "expected_red": false,
+    "failure_reason": "sandbox OpenMP SHM subprocess error"
+  },
+  "focused-attempt2": {
+    "git_sha": "1ceb9d161e1f654da96b1f57b31724e48ac29250",
+    "revision": "66285546d2b821cf421d4f5eb2576359d3770cd3",
+    "seed": 0,
+    "device": "CPU mocks only; no model loaded",
+    "kind": "focused-attempt2",
+    "n": 57,
+    "timestamp_utc": "2026-10-05T12:40:57.725610+00:00",
+    "counts": {
+      "passed": 57,
+      "failed": 0,
+      "warnings": 17
+    },
+    "exit_code": 0,
+    "log": "results/stage1-revision-gate-focused-attempt2.txt",
+    "expected_red": false,
+    "failure_reason": null
+  },
+  "full-attempt1": {
+    "git_sha": "1ceb9d161e1f654da96b1f57b31724e48ac29250",
+    "revision": "66285546d2b821cf421d4f5eb2576359d3770cd3",
+    "seed": 0,
+    "device": "CPU mocks only; no model loaded",
+    "kind": "full-attempt1",
+    "n": 512,
+    "timestamp_utc": "2026-10-05T12:44:39.379863+00:00",
+    "counts": {
+      "passed": 512,
+      "failed": 0,
+      "warnings": 12
+    },
+    "exit_code": 0,
+    "log": "results/stage1-revision-gate-full-attempt1.txt",
+    "expected_red": false,
+    "failure_reason": null
+  },
+  "full_includes_final_two_additional_regressions": true,
+  "diff_check_exit_code": 0,
+  "disk_free_bytes": 80281600000,
+  "source_sha256": {
+    "scripts/stage1_runtime.py": "0fdc80c338eb9be8179807f9498a31c2e036a21e3030c3994d644592cfb416c2",
+    "scripts/run_stage1_smoke.py": "07dcb1fc2b48096b27b7f7e24d6c2b81dd8b1c6c4214c1fe16d6f2b78a48db22",
+    "scripts/run_stage1_full.py": "ea14a3b22f4aa9966f1b4ee668bc9b171eab1d0ebca92339bd7325d5844856bc",
+    "scripts/run_stage1_t4.py": "abfc10dbacc494c0ac516f6f8eced1fc3a75b6b030274d9526f5ddac2a4960af",
+    "scripts/test_stage1_revision_gate.py": "abc8ca389db5b7edece711634d10425e7586f7af187bdcb8cd5c7075abc0dd17",
+    "scripts/test_stage1_full.py": "50803435f0501ea95107447948e168ee84e8822999251f541ea803fad553a008",
+    "scripts/test_stage1_smoke.py": "1c4a11aadb90382226f9a28201dcb04b43c37d931280a2d838ffc603acb932d0",
+    "scripts/test_stage1_t4_package.py": "401b9379660a7a23d376cee0d331d41e2f3d9e5486a0fad219cbfdec8d176bfc"
+  },
+  "package_source_matches": {
+    "stage1_runtime.py": true,
+    "run_stage1_smoke.py": true,
+    "run_stage1_full.py": true,
+    "run_stage1_t4.py": true
+  },
+  "package": {
+    "manifest_sha256": "293ea65c72dbac618e6c78f3b8055158e76cafcb824c6493f04e546420e016f6",
+    "listed_payload_bytes": 1779190,
+    "zip_path": "packages/stage1-t4-smoke-revision-gate.zip",
+    "zip_bytes": 1653118,
+    "listed_package_bytes_including_manifest": 1783564,
+    "file_count_including_manifest": 21
+  },
+  "resume_verification_cost": {
+    "bytes_read_each_start": 7509337976,
+    "seconds_on_T4": "[UNVERIFIED]; runtime proof records verification_seconds",
+    "policy": "rehash every invocation including resume; no shortcut"
+  },
+  "open_issues": [
+    "GPU/CUDA execution, actual peak/OOM, throughput and resume unverified; no GPU run authorized here",
+    "Kaggle v1 package is stale; reported abort is not evidence about current package",
+    "Kaggle Python3.13/torch2.11 differs from local Python3.11/torch2.6",
+    "Memory estimates depend on inherited4GB workspace allowance",
+    "Working storage guard assumes no concurrent external writers; refused temporary checkpoints are preserved and consume retry budget",
+    "Train rebuild remains ongoing; do not benchmark partial changing manifest",
+    "New variants change trainable vision scope and require separate engineering validation; full-vision control unchanged"
+  ],
+  "shard_rebuild_status": "verifying shard00003; no next build until exit0",
+  "git_status": {
+    "path": "results/stage1-revision-gate-git-status.txt",
+    "modified_entries": 9,
+    "untracked_entries": 155,
+    "total_entries": 164
+  }
+}

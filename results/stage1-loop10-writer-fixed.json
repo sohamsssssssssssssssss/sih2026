@@ -1,0 +1,75 @@
+{
+  "kind": "writer regression fixed",
+  "git_sha": "1ceb9d161e1f654da96b1f57b31724e48ac29250",
+  "split_name": "caption-geo-split.v1/train + eval",
+  "n_train": 150000,
+  "n_eval": 2000,
+  "seed": 26170,
+  "device": "CPU only",
+  "timestamp_utc": "2026-10-05T06:31:10.535653+00:00",
+  "revision": "66285546d2b821cf421d4f5eb2576359d3770cd3",
+  "weight_sha256": {
+    "model-00001-of-00002.safetensors": "41a8895c164b4d32bae6b302f4603fcbc1797f32dafa45c7e9bcda23c6755df8",
+    "model-00002-of-00002.safetensors": "365531ff8752420e89dee707b79d021fb2d6e25abafe486f080555a4fe6972e4"
+  },
+  "frozen_sha256": {
+    "contract": "ab02179d2b4cf33c320a897d75318484189b249d99fff6cdd386016df908912d",
+    "split": "3e5b1d774125c7b48a9454dbb33e6144aee8d990d8966e830987836159bd83ee",
+    "model_artifacts": "72527fa9bb644cac71513b40a1a7e836a2044aae71ca6fb7095d4df643753e41"
+  },
+  "attempt_cap_per_problem": 2,
+  "root_cause": {
+    "bad_shard_index": 0,
+    "arrival_mapped_patch_checks": 10,
+    "native_array_mismatches_allowed": 0,
+    "loop8_patch_checks": 10,
+    "eval_patch_checks": 10,
+    "package_patch_checks": 3,
+    "archive_source": "existing split S2 archive read-only, independent rasterio MemoryFile decode, no extraction",
+    "show_row_mapping": true
+  },
+  "writer": {
+    "record_coupling": "id caption tile and all 12 native uint16 arrays move together under any sort",
+    "per_patch_sha256": "canonical band order, band name + dtype + shape + contiguous uint16 bytes; source-read before shard write",
+    "regression": "synthetic archive arrival order differs from selection order; old code must fail and fixed code pass; zero row/pixel mismatches"
+  },
+  "verifier": {
+    "checksum_all_rows_required": true,
+    "checksum_mismatches_allowed": 0,
+    "raw_sample_rule": "at least max(100,40*ceil(shards/10)) distinct shard rows, spread across shard groups, fixed seed 26170",
+    "raw_native_mismatches_allowed": 0,
+    "caption_source_mismatches_allowed": 0,
+    "old_shard_expected_exit": "nonzero; preserve report",
+    "source_archive_read_only": true
+  },
+  "rebuild_plan": {
+    "new_dir": "data/shards/train-150000-v2",
+    "phase1_patches": 100000,
+    "phase1_shards": 50,
+    "phase2_patches": 50000,
+    "phase2_shards": 25,
+    "seconds_per_patch_projection_assumption": 0.144,
+    "label": "projection from user-specified rate, not a measured rebuild",
+    "disk_guard_bytes": 45000000000,
+    "no_delete_or_rebuild_without_user_text": true
+  },
+  "package_pairing": {
+    "sample_count": 3,
+    "native_mismatch_allowed": 0,
+    "caption_id_tiff_id_mismatch_allowed": 0
+  },
+  "training_audit": {
+    "B1": "caption tokens only, EOS included, padding ignored",
+    "B2": "frozen fp16 base, fp32 trainable masters, autocast and GradScaler",
+    "B3": "three distinct LRs, cosine 3% warmup from planned total, accumulation boundaries",
+    "B4": "vision requires_grad and labeled T4 peak memory estimate",
+    "B5": "adapter, full patch embed, unfrozen vision, optimizer, scaler, scheduler, RNG, data state, step and checkpoint size",
+    "B6": "CPU mocked continuous loss/LR/data order across resume",
+    "B7": "wall guard saves and clean exit; eval shard only no_grad same preprocessing; throughput required",
+    "B8": "package source hash equals repo; requirements no torch install and accelerate pin"
+  },
+  "scope": "no commit/push/upload/Kaggle/training/GPU/deletes/downloads/shard rebuild; contract/split/init/pinned checkpoint/eval shard unchanged",
+  "failed_attempts": "write separate files; never overwrite a failed result",
+  "pytest_output": "F                                                                        [100%]\n=================================== FAILURES ===================================\n____ test_build_shard_set_membership_follows_the_selection_not_the_archive _____\n\ntmp_path = PosixPath('/private/var/folders/_5/9qtxt5tn1hv56fhw2nh8skth0000gn/T/pytest-of-soham/pytest-131/test_build_shard_set_membershi0')\n\n    def test_build_shard_set_membership_follows_the_selection_not_the_archive(tmp_path):\n        \"\"\"Regression: shards were once filled in archive order, which blocked every tile.\n    \n        The archive is tile-major, so an archive-order writer puts a whole tile in shard 0\n        and the prefix stratification of the selection never reaches disk. Shard k must hold\n        selection[k * patches_per_shard : (k + 1) * patches_per_shard].\n        \"\"\"\n        train_ids, _eval, rows, parts, captions = _fixture(tmp_path, per_tile=4)\n        selection = select_patch_ids_interleaved(rows, \"train\", len(train_ids), seed=3)\n        assert len({rows[p][\"mgrs_tile\"] for p in selection[:4]}) == 2, \"fixture must interleave\"\n        out = tmp_path / \"ordered\"\n>       manifest = build_shard_set(parts, selection, captions, rows, out,\n                                   git_sha=\"test-sha\", seed=3, patches_per_shard=4)\n\ndata/test_bigearthnet_shards.py:609: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ndata/bigearthnet_shards.py:1126: in build_shard_set\n    run_window(first, last)\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nfirst = 0, last = 2\n\n    def run_window(first: int, last: int) -> None:\n        \"\"\"One archive pass that writes shards first..last-1 in selection order.\"\"\"\n        nonlocal streamed_total, members_seen, shard_started\n        nonlocal accepted_this_run, rejected_this_run, free_min\n        shard_rows: list[list[dict]] = [[] for _ in range(last - first)]\n        window_pending = {patch_id for patch_id in pending\n                          if first <= target_shard[patch_id] < last}\n        inflight: dict[str, dict] = {}\n        pass_started = time.perf_counter()\n        stream = _ConcatStream(archive_parts)\n        try:\n            with tarfile.open(fileobj=stream, mode=\"r|gz\") as archive:\n                for member in archive:\n                    members_seen += 1\n                    if not member.isfile():\n                        continue\n                    key = _member_key(member.name)\n                    if key is None or key[0] not in window_pending:\n                        continue\n                    patch_id, band = key\n                    if band not in BANDS:\n                        continue\n                    source = archive.extractfile(member)\n                    if source is None:\n                        raise ValueError(f\"Archive member is unreadable: {member.name}\")\n                    entry = inflight.setdefault(patch_id, {\"bands\": {}, \"shapes\": []})\n                    array = decode_member(source.read())\n                    if array.dtype != np.uint16:\n                        rejected[patch_id] = f\"dtype:{array.dtype}\"\n                        rejected_this_run += 1\n                        inflight.pop(patch_id)\n                        pending.discard(patch_id)\n                        window_pending.discard(patch_id)\n                        continue\n                    if array.shape != (NATIVE_SIZE[band], NATIVE_SIZE[band]):\n                        entry[\"shapes\"].append(f\"{band}:{array.shape[0]}x{array.shape[1]}\")\n                    entry[\"bands\"][band] = array\n                    if len(entry[\"bands\"]) < len(BANDS) and not entry[\"shapes\"]:\n                        continue\n                    pending.discard(patch_id)\n                    window_pending.discard(patch_id)\n                    inflight.pop(patch_id)\n                    missing = [name for name in BANDS if name not in entry[\"bands\"]]\n                    if entry[\"shapes\"]:\n                        rejected[patch_id] = \"shape:\" + \",\".join(sorted(set(entry[\"shapes\"])))\n                    elif missing:\n                        rejected[patch_id] = \"missing_bands:\" + \",\".join(missing)\n                    elif any(bool((entry[\"bands\"][name] == 0).any()) for name in BANDS):\n                        rejected[patch_id] = \"raw_zero_dn\"\n                    else:\n                        if patch_id in seen_ids:\n                            raise ValueError(f\"Duplicate patch ID reached the shard writer: {patch_id}\")\n>                       local = target_shard[patch_id] - first\nE                       UnboundLocalError: cannot access local variable 'rows' where it is not associated with a value\n\ndata/bigearthnet_shards.py:1047: UnboundLocalError\n----------------------------- Captured stdout call -----------------------------\npass 1/1: shards 00000-00001, 2 shards (0.0 GB) in RAM\n=============================== warnings summary ===============================\ndata/test_bigearthnet_shards.py::test_build_shard_set_membership_follows_the_selection_not_the_archive\n  /Users/soham/sih2026/.venv-stage1/lib/python3.11/site-packages/rasterio/io.py:143: NotGeoreferencedWarning: Dataset has no geotransform, gcps, or rpcs. The identity matrix will be returned.\n    rd = writer(\n\ndata/test_bigearthnet_shards.py::test_build_shard_set_membership_follows_the_selection_not_the_archive\n  /Users/soham/sih2026/.venv-stage1/lib/python3.11/site-packages/rasterio/io.py:140: NotGeoreferencedWarning: Dataset has no geotransform, gcps, or rpcs. The identity matrix will be returned.\n    rd = DatasetReader(mempath, driver=driver, sharing=sharing, **kwargs)\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n=========================== short test summary info ============================\nFAILED data/test_bigearthnet_shards.py::test_build_shard_set_membership_follows_the_selection_not_the_archive\n1 failed, 2 warnings in 0.59s\n",
+  "passed": false
+}
