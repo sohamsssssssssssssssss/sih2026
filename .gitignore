@@ -46,3 +46,7 @@ frontend/tsconfig.tsbuildinfo
 frontend/public/videos/satquery-intro-original.mp4
 
 /data/external/
+
+# Deployment settings (DOMAIN, model directory); keep local.
+.env
+.env.*

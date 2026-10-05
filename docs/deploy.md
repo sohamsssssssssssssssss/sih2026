@@ -76,10 +76,11 @@ There was no GPU available when this was written. Read this before demo day.
   config sets `text_encoder_type = "bert-base-uncased"`, and `load_model` calls
   `AutoTokenizer/BertModel.from_pretrained("bert-base-uncased")`. With
   `HF_HUB_OFFLINE=1` (forced in `backend/services.py`), this only works when
-  the model is already in the Hugging Face cache. **Neither the manifest nor
-  `GroundingDINOModel.readiness()` checks for it.** If it is missing,
-  `/api/health` still reports `grounding` as available, and the first grounding
-  request then fails. The GPU override points `HF_HUB_CACHE` at
+  the model is already in the Hugging Face cache. `GroundingDINOModel.readiness()`
+  checks the cache for its config, vocabulary and weights, so if it is missing
+  `/api/health` reports `grounding` as `ARTIFACT_UNAVAILABLE` instead of failing
+  on the first request. It is not yet in `configs/model_artifacts.json`, so its
+  revision is not pinned. The GPU override points `HF_HUB_CACHE` at
   `/models/huggingface/hub`, and `deploy/provision_models.py` puts it there and
   then verifies it.
 - **No compile step for Grounding DINO.** `groundingdino-py==0.4.0` (the
