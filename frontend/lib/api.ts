@@ -56,6 +56,17 @@ export async function verifyTraces() {
   return { verified: response.verified, message: response.verified ? "Current process-local chain verified." : "Integrity verification failed for the current process-local chain." };
 }
 
+export type HealthStatus = "ready" | "degraded" | "unavailable";
+
+export interface HealthResponse {
+  status: HealthStatus;
+  mode: string;
+  checks?: {
+    trace: { ok: boolean; detail: string | null };
+    capabilities: Record<string, { available: boolean; reason_code: string | null }>;
+  };
+}
+
 export function getHealth() {
-  return request<{ status: string; mode: string }>("/api/health");
+  return request<HealthResponse>("/api/health");
 }

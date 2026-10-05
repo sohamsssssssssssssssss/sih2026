@@ -141,20 +141,37 @@ make frontend
 
 ## Quick Health Check
 
-Verify the backend service is responding:
+Verify the backend service is responding and see what it can actually run:
 
 ```bash
 curl -s http://localhost:8000/api/health
 ```
 
-**Expected Response**:
+**Expected Response** (CPU-only machine without the GPU model stack):
 
 ```json
 {
-  "status": "ready",
-  "mode": "offline-first"
+  "status": "degraded",
+  "mode": "offline-first",
+  "checks": {
+    "trace": { "ok": true, "detail": null },
+    "capabilities": {
+      "single_image_vqa": { "available": false, "reason_code": "DEPENDENCY_UNAVAILABLE" },
+      "grounding": { "available": false, "reason_code": "DEPENDENCY_UNAVAILABLE" },
+      "change_vqa": { "available": true, "reason_code": null },
+      "optical_sar": { "available": true, "reason_code": null }
+    }
+  }
 }
 ```
+
+The check is cheap: it verifies the persisted `trace.jsonl` hash chain and asks each registered provider for readiness without loading weights or running inference.
+
+| `status` | HTTP | Meaning |
+|---|---|---|
+| `ready` | 200 | Trace history is intact and every capability's provider is available. |
+| `degraded` | 200 | Trace history is intact, but at least one capability is unavailable (normal on CPU-only machines where GPU models are missing); see `checks.capabilities[*].reason_code`. |
+| `unavailable` | 503 | Trace history is unreadable or fails verification, so every `/api/analyze` request will fail; see `checks.trace.detail`. |
 
 ---
 

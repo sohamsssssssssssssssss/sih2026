@@ -93,8 +93,57 @@ def upload(
     )
 
 
-def test_health(client: TestClient) -> None:
-    assert client.get("/api/health").json() == {"status": "ready", "mode": "offline-first"}
+def test_health_ready_when_trace_and_all_capabilities_are_ready(client: TestClient) -> None:
+    response = client.get("/api/health")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["status"] == "ready"
+    assert body["mode"] == "offline-first"
+    assert body["checks"]["trace"] == {"ok": True, "detail": None}
+    assert set(body["checks"]["capabilities"]) == set(capabilities.KNOWN_CAPABILITIES)
+    assert all(
+        check == {"available": True, "reason_code": None}
+        for check in body["checks"]["capabilities"].values()
+    )
+
+
+def test_health_degraded_when_a_capability_is_unavailable(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(
+        QwenVLModel,
+        "readiness",
+        lambda _: ModelReadiness(False, "CUDA_UNAVAILABLE", "A CUDA GPU is required."),
+    )
+
+    response = client.get("/api/health")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["status"] == "degraded"
+    assert body["mode"] == "offline-first"
+    assert body["checks"]["trace"]["ok"] is True
+    assert body["checks"]["capabilities"][capabilities.SINGLE_IMAGE_VQA] == {
+        "available": False,
+        "reason_code": "CUDA_UNAVAILABLE",
+    }
+    assert body["checks"]["capabilities"][capabilities.OPTICAL_SAR]["available"] is True
+
+
+def test_health_unavailable_with_503_when_trace_is_corrupted(client: TestClient) -> None:
+    trace_store.TRACE_PATH.write_text("not json\n", encoding="utf-8")
+    trace_store._LOADED_PATH = None
+
+    response = client.get("/api/health")
+
+    assert response.status_code == 503
+    body = response.json()
+    assert body["status"] == "unavailable"
+    assert body["mode"] == "offline-first"
+    assert body["checks"]["trace"]["ok"] is False
+    assert "malformed" in body["checks"]["trace"]["detail"]
+    assert set(body["checks"]["capabilities"]) == set(capabilities.KNOWN_CAPABILITIES)
 
 
 def test_known_golden_scene_serves_real_png(client: TestClient) -> None:

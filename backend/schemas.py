@@ -72,6 +72,27 @@ class CapabilitiesResponse(BaseModel):
     capabilities: list[CapabilityStatus]
 
 
+class TraceHealth(BaseModel):
+    ok: bool
+    detail: str | None
+
+
+class CapabilityHealth(BaseModel):
+    available: bool
+    reason_code: str | None
+
+
+class HealthChecks(BaseModel):
+    trace: TraceHealth
+    capabilities: dict[str, CapabilityHealth]
+
+
+class HealthResponse(BaseModel):
+    status: Literal["ready", "degraded", "unavailable"]
+    mode: Literal["offline-first"] = "offline-first"
+    checks: HealthChecks
+
+
 class PlanStepSummary(BaseModel):
     step_id: str
     capability: str
