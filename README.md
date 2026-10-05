@@ -141,20 +141,37 @@ make frontend
 
 ## Quick Health Check
 
-Verify the backend service is responding:
+Verify the backend service is responding and see what it can actually run:
 
 ```bash
 curl -s http://localhost:8000/api/health
 ```
 
-**Expected Response**:
+**Expected Response** (CPU-only machine without the GPU model stack):
 
 ```json
 {
-  "status": "ready",
-  "mode": "offline-first"
+  "status": "degraded",
+  "mode": "offline-first",
+  "checks": {
+    "trace": { "ok": true, "detail": null },
+    "capabilities": {
+      "single_image_vqa": { "available": false, "reason_code": "DEPENDENCY_UNAVAILABLE" },
+      "grounding": { "available": false, "reason_code": "DEPENDENCY_UNAVAILABLE" },
+      "change_vqa": { "available": true, "reason_code": null },
+      "optical_sar": { "available": true, "reason_code": null }
+    }
+  }
 }
 ```
+
+The check is cheap: it verifies the persisted `trace.jsonl` hash chain and asks each registered provider for readiness without loading weights or running inference.
+
+| `status` | HTTP | Meaning |
+|---|---|---|
+| `ready` | 200 | Trace history is intact and every capability's provider is available. |
+| `degraded` | 200 | Trace history is intact, but at least one capability is unavailable (normal on CPU-only machines where GPU models are missing); see `checks.capabilities[*].reason_code`. |
+| `unavailable` | 503 | Trace history is unreadable or fails verification, so every `/api/analyze` request will fail; see `checks.trace.detail`. |
 
 ---
 
@@ -233,7 +250,7 @@ curl -X POST http://localhost:8000/api/plan \
 ```
 
 ### 3. Analyze
-Execute single-image visual question answering:
+Execute single-image visual question answering. `execution_mode` defaults to `"live"`, which needs CUDA and local Qwen weights; without them the request fails closed with `503`. The example below explicitly requests the pinned cached result so it works on any machine:
 
 ```bash
 curl -X POST http://localhost:8000/api/analyze \
@@ -241,7 +258,8 @@ curl -X POST http://localhost:8000/api/analyze \
   -d '{
     "scene_id": "loveda_LoveDA_images_png_0_gsd0.3",
     "question": "Is there a building in this image?",
-    "sensor": "optical"
+    "sensor": "optical",
+    "execution_mode": "cached_result"
   }'
 ```
 
@@ -263,7 +281,7 @@ curl -X POST http://localhost:8000/api/analyze \
     "model_name": "qwen2.5vl-3b",
     "timestamp": "..."
   },
-  "notice": "Offline demonstration: showing the exact committed result for this pinned query."
+  "notice": "Cached replay requested; showing the exact committed result for this scene and question. No live inference ran."
 }
 ```
 
@@ -361,6 +379,12 @@ Finalizing page optimization ...
 
 ---
 
+## Deploy
+
+To run the full stack on one NVIDIA GPU VM behind one public URL (Docker Compose with a Caddy reverse proxy and automatic HTTPS), run `make docker-gpu` and then `make deploy-smoke`. A CPU-only variant is `make docker-cpu`. Before you start, read [`docs/deploy.md`](docs/deploy.md). It covers VM sizing, offline provisioning of model artifacts, and the demo-day checklist, and it lists which parts have not yet been tested on a GPU.
+
+---
+
 ## Runtime Data & Hygiene
 
 - **Uploaded Scenes**: Stored in `data/runtime/scenes/<scene_id>.png`.
@@ -378,9 +402,9 @@ Finalizing page optimization ...
 | **Provider unavailable (503)** | Required CUDA, dependency, configuration, or local model artifact is absent; or the requested multi-step plan is not executable. | Inspect `/api/capabilities`, provision artifacts offline, or use a supported deterministic single-step capability. |
 | **Upload rejected (422 / 413)** | The upload is corrupt, unsupported, unsafe, or exceeds 20 MiB. | Provide a valid PNG, JPEG, TIFF, or GeoTIFF within the documented limits. |
 | **Frontend cannot connect to backend** | Backend server is stopped or running on a different port. | Ensure backend is active at `http://localhost:8000`. Check with `curl http://localhost:8000/api/health`. |
-| **Trace integrity error (503)** | `trace.jsonl` has been manually edited or corrupted. | The hash chain verifies previous record hashes. Remove `trace.jsonl` to reinitialize a clean audit chain. |
+| **Trace integrity error (503)** | `trace.jsonl` was edited or corrupted somewhere other than its final line. | An incomplete final line from a crash is recovered automatically and its bytes are kept in `trace.jsonl.torn-<timestamp>`. Anything else is treated as tampering and fails closed: check `/api/health` and `POST /api/traces/verify`, inspect the file, and keep a copy as evidence before rotating it. |
 | **`ModuleNotFoundError: No module named 'PIL'`** | Minimal backend venv created without Pillow. | Run `pip install pillow` inside your backend virtual environment. |
-| **`rasterio` build error on macOS** | Missing system GDAL C-libraries. | Omit `rasterio` for local API/frontend development; core pathways do not depend on it. |
+| **`rasterio` build error on macOS** | Missing system GDAL C-libraries. | Install a prebuilt wheel (`pip install --only-binary=:all: rasterio`) or GDAL via Homebrew. Rasterio cannot be omitted: the backend imports it at startup. |
 
 ---
 

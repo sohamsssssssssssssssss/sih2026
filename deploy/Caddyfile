@@ -1,0 +1,48 @@
+# One public origin for SatQuery: /api/* goes to the FastAPI backend, everything
+# else to the Next.js frontend. Because the browser sees a single origin, the
+# frontend is built with NEXT_PUBLIC_API_URL="" (relative /api/... requests) and
+# no CORS configuration is needed.
+#
+# Site address: docker-compose.yml sets SITE_ADDRESS from DOMAIN.
+#   DOMAIN unset/empty     -> ":80", plain HTTP on any host name or IP.
+#   DOMAIN=sat.example.org -> automatic HTTPS (Let's Encrypt/ZeroSSL), HTTP
+#     redirected to HTTPS. Requires a DNS A/AAAA record pointing at this VM and
+#     inbound TCP 80 + 443 open.
+# (Caddy substitutes an empty-but-set variable verbatim instead of using the
+# default, which is why compose maps an empty DOMAIN to ":80" itself.)
+{
+	# No admin API on the network; config is reloaded by restarting the container.
+	admin off
+}
+
+{$SITE_ADDRESS::80} {
+	encode zstd gzip
+
+	# Uploads are capped at 20 MiB by the backend; leave headroom for multipart
+	# framing and reject anything larger at the edge.
+	request_body {
+		max_size 25MB
+	}
+
+	# No timeouts are set on the backend hop on purpose: the first live query
+	# after start loads model weights and can take tens of seconds (the backend
+	# itself bounds model execution at 120 s).
+	handle /api/* {
+		reverse_proxy backend:8000
+	}
+
+	handle {
+		reverse_proxy frontend:3000
+	}
+
+	header {
+		X-Content-Type-Options nosniff
+		Referrer-Policy strict-origin-when-cross-origin
+		-Server
+	}
+
+	log {
+		output stdout
+		format console
+	}
+}

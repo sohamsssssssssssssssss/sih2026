@@ -200,6 +200,7 @@ def test_readiness_and_load_use_same_resolved_config(tmp_path, monkeypatch) -> N
     monkeypatch.setitem(sys.modules, "groundingdino", ModuleType("groundingdino"))
     monkeypatch.setitem(sys.modules, "groundingdino.util", ModuleType("groundingdino.util"))
     monkeypatch.setitem(sys.modules, "groundingdino.util.inference", inference)
+    monkeypatch.setattr(grounding_module, "_text_encoder_cached", lambda: True)
     monkeypatch.setenv("SATQUERY_GROUNDING_CONFIG", str(first_config))
     model = GroundingDINOModel()
 
@@ -276,3 +277,35 @@ def test_load_preserves_bounded_checkpoint_failure_reason(tmp_path, monkeypatch)
     assert "RuntimeError: CUDA out of memory" in str(raised.value)
     assert "\n" not in str(raised.value)
     assert len(str(raised.value)) < 340
+
+
+def _ready_except_text_encoder(tmp_path, monkeypatch, cached_files):
+    config = tmp_path / "GroundingDINO_SwinT_OGC.py"
+    config.touch()
+    hub = ModuleType("huggingface_hub")
+    hub.try_to_load_from_cache = lambda repo, name: (
+        str(tmp_path / name) if repo == "bert-base-uncased" and name in cached_files else None
+    )
+    monkeypatch.setattr(grounding_module, "find_spec", lambda _: object())
+    monkeypatch.setattr(
+        grounding_module,
+        "validate_artifact",
+        lambda _: ArtifactStatus(True, path=tmp_path / "groundingdino_swint_ogc.pth"),
+    )
+    monkeypatch.setitem(sys.modules, "torch", SimpleNamespace(cuda=SimpleNamespace(is_available=lambda: True)))
+    monkeypatch.setitem(sys.modules, "huggingface_hub", hub)
+    return GroundingDINOModel(config_path=config).readiness()
+
+
+def test_readiness_fails_closed_without_cached_text_encoder(tmp_path, monkeypatch) -> None:
+    readiness = _ready_except_text_encoder(tmp_path, monkeypatch, {"config.json", "vocab.txt"})
+    assert readiness.available is False
+    assert readiness.reason_code == "ARTIFACT_UNAVAILABLE"
+    assert "bert-base-uncased" in readiness.detail
+
+
+def test_readiness_passes_with_cached_text_encoder(tmp_path, monkeypatch) -> None:
+    readiness = _ready_except_text_encoder(
+        tmp_path, monkeypatch, {"config.json", "vocab.txt", "model.safetensors"}
+    )
+    assert readiness.available is True

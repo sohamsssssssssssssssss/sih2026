@@ -82,8 +82,9 @@ def test_reversed_input_order_is_supported(pair) -> None:
         [str(pair[1]), str(pair[0])], "Analyze together"
     )["evidence"]
 
-    assert evidence[0]["source"]["path"] == str(pair[0])
-    assert evidence[1]["source"]["path"] == str(pair[1])
+    assert evidence[0]["source"]["path"] == pair[0].name == "optical.tif"
+    assert evidence[1]["source"]["path"] == pair[1].name == "sar.tif"
+    assert str(pair[0].parent) not in str(evidence)
 
 
 @pytest.mark.parametrize(

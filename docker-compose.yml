@@ -1,0 +1,74 @@
+# SatQuery behind one public URL. CPU-only by default; works on any Docker host.
+#
+#   docker compose up -d --build                                  # CPU (make docker-cpu)
+#   docker compose -f docker-compose.yml -f docker-compose.gpu.yml up -d --build   # GPU (make docker-gpu)
+#
+# Settings are read from the environment or a .env file next to this file
+# (see docs/deploy.md):
+#   DOMAIN                 public host name for automatic HTTPS; empty = plain HTTP on :80
+#   HTTP_PORT / HTTPS_PORT host ports Caddy publishes (default 80 / 443)
+#   SATQUERY_CORS_ORIGINS  extra exact browser origins for the API (normally empty:
+#                          UI and API share one origin through Caddy)
+#   NEXT_PUBLIC_API_URL    baked into the frontend at build time; keep EMPTY so the
+#                          browser calls same-origin /api/...
+#   SATQUERY_MODELS_DIR    GPU override only: host directory with model artifacts
+
+name: satquery
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+      target: cpu
+      args:
+        PYTHON_IMAGE: ${PYTHON_IMAGE:-python:3.11-slim}
+    image: satquery-backend:cpu
+    restart: unless-stopped
+    environment:
+      SATQUERY_CORS_ORIGINS: ${SATQUERY_CORS_ORIGINS:-}
+    volumes:
+      # trace.jsonl lives here through the /app/trace.jsonl symlink.
+      - satquery-state:/app/state
+      # Uploaded scenes, rasters and scene manifests (data/runtime/).
+      - satquery-runtime:/app/data/runtime
+    expose:
+      - "8000"
+    # Healthcheck is defined in Dockerfile.backend (GET /api/health; 503 = trace
+    # unusable = unhealthy; "degraded" is still healthy).
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        NODE_IMAGE: ${NODE_IMAGE:-node:22-slim}
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-}
+    image: satquery-frontend:latest
+    restart: unless-stopped
+    expose:
+      - "3000"
+
+  proxy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+      frontend:
+        condition: service_started
+    environment:
+      SITE_ADDRESS: ${DOMAIN:-:80}
+    ports:
+      - "${HTTP_PORT:-80}:80"
+      - "${HTTPS_PORT:-443}:443"
+      - "${HTTPS_PORT:-443}:443/udp"
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+
+volumes:
+  satquery-state:
+  satquery-runtime:
+  caddy-data:
+  caddy-config:

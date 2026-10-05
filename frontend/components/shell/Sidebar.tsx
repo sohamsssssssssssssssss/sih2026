@@ -4,6 +4,7 @@ import { Activity, Aperture, History, Radar, Satellite, Settings2 } from "lucide
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { runtimeDotColour, useRuntimeState, type RuntimeState } from "@/components/status/RuntimeStatus";
 
 const navigation = [
   { href: "/workspace", label: "Workspace", icon: Aperture },
@@ -13,8 +14,18 @@ const navigation = [
   { href: "/system", label: "System", icon: Settings2 },
 ];
 
+const POSTURE: Record<RuntimeState, { label: string; note: string }> = {
+  checking: { label: "Checking runtime…", note: "Contacting the local API." },
+  ready: { label: "All capabilities ready", note: "Live inference and cached replay are available." },
+  degraded: { label: "Partially available", note: "Some live models are not ready here. Cached replay stays explicit." },
+  unavailable: { label: "Analysis disabled", note: "The execution trace failed verification. See System." },
+  offline: { label: "API not connected", note: "Start the backend on port 8000." },
+};
+
 export function Sidebar() {
   const pathname = usePathname();
+  const state = useRuntimeState();
+  const posture = POSTURE[state];
   return (
     <aside className="bg-onyx lg:sticky lg:top-0 lg:h-screen">
       <div className="flex h-16 items-center gap-3 px-4 lg:h-24 lg:px-6">
@@ -33,8 +44,8 @@ export function Sidebar() {
       </nav>
       <div className="absolute bottom-0 hidden w-[248px] p-6 lg:block">
         <p className="eyebrow">Runtime posture</p>
-        <div className="mt-3 flex items-center gap-2 text-[13px] text-ivory"><span className="size-2 rounded-full bg-success" /> Offline ready</div>
-        <p className="mt-2 text-[12px] leading-relaxed text-ash">No network required for verified golden results.</p>
+        <div className="mt-3 flex items-center gap-2 text-[13px] text-ivory"><span className={cn("size-2 rounded-full", runtimeDotColour(state))} /> {posture.label}</div>
+        <p className="mt-2 text-[12px] leading-relaxed text-ash">{posture.note}</p>
       </div>
     </aside>
   );

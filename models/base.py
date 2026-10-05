@@ -16,6 +16,10 @@ class Model(ABC):
 
     name: str = "base"
     version: str = "0.0.0"
+    # True for heavyweight (GPU) models whose inference can hang: under a
+    # timeout the orchestrator runs them in a killable worker process
+    # (orchestrator.worker) instead of an in-process thread.
+    isolated: bool = False
 
     def readiness(self) -> ModelReadiness:
         """Report local prerequisites without loading weights or running inference."""

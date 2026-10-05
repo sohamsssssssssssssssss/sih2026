@@ -4,14 +4,17 @@ import { IntegrityBadge } from "./IntegrityBadge";
 import { TraceDrawer } from "./TraceDrawer";
 
 export function EvidencePanel({ trace }: { trace: TraceRecord }) {
+  const scenes = [trace.params.scene_id, trace.params.scene_id_2].filter(Boolean).join(" + ");
   return (
     <section className="panel p-5">
       <div className="mb-4 flex items-center justify-between"><p className="eyebrow">Execution evidence</p><IntegrityBadge /></div>
       <div className="grid gap-3 sm:grid-cols-2">
-        <Evidence label="Identity" value={trace.params.scene_id ?? "Not recorded"} mono />
-        <Evidence label="Execution" value={`${trace.model_name} · ${trace.params.execution_mode}`} />
+        <Evidence label={trace.params.scene_id_2 ? "Scenes" : "Identity"} value={scenes || "Not recorded"} mono />
+        <Evidence label="Execution" value={`${trace.model_name} · ${trace.params.execution_mode}`} detail={trace.params.capability ? `Capability: ${trace.params.capability}` : undefined} />
         <Evidence label="Question" value={trace.input_summary.question} />
-        <Evidence label="Integrity" value={shortHash(trace.record_hash)} mono detail={formatTimestamp(trace.timestamp_iso)} />
+        <Evidence label="Recorded" value={formatTimestamp(trace.timestamp_iso)} />
+        <Evidence label="Record hash" value={shortHash(trace.record_hash)} mono />
+        <Evidence label="Previous hash" value={trace.prev_hash ? shortHash(trace.prev_hash) : "None · first record in chain"} mono />
       </div>
       <div className="mt-4"><TraceDrawer trace={trace} /></div>
     </section>

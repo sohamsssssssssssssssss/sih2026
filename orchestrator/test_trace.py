@@ -12,7 +12,7 @@ from orchestrator import trace
 
 class TraceVerificationTests(unittest.TestCase):
     def setUp(self) -> None:
-        self.original_records = trace.records()
+        self.original_records = [record.copy() for record in trace._TRACE]
         self.original_loaded_path = trace._LOADED_PATH
         trace._TRACE.clear()
         trace._LOADED_PATH = None
@@ -161,6 +161,149 @@ class TraceVerificationTests(unittest.TestCase):
         with self.assertRaises(OSError):
             trace.append_record({"question": "not persisted"})
         self.assertEqual(trace._TRACE, [])
+
+    def quarantine_files(self) -> list[Path]:
+        return sorted(self.trace_path.parent.glob("trace.jsonl.torn-*"))
+
+    def test_append_flushes_and_fsyncs_before_acknowledging(self) -> None:
+        with patch.object(trace.os, "fsync", wraps=trace.os.fsync) as fsync:
+            trace.append_record({"question": "durable"})
+
+        self.assertGreaterEqual(fsync.call_count, 1)
+        self.assertEqual(len(self.trace_path.read_text(encoding="utf-8").splitlines()), 1)
+
+    def test_failed_fsync_is_not_acknowledged_and_forces_reload(self) -> None:
+        trace.append_record({"question": "A"})
+        with patch.object(trace.os, "fsync", side_effect=OSError("disk gone")):
+            with self.assertRaises(OSError):
+                trace.append_record({"question": "B"})
+
+        self.assertIsNone(trace._LOADED_PATH)
+        self.assertEqual([r["question"] for r in trace.records()], ["A", "B"])
+        self.assertEqual(trace.verify_chain(), (True, "Chain verified (2 records)"))
+
+    def test_torn_final_line_is_quarantined_and_chain_continues(self) -> None:
+        first = trace.append_record({"question": "A"})
+        second = trace.append_record({"question": "B"})
+        good_bytes = self.trace_path.read_bytes()
+        torn = b'{"prev_hash": "' + second["record_hash"].encode() + b'", "quest'
+        with self.trace_path.open("ab") as handle:
+            handle.write(torn)
+        self.simulate_restart()
+
+        self.assertEqual(trace.records(), [first, second])
+        self.assertEqual(self.trace_path.read_bytes(), good_bytes)
+        quarantined = self.quarantine_files()
+        self.assertEqual(len(quarantined), 1)
+        self.assertEqual(quarantined[0].read_bytes(), torn)
+
+        third = trace.append_record({"question": "C"})
+        self.assertEqual(third["prev_hash"], second["record_hash"])
+        self.assertEqual(trace.verify_chain(), (True, "Chain verified (3 records)"))
+        self.simulate_restart()
+        self.assertEqual(trace.verify_chain(), (True, "Chain verified (3 records)"))
+
+    def test_torn_only_line_recovers_to_empty_history(self) -> None:
+        self.trace_path.write_bytes(b'{"prev_hash": "", "qu')
+
+        self.assertEqual(trace.records(), [])
+        self.assertEqual(self.trace_path.read_bytes(), b"")
+        self.assertEqual(len(self.quarantine_files()), 1)
+        first = trace.append_record({"question": "A"})
+        self.assertEqual(first["prev_hash"], "")
+        self.assertEqual(trace.verify_chain(), (True, "Chain verified (1 records)"))
+
+    def test_complete_final_record_missing_newline_is_preserved(self) -> None:
+        first = trace.append_record({"question": "A"})
+        second = trace.append_record({"question": "B"})
+        self.trace_path.write_bytes(self.trace_path.read_bytes().rstrip(b"\n"))
+        self.simulate_restart()
+
+        self.assertEqual(trace.records(), [first, second])
+        self.assertTrue(self.trace_path.read_bytes().endswith(b"\n"))
+        self.assertEqual(self.quarantine_files(), [])
+        third = trace.append_record({"question": "C"})
+        self.assertEqual(third["prev_hash"], second["record_hash"])
+        self.simulate_restart()
+        self.assertEqual(trace.verify_chain(), (True, "Chain verified (3 records)"))
+
+    def test_malformed_middle_line_still_fails_closed(self) -> None:
+        trace.append_record({"question": "A"})
+        trace.append_record({"question": "B"})
+        lines = self.trace_path.read_text(encoding="utf-8").splitlines()
+        lines.insert(1, "{broken")
+        original = "\n".join(lines) + "\n"
+        self.trace_path.write_text(original, encoding="utf-8")
+        self.simulate_restart()
+
+        with self.assertRaises(trace.TraceIntegrityError):
+            trace.records()
+        self.assertEqual(self.trace_path.read_text(encoding="utf-8"), original)
+        self.assertEqual(self.quarantine_files(), [])
+
+    def test_malformed_terminated_final_line_still_fails_closed(self) -> None:
+        trace.append_record({"question": "A"})
+        with self.trace_path.open("a", encoding="utf-8") as handle:
+            handle.write("{broken\n")
+        self.simulate_restart()
+
+        with self.assertRaises(trace.TraceIntegrityError):
+            trace.records()
+        self.assertEqual(self.quarantine_files(), [])
+
+    def test_torn_tail_after_tampered_chain_is_not_repaired(self) -> None:
+        trace.append_record({"question": "A"})
+        record = json.loads(self.trace_path.read_text(encoding="utf-8"))
+        record["question"] = "tampered"
+        original = json.dumps(record) + "\n" + '{"prev_hash": "'
+        self.trace_path.write_text(original, encoding="utf-8")
+        self.simulate_restart()
+
+        with self.assertRaises(trace.TraceIntegrityError):
+            trace.records()
+        self.assertEqual(self.trace_path.read_text(encoding="utf-8"), original)
+        self.assertEqual(self.quarantine_files(), [])
+
+    def test_on_disk_tampering_after_load_is_detected(self) -> None:
+        trace.append_record({"question": "A"})
+        trace.append_record({"question": "B"})
+        self.assertEqual(trace.verify_chain(), (True, "Chain verified (2 records)"))
+        lines = self.trace_path.read_text(encoding="utf-8").splitlines()
+        tampered = json.loads(lines[0])
+        tampered["question"] = "altered on disk"
+        lines[0] = json.dumps(tampered, sort_keys=True)
+        self.trace_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+        self.assertEqual(trace.verify_chain(), (False, "Record 1 hash mismatch"))
+
+    def test_on_disk_divergence_after_load_is_detected(self) -> None:
+        trace.append_record({"question": "A"})
+        trace.append_record({"question": "B"})
+        lines = self.trace_path.read_text(encoding="utf-8").splitlines()
+        # Truncating the tail leaves a self-consistent chain that no longer
+        # matches what this process recorded.
+        self.trace_path.write_text(lines[0] + "\n", encoding="utf-8")
+
+        self.assertEqual(
+            trace.verify_chain(),
+            (False, "Persisted trace diverges from loaded history"),
+        )
+
+    def test_verify_reports_torn_tail_without_repairing(self) -> None:
+        trace.append_record({"question": "A"})
+        with self.trace_path.open("ab") as handle:
+            handle.write(b'{"prev_')
+        original = self.trace_path.read_bytes()
+
+        self.assertEqual(
+            trace.verify_chain(), (False, "Persisted trace line 2 is incomplete")
+        )
+        self.assertEqual(self.trace_path.read_bytes(), original)
+        self.assertEqual(self.quarantine_files(), [])
+
+    def test_verify_handles_records_with_tuple_values(self) -> None:
+        trace.append_record({"question": "A", "order": ("t1", "t2")})
+        self.assertEqual(trace.verify_chain(), (True, "Chain verified (1 records)"))
 
 
 if __name__ == "__main__":

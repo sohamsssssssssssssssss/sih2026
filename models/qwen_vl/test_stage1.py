@@ -1,8 +1,10 @@
 import pytest
-import torch
-from torch import nn
 
-from models.qwen_vl.stage1 import convert_patch_embed, pack_s2_pixel_values, stage1_parameter_groups
+# CI runs models/ without torch; skip rather than fail collection there.
+torch = pytest.importorskip("torch")
+from torch import nn  # noqa: E402
+
+from models.qwen_vl.stage1 import convert_patch_embed, pack_s2_pixel_values, stage1_parameter_groups  # noqa: E402
 
 
 class TinyModel(nn.Module):

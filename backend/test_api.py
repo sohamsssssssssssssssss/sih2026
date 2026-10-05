@@ -1,5 +1,6 @@
 import hashlib
 import json
+import logging
 import re
 import time
 from io import BytesIO
@@ -17,6 +18,7 @@ from rasterio.io import MemoryFile
 from rasterio.transform import from_origin
 
 import backend.services as services
+import models.paths as model_paths
 import orchestrator.trace as trace_store
 from backend.main import app
 from backend.routes import analyze as analyze_routes
@@ -93,8 +95,57 @@ def upload(
     )
 
 
-def test_health(client: TestClient) -> None:
-    assert client.get("/api/health").json() == {"status": "ready", "mode": "offline-first"}
+def test_health_ready_when_trace_and_all_capabilities_are_ready(client: TestClient) -> None:
+    response = client.get("/api/health")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["status"] == "ready"
+    assert body["mode"] == "offline-first"
+    assert body["checks"]["trace"] == {"ok": True, "detail": None}
+    assert set(body["checks"]["capabilities"]) == set(capabilities.KNOWN_CAPABILITIES)
+    assert all(
+        check == {"available": True, "reason_code": None}
+        for check in body["checks"]["capabilities"].values()
+    )
+
+
+def test_health_degraded_when_a_capability_is_unavailable(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(
+        QwenVLModel,
+        "readiness",
+        lambda _: ModelReadiness(False, "CUDA_UNAVAILABLE", "A CUDA GPU is required."),
+    )
+
+    response = client.get("/api/health")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["status"] == "degraded"
+    assert body["mode"] == "offline-first"
+    assert body["checks"]["trace"]["ok"] is True
+    assert body["checks"]["capabilities"][capabilities.SINGLE_IMAGE_VQA] == {
+        "available": False,
+        "reason_code": "CUDA_UNAVAILABLE",
+    }
+    assert body["checks"]["capabilities"][capabilities.OPTICAL_SAR]["available"] is True
+
+
+def test_health_unavailable_with_503_when_trace_is_corrupted(client: TestClient) -> None:
+    trace_store.TRACE_PATH.write_text("not json\n", encoding="utf-8")
+    trace_store._LOADED_PATH = None
+
+    response = client.get("/api/health")
+
+    assert response.status_code == 503
+    body = response.json()
+    assert body["status"] == "unavailable"
+    assert body["mode"] == "offline-first"
+    assert body["checks"]["trace"]["ok"] is False
+    assert "malformed" in body["checks"]["trace"]["detail"]
+    assert set(body["checks"]["capabilities"]) == set(capabilities.KNOWN_CAPABILITIES)
 
 
 def test_known_golden_scene_serves_real_png(client: TestClient) -> None:
@@ -155,6 +206,15 @@ def test_golden_analysis_replays_only_when_explicitly_requested(client: TestClie
     assert payload["trace"]["params"]["results_artifact"] == services.RESULTS_RELATIVE_PATH
     assert payload["trace"]["params"]["planner_version"] == "phase0-rules-v1"
     assert payload["trace"]["params"]["planner_rule"] == "default_single_image_vqa"
+    # The committed artifact stores Kaggle absolute paths; only the file name is replayed.
+    assert payload["trace"]["input_summary"]["image_paths"] == [
+        "loveda_LoveDA_images_png_0_gsd0.3.png"
+    ]
+    traces = client.get("/api/traces")
+    assert traces.status_code == 200
+    for text in (response.text, traces.text):
+        assert "/kaggle/" not in text
+        assert str(services.ROOT) not in text
 
 
 
@@ -1813,3 +1873,187 @@ def test_caller_cannot_forge_execution_step_metadata(
     assert params["execution_step_id"] == "step_1"
     assert params["execution_step_index"] == 1
     assert params["execution_step_count"] == 1
+
+
+def test_change_analysis_and_traces_never_expose_absolute_server_paths(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    # Treat the test sandbox as the repository root so runtime rasters live "in" the repo.
+    monkeypatch.setattr(model_paths, "REPO_ROOT", tmp_path)
+    scene_ids = [
+        upload(
+            client,
+            f"{name}.tif",
+            tiff_bytes(bands=3, dtype="float32"),
+            {
+                "modality": "optical",
+                "sensor": "test-rgb",
+                "acquisition_timestamp": timestamp,
+                "pair_group": "change-pair-leak",
+            },
+        ).json()["scene_id"]
+        for name, timestamp in (
+            ("before", "2026-01-01T00:00:00Z"),
+            ("after", "2026-01-02T00:00:00Z"),
+        )
+    ]
+
+    response = client.post(
+        "/api/analyze",
+        json={
+            "scene_id": scene_ids[0],
+            "scene_id_2": scene_ids[1],
+            "question": "Did built-up area increase?",
+            "capability": "change_vqa",
+        },
+    )
+    traces = client.get("/api/traces")
+
+    assert response.status_code == 200, response.text
+    assert traces.status_code == 200
+    expected = [f"rasters/{scene_id}.tif" for scene_id in scene_ids]
+    inputs = response.json()["evidence"][0]
+    assert inputs["type"] == "temporal_inputs"
+    assert [inputs["t1"]["path"], inputs["t2"]["path"]] == expected
+    assert all(len(inputs[key]["sha256"]) == 64 for key in ("t1", "t2"))
+    assert response.json()["trace"]["input_summary"]["image_paths"] == expected
+    assert traces.json()["records"][0]["input_summary"]["image_paths"] == expected
+    for text in (response.text, traces.text):
+        assert str(tmp_path) not in text
+        assert str(services.ROOT) not in text
+    assert trace_store.verify_chain()[0] is True
+
+
+def test_unexpected_analyze_exception_logs_error_with_traceback(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch, caplog: pytest.LogCaptureFixture
+) -> None:
+    def fail(*_: object) -> dict:
+        raise RuntimeError("unexpected-service-failure")
+
+    monkeypatch.setattr(analyze_routes, "analyze_scene", fail)
+    question = "Is there a building here? " + "private-detail " * 20
+
+    with caplog.at_level(logging.WARNING):
+        response = client.post(
+            "/api/analyze",
+            json={"scene_id": services.GOLDEN_SCENE_ID, "question": question},
+        )
+
+    assert response.status_code == 502
+    assert response.json() == {"detail": "Model execution failed."}
+    records = [record for record in caplog.records if record.name == analyze_routes.logger.name]
+    assert len(records) == 1
+    record = records[0]
+    assert record.levelno == logging.ERROR
+    assert record.exc_info is not None and record.exc_info[0] is RuntimeError
+    assert "Traceback" in caplog.text
+    assert "unexpected-service-failure" in caplog.text
+    message = record.getMessage()
+    assert services.GOLDEN_SCENE_ID in message
+    assert "Is there a building here?" in message
+    assert question.strip() not in caplog.text
+
+
+@pytest.mark.parametrize(
+    ("failure", "status_code", "level"),
+    [
+        ("tensor shape mismatch", 502, logging.ERROR),
+        ("Qwen2.5-VL inference requires a CUDA GPU", 503, logging.WARNING),
+    ],
+)
+def test_model_failures_log_traceback_without_changing_response(
+    client: TestClient,
+    monkeypatch: pytest.MonkeyPatch,
+    caplog: pytest.LogCaptureFixture,
+    failure: str,
+    status_code: int,
+    level: int,
+) -> None:
+    created = upload(client, "scene.png", image_bytes("PNG")).json()
+
+    def fail(**_: object) -> dict:
+        raise RuntimeError(failure)
+
+    monkeypatch.setattr(
+        model_router, "get", lambda _: SimpleNamespace(version="test", infer=fail)
+    )
+    with caplog.at_level(logging.WARNING):
+        response = client.post(
+            "/api/analyze",
+            json={"scene_id": created["scene_id"], "question": "What is visible?"},
+        )
+
+    assert response.status_code == status_code
+    assert failure not in response.text
+    records = [record for record in caplog.records if record.name == services.logger.name]
+    assert len(records) == 1
+    assert records[0].levelno == level
+    assert records[0].exc_info is not None
+    assert "single_image_vqa" in records[0].getMessage()
+    assert failure in caplog.text
+    assert "Traceback" in caplog.text
+
+
+def test_model_timeout_logs_warning_with_traceback(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch, caplog: pytest.LogCaptureFixture
+) -> None:
+    created = upload(client, "scene.png", image_bytes("PNG")).json()
+    release = Event()
+    monkeypatch.setattr(
+        model_router,
+        "get",
+        lambda _: SimpleNamespace(
+            version="test", infer=lambda **_: release.wait(2) and {"answer": "late"}
+        ),
+    )
+    monkeypatch.setattr(services, "MODEL_EXECUTION_TIMEOUT_SECONDS", 0.01)
+
+    with caplog.at_level(logging.WARNING):
+        response = client.post(
+            "/api/analyze",
+            json={"scene_id": created["scene_id"], "question": "What is visible?"},
+        )
+    release.set()
+
+    assert response.status_code == 503
+    records = [record for record in caplog.records if record.name == services.logger.name]
+    assert [record.levelno for record in records] == [logging.WARNING]
+    assert records[0].exc_info is not None
+    assert "timed out" in records[0].getMessage()
+
+
+def test_inference_worker_crash_returns_503_and_logs_error(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch, caplog: pytest.LogCaptureFixture
+) -> None:
+    from orchestrator.worker import WorkerCrashed
+
+    created = upload(client, "scene.png", image_bytes("PNG")).json()
+
+    def crash(**_: object) -> None:
+        raise WorkerCrashed("Inference worker exited with code -9 while running test")
+
+    monkeypatch.setattr(
+        model_router, "get", lambda _: SimpleNamespace(version="test", infer=crash)
+    )
+
+    with caplog.at_level(logging.WARNING):
+        response = client.post(
+            "/api/analyze",
+            json={"scene_id": created["scene_id"], "question": "What is visible?"},
+        )
+
+    assert response.status_code == 503
+    assert response.json() == {"detail": "Live model inference is unavailable."}
+    records = [record for record in caplog.records if record.name == services.logger.name]
+    assert [record.levelno for record in records] == [logging.ERROR]
+    assert "worker crashed" in records[0].getMessage()
+
+
+def test_log_excerpt_truncates_and_flattens_user_text() -> None:
+    assert services.log_excerpt("short question") == "short question"
+    assert services.log_excerpt(None) == ""
+    long_text = "line one\n" + "x" * 200
+    excerpt = services.log_excerpt(long_text)
+    assert "\n" not in excerpt
+    assert len(excerpt) == services.LOG_EXCERPT_CHARS + 3
+    assert excerpt.endswith("...")

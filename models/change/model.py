@@ -10,6 +10,7 @@ import numpy as np
 import rasterio
 
 from models.base import Model, ModelReadiness
+from models.paths import public_path
 
 CHANGE_THRESHOLD = 0.1
 MULTISPECTRAL_BANDS = ("B02", "B03", "B04", "B08", "dataMask")
@@ -160,8 +161,8 @@ class ChangeModel(Model):
             evidence = [
                 {
                     "type": "temporal_inputs",
-                    "t1": {"path": str(paths[0]), "sha256": _sha256(paths[0])},
-                    "t2": {"path": str(paths[1]), "sha256": _sha256(paths[1])},
+                    "t1": {"path": public_path(paths[0]), "sha256": _sha256(paths[0])},
+                    "t2": {"path": public_path(paths[1]), "sha256": _sha256(paths[1])},
                     "bands": bands,
                     "temporal_order": "input_1_is_t1_input_2_is_t2",
                 },

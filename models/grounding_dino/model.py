@@ -9,6 +9,23 @@ from typing import Any, Callable
 from models.base import Model, ModelReadiness
 from models.artifacts import validate_artifact
 
+# The packaged SwinT OGC config loads this text encoder with from_pretrained,
+# so under HF_HUB_OFFLINE it must already be in the local Hugging Face cache.
+TEXT_ENCODER_ID = "bert-base-uncased"
+TEXT_ENCODER_FILES = ("config.json", "vocab.txt")
+TEXT_ENCODER_WEIGHTS = ("model.safetensors", "pytorch_model.bin")
+
+
+def _text_encoder_cached() -> bool:
+    from huggingface_hub import try_to_load_from_cache
+
+    def cached(filename: str) -> bool:
+        return isinstance(try_to_load_from_cache(TEXT_ENCODER_ID, filename), str)
+
+    return all(cached(name) for name in TEXT_ENCODER_FILES) and any(
+        cached(name) for name in TEXT_ENCODER_WEIGHTS
+    )
+
 
 class GroundingDINOModel(Model):
     """Ground text in one image with the official Swin-T checkpoint.
@@ -20,6 +37,7 @@ class GroundingDINOModel(Model):
 
     name = "grounding-dino-swint"
     version = "ShilongLiu/GroundingDINO:groundingdino_swint_ogc.pth"
+    isolated = True
 
     def __init__(
         self,
@@ -75,6 +93,13 @@ class GroundingDINOModel(Model):
         artifact = validate_artifact(self.name)
         if not artifact.available:
             return ModelReadiness(False, artifact.reason_code, artifact.detail)
+        if not _text_encoder_cached():
+            return ModelReadiness(
+                False,
+                "ARTIFACT_UNAVAILABLE",
+                f"Grounding DINO text encoder {TEXT_ENCODER_ID} is not in the local "
+                "Hugging Face cache; provision it before enabling grounding.",
+            )
         return ModelReadiness(True)
 
     def _load(self) -> None:

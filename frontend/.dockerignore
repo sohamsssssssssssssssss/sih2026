@@ -1,0 +1,12 @@
+node_modules
+.next
+out
+coverage
+*.tsbuildinfo
+.env
+.env.*
+!.env.example
+npm-debug.log*
+.DS_Store
+# Original-resolution intro video is gitignored and not served.
+public/videos/satquery-intro-original.mp4

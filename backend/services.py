@@ -2,6 +2,7 @@
 
 import hashlib
 import json
+import logging
 import os
 import re
 import warnings
@@ -30,6 +31,7 @@ from backend.scene_pack import (
 from data.dataset import SCENE_MANIFEST_VERSION, SceneManifest, validate_scene_manifest
 from data.pairing import evaluate_compatibility
 from models.base import ModelReadiness
+from models.paths import public_path
 
 # Keep model resolution offline before importing the model registry.
 os.environ["HF_HUB_OFFLINE"] = "1"
@@ -62,7 +64,10 @@ from orchestrator.router import (  # noqa: E402
     route,
 )
 from orchestrator.trace import TraceIntegrityError, append_record  # noqa: E402
+from orchestrator.worker import WorkerCrashed  # noqa: E402
 from demo_gui.golden_assets import local_golden_image  # noqa: E402
+
+logger = logging.getLogger(__name__)
 
 ROOT = Path(__file__).resolve().parents[1]
 MODEL_NAME = "qwen2.5vl-3b"
@@ -80,7 +85,17 @@ INGESTED_SCENE_ID = re.compile(r"scene_[0-9a-f]{32}")
 MAX_RASTER_PIXELS = 100_000_000
 MAX_RASTER_BANDS = 32
 MAX_PREVIEW_DIMENSION = 2048
+MAX_LISTED_UPLOADS = 200
 MODEL_EXECUTION_TIMEOUT_SECONDS = 120.0
+
+
+LOG_EXCERPT_CHARS = 60
+
+
+def log_excerpt(text: str | None, limit: int = LOG_EXCERPT_CHARS) -> str:
+    """Short single-line form of user text that is safe to put in server logs."""
+    value = " ".join((text or "").split())
+    return value if len(value) <= limit else value[:limit] + "..."
 
 
 class ArtifactError(RuntimeError):
@@ -457,8 +472,14 @@ def ingest_scene(
             },
         }
         validate_scene_manifest(manifest)
+        # validate_scene_manifest ignores unknown keys, so the upload time is
+        # persisted alongside the versioned schema without changing it.
+        stored: dict[str, Any] = {
+            **manifest,
+            "uploaded_at": datetime.now(timezone.utc).isoformat(),
+        }
         manifest_temporary.write_text(
-            json.dumps(manifest, indent=2, sort_keys=True) + "\n",
+            json.dumps(stored, indent=2, sort_keys=True) + "\n",
             encoding="utf-8",
         )
         if native_target and native_temporary:
@@ -494,14 +515,107 @@ def ingest_scene(
     }
 
 
+def _uploaded_at(value: object, manifest_path: Path) -> datetime:
+    """Prefer the persisted upload time; older manifests fall back to file mtime."""
+    if isinstance(value, str):
+        try:
+            parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+        except ValueError:
+            parsed = None
+        if parsed is not None and parsed.tzinfo is not None:
+            return parsed.astimezone(timezone.utc)
+    return datetime.fromtimestamp(manifest_path.stat().st_mtime, tz=timezone.utc)
+
+
+def _uploaded_scene(manifest_path: Path) -> tuple[datetime, dict[str, Any]]:
+    """Summarise one runtime manifest; raises ValueError/OSError when unusable."""
+    value = json.loads(manifest_path.read_text(encoding="utf-8"))
+    if not isinstance(value, dict):
+        raise ValueError("Scene manifest is not an object")
+    manifest = validate_scene_manifest(value)  # type: ignore[arg-type]
+    scene_id = manifest["scene_id"]
+    if manifest_path.name != f"{scene_id}.json":
+        raise ValueError("Scene manifest filename does not match its id")
+    if not (INGESTED_SCENE_DIR / f"{scene_id}.png").is_file():
+        raise ValueError("Scene preview is missing")
+    source, preview, raster = manifest["source"], manifest["preview"], manifest["raster"]
+    identity = manifest["identity"]
+    dimensions = raster if raster is not None else preview
+    sensor = identity.get("sensor")
+    acquisition_time = identity.get("acquisition_time")
+    filename = source.get("filename")
+    uploaded_at = _uploaded_at(value.get("uploaded_at"), manifest_path)
+    return uploaded_at, {
+        "scene_id": scene_id,
+        "filename": filename if isinstance(filename, str) and filename else "upload",
+        "format": source["format"],
+        "width": dimensions["width"],
+        "height": dimensions["height"],
+        "modality": identity["modality"],
+        "sensor": sensor if isinstance(sensor, str) else None,
+        "acquisition_time": acquisition_time if isinstance(acquisition_time, str) else None,
+        "has_native_raster": source.get("native_path") is not None
+        and (INGESTED_RASTER_DIR / f"{scene_id}.tif").is_file(),
+        "georeferenced": raster is not None and raster.get("pairing_ready") is True,
+        "uploaded_at": uploaded_at.isoformat(),
+    }
+
+
+def uploaded_scene(scene_id: str) -> dict[str, Any] | None:
+    """Return one stored upload's summary, or None when unknown or unusable."""
+    if not INGESTED_SCENE_ID.fullmatch(scene_id):
+        return None
+    path = SCENE_MANIFEST_DIR / f"{scene_id}.json"
+    if not path.is_file():
+        return None
+    try:
+        return _uploaded_scene(path)[1]
+    except (OSError, ValueError, TypeError, KeyError) as exc:
+        logger.warning("Skipping unusable scene manifest %s: %s", path.name, exc)
+        return None
+
+
+def uploaded_scenes(limit: int | None = None) -> list[dict[str, Any]]:
+    """List stored uploads newest first, skipping (and logging) unusable manifests."""
+    limit = MAX_LISTED_UPLOADS if limit is None else limit
+    try:
+        candidates = [
+            (entry.stat().st_mtime, entry)
+            for entry in SCENE_MANIFEST_DIR.iterdir()
+            if entry.suffix == ".json"
+            and INGESTED_SCENE_ID.fullmatch(entry.stem)
+            and entry.is_file()
+        ]
+    except FileNotFoundError:
+        return []
+    except OSError:
+        logger.warning("Scene manifest directory could not be read", exc_info=True)
+        return []
+    # Manifests are written at upload time, so mtime bounds the work to the most
+    # recent files; the final order uses the persisted upload timestamp.
+    candidates.sort(key=lambda item: item[0], reverse=True)
+    scenes: list[tuple[datetime, dict[str, Any]]] = []
+    for _, path in candidates:
+        if len(scenes) >= limit:
+            break
+        try:
+            scenes.append(_uploaded_scene(path))
+        except (OSError, ValueError, TypeError, KeyError) as exc:
+            logger.warning("Skipping unusable scene manifest %s: %s", path.name, exc)
+    scenes.sort(key=lambda item: (item[0], item[1]["scene_id"]), reverse=True)
+    return [scene for _, scene in scenes]
+
+
 def _cached_response(
-    cached: dict[str, Any], sensor: str | None, reason: str, plan: Plan
+    cached: dict[str, Any], sensor: str | None, plan: Plan
 ) -> dict[str, Any]:
     prediction = cached.get("prediction")
     answer = prediction.get("answer") if isinstance(prediction, dict) else None
     if not isinstance(answer, str) or not answer.strip():
         raise ArtifactError("The committed cached result is invalid.")
     model = get(MODEL_NAME)
+    # The committed artifact records the absolute paths of the machine that produced it.
+    image_paths = [public_path(path) for path in cached.get("image_paths", [])]
     try:
         trace = append_record(
             {
@@ -518,9 +632,9 @@ def _cached_response(
                     "sensor": sensor,
                 },
                 "input_summary": {
-                    "image_paths": cached.get("image_paths", []),
+                    "image_paths": image_paths,
                     "question": cached["question"],
-                    "n_images": len(cached.get("image_paths", [])),
+                    "n_images": len(image_paths),
                 },
                 "timestamp_iso": datetime.now(timezone.utc).isoformat(),
             }
@@ -533,7 +647,7 @@ def _cached_response(
         "results_artifact": RESULTS_RELATIVE_PATH,
         "model": {"name": MODEL_NAME, "version": model.version},
         "trace": trace,
-        "notice": f"Live inference unavailable ({reason}); showing the exact committed result for this scene and question.",
+        "notice": "Cached replay requested; showing the exact committed result for this scene and question. No live inference ran.",
     }
 
 
@@ -761,7 +875,7 @@ def analyze_scene(
             raise AnalysisUnavailable(
                 "No exact measured result matches this scene and question. No answer was generated."
             )
-        return _cached_response(cached, sensor, "explicit artifact replay", plan)
+        return _cached_response(cached, sensor, plan)
 
     if plan.selected_capability == OPTICAL_SAR:
         assert scene_id_2 is not None
@@ -818,6 +932,23 @@ def analyze_scene(
     except (CapabilityUnavailable, UnknownCapability):
         raise
     except ModelExecutionTimeout as exc:
+        logger.warning(
+            "Model execution timed out after %ss (capability=%s, question=%r)",
+            MODEL_EXECUTION_TIMEOUT_SECONDS,
+            plan.selected_capability,
+            log_excerpt(question),
+            exc_info=True,
+        )
+        raise ModelUnavailable from exc
+    except WorkerCrashed as exc:
+        # The worker respawns on the next request, so a crash (e.g. GPU OOM)
+        # is a retryable outage, not a model failure.
+        logger.error(
+            "Inference worker crashed (capability=%s, question=%r)",
+            plan.selected_capability,
+            log_excerpt(question),
+            exc_info=True,
+        )
         raise ModelUnavailable from exc
     except Exception as exc:
         unavailable = any(
@@ -830,8 +961,20 @@ def analyze_scene(
                 "checkpoint could not be loaded",
             )
         )
-        error = ModelUnavailable if unavailable else ModelExecutionError
-        raise error from exc
+        if unavailable:
+            logger.warning(
+                "Live model inference unavailable (capability=%s, question=%r)",
+                plan.selected_capability,
+                log_excerpt(question),
+                exc_info=True,
+            )
+            raise ModelUnavailable from exc
+        logger.exception(
+            "Model execution failed (capability=%s, question=%r)",
+            plan.selected_capability,
+            log_excerpt(question),
+        )
+        raise ModelExecutionError from exc
 
 
 def _scene_ids(scene_id: str, scene_id_2: str | None) -> tuple[str, ...]:
