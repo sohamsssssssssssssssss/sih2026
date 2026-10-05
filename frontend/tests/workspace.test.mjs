@@ -36,7 +36,7 @@ const { AnalysisResult } = await import("../components/analysis/AnalysisResult.t
 const { IntegrityBadge } = await import("../components/evidence/IntegrityBadge.tsx");
 const { EvidencePanel } = await import("../components/evidence/EvidencePanel.tsx");
 const { SceneMetadata } = await import("../components/imagery/SceneMetadata.tsx");
-const { ImageryViewer, reconcileImageLoad } = await import("../components/imagery/ImageryViewer.tsx");
+const { ImageryViewer, boxesToGeoJSON, frameExtent } = await import("../components/imagery/ImageryViewer.tsx");
 const { analyzeGolden, getSceneImageUrl } = await import("../lib/api.ts");
 const html = (component, props) => renderToStaticMarkup(React.createElement(component, props));
 const artifact = JSON.parse(readFileSync(new URL("../../results/qwen2.5vl-3b__ladder__rescored__20260904.json", import.meta.url)));
@@ -54,16 +54,28 @@ test("missing, unknown and inconsistent modes reject results", () => { for (cons
 test("cached and live structured results validate", () => { validateAnalysis(fixture(), GOLDEN_SCENE.question); const live = fixture(); live.execution_mode = live.trace.params.execution_mode = "live"; live.results_artifact = null; validateAnalysis(live, GOLDEN_SCENE.question); });
 test("wrong question and incomplete evidence reject results", () => { assert.throws(() => validateAnalysis(fixture(), "different question"), /provenance/); const result = fixture(); delete result.trace; assert.throws(() => validateAnalysis(result, GOLDEN_SCENE.question), /incomplete/); });
 test("result shows model and answer without placeholder confidence", () => { const rendered = html(AnalysisResult, { result: { ...fixture(), confidence: 1 } }); assert.match(rendered, /Yes/); assert.match(rendered, /Qwen2.5-VL-3B-Instruct/); assert.doesNotMatch(rendered, /confidence|100%/i); });
-test("failed and unchecked integrity never render success", () => { assert.equal(integrityState("true"), "unknown"); for (const verified of [false, null, undefined]) { const rendered = html(IntegrityBadge, { verified }); assert.doesNotMatch(rendered, /text-success|Chain verified/); } assert.match(html(IntegrityBadge, { verified: false }), /Verification failed/); assert.match(html(IntegrityBadge, { verified: true }), /text-success/); });
-test("evidence includes hashes and defaults to unchecked", () => { const rendered = html(EvidencePanel, { trace: fixture().trace }); assert.match(rendered, /Not checked/); assert.match(rendered, /Record hash/); assert.match(rendered, /Previous hash/); assert.match(rendered, /raw execution evidence/); });
+test("integrity badge never claims a verification that did not run", () => { assert.equal(integrityState("true"), "unknown"); assert.equal(integrityState(true), "verified"); assert.equal(integrityState(false), "failed"); const rendered = html(IntegrityBadge); assert.match(rendered, /Hash chained/); assert.doesNotMatch(rendered, /Chain verified/); });
+test("evidence includes hashes", () => { const rendered = html(EvidencePanel, { trace: fixture().trace }); assert.match(rendered, /Record hash/); assert.match(rendered, /Previous hash/); assert.match(rendered, /raw execution evidence/); });
 test("metadata separates source and unknown sensor/location", () => { const rendered = html(SceneMetadata); assert.match(rendered, /Dataset \/ source/); assert.match(rendered, /Sensor<\/dt><dd[^>]*>Unknown/); assert.match(rendered, /Location<\/dt><dd[^>]*>Unknown/); });
-test("image viewer has controls and no geographic position", () => { const rendered = html(ImageryViewer); assert.match(rendered, /Zoom in/); assert.match(rendered, /Zoom out/); assert.match(rendered, /not georeferenced/); assert.doesNotMatch(rendered, /72\.88|19\.08|Mumbai|maplibre/); });
+test("image viewer has no geographic position", () => { const rendered = html(ImageryViewer); assert.match(rendered, /not georeferenced/); assert.doesNotMatch(rendered, /72\.88|19\.08|Mumbai|maplibre/); });
 test("scene image URL encodes the controlled scene identifier", () => { assert.equal(getSceneImageUrl("scene id/unsafe"), "http://localhost:8000/api/scenes/scene%20id%2Funsafe/image"); });
-test("completed image requests leave loading state", () => { assert.equal(reconcileImageLoad("loading", true, 1024), "ready"); assert.equal(reconcileImageLoad("loading", true, 0), "failed"); assert.equal(reconcileImageLoad("loading", false, 0), "loading"); });
-test("analysis request uses Unknown sensor and sanitizes server errors", async () => {
+test("evidence boxes map into the arbitrary frame with the image aspect", () => {
+  assert.deepEqual(frameExtent(200, 100), [0.06, 0.03]); assert.deepEqual(frameExtent(null, null), [0.06, 0.06]);
+  const [feature] = boxesToGeoJSON([{ index: 1, kind: "bounding_box", label: "ship", confidence: 0.9, x0: 0, y0: 0, x1: 0.5, y1: 1 }], [0.06, 0.03]).features;
+  assert.deepEqual(feature.geometry.coordinates[0][0], [-0.06, 0.03]); assert.deepEqual(feature.geometry.coordinates[0][2], [0, -0.03]);
+});
+test("validation binds results to the requested scenes", () => {
+  const live = fixture(); live.execution_mode = live.trace.params.execution_mode = "live"; live.results_artifact = null;
+  live.trace.params.scene_id = "scene_" + "a".repeat(32); live.trace.params.scene_id_2 = "scene_" + "b".repeat(32);
+  validateAnalysis(live, GOLDEN_SCENE.question, { sceneId: "scene_" + "a".repeat(32), sceneId2: "scene_" + "b".repeat(32) });
+  assert.throws(() => validateAnalysis(live, GOLDEN_SCENE.question, { sceneId: "scene_" + "a".repeat(32) }), /provenance/);
+  assert.throws(() => validateAnalysis(live, GOLDEN_SCENE.question), /provenance/);
+  live.evidence = "boxes"; assert.throws(() => validateAnalysis(live, GOLDEN_SCENE.question, { sceneId: "scene_" + "a".repeat(32), sceneId2: "scene_" + "b".repeat(32) }), /evidence/);
+});
+test("golden analysis is explicitly live, uses Unknown sensor and sanitizes server errors", async () => {
   const original = globalThis.fetch;
   try {
-    globalThis.fetch = async (_url, init) => { assert.equal(JSON.parse(init.body).sensor, "Unknown"); return new Response(JSON.stringify({ detail: "Traceback CUDA /private/secrets" }), { status: 500 }); };
+    globalThis.fetch = async (_url, init) => { const body = JSON.parse(init.body); assert.equal(body.sensor, "Unknown"); assert.equal(body.execution_mode, "live"); return new Response(JSON.stringify({ detail: "Traceback CUDA /private/secrets" }), { status: 500 }); };
     await assert.rejects(analyzeGolden(GOLDEN_SCENE.question), error => /Analysis service unavailable/.test(error.message) && !/Traceback|CUDA|private/.test(error.message));
   } finally { globalThis.fetch = original; }
 });

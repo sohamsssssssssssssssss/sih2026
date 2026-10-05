@@ -23,7 +23,7 @@ export default function SarPage() {
           Mumbai coastal interpretation
         </h1>
         <p className="muted mt-2">
-          Human interpretation of a processed Sentinel-1 scene. Optical–SAR fusion remains in development.
+          Human interpretation of a processed Sentinel-1 scene. For model output, pair an optical and a SAR GeoTIFF in the workspace (deterministic optical–SAR baseline).
         </p>
       </div>
       <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-warning/25 bg-warning/[0.06] px-3 py-1.5 text-[11px] font-[500] uppercase tracking-wider text-warning">
