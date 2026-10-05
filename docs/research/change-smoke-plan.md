@@ -43,6 +43,6 @@ curl -sS -H 'content-type: application/json' \
   -o data/external/change-smoke/<pair-id>/smoke-response.json
 ```
 
-Confirm `execution_mode=live`, provider `change-deterministic`, version `bitemporal-difference-v1`, both input identities in the trace/evidence, `confidence` absent from the API response, finite change statistics, and hash-chain verification. Record wall latency separately as an operational observation.
+Confirm `execution_mode=live`, provider `change-deterministic`, version `bitemporal-difference-v2`, both input identities in the trace/evidence, `confidence` absent from the API response, finite change statistics, and hash-chain verification. Record wall latency separately as an operational observation.
 
 This smoke would prove that a real provenance-complete pair passes canonical ingestion, compatibility gating, deterministic change execution, evidence generation, and trace persistence. It would not prove semantic understanding, CDVQA accuracy, threshold calibration, geographic generalization, or model improvement.
