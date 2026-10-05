@@ -508,7 +508,7 @@ def ingest_scene(
 
 
 def _cached_response(
-    cached: dict[str, Any], sensor: str | None, reason: str, plan: Plan
+    cached: dict[str, Any], sensor: str | None, plan: Plan
 ) -> dict[str, Any]:
     prediction = cached.get("prediction")
     answer = prediction.get("answer") if isinstance(prediction, dict) else None
@@ -548,7 +548,7 @@ def _cached_response(
         "results_artifact": RESULTS_RELATIVE_PATH,
         "model": {"name": MODEL_NAME, "version": model.version},
         "trace": trace,
-        "notice": f"Live inference unavailable ({reason}); showing the exact committed result for this scene and question.",
+        "notice": "Cached replay requested; showing the exact committed result for this scene and question. No live inference ran.",
     }
 
 
@@ -776,7 +776,7 @@ def analyze_scene(
             raise AnalysisUnavailable(
                 "No exact measured result matches this scene and question. No answer was generated."
             )
-        return _cached_response(cached, sensor, "explicit artifact replay", plan)
+        return _cached_response(cached, sensor, plan)
 
     if plan.selected_capability == OPTICAL_SAR:
         assert scene_id_2 is not None

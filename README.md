@@ -281,7 +281,7 @@ curl -X POST http://localhost:8000/api/analyze \
     "model_name": "qwen2.5vl-3b",
     "timestamp": "..."
   },
-  "notice": "Offline demonstration: showing the exact committed result for this pinned query."
+  "notice": "Cached replay requested; showing the exact committed result for this scene and question. No live inference ran."
 }
 ```
 
