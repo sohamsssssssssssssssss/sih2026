@@ -10,6 +10,7 @@ import numpy as np
 import rasterio
 
 from models.base import Model, ModelReadiness
+from models.change.sar_water import SAR_BANDS, is_sar, water_change
 from models.paths import public_path
 
 CHANGE_THRESHOLD = 0.1
@@ -49,9 +50,49 @@ def _normalized_extent(mask: np.ndarray) -> list[float] | None:
     ]
 
 
+def _temporal_inputs(paths: list[Path], bands: list[str]) -> dict[str, Any]:
+    return {
+        "type": "temporal_inputs",
+        "t1": {"path": public_path(paths[0]), "sha256": _sha256(paths[0])},
+        "t2": {"path": public_path(paths[1]), "sha256": _sha256(paths[1])},
+        "bands": bands,
+        "temporal_order": "input_1_is_t1_input_2_is_t2",
+    }
+
+
+def _coverage(valid: np.ndarray, dataset: Any) -> dict[str, Any]:
+    valid_count = int(np.count_nonzero(valid))
+    total = dataset.width * dataset.height
+    return {
+        "type": "temporal_valid_coverage",
+        "valid_pixels": valid_count,
+        "total_pixels": total,
+        "valid_fraction": valid_count / total,
+        "crs": dataset.crs.to_string() if dataset.crs else None,
+        "width": dataset.width,
+        "height": dataset.height,
+    }
+
+
+def _sar_water_result(paths: list[Path], t1: Any, t2: Any) -> dict[str, Any]:
+    water = water_change(t1, t2)
+    evidence = [_temporal_inputs(paths, list(SAR_BANDS)), *water.evidence, _coverage(water.valid, t1)]
+    extent = None if water.new_water is None else _normalized_extent(water.new_water)
+    if extent is not None:
+        evidence.append(
+            {
+                "type": "change_extent",
+                "coordinates": extent,
+                "coordinate_space": "normalized_xyxy",
+                "meaning": "bounding extent of all newly water-covered pixels",
+            }
+        )
+    return {"answer": water.answer, "confidence": None, "evidence": evidence}
+
+
 class ChangeModel(Model):
     name = "change-deterministic"
-    version = "bitemporal-difference-v1"
+    version = "bitemporal-difference-v2"
 
     def readiness(self) -> ModelReadiness:
         for dependency in ("numpy", "rasterio"):
@@ -80,13 +121,17 @@ class ChangeModel(Model):
                 or t1.transform != t2.transform
             ):
                 raise ValueError("T1 and T2 must have identical bands, CRS, and pixel grid")
+            sar = [is_sar(dataset) for dataset in (t1, t2)]
+            if any(sar):
+                if not all(sar):
+                    raise ValueError("T1 and T2 must both be SAR (VV/VH/dataMask) or both optical")
+                return _sar_water_result(paths, t1, t2)
             if t1.count not in {3, len(MULTISPECTRAL_BANDS)}:
                 raise ValueError("Change baseline requires 3-band RGB or 5-band multispectral rasters")
             first, second = t1.read(), t2.read()
             masks = np.all(t1.read_masks() > 0, axis=0) & np.all(
                 t2.read_masks() > 0, axis=0
             )
-            total = t1.width * t1.height
 
             if t1.count == len(MULTISPECTRAL_BANDS):
                 for dataset in (t1, t2):
@@ -159,13 +204,7 @@ class ChangeModel(Model):
             valid_count = int(np.count_nonzero(masks))
             changed_count = int(np.count_nonzero(changed_values))
             evidence = [
-                {
-                    "type": "temporal_inputs",
-                    "t1": {"path": public_path(paths[0]), "sha256": _sha256(paths[0])},
-                    "t2": {"path": public_path(paths[1]), "sha256": _sha256(paths[1])},
-                    "bands": bands,
-                    "temporal_order": "input_1_is_t1_input_2_is_t2",
-                },
+                _temporal_inputs(paths, bands),
                 {
                     "type": "change_statistics",
                     "method": method,
@@ -177,15 +216,7 @@ class ChangeModel(Model):
                     "changed_fraction": changed_count / valid_count,
                     **method_detail,
                 },
-                {
-                    "type": "temporal_valid_coverage",
-                    "valid_pixels": valid_count,
-                    "total_pixels": total,
-                    "valid_fraction": valid_count / total,
-                    "crs": t1.crs.to_string() if t1.crs else None,
-                    "width": t1.width,
-                    "height": t1.height,
-                },
+                _coverage(masks, t1),
             ]
             extent = _normalized_extent(changed_mask)
             if extent is not None:

@@ -93,7 +93,7 @@ class CapabilityRegistryTests(unittest.TestCase):
         resolved = resolve_provider(CHANGE_VQA)
         self.assertEqual(resolved.provider_name, "change-deterministic")
         self.assertEqual(resolved.model_name, "change-deterministic")
-        self.assertEqual(resolved.model_version, "bitemporal-difference-v1")
+        self.assertEqual(resolved.model_version, "bitemporal-difference-v2")
 
     def test_unknown_capability_fails_clearly(self) -> None:
         with self.assertRaises(UnknownCapability):

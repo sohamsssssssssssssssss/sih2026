@@ -741,7 +741,7 @@ def test_compatible_bitemporal_pair_executes_change_provider(
     payload = response.json()
     assert payload["model"] == {
         "name": "change-deterministic",
-        "version": "bitemporal-difference-v1",
+        "version": "bitemporal-difference-v2",
     }
     assert "confidence" not in payload
     assert "does not infer semantic change classes" in payload["answer"]
@@ -754,6 +754,48 @@ def test_compatible_bitemporal_pair_executes_change_provider(
         "2026-01-01T00:00:00+00:00", "2026-01-02T00:00:00+00:00"
     ]
     assert trace_store.records()[0]["model_name"] == "change-deterministic"
+    assert trace_store.verify_chain()[0] is True
+
+
+def sar_tiff_bytes(water_rows: slice) -> bytes:
+    """VV/VH/dataMask GeoTIFF: land at about -10 dB, ``water_rows`` at about -23 dB."""
+    vv = np.full((40, 40), 0.1, dtype="float32")
+    vv[water_rows] = 0.005
+    with MemoryFile() as memory:
+        with memory.open(
+            driver="GTiff", width=40, height=40, count=3, dtype="float32",
+            crs="EPSG:32645", transform=from_origin(500000, 2830000, 10, 10),
+        ) as dataset:
+            dataset.write(np.stack([vv, vv / 5, np.ones_like(vv)]))
+            dataset.descriptions = ("VV", "VH", "dataMask")
+        return memory.read()
+
+
+def test_sar_pair_flood_question_returns_water_change_geojson(client: TestClient) -> None:
+    metadata = {"modality": "sar", "sensor": "Sentinel-1", "polarization": "VV,VH", "pair_group": "flood-1"}
+    before = upload(
+        client, "before.tif", sar_tiff_bytes(slice(0, 5)),
+        {**metadata, "acquisition_timestamp": "2026-08-01T00:00:00Z"},
+    ).json()["scene_id"]
+    after = upload(
+        client, "after.tif", sar_tiff_bytes(slice(0, 15)),
+        {**metadata, "acquisition_timestamp": "2026-08-20T00:00:00Z"},
+    ).json()["scene_id"]
+
+    response = client.post(
+        "/api/analyze",
+        json={"scene_id": before, "scene_id_2": after, "question": "Did flooding expand between these scenes?"},
+    )
+
+    assert response.status_code == 200, response.text
+    payload = response.json()
+    assert payload["model"]["name"] == "change-deterministic"
+    assert payload["trace"]["params"]["capability"] == "change_vqa"
+    evidence = {item["type"]: item for item in payload["evidence"]}
+    assert evidence["water_change_statistics"]["new_water_ha"] == pytest.approx(4.0, rel=1e-2)
+    features = evidence["water_change_polygons"]["geojson"]["features"]
+    assert [feature["properties"] for feature in features] == [{"change": "new_water", "pixels": 400}]
+    assert "4.0 ha became open water" in payload["answer"]
     assert trace_store.verify_chain()[0] is True
 
 

@@ -6,7 +6,7 @@ import re
 from fastapi import FastAPI, Response
 from fastapi.middleware.cors import CORSMiddleware
 
-from backend.routes import analyze, resolution, sar, traces
+from backend.routes import analyze, resolution, sar, sentinel1, traces
 from backend.schemas import HealthResponse
 from backend.services import capabilities_overview
 from orchestrator import trace as trace_store
@@ -60,6 +60,7 @@ app.add_middleware(
 app.include_router(analyze.router)
 app.include_router(resolution.router)
 app.include_router(sar.router)
+app.include_router(sentinel1.router)
 app.include_router(traces.router)
 
 

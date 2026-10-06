@@ -372,7 +372,16 @@ def ingest_scene(
     data: bytes,
     filename: str,
     metadata: dict[str, str | None] | None = None,
+    *,
+    provenance: str = "user_declared_upload",
+    acquisition_id: str | None = None,
+    optical_check: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
+    """Store a scene and its manifest. Server-side fetchers name their own provenance.
+
+    ``optical_check`` is the Sentinel-2 cloud check a radar fetcher ran for this
+    scene; it is stored as one extra manifest field when given.
+    """
     if not data:
         raise InvalidImageUpload("The uploaded image is empty.")
     declared = _declared_metadata(metadata)
@@ -430,7 +439,7 @@ def ingest_scene(
             assert native_temporary is not None
             native_temporary.write_bytes(data)
         canonical.save(temporary, format="PNG")
-        provenance = {field: "user_declared_upload" for field in declared}
+        field_provenance = {field: provenance for field in declared}
         manifest: SceneManifest = {
             "version": SCENE_MANIFEST_VERSION,
             "scene_id": scene_id,
@@ -457,11 +466,11 @@ def ingest_scene(
             "identity": {
                 "sensor": declared.get("sensor"),
                 "modality": declared.get("modality", "unknown"),
-                "acquisition_id": None,
+                "acquisition_id": acquisition_id,
                 "acquisition_time": declared.get("acquisition_timestamp"),
                 "polarizations": declared.get("polarizations", []),
                 "benchmark_source": declared.get("benchmark_source"),
-                "provenance": provenance,
+                "provenance": field_provenance,
             },
             "grouping": {
                 "geographic_group": None,
@@ -472,11 +481,13 @@ def ingest_scene(
             },
         }
         validate_scene_manifest(manifest)
-        # validate_scene_manifest ignores unknown keys, so the upload time is
-        # persisted alongside the versioned schema without changing it.
+        # validate_scene_manifest ignores unknown keys, so the upload time and
+        # any optical check are persisted alongside the versioned schema
+        # without changing it.
         stored: dict[str, Any] = {
             **manifest,
             "uploaded_at": datetime.now(timezone.utc).isoformat(),
+            **({"optical_check": optical_check} if optical_check is not None else {}),
         }
         manifest_temporary.write_text(
             json.dumps(stored, indent=2, sort_keys=True) + "\n",

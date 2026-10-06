@@ -2,9 +2,10 @@
 
 from typing import Any, Literal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 MAX_QUESTION_LENGTH = 2000
+MAX_PAIR_GROUP_LENGTH = 256  # the declared-metadata limit in backend.services
 
 
 class AnalyzeRequest(BaseModel):
@@ -139,3 +140,60 @@ class PlanResponse(BaseModel):
     execution_plan_version: str
     steps: list[PlanStepSummary]
     unavailable_capabilities: list[str]
+
+
+class DayWindow(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    start: str = Field(description="First UTC day, YYYY-MM-DD.")
+    end: str = Field(description="Last UTC day, YYYY-MM-DD; included.")
+
+
+class Sentinel1PairRequest(BaseModel):
+    """Either a catalogued event_id, or all of bbox, before and after."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    event_id: str | None = Field(default=None, min_length=1, description="A catalogued flood event.")
+    bbox: tuple[float, float, float, float] | None = Field(
+        default=None, description="WEST, SOUTH, EAST, NORTH in degrees."
+    )
+    before: DayWindow | None = None
+    after: DayWindow | None = None
+    pair_group: str | None = Field(
+        default=None,
+        min_length=1,
+        max_length=MAX_PAIR_GROUP_LENGTH,
+        description="Defaults to event_id, else to the two CDSE product ids.",
+    )
+
+    @model_validator(mode="after")
+    def exactly_one_form(self) -> "Sentinel1PairRequest":
+        explicit = (self.bbox, self.before, self.after)
+        if self.event_id is not None and any(value is not None for value in explicit):
+            raise ValueError("event_id replaces bbox, before and after")
+        if self.event_id is None and any(value is None for value in explicit):
+            raise ValueError("give event_id, or all of bbox, before and after")
+        return self
+
+
+class Sentinel1Scene(BaseModel):
+    scene_id: str
+    acquisition_id: str
+    acquisition_time: str = Field(description="ISO 8601 UTC acquisition time.")
+    orbit_state: str
+    relative_orbit: int | None
+    valid_fraction: float = Field(description="Fraction of pixels covered and not in radar shadow.")
+
+
+class Sentinel1PairResponse(BaseModel):
+    pair_group: str
+    crs: str
+    width: int
+    height: int
+    before: Sentinel1Scene
+    after: Sentinel1Scene
+    optical_check: dict[str, Any] | None = Field(
+        default=None,
+        description="Sentinel-2 cloud cover over the AOI near the post-event pass (backend/optical_clouds.py).",
+    )
