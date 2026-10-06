@@ -26,9 +26,20 @@ A scene-wide split fails when water is a few percent of the scene. On the real K
 
 Otherwise it reports water at T1 and T2, newly water-covered area and receded area. It also reports new-water hectares with the threshold moved down and up by 1 dB (`new_water_ha_sensitivity`), and the answer quotes that range. Change regions smaller than 10 connected pixels are removed as speckle; small gaps inside a change region are never filled. Areas come from pixel corners projected into EPSG:6933 (equal area), so lat/lon and UTM grids both give true hectares. Change polygons are returned as an RFC 7946 GeoJSON FeatureCollection in EPSG:4326, largest first, capped at 500 with the full count reported. VH is not used. The `-15` dB water level and the tile size are fixed choices, not calibrated values, and confidence remains `null`. A trained segmenter replaces `split_threshold()` and `water_masks()` and has to beat this baseline on held-out IoU.
 
-### First real run: Kosi 2024
+### First real runs
 
-`python -m backend.sentinel1 --event kosi-2024` paired Sentinel-1A acquisitions from 24 September and 6 October 2024 on ascending track 85. The output was a 749 x 1649 grid at 10 m with 100% valid pixels. The split-based threshold was -13.2 dB from 192 tiles. It found 1,405 ha of new open water (1,243–1,584 ha at ±1 dB), 55 ha receded, and water rising from 967 to 2,355 ha. 46 of 51 villages gained some open water; the most were Jamalpur (253 ha), Jhagarua (136 ha) and Dhangha (132 ha). Bhobhaul, the likely Census spelling of the breach village Bhubhol, gained 40.7 ha. None of this has been checked against an independent flood map.
+Each catalogued event was fetched once with `python -m backend.sentinel1 --event <event_id>` and analysed by this provider directly, all from commit `959a014` on 6 October 2026. Every pair is Sentinel-1A on one track, passed `change_vqa` pair validation, and is at least 99.99% co-valid on a 10 m UTM grid. Product ids, grids, full statistics and the top villages are in [`data/manifests/cdse/flood-runs.v1.json`](../data/manifests/cdse/flood-runs.v1.json).
+
+| Event | Pair (track) | Threshold | New water (±1 dB) | Receded | Most new water |
+|---|---|---|---|---|---|
+| `kosi-2024` | 24 Sep → 6 Oct 2024 (ascending 85) | -13.2 dB, 192 tiles | 1,404.9 ha (1,242.7–1,583.5) | 55.0 ha | Jamalpur 252.9 ha, Jhagarua 135.8 ha, Dhangha 131.9 ha; 46 of 51 villages |
+| `silchar-2022` | 16 → 28 Jun 2022 (ascending 41) | -13.2 dB, 1,034 tiles | 10,077.1 ha (9,964.8–10,082.4) | 39.4 ha | not named: no boundaries |
+| `kerala-2018-periyar` | 16 Jul → 21 Aug 2018 (descending 165) | -11.5 dB, 193 tiles | 2,092.5 ha (2,033.8–2,102.0) | 262.7 ha | Varappuzha 198.8 ha, Kunnukara 195.5 ha, Thirumukkulam 175.3 ha; 37 of 38 villages and towns |
+
+- **Kosi:** the post-event image is 7 days after the 29 September breach. Water rose from 967.2 to 2,354.6 ha. Bhobhaul, the likely Census spelling of the breach village Bhubhol, gained 40.7 ha (11th).
+- **Silchar:** the post-event image falls inside the 19–30 June flood. New water covers about a quarter of the scene, and total water rose from 5,690.7 to 15,923.8 ha. DataMeet has no Assam boundaries, so no village is named. Water among buildings in the town itself can be missed, because buildings brighten the radar return rather than darken it.
+- **Kerala:** only Sentinel-1A acquisitions exist over this AOI in the catalogued windows, so the pair is 36 days apart. The post-event image is two days after the 14–19 August spell, so it shows water still standing after the peak, not the peak extent.
+- **All three:** each pre-event image falls in the monsoon, and water already present then (river, wetland or earlier flooding) is not counted as new. The numbers are change between two dates, not total flood extent. None of them has been compared with an independent flood map.
 
 ## Village overlay
 

@@ -71,7 +71,7 @@
       },
       "before": {"start": "2018-07-01", "end": "2018-07-25"},
       "after": {"start": "2018-08-15", "end": "2018-08-22"},
-      "window_rationale": "CWC dates the first onset of flooding to the end of July, so the before window ends on 25 July; the after window covers the 14-19 August spell. Sentinel-1A and 1B were both flying, a 6-day repeat per track.",
+      "window_rationale": "CWC dates the first onset of flooding to the end of July, so the before window ends on 25 July; the after window runs from inside the 14-19 August spell to three days after it. The CDSE catalogue lists only Sentinel-1A acquisitions over this AOI in these windows, so each track repeats every 12 days; the shared-track pair is 16 July and 21 August (descending track 165), 36 days apart, and its post-event image is two days after the spell, not at its peak.",
       "sources": [
         {
           "url": "https://sdma.kerala.gov.in/wp-content/uploads/2020/08/CWC-Report-on-Kerala-Floods.pdf",

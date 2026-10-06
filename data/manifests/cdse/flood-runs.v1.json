@@ -1,0 +1,298 @@
+{
+  "schema_version": "1.0",
+  "description": "Real Sentinel-1 runs of change_vqa's SAR water-change baseline on the catalogued flood events in data/manifests/flood_events.v1.json. Each pair was fetched once with `python -m backend.sentinel1 --event <event_id>`, checked with backend.services.scene_compatibility(before, after, 'change_vqa') and analysed with models.change.ChangeModel().infer([before_tif, after_tif], 'Which villages flooded?'). Hectares are rounded to 0.1 ha; other numbers are as computed. Confidence is null by design. None of these results has been compared with an independent flood map.",
+  "source": "Copernicus Data Space Ecosystem Sentinel Hub Catalog and Process APIs",
+  "code_commit": "959a014fa6f27eb90fbe801a3d1ffc2cb4e91304",
+  "run_date": "2026-10-06",
+  "provider": {
+    "name": "change-deterministic",
+    "version": "bitemporal-difference-v2"
+  },
+  "events": [
+    {
+      "event_id": "kosi-2024",
+      "before": {
+        "product_id": "S1A_IW_GRDH_1SDV_20240924T122146_20240924T122211_055807_06D1A1_686F_COG.SAFE",
+        "acquired_at": "2024-09-24T12:21:46Z",
+        "valid_fraction": 1.0
+      },
+      "after": {
+        "product_id": "S1A_IW_GRDH_1SDV_20241006T122147_20241006T122212_055982_06D887_1753_COG.SAFE",
+        "acquired_at": "2024-10-06T12:21:47Z",
+        "valid_fraction": 1.0
+      },
+      "orbit_direction": "ascending",
+      "relative_orbit": 85,
+      "grid": {
+        "epsg": 32645,
+        "width": 749,
+        "height": 1649
+      },
+      "co_valid_fraction": 1.0,
+      "compatibility": {
+        "eligible": true,
+        "reason_codes": [],
+        "warnings": [],
+        "acquisition_interval_seconds": 1036801.0
+      },
+      "status": "measured",
+      "reason_code": null,
+      "threshold_db": -13.245247722953911,
+      "bimodal_tiles": 192,
+      "water_t1_ha": 967.2,
+      "water_t2_ha": 2354.6,
+      "new_water_ha": 1404.9,
+      "new_water_ha_sensitivity": {
+        "threshold_minus_1db": 1242.7,
+        "threshold_plus_1db": 1583.5
+      },
+      "receded_water_ha": 55.0,
+      "villages": {
+        "status": "measured",
+        "villages_in_scene": 51,
+        "flooded_village_count": 46,
+        "top_flooded": [
+          {
+            "name": "Jamalpur",
+            "sub_district": "Kiratpur",
+            "district": "Darbhanga",
+            "census_2001_code": "1013001501184400",
+            "flooded_ha": 252.9
+          },
+          {
+            "name": "Jhagarua",
+            "sub_district": "Kiratpur",
+            "district": "Darbhanga",
+            "census_2001_code": "1013001501183400",
+            "flooded_ha": 135.8
+          },
+          {
+            "name": "Dhangha",
+            "sub_district": "Kiratpur",
+            "district": "Darbhanga",
+            "census_2001_code": "1013001501183900",
+            "flooded_ha": 131.9
+          },
+          {
+            "name": "Rasiari",
+            "sub_district": "Kiratpur",
+            "district": "Darbhanga",
+            "census_2001_code": "1013001501183300",
+            "flooded_ha": 122.4
+          },
+          {
+            "name": "Bath",
+            "sub_district": "Gora Bauram",
+            "district": "Darbhanga",
+            "census_2001_code": "1013001601189100",
+            "flooded_ha": 101.9
+          },
+          {
+            "name": "Jagson",
+            "sub_district": "Kiratpur",
+            "district": "Darbhanga",
+            "census_2001_code": "1013001501184000",
+            "flooded_ha": 91.9
+          },
+          {
+            "name": "Tatari",
+            "sub_district": "Kiratpur",
+            "district": "Darbhanga",
+            "census_2001_code": "1013001501183600",
+            "flooded_ha": 86.6
+          },
+          {
+            "name": "Akhtwara",
+            "sub_district": "Gora Bauram",
+            "district": "Darbhanga",
+            "census_2001_code": "1013001601189600",
+            "flooded_ha": 54.5
+          },
+          {
+            "name": "Khaisa",
+            "sub_district": "Kiratpur",
+            "district": "Darbhanga",
+            "census_2001_code": "1013001501184300",
+            "flooded_ha": 44.3
+          },
+          {
+            "name": "Kubaul",
+            "sub_district": "Kiratpur",
+            "district": "Darbhanga",
+            "census_2001_code": "1013001501183800",
+            "flooded_ha": 43.4
+          }
+        ],
+        "breach_village": {
+          "rank": 11,
+          "name": "Bhobhaul",
+          "sub_district": "Kiratpur",
+          "district": "Darbhanga",
+          "census_2001_code": "1013001501184600",
+          "flooded_ha": 40.7
+        }
+      }
+    },
+    {
+      "event_id": "silchar-2022",
+      "before": {
+        "product_id": "S1A_IW_GRDH_1SDV_20220616T115645_20220616T115710_043688_05373A_5F94_COG.SAFE",
+        "acquired_at": "2022-06-16T11:56:45Z",
+        "valid_fraction": 0.9999977443473345
+      },
+      "after": {
+        "product_id": "S1A_IW_GRDH_1SDV_20220628T115646_20220628T115711_043863_053C7E_EFEB_COG.SAFE",
+        "acquired_at": "2022-06-28T11:56:46Z",
+        "valid_fraction": 0.9999972430911865
+      },
+      "orbit_direction": "ascending",
+      "relative_orbit": 41,
+      "grid": {
+        "epsg": 32646,
+        "width": 2003,
+        "height": 1992
+      },
+      "co_valid_fraction": 0.9999967418350386,
+      "compatibility": {
+        "eligible": true,
+        "reason_codes": [],
+        "warnings": [],
+        "acquisition_interval_seconds": 1036801.0
+      },
+      "status": "measured",
+      "reason_code": null,
+      "threshold_db": -13.221319804416911,
+      "bimodal_tiles": 1034,
+      "water_t1_ha": 5690.7,
+      "water_t2_ha": 15923.8,
+      "new_water_ha": 10077.1,
+      "new_water_ha_sensitivity": {
+        "threshold_minus_1db": 9964.8,
+        "threshold_plus_1db": 10082.4
+      },
+      "receded_water_ha": 39.4,
+      "villages": {
+        "status": "no_boundaries",
+        "villages_in_scene": null,
+        "flooded_village_count": null,
+        "top_flooded": []
+      }
+    },
+    {
+      "event_id": "kerala-2018-periyar",
+      "before": {
+        "product_id": "S1A_IW_GRDH_1SDV_20180716T004042_20180716T004107_022812_02792A_F005_COG.SAFE",
+        "acquired_at": "2018-07-16T00:40:42Z",
+        "valid_fraction": 1.0
+      },
+      "after": {
+        "product_id": "S1A_IW_GRDH_1SDV_20180821T004044_20180821T004109_023337_0289D5_9B06_COG.SAFE",
+        "acquired_at": "2018-08-21T00:40:44Z",
+        "valid_fraction": 1.0
+      },
+      "orbit_direction": "descending",
+      "relative_orbit": 165,
+      "grid": {
+        "epsg": 32643,
+        "width": 2009,
+        "height": 1997
+      },
+      "co_valid_fraction": 1.0,
+      "compatibility": {
+        "eligible": true,
+        "reason_codes": [],
+        "warnings": [],
+        "acquisition_interval_seconds": 3110402.0
+      },
+      "status": "measured",
+      "reason_code": null,
+      "threshold_db": -11.473818442568183,
+      "bimodal_tiles": 193,
+      "water_t1_ha": 1381.9,
+      "water_t2_ha": 3261.0,
+      "new_water_ha": 2092.5,
+      "new_water_ha_sensitivity": {
+        "threshold_minus_1db": 2102.0,
+        "threshold_plus_1db": 2033.8
+      },
+      "receded_water_ha": 262.7,
+      "villages": {
+        "status": "measured",
+        "villages_in_scene": 38,
+        "flooded_village_count": 37,
+        "top_flooded": [
+          {
+            "name": "Varappuzha",
+            "sub_district": "Paravur",
+            "district": "Ernakulam",
+            "census_2001_code": "3208000340811000",
+            "flooded_ha": 198.8
+          },
+          {
+            "name": "Kunnukara",
+            "sub_district": "Paravur",
+            "district": "Ernakulam",
+            "census_2001_code": "3208000300083500",
+            "flooded_ha": 195.5
+          },
+          {
+            "name": "Thirumukkulam",
+            "sub_district": "Mukundapuram",
+            "district": "Thrissur",
+            "census_2001_code": "3207000500079500",
+            "flooded_ha": 175.3
+          },
+          {
+            "name": "Edathala",
+            "sub_district": "Aluva",
+            "district": "Ernakulam",
+            "census_2001_code": "3208000240807000",
+            "flooded_ha": 160.0
+          },
+          {
+            "name": "Puthenvelikkara",
+            "sub_district": "Paravur",
+            "district": "Ernakulam",
+            "census_2001_code": "3208000300083400",
+            "flooded_ha": 148.9
+          },
+          {
+            "name": "Parakkadavu",
+            "sub_district": "Aluva",
+            "district": "Ernakulam",
+            "census_2001_code": "3208000200081900",
+            "flooded_ha": 139.4
+          },
+          {
+            "name": "Nedumbassery",
+            "sub_district": "Aluva",
+            "district": "Ernakulam",
+            "census_2001_code": "3208000200082800",
+            "flooded_ha": 119.3
+          },
+          {
+            "name": "Karumalloor",
+            "sub_district": "Paravur",
+            "district": "Ernakulam",
+            "census_2001_code": "3208000300083600",
+            "flooded_ha": 118.6
+          },
+          {
+            "name": "Kadungalloor",
+            "sub_district": "Paravur",
+            "district": "Ernakulam",
+            "census_2001_code": "3208000340813000",
+            "flooded_ha": 115.6
+          },
+          {
+            "name": "Kadamakkudy",
+            "sub_district": "Kanayannur",
+            "district": "Ernakulam",
+            "census_2001_code": "3208000540815000",
+            "flooded_ha": 101.7
+          }
+        ]
+      }
+    }
+  ]
+}
