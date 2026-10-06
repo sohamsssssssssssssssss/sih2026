@@ -108,6 +108,26 @@ CASES = [
      "flood_change", None, D(2024, 8, 1), D(2024, 8, 20), ("place",)),
     ("In Patna, which villages flooded on 20 Aug 2024?",
      "flood_change", "Patna", None, D(2024, 8, 20), ("before_date",)),
+    # Flood events without explicit dates; "this image" keeps a flood word on the scene in hand.
+    ("Inundation map for Odisha please", "flood_change", "Odisha", None, None, ("before_date", "after_date")),
+    ("Did the river flood?", "flood_change", None, None, None, ("place", "before_date", "after_date")),
+    ("Is this field waterlogged?", "describe", None, None, None, ()),
+    ("Mark the flooded roads in this image", "locate", None, None, None, ()),
+    # Comparison wording without a change verb.
+    ("Has the lake reduced in size?", "change", None, None, None, ()),
+    ("How does the old image look compared with the new one?", "change", None, None, None, ()),
+    ("Anything built here since 2019?", "change", None, None, None, ()),
+    ("Is the road network better now than before?", "change", None, None, None, ()),
+    # Locate verbs beyond find/show/detect.
+    ("Outline every pond", "locate", None, None, None, ()),
+    ("Could you point out the railway station?", "locate", None, None, None, ()),
+    ("Identify all the swimming pools", "locate", None, None, None, ()),
+    ("Identify the main land cover", "unknown", None, None, None, ()),
+    ("Give me bounding boxes around the trucks", "locate", None, None, None, ()),
+    # Two sensors: joined means joint use; optical only as a reason to use radar keeps a dated flood question.
+    ("Does the radar image agree with the optical one about the shoreline?", "optical_sar", None, None, None, ()),
+    ("Clouds hide the optical data, so use radar to say which villages of Saharsa flooded between 2 Aug 2024 and 14 Aug 2024",
+     "flood_change", "Saharsa", D(2024, 8, 2), D(2024, 8, 14), ()),
     # unknown: nothing fired; the keyword planner decides.
     ("Invent an answer", "unknown", None, None, None, ()),
     ("Question", "unknown", None, None, None, ()),

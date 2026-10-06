@@ -37,11 +37,36 @@ FLOOD_TEMPORAL_WORDS = frozenset(
 )
 AREA_WORDS = frozenset(
     {"village", "villages", "area", "areas", "region", "regions", "district", "districts",
-     "block", "blocks", "town", "towns", "place", "places", "locality", "localities"}
+     "block", "blocks", "town", "towns", "place", "places", "locality", "localities", "part", "parts"}
 )
 LOCATE_VERBS = frozenset(
-    {"find", "show", "detect", "mark", "highlight", "count", "locate", "localize", "localise", "segment", "mask"}
+    {"find", "show", "detect", "mark", "highlight", "count", "locate", "localize", "localise", "segment", "mask",
+     "draw", "outline", "spot", "pinpoint", "delineate", "circle", "box"}
 )
+# "Identify the land cover" describes; "identify each brick kiln" locates.
+ENUMERATING_WORDS = frozenset({"each", "every", "all"})
+# A flood word about the scene in hand ("is this field waterlogged?") is not a flood event.
+DEICTIC_PHRASES = (
+    "this image", "the image", "this scene", "the scene", "this picture", "this photo",
+    "this field", "this tile", "this area",
+)
+COMPARISON_WORDS = frozenset(
+    {"compare", "compared", "comparing", "comparison", "comparision", "versus", "vs"}
+)
+COMPARISON_PHRASES = (
+    "before after", "before and after", "earlier and later", "old and new", "these two", "the two images",
+    "first one", "second one", "first image", "second image", "than before", "over the last", "over the past",
+)
+# Change verbs and nouns that imply two times on their own.
+CHANGE_WORDS = frozenset(
+    {"reduced", "reduction", "retreat", "retreated", "retreating", "grown", "grew", "shrank", "shrinking",
+     "deforestation", "encroachment", "encroached"}
+)
+# Sensors joined in one request ("Sentinel-1 and Sentinel-2", "fuse the optical and SAR")
+# ask for joint use; optical named only as the reason to use radar does not.
+SENSOR_CONJUNCTIONS = frozenset({"and", "with", "plus", "vs", "versus"})
+JOINT_USE_WORDS = frozenset({"both", "fuse", "fusion", "fused", "combine", "combined", "together", "jointly"})
+SINCE_YEAR_RE = re.compile(r"\bsince\s+(?:19|20)\d{2}\b", re.IGNORECASE)
 NOT_AN_OBJECT = frozenset({"me", "us"})
 POLITE_PREFIXES = (("please",), ("can", "you"), ("could", "you"), ("would", "you"), ("will", "you"))
 YES_NO_STARTERS = frozenset(
@@ -248,9 +273,76 @@ def _is_temporal(tokens: tuple[str, ...], date_count: int) -> bool:
 
 
 def _is_imperative_locate(tokens: tuple[str, ...]) -> bool:
-    """A locate verb that opens the request and has an object: "Show the ships"."""
+    """A locate request with an object: "Show the ships", "Can you point out the bridge"."""
+    asks_for_boxes = has_phrase(tokens, "bounding box") or has_phrase(tokens, "bounding boxes")
+    if asks_for_boxes and tokens[0] not in YES_NO_STARTERS:  # not "does the image show a bounding box?"
+        return True
     rest = next((tokens[len(p) :] for p in POLITE_PREFIXES if tokens[: len(p)] == p), tokens)
-    return bool(rest) and rest[0] in LOCATE_VERBS and any(t not in NOT_AN_OBJECT for t in rest[1:])
+    if rest[:2] == ("point", "out"):
+        verb, objects = "point out", rest[2:]
+    else:
+        verb, objects = (rest[0], rest[1:]) if rest else ("", ())
+    if verb == "identify":
+        return bool(ENUMERATING_WORDS.intersection(objects[:2]))
+    return (verb == "point out" or verb in LOCATE_VERBS) and any(t not in NOT_AN_OBJECT for t in objects)
+
+
+def _is_comparison(tokens: tuple[str, ...], text: str) -> bool:
+    """Two times without a change verb: "compared with", "before after", "since 2020", "reduced"."""
+    return bool(
+        COMPARISON_WORDS.intersection(tokens)
+        or CHANGE_WORDS.intersection(tokens)
+        or any(has_phrase(tokens, phrase) for phrase in COMPARISON_PHRASES)
+        or SINCE_YEAR_RE.search(text)
+    )
+
+
+def _sensor_families(tokens: tuple[str, ...]) -> tuple[str | None, ...]:
+    """Each token's sensor family ("sar", "optical") or None, with "sentinel 1/2" folded into one slot."""
+    families: list[str | None] = []
+    index = 0
+    while index < len(tokens):
+        pair = tokens[index : index + 2]
+        if pair in (("sentinel", "1"), ("sentinel", "2")):
+            families.append("sar" if pair[1] == "1" else "optical")
+            index += 2
+            continue
+        token = tokens[index]
+        families.append("sar" if token in {"sar", "radar"} else "optical" if token == "optical" else token)
+        index += 1
+    return tuple(families)
+
+
+def _names_both_sensors(tokens: tuple[str, ...]) -> bool:
+    families = set(_sensor_families(tokens))
+    return {"sar", "optical"} <= families
+
+
+def _joins_sensors(tokens: tuple[str, ...]) -> bool:
+    """Both sensors named and asked for together: adjacent ("SAR and optical") or "both"/"fuse"."""
+    if not _names_both_sensors(tokens):
+        return False
+    if JOINT_USE_WORDS.intersection(tokens):
+        return True
+    families = _sensor_families(tokens)
+    return any(
+        {families[i], families[i + 2]} == {"sar", "optical"} and families[i + 1] in SENSOR_CONJUNCTIONS
+        for i in range(len(families) - 2)
+    )
+
+
+def _is_flood_event(tokens: tuple[str, ...], text: str, date_count: int, place: str | None) -> bool:
+    """Flood words about a real event, not about the scene in hand.
+
+    "Flood map for Assam", "Did it flood?" and "Kerala floods August 2018" are
+    events; "Is the area flooded?" and "the flooded fields in this image" are not.
+    """
+    if not _is_flood(tokens) or any(has_phrase(tokens, phrase) for phrase in DEICTIC_PHRASES):
+        return False
+    return bool(
+        place or date_count or YEAR_RE.search(text) or tokens[:1] == ("did",)
+        or _is_temporal(tokens, date_count) or _is_comparison(tokens, text) or _asks_which_area(tokens)
+    )
 
 
 def _is_describe(tokens: tuple[str, ...]) -> bool:
@@ -259,13 +351,23 @@ def _is_describe(tokens: tuple[str, ...]) -> bool:
     )
 
 
-def _intent(tokens: tuple[str, ...], date_count: int) -> str:
-    """Precedence matches the planner: optical/SAR first, then time, then space."""
-    if has_optical_sar_intent(tokens):
+def _intent(tokens: tuple[str, ...], text: str, date_count: int, place: str | None) -> str:
+    """Joined sensors first, then dated flood events, then two named sensors, then time, then space.
+
+    "Use Sentinel-1 and Sentinel-2 to map flooding" asks for joint use. A dated
+    flood question that names optical only as the reason to use radar is still a
+    flood question. Without dates, naming both sensors is optical/SAR.
+    """
+    flood_event = _is_flood_event(tokens, text, date_count, place)
+    if _joins_sensors(tokens):
         return OPTICAL_SAR
-    if _is_flood(tokens) and (_is_temporal(tokens, date_count) or _asks_which_area(tokens)):
+    if flood_event and date_count:
         return FLOOD_CHANGE
-    if has_change_intent(tokens) or date_count >= 2:
+    if has_optical_sar_intent(tokens) or _names_both_sensors(tokens):
+        return OPTICAL_SAR
+    if flood_event:
+        return FLOOD_CHANGE
+    if has_change_intent(tokens) or date_count >= 2 or _is_comparison(tokens, text):
         return CHANGE
     if has_grounding_intent(tokens) or _is_imperative_locate(tokens):
         return LOCATE
@@ -345,9 +447,9 @@ def parse_question(text: str) -> ParsedQuestion:
     """Parse one question; the same text always yields the same ParsedQuestion."""
     tokens = tokenize(text)
     matches = tuple(DATE_RE.finditer(text))
-    intent = _intent(tokens, len(matches))
-    before, after, year_missing, date_rules = _dates(text, matches)
     place, place_rules = _place(text)
+    intent = _intent(tokens, text, len(matches), place)
+    before, after, year_missing, date_rules = _dates(text, matches)
     intent_rules = () if intent == UNKNOWN else (f"intent_{intent}",)
     return ParsedQuestion(
         text=text,

@@ -61,3 +61,19 @@ PYTHONPATH=. python -m pytest orchestrator/test_question_eval.py -q -s
 - **Field accuracy:** for intent, place, before, after and missing, informational only. It is measured when that module has a `parse_question` or `parse` function returning the contract's fields.
 
 Once a reported number depends on this file, don't relabel it in place: add `questions.v2.jsonl`.
+
+## Results so far (read before quoting a number)
+
+| Router | Routing accuracy on v1 | Blind? |
+|---|---|---|
+| Keyword planner (`phase0-rules-v1`) | 44/110 (40%) | yes |
+| First rules-first parser (`phase3-parsed-v1`, commit 7a4714c) | 85/110 (77.3%) | yes |
+| Parser after fixing the v1 misroutes | 110/110 (100%) | **no** |
+
+The fixes after the blind run were general rules, each covered by parser unit tests worded differently from this set:
+- flood events named by place, year or "did ... flood", excluding "this image";
+- comparison words such as "compared with", "since 2020" and "reduced";
+- more locate verbs;
+- jointly requested sensors.
+
+Still, they were chosen by looking at v1's misroutes, so 100% overstates real accuracy. The honest estimate is the blind 77.3%, until a new set written without seeing `orchestrator/question.py` is scored once.
