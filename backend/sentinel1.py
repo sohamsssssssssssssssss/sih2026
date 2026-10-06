@@ -350,7 +350,10 @@ def fetch_pair(
 
 
 def _day(value: str) -> datetime:
-    return datetime.strptime(value, "%Y-%m-%d").replace(tzinfo=timezone.utc)
+    try:
+        return datetime.strptime(value, "%Y-%m-%d").replace(tzinfo=timezone.utc)
+    except ValueError as exc:
+        raise ValueError(f"{value!r} is not a YYYY-MM-DD date") from exc
 
 
 def _inclusive(start: str, end: str) -> tuple[datetime, datetime]:
@@ -375,6 +378,36 @@ def event_request(event_id: str) -> tuple[tuple[float, float, float, float], Win
     return tuple(event["aoi"]["bbox"]), windows[0], windows[1]
 
 
+Days = tuple[str, str] | list[str]  # inclusive YYYY-MM-DD start and end
+
+
+def pair_request(
+    event_id: str | None,
+    bbox: tuple[float, ...] | list[float] | None,
+    before: Days | None,
+    after: Days | None,
+) -> tuple[tuple[float, float, float, float], Window, Window]:
+    """A catalogued event's request, or an explicit bbox with inclusive day windows.
+
+    Callers (the CLI and the HTTP route) enforce that exactly one form is given.
+    """
+    if event_id:
+        return event_request(event_id)
+    return tuple(bbox), _inclusive(*before), _inclusive(*after)
+
+
+CREDENTIALS_HELP = (
+    "Set CDSE_CLIENT_ID and CDSE_CLIENT_SECRET to an OAuth client created at "
+    "https://shapps.dataspace.copernicus.eu/dashboard/ (User settings > OAuth clients)."
+)
+
+
+def cdse_credentials() -> tuple[str, str] | None:
+    """The OAuth client id and secret from the environment, or None if either is unset."""
+    client_id, client_secret = os.environ.get("CDSE_CLIENT_ID"), os.environ.get("CDSE_CLIENT_SECRET")
+    return (client_id, client_secret) if client_id and client_secret else None
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         description="Fetch a co-gridded Sentinel-1 pair from CDSE and ingest it as runtime scenes."
@@ -391,26 +424,17 @@ def main(argv: list[str] | None = None) -> int:
     if not args.event and not all(explicit):
         parser.error("give --event, or all of --bbox, --before and --after")
     try:
-        if args.event:
-            bbox, before, after = event_request(args.event)
-        else:
-            bbox, before, after = tuple(args.bbox), _inclusive(*args.before), _inclusive(*args.after)
+        bbox, before, after = pair_request(args.event, args.bbox, args.before, args.after)
     except ValueError as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 1
-    client_id, client_secret = os.environ.get("CDSE_CLIENT_ID"), os.environ.get("CDSE_CLIENT_SECRET")
-    if not client_id or not client_secret:
-        print(
-            "Set CDSE_CLIENT_ID and CDSE_CLIENT_SECRET to an OAuth client created at "
-            "https://shapps.dataspace.copernicus.eu/dashboard/ (User settings > OAuth clients).",
-            file=sys.stderr,
-        )
+    credentials = cdse_credentials()
+    if credentials is None:
+        print(CREDENTIALS_HELP, file=sys.stderr)
         return 2
     try:
         with httpx.Client() as client:
-            result = fetch_pair(
-                client, client_id, client_secret, bbox, before, after, args.pair_group or args.event
-            )
+            result = fetch_pair(client, *credentials, bbox, before, after, args.pair_group or args.event)
     except (CDSEError, ValueError, InvalidImageUpload, SceneStorageError) as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 1
