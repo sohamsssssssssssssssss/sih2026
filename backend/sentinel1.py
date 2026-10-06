@@ -54,7 +54,12 @@ CATALOG_FILTER = "sar:instrument_mode = 'IW' AND s1:polarization = 'DV'"
 CATALOG_PAGE_SIZE = 50
 MAX_CATALOG_PAGES = 20
 PIXEL_SIZE_M = 10  # Sentinel-1 IW GRD high resolution
-MAX_SIDE_PIXELS = 2500  # Process API output limit per side
+MAX_SIDE_PIXELS = 2500  # Process API output limit per side, so the size of one request tile
+# 2x2 request tiles, 50 km at 10 m. Change inference on a synthetic SAR pair
+# peaked at 1.5 GB RSS and 4.2 s at 5000 px a side (2.9 GB, 9.3 s at 7500):
+# memory grows with pixel count, so this caps memory, not time. 25 Mpx is far
+# under services.MAX_RASTER_PIXELS.
+MAX_MOSAIC_SIDE_PIXELS = 5000
 # One pass crosses an AOI in seconds and the next pass over it is hours away,
 # so this window holds every slice of the chosen pass and nothing else.
 PASS_WINDOW = timedelta(minutes=10)
@@ -112,12 +117,19 @@ def utm_grid(bbox: tuple[float, float, float, float]) -> Grid:
     left, bottom = (math.floor(value / PIXEL_SIZE_M) * PIXEL_SIZE_M for value in (left, bottom))
     right, top = (math.ceil(value / PIXEL_SIZE_M) * PIXEL_SIZE_M for value in (right, top))
     width, height = (right - left) // PIXEL_SIZE_M, (top - bottom) // PIXEL_SIZE_M
-    if max(width, height) > MAX_SIDE_PIXELS:
+    if max(width, height) > MAX_MOSAIC_SIDE_PIXELS:
         raise ValueError(
-            f"AOI is {width}x{height} pixels at {PIXEL_SIZE_M} m; the Process API allows at most "
-            f"{MAX_SIDE_PIXELS} per side"
+            f"AOI is {width}x{height} pixels at {PIXEL_SIZE_M} m; Sentinel-1 fetches mosaic at most "
+            f"{MAX_MOSAIC_SIDE_PIXELS} per side ({MAX_MOSAIC_SIDE_PIXELS * PIXEL_SIZE_M // 1000} km)"
         )
     return Grid(epsg, (float(left), float(bottom), float(right), float(top)), int(width), int(height))
+
+
+def _tile(grid: Grid, row: int, col: int) -> Grid:
+    """The sub-grid from pixel (row, col), at most MAX_SIDE_PIXELS a side, on ``grid``'s own pixels."""
+    width, height = min(MAX_SIDE_PIXELS, grid.width - col), min(MAX_SIDE_PIXELS, grid.height - row)
+    left, top = grid.bounds[0] + col * PIXEL_SIZE_M, grid.bounds[3] - row * PIXEL_SIZE_M
+    return Grid(grid.epsg, (left, top - height * PIXEL_SIZE_M, left + width * PIXEL_SIZE_M, top), width, height)
 
 
 def _post(client: httpx.Client, url: str, *, token: str | None = None, **kwargs: Any) -> httpx.Response:
@@ -218,8 +230,8 @@ def pick_pair(before: list[Acquisition], after: list[Acquisition]) -> tuple[Acqu
     return min(pairs, key=lambda pair: (pair[1].acquired_at - pair[0].acquired_at, pair[1].acquired_at))
 
 
-def _with_band_descriptions(content: bytes, grid: Grid) -> tuple[bytes, float]:
-    """Check the Process output landed on the requested grid, name its bands, report coverage."""
+def _on_grid(content: bytes, grid: Grid) -> tuple[dict[str, Any], np.ndarray]:
+    """The Process output's profile and pixels, checked to have landed on the requested grid."""
     expected = from_bounds(*grid.bounds, grid.width, grid.height)
     try:
         with MemoryFile(content) as source, source.open() as dataset:
@@ -231,19 +243,37 @@ def _with_band_descriptions(content: bytes, grid: Grid) -> tuple[bytes, float]:
                 and dataset.transform.almost_equals(expected)
             ):
                 raise CDSEError("CDSE returned a raster that is not float32 VV/VH/dataMask on the requested grid")
-            profile, data = dataset.profile, dataset.read()
+            return dict(dataset.profile), dataset.read()
     except RasterioError as exc:
         raise CDSEError("CDSE did not return a readable GeoTIFF") from exc
-    with MemoryFile() as target:
-        with target.open(**profile) as output:
-            output.write(data)
-            output.descriptions = SAR_BANDS
-        return target.read(), float(np.mean(data[2] > 0))
 
 
 def render(client: httpx.Client, token: str, acquisition: Acquisition, grid: Grid) -> tuple[bytes, float]:
-    """GeoTIFF bytes on ``grid`` and the fraction of pixels that are valid (covered, not shadow)."""
-    body = {
+    """GeoTIFF bytes on ``grid`` and the fraction of pixels that are valid (covered, not shadow).
+
+    An AOI wider than one Process request is rendered tile by tile on the same
+    pixel lattice and copied into place, with no resampling or overlap. Any bad
+    tile fails the whole render. Unfilled pixels would stay dataMask 0 (invalid).
+    """
+    mosaic = np.zeros((len(SAR_BANDS), grid.height, grid.width), dtype="float32")
+    for row in range(0, grid.height, MAX_SIDE_PIXELS):
+        for col in range(0, grid.width, MAX_SIDE_PIXELS):
+            tile = _tile(grid, row, col)
+            response = _post(client, PROCESS_URL, token=token, json=_process_body(acquisition, tile))
+            profile, data = _on_grid(response.content, tile)
+            mosaic[:, row:row + tile.height, col:col + tile.width] = data
+    transform = from_bounds(*grid.bounds, grid.width, grid.height)
+    profile = {**profile, "width": grid.width, "height": grid.height, "transform": transform}
+    with MemoryFile() as target:
+        with target.open(**profile) as output:
+            output.write(mosaic)
+            output.descriptions = SAR_BANDS
+        return target.read(), float(np.mean(mosaic[2] > 0))
+
+
+def _process_body(acquisition: Acquisition, grid: Grid) -> dict[str, Any]:
+    """One Process API request: calibrated, terrain-corrected, speckle-filtered VV/VH/dataMask on ``grid``."""
+    return {
         "input": {
             "bounds": {
                 "bbox": list(grid.bounds),
@@ -282,7 +312,6 @@ def render(client: httpx.Client, token: str, acquisition: Acquisition, grid: Gri
         },
         "evalscript": EVALSCRIPT,
     }
-    return _with_band_descriptions(_post(client, PROCESS_URL, token=token, json=body).content, grid)
 
 
 def _ingest(
