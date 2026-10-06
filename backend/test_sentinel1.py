@@ -53,11 +53,17 @@ def geotiff(width: int, height: int, bounds, epsg: int, water_rows: int, dtype: 
 
 
 class FakeSentinelHub:
-    """Token, paginated catalog and process endpoints, recording what was asked."""
+    """Token, paginated catalog and process endpoints, recording what was asked.
 
-    def __init__(self, before: list, after: list, *, shape_override=None, catalog_reply=None, dtype="float32") -> None:
+    Sentinel-2 requests go to ``optical(url, body)``; by default there are no acquisitions.
+    """
+
+    def __init__(
+        self, before: list, after: list, *, shape_override=None, catalog_reply=None, dtype="float32", optical=None
+    ) -> None:
         self.before, self.after, self.shape_override = before, after, shape_override
         self.catalog_reply, self.dtype = catalog_reply, dtype
+        self.optical = optical or (lambda url, body: httpx.Response(200, json={"features": [], "context": {}}))
         self.process_bodies: list[dict] = []
         self.catalog_pages = 0
 
@@ -69,6 +75,8 @@ class FakeSentinelHub:
             return httpx.Response(200, json={"access_token": "token", "expires_in": 600})
         assert request.headers["Authorization"] == "Bearer token"
         body = json.loads(request.content)
+        if b'"sentinel-2-l2a"' in request.content:
+            return self.optical(url, body)
         if url == s1.CATALOG_URL:
             self.catalog_pages += 1
             if self.catalog_reply is not None:
