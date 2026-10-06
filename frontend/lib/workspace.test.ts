@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { evidenceRows, overlayBoxes } from "./evidence";
 import { toSceneOptions } from "./scenes";
 import { GOLDEN_SCENE, isGoldenRequest, parseFailureDetail } from "./workspace-contract";
+import { measuredVillages, truncatedPolygons } from "@/test/__fixtures__/flood";
 
 describe("scene options", () => {
   it("pins the golden scene, keeps visible curated scenes and treats missing uploads as empty", () => {
@@ -59,5 +60,17 @@ describe("evidence helpers", () => {
       ["Vv db › Mean", "-12.5"],
       ["Bands", "VV, VH"],
     ]);
+  });
+
+  it("summarizes polygon GeoJSON and village lists by count instead of dumping them", () => {
+    const polygonRows = evidenceRows(truncatedPolygons);
+    expect(polygonRows).toContainEqual(["Geojson", "2 features (drawn on the flood map)"]);
+    expect(polygonRows).toContainEqual(["Feature count", "3"]);
+    expect(JSON.stringify(polygonRows)).not.toMatch(/FeatureCollection|coordinates|new_water/);
+
+    const villageRows = evidenceRows(measuredVillages);
+    expect(villageRows).toContainEqual(["Flooded villages", "2 villages (listed in the village table)"]);
+    expect(villageRows).toContainEqual(["Boundary vintage", "Census 2001"]);
+    expect(JSON.stringify(villageRows)).not.toMatch(/Test village/);
   });
 });

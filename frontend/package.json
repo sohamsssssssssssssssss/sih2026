@@ -3,7 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "copy-maplibre-worker": "mkdir -p public/maplibre && cp node_modules/maplibre-gl/dist/maplibre-gl-worker.mjs node_modules/maplibre-gl/dist/maplibre-gl-shared.mjs public/maplibre/",
+    "predev": "npm run copy-maplibre-worker",
     "dev": "next dev",
+    "prebuild": "npm run copy-maplibre-worker",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",

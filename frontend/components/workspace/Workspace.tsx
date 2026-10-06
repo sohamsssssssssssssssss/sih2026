@@ -10,6 +10,9 @@ import { ImageryViewer } from "@/components/imagery/ImageryViewer";
 import { SceneMetadata } from "@/components/imagery/SceneMetadata";
 import { UploadScene } from "@/components/imagery/UploadScene";
 import { QueryPanel } from "@/components/analysis/QueryPanel";
+import { FloodMap } from "@/components/flood/FloodMap";
+import { VillageTable } from "@/components/flood/VillageTable";
+import { WaterChangeSummary } from "@/components/flood/WaterChangeSummary";
 
 /** Stand-in listing for a just-uploaded scene until GET /api/scenes reports it. */
 function provisionalUpload(scene: SceneUploadResponse, metadata: SceneUploadMetadata): UploadedScene {
@@ -56,6 +59,11 @@ export function Workspace() {
   const scene = options.find(option => option.id === sceneId) ?? GOLDEN_OPTION;
   const second = sceneId2 ? options.find(option => option.id === sceneId2) ?? null : null;
   const boxes = useMemo(() => overlayBoxes(result?.evidence), [result]);
+  const flood = useMemo(() => {
+    const evidence = Array.isArray(result?.evidence) ? result.evidence : [];
+    const find = (type: string) => evidence.find(item => item.type === type);
+    return { stats: find("water_change_statistics"), polygons: find("water_change_polygons"), villages: find("village_flooding") };
+  }, [result]);
 
   function select(id: string) {
     setSceneId(id);
@@ -83,6 +91,13 @@ export function Workspace() {
           <div className="panel mt-4 flex items-center gap-4 p-4">
             <img src={getSceneImageUrl(second.id)} alt={`Preview of second scene ${second.label}`} className="size-20 shrink-0 rounded-md border border-border bg-surface object-cover" />
             <div className="min-w-0"><p className="eyebrow">Second scene</p><p className="mt-1 truncate text-sm font-[500] text-ink">{second.label}</p><p className="truncate font-mono text-[10px] text-midgray">{second.id}</p></div>
+          </div>
+        )}
+        {(flood.stats || flood.polygons || flood.villages) && (
+          <div className="mt-4 space-y-4">
+            {flood.stats && <WaterChangeSummary item={flood.stats} />}
+            {flood.polygons && <FloodMap item={flood.polygons} />}
+            {flood.villages && <VillageTable item={flood.villages} />}
           </div>
         )}
         <SceneMetadata scene={scene} />
