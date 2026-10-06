@@ -129,3 +129,13 @@ def test_optical_http_failure_never_fails_the_sar_fetch(runtime_dirs) -> None:
     assert result["aoi_cloud_fraction"] is None and result["aoi_valid_fraction"] is None
     assert manifest(fetched["after"]["scene_id"])["optical_check"] == result
     assert manifest(fetched["before"]["scene_id"])["identity"]["modality"] == "sar"
+
+
+def test_a_sliver_of_sentinel2_coverage_gives_no_verdict() -> None:
+    # Seven of the eight 60 m rows have no data: 12.5% of the AOI observed.
+    result = check(FakeSentinel2([s2_feature(14, 5)], {row: 0 for row in range(7)}))
+
+    assert result["verdict"] == "unavailable"
+    assert result["aoi_valid_fraction"] == pytest.approx(0.125)
+    assert result["aoi_cloud_fraction"] == 0.0  # measured, but over too little of the AOI to judge
+    assert "observed" in result["reason"]

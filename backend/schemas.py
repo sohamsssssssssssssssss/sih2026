@@ -193,3 +193,7 @@ class Sentinel1PairResponse(BaseModel):
     height: int
     before: Sentinel1Scene
     after: Sentinel1Scene
+    optical_check: dict[str, Any] | None = Field(
+        default=None,
+        description="Sentinel-2 cloud cover over the AOI near the post-event pass (backend/optical_clouds.py).",
+    )

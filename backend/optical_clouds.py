@@ -37,6 +37,9 @@ SCL_OBSCURED = (3, 8, 9, 10)
 # have gaps large enough to miss flooded villages, so radar is the right
 # sensor. The fraction is always reported beside the verdict.
 CLOUDY_THRESHOLD = 0.2
+# Below this share of the AOI observed, a clear or cloudy verdict would describe
+# a sliver, not the AOI; the measured fractions are still reported.
+MIN_OBSERVED_FRACTION = 0.5
 
 EVALSCRIPT = f"""//VERSION=3
 function setup() {{
@@ -144,6 +147,13 @@ def check_optical_clouds(
         return _verdict("unavailable", str(exc), nearest)
     except (AttributeError, KeyError, TypeError, ValueError) as exc:
         return _verdict("unavailable", f"CDSE returned a malformed Sentinel-2 reply ({type(exc).__name__})", nearest)
+    if valid_fraction < MIN_OBSERVED_FRACTION:
+        return _verdict(
+            "unavailable",
+            f"Sentinel-2 observed only {valid_fraction:.0%} of the AOI on that pass, "
+            f"under the {MIN_OBSERVED_FRACTION:.0%} needed for a verdict",
+            nearest, cloud_fraction, valid_fraction,
+        )
     return _verdict(
         "cloudy" if cloud_fraction > CLOUDY_THRESHOLD else "clear",
         f"{cloud_fraction:.0%} of the {valid_fraction:.0%} of the AOI that Sentinel-2 observed "

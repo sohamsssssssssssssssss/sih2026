@@ -65,6 +65,7 @@ def test_event_pair_is_fetched_and_listed_with_the_uploads(monkeypatch, runtime_
     uploads = {scene["scene_id"]: scene for scene in client.get("/api/scenes").json()["uploads"]}
     assert {body["before"]["scene_id"], body["after"]["scene_id"]} <= set(uploads)
     assert uploads[body["after"]["scene_id"]]["modality"] == "sar"
+    assert body["optical_check"]["verdict"] == "no_acquisition"  # passed through, not dropped
 
 
 def test_explicit_pair_searches_inclusive_whole_day_windows(monkeypatch, runtime_dirs, credentials) -> None:
