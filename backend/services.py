@@ -375,8 +375,13 @@ def ingest_scene(
     *,
     provenance: str = "user_declared_upload",
     acquisition_id: str | None = None,
+    optical_check: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
-    """Store a scene and its manifest. Server-side fetchers name their own provenance."""
+    """Store a scene and its manifest. Server-side fetchers name their own provenance.
+
+    ``optical_check`` is the Sentinel-2 cloud check a radar fetcher ran for this
+    scene; it is stored as one extra manifest field when given.
+    """
     if not data:
         raise InvalidImageUpload("The uploaded image is empty.")
     declared = _declared_metadata(metadata)
@@ -476,11 +481,13 @@ def ingest_scene(
             },
         }
         validate_scene_manifest(manifest)
-        # validate_scene_manifest ignores unknown keys, so the upload time is
-        # persisted alongside the versioned schema without changing it.
+        # validate_scene_manifest ignores unknown keys, so the upload time and
+        # any optical check are persisted alongside the versioned schema
+        # without changing it.
         stored: dict[str, Any] = {
             **manifest,
             "uploaded_at": datetime.now(timezone.utc).isoformat(),
+            **({"optical_check": optical_check} if optical_check is not None else {}),
         }
         manifest_temporary.write_text(
             json.dumps(stored, indent=2, sort_keys=True) + "\n",

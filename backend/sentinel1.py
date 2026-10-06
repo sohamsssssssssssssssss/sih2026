@@ -285,7 +285,10 @@ def render(client: httpx.Client, token: str, acquisition: Acquisition, grid: Gri
     return _with_band_descriptions(_post(client, PROCESS_URL, token=token, json=body).content, grid)
 
 
-def _ingest(rendered: tuple[bytes, float], acquisition: Acquisition, pair_group: str) -> dict[str, Any]:
+def _ingest(
+    rendered: tuple[bytes, float], acquisition: Acquisition, pair_group: str,
+    optical_check: dict[str, Any] | None = None,
+) -> dict[str, Any]:
     raster, valid_fraction = rendered
     stored = ingest_scene(
         raster,
@@ -299,6 +302,7 @@ def _ingest(rendered: tuple[bytes, float], acquisition: Acquisition, pair_group:
         },
         provenance=PROVENANCE,
         acquisition_id=acquisition.product_id,
+        optical_check=optical_check,
     )
     return {
         "scene_id": stored["scene_id"],
@@ -330,10 +334,14 @@ def fetch_pair(
     token = access_token(client, client_id, client_secret)
     first, second = pick_pair(search(client, token, bbox, before), search(client, token, bbox, after))
     rasters = [render(client, token, item, grid) for item in (first, second)]
+    # Imported here: optical_clouds builds on this module's CDSE helpers.
+    from backend.optical_clouds import check_optical_clouds
+
+    optical_check = check_optical_clouds(client, token, grid, bbox, second.acquired_at)
     group = pair_group or f"cdse:{first.product_id}+{second.product_id}"
     stored_before = _ingest(rasters[0], first, group)
     try:
-        stored_after = _ingest(rasters[1], second, group)
+        stored_after = _ingest(rasters[1], second, group, optical_check)
     except (InvalidImageUpload, SceneStorageError) as exc:
         raise CDSEError(
             f"The post-event scene could not be stored; pre-event scene {stored_before['scene_id']} "
@@ -346,6 +354,7 @@ def fetch_pair(
         "height": grid.height,
         "before": stored_before,
         "after": stored_after,
+        "optical_check": optical_check,
     }
 
 
