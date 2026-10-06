@@ -39,7 +39,9 @@ def feature(item: s1.Acquisition) -> dict:
     }
 
 
-def geotiff(width: int, height: int, bounds, epsg: int, water_rows: int, dtype: str = "float32") -> bytes:
+def geotiff(
+    width: int, height: int, bounds, epsg: int, water_rows: int, dtype: str = "float32", valid: float = 1.0
+) -> bytes:
     """What the Process API returns: three float bands, no band descriptions."""
     vv = np.full((height, width), 0.1, dtype="float32")
     vv[:water_rows] = 0.005
@@ -48,7 +50,7 @@ def geotiff(width: int, height: int, bounds, epsg: int, water_rows: int, dtype: 
             driver="GTiff", width=width, height=height, count=3, dtype=dtype,
             crs=f"EPSG:{epsg}", transform=from_bounds(*bounds, width, height),
         ) as dataset:
-            dataset.write(np.stack([vv, vv / 5, np.ones_like(vv)]).astype(dtype))
+            dataset.write(np.stack([vv, vv / 5, np.full_like(vv, valid)]).astype(dtype))
         return memory.read()
 
 
@@ -82,14 +84,13 @@ class FakeSentinelHub:
             self.process_bodies.append(body)
             width, height = self.shape_override or (body["output"]["width"], body["output"]["height"])
             epsg = int(body["input"]["bounds"]["properties"]["crs"].rsplit("/", 1)[1])
-            flooded = body["input"]["data"][0]["dataFilter"]["timeRange"]["from"] > "2024-08-10"
-            return httpx.Response(
-                200,
-                content=geotiff(
-                    width, height, body["input"]["bounds"]["bbox"], epsg, 30 if flooded else 5, self.dtype
-                ),
-            )
+            return httpx.Response(200, content=self.tiff(body, width, height, epsg))
         return httpx.Response(404)
+
+    def tiff(self, body: dict, width: int, height: int, epsg: int) -> bytes:
+        """The Process output for one request; subclasses vary it per tile."""
+        flooded = body["input"]["data"][0]["dataFilter"]["timeRange"]["from"] > "2024-08-10"
+        return geotiff(width, height, body["input"]["bounds"]["bbox"], epsg, 30 if flooded else 5, self.dtype)
 
 
 @pytest.fixture
@@ -107,11 +108,6 @@ def test_utm_grid_snaps_to_whole_pixels_in_the_local_zone() -> None:
     left, bottom, right, top = grid.bounds
     assert (grid.width, grid.height) == ((right - left) / 10, (top - bottom) / 10)
     assert 40 <= grid.width <= 42 and 44 <= grid.height <= 46
-
-
-def test_aoi_beyond_the_process_api_limit_is_rejected() -> None:
-    with pytest.raises(ValueError, match="2500"):
-        s1.utm_grid((85.0, 25.0, 86.0, 26.0))
 
 
 def test_pair_is_the_shortest_interval_on_one_orbit_track() -> None:
@@ -230,7 +226,7 @@ def test_every_catalogued_flood_event_is_a_valid_fetch_request() -> None:
     assert len(events) >= 3 and len({event["event_id"] for event in events}) == len(events)
     for event in events:
         bbox, before, after = s1.event_request(event["event_id"])
-        s1.utm_grid(bbox)  # fits one Process API request
+        s1.utm_grid(bbox)  # within the mosaic cap
         assert before[0] < before[1] <= after[0] < after[1]
         assert event["sources"] and all(source["url"].startswith("https://") for source in event["sources"])
         assert event["aoi"]["derivation"]
