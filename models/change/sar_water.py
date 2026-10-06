@@ -1,10 +1,18 @@
 """Sentinel-1 open-water change: the SAR path of the bi-temporal change baseline.
 
-Water is one Otsu threshold on VV backscatter in dB, pooled over both dates so
-"water" means the same thing at T1 and T2. This is the baseline a trained
-segmenter has to beat on held-out IoU. To swap one in, replace ``water_masks``
-with a function returning ``(water_t1, water_t2, threshold_db)``; the
-threshold and abstention fields are specific to this Otsu baseline.
+Water is one VV threshold in dB, shared by both dates so "water" means the
+same thing at T1 and T2. It is a simplified split-based threshold after Chini
+et al. (2017, IEEE TGRS 55(12)): the scene is cut into fixed tiles, a tile
+counts only when its own Otsu split is clearly bimodal (Ashman's D > 2, each
+class at least 10% of the tile) with a water-like low class, and Otsu over the
+pooled pixels of those tiles sets the threshold. A scene-wide split fails when
+water is a few percent of the scene: it lands between land classes. No such
+tile means no open-water mode, and the provider abstains.
+
+This is the baseline a trained segmenter has to beat on held-out IoU. To swap
+one in, replace ``split_threshold`` and ``water_masks`` with one function that
+returns ``(water_t1, water_t2)``; the threshold, tile and sensitivity fields
+are specific to this baseline.
 
 Inputs are co-gridded VV/VH/dataMask rasters in linear backscatter, the same
 band contract as the optical-SAR provider.
@@ -22,10 +30,18 @@ SAR_BANDS = ("VV", "VH", "dataMask")
 OTSU_BINS = 256
 # A handful of extreme pixels (radar shadow, calibration artefacts) must not stretch the bins.
 OTSU_CLIP_PERCENTILES = (0.1, 99.9)
-# ponytail: a fixed physical prior, not a calibrated value. Open water in
-# C-band VV sits well below -15 dB, so a pooled Otsu split above it means the
-# scene has no open-water mode to separate. Phase 4 calibration replaces this.
+# ponytail: a fixed physical prior, not a calibrated value. A tile counts as
+# water/land only if its low class's mean C-band VV is below this and its high
+# class's mean is above it, so two dark land classes (sand, smooth bare soil and
+# vegetation) cannot pass as water. Phase 4 calibration replaces it.
 WATER_DB_CEILING = -15.0
+# ponytail: fixed tiles, not Chini's hierarchical quadrants. On the real Kosi
+# 2024 pair the threshold moved under 0.5 dB between 32, 64 and 128 px tiles.
+TILE_PIXELS = 64
+MIN_ASHMAN_D = 2.0  # Chini et al. 2017: two Gaussians are clearly separated above 2
+MIN_CLASS_FRACTION = 0.1  # Chini et al. 2017: the smaller class covers at least 10%
+MIN_VALID_TILE_FRACTION = 0.5
+SENSITIVITY_DB = 1.0
 # Connected change regions smaller than this are treated as speckle (0.1 ha at 10 m).
 MIN_MAPPING_PIXELS = 10
 MAX_GEOJSON_FEATURES = 500
@@ -59,11 +75,49 @@ def otsu_threshold(values: np.ndarray) -> float:
     return float(edges[np.argmax(between) + 1])
 
 
-def water_masks(
+def _bimodal_water_tile(values: np.ndarray) -> bool:
+    split = otsu_threshold(values)
+    low, high = values[values < split], values[values >= split]
+    if min(low.size, high.size) < max(MIN_CLASS_FRACTION * values.size, 2):
+        return False
+    spread = np.sqrt(low.var() + high.var())
+    ashman_d = np.sqrt(2) * (high.mean() - low.mean()) / spread if spread else np.inf
+    return bool(ashman_d > MIN_ASHMAN_D and low.mean() < WATER_DB_CEILING < high.mean())
+
+
+def _tile_starts(length: int, tile: int) -> list[int]:
+    """Full tiles from the origin, plus one flush with the far edge so no strip is skipped."""
+    starts = list(range(0, length - tile + 1, tile))
+    if starts[-1] + tile < length:
+        starts.append(length - tile)
+    return starts
+
+
+def split_threshold(
     db_t1: np.ndarray, db_t2: np.ndarray, valid: np.ndarray
-) -> tuple[np.ndarray, np.ndarray, float]:
-    threshold = otsu_threshold(np.concatenate((db_t1[valid], db_t2[valid])))
-    return (db_t1 < threshold) & valid, (db_t2 < threshold) & valid, threshold
+) -> tuple[float | None, int]:
+    """Otsu over the bimodal water tiles of both dates, and how many tiles qualified."""
+    rows, cols = valid.shape
+    tile_rows, tile_cols = min(TILE_PIXELS, rows), min(TILE_PIXELS, cols)
+    selected = []
+    for db in (db_t1, db_t2):
+        for row in _tile_starts(rows, tile_rows):
+            for col in _tile_starts(cols, tile_cols):
+                window = (slice(row, row + tile_rows), slice(col, col + tile_cols))
+                if valid[window].mean() < MIN_VALID_TILE_FRACTION:
+                    continue
+                values = db[window][valid[window]]
+                if _bimodal_water_tile(values):
+                    selected.append(values)
+    if not selected:
+        return None, 0
+    return otsu_threshold(np.concatenate(selected)), len(selected)
+
+
+def water_masks(
+    db_t1: np.ndarray, db_t2: np.ndarray, valid: np.ndarray, threshold: float
+) -> tuple[np.ndarray, np.ndarray]:
+    return (db_t1 < threshold) & valid, (db_t2 < threshold) & valid
 
 
 def _row_pixel_area_m2(grid: Any, crs: Any, height: int) -> np.ndarray:
@@ -139,45 +193,63 @@ def water_change(t1: Any, t2: Any) -> WaterChange:
     if not np.any(valid):
         raise ValueError("T1 and T2 have no co-valid positive VV pixels")
     db1, db2 = (10.0 * np.log10(np.where(valid, vv, 1.0)) for vv in (vv1, vv2))
-    water1, water2, threshold = water_masks(db1, db2, valid)
+    threshold, tile_count = split_threshold(db1, db2, valid)
     statistics: dict[str, Any] = {
         "type": "water_change_statistics",
-        "method": "pooled_otsu_vv_db",
+        "method": "split_based_otsu_vv_db",
         "heuristic": True,
         "bands_used": ["VV"],
         "threshold_db": threshold,
+        "bimodal_tiles": tile_count,
+        "tile_rule": (
+            f"{TILE_PIXELS} px tiles whose Otsu split has Ashman's D > {MIN_ASHMAN_D:g}, "
+            f"each class >= {MIN_CLASS_FRACTION:.0%}, a low-class mean below and a high-class mean "
+            f"above {WATER_DB_CEILING:g} dB"
+        ),
         "water_rule": "open water when VV backscatter (dB) < threshold_db",
         "water_db_ceiling": WATER_DB_CEILING,
         "min_mapping_pixels": MIN_MAPPING_PIXELS,
         "area_method": f"per-row pixel area in {EQUAL_AREA_CRS} (equal area)",
     }
-    if threshold > WATER_DB_CEILING:
+    if threshold is None:
         statistics.update(
             status="abstained", reason_code="NO_OPEN_WATER_MODE",
             water_t1_ha=None, water_t2_ha=None, new_water_ha=None, receded_water_ha=None,
+            new_water_ha_sensitivity=None,
         )
         answer = (
-            "Abstained: VV backscatter has no distinct open-water mode (Otsu split at "
-            f"{threshold:.1f} dB, above the {WATER_DB_CEILING:.0f} dB open-water ceiling), "
+            "Abstained: no part of the scene shows a distinct open-water mode in VV backscatter "
+            f"(no tile was clearly bimodal with a water class below {WATER_DB_CEILING:.0f} dB), "
             "so no water change is reported."
         )
         return WaterChange(answer, [statistics], valid, None)
 
+    water1, water2 = water_masks(db1, db2, valid, threshold)
     new_water = _sieved(water2 & ~water1)
     receded = _sieved(water1 & ~water2)
     row_area = _row_pixel_area_m2(t1.transform, t1.crs, t1.height)
     new_ha, receded_ha = _hectares(new_water, row_area), _hectares(receded, row_area)
+    low_ha, high_ha = (
+        _hectares(_sieved(shifted[1] & ~shifted[0]), row_area)
+        for shifted in (
+            water_masks(db1, db2, valid, threshold - SENSITIVITY_DB),
+            water_masks(db1, db2, valid, threshold + SENSITIVITY_DB),
+        )
+    )
     statistics.update(
         status="measured", reason_code=None,
         water_t1_ha=_hectares(water1, row_area), water_t2_ha=_hectares(water2, row_area),
         new_water_ha=new_ha, receded_water_ha=receded_ha,
+        new_water_ha_sensitivity={"threshold_minus_1db": low_ha, "threshold_plus_1db": high_ha},
     )
     polygons = _polygons({"new_water": new_water, "receded_water": receded}, t1)
     overlay = village_flooding(new_water, valid, row_area, t1)
     answer = (
         f"Sentinel-1 water-change baseline: {new_ha:.1f} ha became open water between T1 and T2 "
-        f"and {receded_ha:.1f} ha stopped being open water. {answer_sentence(overlay)} Water is a "
-        f"single uncalibrated threshold of {threshold:.1f} dB on VV backscatter; it does not "
+        f"({min(low_ha, high_ha):.1f}-{max(low_ha, high_ha):.1f} ha if the threshold moves by "
+        f"{SENSITIVITY_DB:g} dB) and "
+        f"{receded_ha:.1f} ha stopped being open water. {answer_sentence(overlay)} Water is an "
+        f"uncalibrated split-based threshold of {threshold:.1f} dB on VV backscatter; it does not "
         "measure flood depth or causes, and smooth surfaces or radar shadow can read as water."
     )
     return WaterChange(answer, [statistics, polygons, overlay], valid, new_water)

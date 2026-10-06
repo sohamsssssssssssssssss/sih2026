@@ -119,7 +119,7 @@ def test_scene_without_an_open_water_mode_abstains(tmp_path) -> None:
     stats = evidence(result, "water_change_statistics")
     assert stats["status"] == "abstained"
     assert stats["reason_code"] == "NO_OPEN_WATER_MODE"
-    assert stats["threshold_db"] > sar_water.WATER_DB_CEILING
+    assert stats["bimodal_tiles"] == 0 and stats["threshold_db"] is None
     assert stats["new_water_ha"] is None and stats["receded_water_ha"] is None
     assert not any(item["type"] == "water_change_polygons" for item in result["evidence"])
 
@@ -205,3 +205,64 @@ def test_rotated_grid_is_rejected(tmp_path) -> None:
 
     with pytest.raises(ValueError, match="north-up"):
         ChangeModel().infer(paths, "What changed?")
+
+
+def test_small_flood_on_two_kinds_of_land_is_found_by_bimodal_tiles(tmp_path) -> None:
+    # The Kosi failure: water is a few percent of the scene, so one scene-wide
+    # Otsu split lands between two land classes and the old baseline abstained.
+    rng = np.random.default_rng(3)
+    land_db = np.where(np.arange(256)[None, :] < 128, -6.0, -11.0) * np.ones((256, 1))
+    water = np.zeros((256, 256), bool)
+    water[200:230, 20:60] = True  # 1,200 pixels, under 2% of the scene
+
+    def scene(db: np.ndarray, seed: int) -> np.ndarray:
+        vv = 10 ** ((db + np.random.default_rng(seed).normal(0, 0.5, db.shape)) / 10)
+        return np.stack([vv, vv / 5, np.ones(db.shape)]).astype("float32")
+
+    paths = [
+        write_sar(tmp_path / "t1.tif", scene(land_db, 1), **UTM_GRID),
+        write_sar(tmp_path / "t2.tif", scene(np.where(water, -20.0, land_db), 2), **UTM_GRID),
+    ]
+    assert sar_water.otsu_threshold(np.concatenate([land_db.ravel()] * 2)) > sar_water.WATER_DB_CEILING
+
+    stats = evidence(ChangeModel().infer(paths, "Did flooding expand?"), "water_change_statistics")
+
+    assert stats["status"] == "measured" and stats["bimodal_tiles"] >= 1
+    assert -20 < stats["threshold_db"] < -11
+    assert stats["new_water_ha"] == pytest.approx(12.0, rel=0.02)  # 1,200 pixels of 10 m
+    low, high = stats["new_water_ha_sensitivity"]["threshold_minus_1db"], stats["new_water_ha_sensitivity"]["threshold_plus_1db"]
+    assert low <= stats["new_water_ha"] <= high
+
+
+def db_scene(db: np.ndarray, seed: int) -> np.ndarray:
+    vv = 10 ** ((db + np.random.default_rng(seed).normal(0, 0.5, db.shape)) / 10)
+    return np.stack([vv, vv / 5, np.ones(db.shape)]).astype("float32")
+
+
+def test_two_dark_land_classes_do_not_pass_as_water(tmp_path) -> None:
+    # Dark bare soil or sand next to dark vegetation: both classes below -15 dB,
+    # clearly bimodal, but neither side looks like land, so this is not water/land.
+    dark = np.where(np.arange(64)[None, :] < 32, -19.0, -16.0) * np.ones((64, 1))
+    paths = [
+        write_sar(tmp_path / "t1.tif", db_scene(dark, 1), **UTM_GRID),
+        write_sar(tmp_path / "t2.tif", db_scene(dark, 2), **UTM_GRID),
+    ]
+
+    stats = evidence(ChangeModel().infer(paths, "Did flooding expand?"), "water_change_statistics")
+
+    assert stats["status"] == "abstained" and stats["bimodal_tiles"] == 0
+
+
+def test_water_in_the_edge_strip_past_the_last_full_tile_is_seen(tmp_path) -> None:
+    land = np.full((100, 100), -8.0)
+    flooded = land.copy()
+    flooded[75:] = -20.0  # only in rows 64-99, beyond the first full 64 px tile
+    paths = [
+        write_sar(tmp_path / "t1.tif", db_scene(land, 1), **UTM_GRID),
+        write_sar(tmp_path / "t2.tif", db_scene(flooded, 2), **UTM_GRID),
+    ]
+
+    stats = evidence(ChangeModel().infer(paths, "Did flooding expand?"), "water_change_statistics")
+
+    assert stats["status"] == "measured"
+    assert stats["new_water_ha"] == pytest.approx(25.0, rel=0.01)  # 25 rows x 100 pixels of 10 m
