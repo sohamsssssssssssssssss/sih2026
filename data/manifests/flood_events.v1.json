@@ -1,0 +1,87 @@
+{
+  "schema_version": "1.0",
+  "description": "Past Indian flood events for Sentinel-1 flood change. Each entry is a fetch request for `python -m backend.sentinel1 --event <event_id>`: an AOI that fits one Process API request and inclusive UTC date windows. Facts come only from the listed sources; anything not yet checked against data is listed under `unverified`.",
+  "events": [
+    {
+      "event_id": "kosi-2024",
+      "name": "Kosi flood after the record Birpur barrage release",
+      "state": "Bihar",
+      "aoi": {
+        "bbox": [86.3306951, 25.9214857, 86.404697, 26.0699481],
+        "label": "Kiratpur block, Darbhanga district",
+        "derivation": "Bounding box of OpenStreetMap relation 10286965 (Kiratpur), from Nominatim on 2026-10-05."
+      },
+      "before": {"start": "2024-09-01", "end": "2024-09-26"},
+      "after": {"start": "2024-09-29", "end": "2024-10-10"},
+      "window_rationale": "The before window ends ahead of the 28 September release; the after window starts the day of the 29 September breach. Only Sentinel-1A was flying, so each window spans at least one 12-day repeat of every track.",
+      "sources": [
+        {
+          "url": "https://www.downtoearth.org.in/natural-disasters/swollen-kosi-bagmati-gandak-breach-embankments-wreak-havoc-in-flood-hit-bihar",
+          "supports": "661,000 cusecs released from Birpur barrage till late night on 28 September 2024, the highest since 1968; the Kosi western embankment breached near Bhubhol village, Darbhanga district, late on 29 September."
+        },
+        {
+          "url": "https://en.wikipedia.org/wiki/2024_Koshi_flood",
+          "supports": "Kiratpur and Ghanshyampur blocks of Darbhanga were among the worst flooded after the western embankment breach."
+        },
+        {
+          "url": "https://www.esa.int/Applications/Observing_the_Earth/Copernicus/Sentinel-1/Mission_ends_for_Copernicus_Sentinel-1B_satellite",
+          "supports": "Sentinel-1B stopped on 23 December 2021, leaving Sentinel-1A alone."
+        }
+      ],
+      "unverified": [
+        "Sentinel-1 acquisitions on one shared track exist in both windows.",
+        "The before window is free of earlier monsoon flooding in this block."
+      ]
+    },
+    {
+      "event_id": "silchar-2022",
+      "name": "Barak river flood through the Bethukandi embankment breach",
+      "state": "Assam",
+      "aoi": {
+        "bbox": [92.6982, 24.7398, 92.8961, 24.9194],
+        "label": "Silchar town and surroundings, Cachar district",
+        "derivation": "20 km square centred on OpenStreetMap node 567777060 (Silchar, place=city), from Nominatim on 2026-10-06. The square is a declared choice; Nominatim's own box for the node is a fixed-size placeholder, not a boundary."
+      },
+      "before": {"start": "2022-06-01", "end": "2022-06-17"},
+      "after": {"start": "2022-06-20", "end": "2022-07-01"},
+      "window_rationale": "Flooding began on 19 June and the town stayed submerged for 11 days. Only Sentinel-1A was flying, so each window spans at least one 12-day repeat of every track.",
+      "sources": [
+        {
+          "url": "https://en.wikipedia.org/wiki/2022_Silchar_Floods",
+          "supports": "Floods from 19 to 30 June 2022 caused by a breach of the Barak river dyke at Bethukandi; Silchar city remained submerged for 11 days."
+        },
+        {
+          "url": "https://www.esa.int/Applications/Observing_the_Earth/Copernicus/Sentinel-1/Mission_ends_for_Copernicus_Sentinel-1B_satellite",
+          "supports": "Sentinel-1B stopped on 23 December 2021, leaving Sentinel-1A alone."
+        }
+      ],
+      "unverified": [
+        "Sentinel-1 acquisitions on one shared track exist in both windows.",
+        "The before window is free of earlier flooding in Cachar."
+      ]
+    },
+    {
+      "event_id": "kerala-2018-periyar",
+      "name": "August 2018 Kerala flood on the Periyar at Aluva",
+      "state": "Kerala",
+      "aoi": {
+        "bbox": [76.2656, 10.0179, 76.4481, 10.1976],
+        "label": "Aluva and the lower Periyar floodplain, Ernakulam district",
+        "derivation": "20 km square centred on OpenStreetMap node 1880437827 (Aluva, place=town), from Nominatim on 2026-10-06. The square is a declared choice, not a boundary."
+      },
+      "before": {"start": "2018-07-01", "end": "2018-07-25"},
+      "after": {"start": "2018-08-15", "end": "2018-08-22"},
+      "window_rationale": "CWC dates the first onset of flooding to the end of July, so the before window ends on 25 July; the after window covers the 14-19 August spell. Sentinel-1A and 1B were both flying, a 6-day repeat per track.",
+      "sources": [
+        {
+          "url": "https://sdma.kerala.gov.in/wp-content/uploads/2020/08/CWC-Report-on-Kerala-Floods.pdf",
+          "supports": "Central Water Commission, Study Report: Kerala Floods of August 2018 (September 2018): first onset of flooding towards the end of July; a severe spell on 8-9 August; another from 14 to 19 August causing disastrous flooding in 13 of 14 districts; the Periyar sub-basin is analysed in section 4.1."
+        }
+      ],
+      "unverified": [
+        "Sentinel-1 acquisitions on one shared track exist in both windows.",
+        "The Aluva AOI itself was dry in the before window."
+      ]
+    }
+  ]
+}

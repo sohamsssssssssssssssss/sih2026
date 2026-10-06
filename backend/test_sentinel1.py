@@ -222,3 +222,44 @@ def test_failed_second_ingest_names_the_scene_already_stored(runtime_dirs, monke
 
     stored = [path.stem for path in services.SCENE_MANIFEST_DIR.glob("scene_*.json")]
     assert len(stored) == 1 and stored[0] in str(error.value)
+
+
+def test_every_catalogued_flood_event_is_a_valid_fetch_request() -> None:
+    events = s1.load_events()
+
+    assert len(events) >= 3 and len({event["event_id"] for event in events}) == len(events)
+    for event in events:
+        bbox, before, after = s1.event_request(event["event_id"])
+        s1.utm_grid(bbox)  # fits one Process API request
+        assert before[0] < before[1] <= after[0] < after[1]
+        assert event["sources"] and all(source["url"].startswith("https://") for source in event["sources"])
+        assert event["aoi"]["derivation"]
+
+
+def test_cli_event_supplies_bbox_inclusive_windows_and_pair_group(monkeypatch) -> None:
+    monkeypatch.setenv("CDSE_CLIENT_ID", "id")
+    monkeypatch.setenv("CDSE_CLIENT_SECRET", "secret")
+    captured = {}
+
+    def fake_fetch(client, client_id, client_secret, bbox, before, after, pair_group):
+        captured.update(bbox=bbox, before=before, after=after, pair_group=pair_group)
+        return {}
+
+    monkeypatch.setattr(s1, "fetch_pair", fake_fetch)
+
+    assert s1.main(["--event", "kosi-2024"]) == 0
+    assert captured["pair_group"] == "kosi-2024"
+    assert captured["bbox"] == (86.3306951, 25.9214857, 86.404697, 26.0699481)
+    assert captured["after"] == (
+        datetime(2024, 9, 29, tzinfo=timezone.utc), datetime(2024, 10, 11, tzinfo=timezone.utc)
+    )
+
+
+def test_cli_unknown_event_lists_the_known_ones(capsys) -> None:
+    assert s1.main(["--event", "atlantis-2099"]) == 1
+    assert "kosi-2024" in capsys.readouterr().err
+
+
+def test_cli_event_cannot_be_mixed_with_an_explicit_bbox() -> None:
+    with pytest.raises(SystemExit):
+        s1.main(["--event", "kosi-2024", "--bbox", *map(str, PATNA_AOI)])

@@ -26,7 +26,7 @@ Historical Kaggle Tesla T4 smoke verification passed through the repository prov
 
 ### PARTIAL / BLOCKED ON GPU OR DATA
 - **Remote-sensing adaptation**: The offline RSVQA-LR QLoRA pipeline and held-out comparison runner are ready. No adapter has been trained and no improvement is claimed.
-- **Sentinel-1 fetch from CDSE**: `python -m backend.sentinel1 --bbox W S E N --before START END --after START END` (needs `CDSE_CLIENT_ID` and `CDSE_CLIENT_SECRET`) picks a same-orbit-track pair, renders terrain-corrected gamma0 for both dates on one UTM grid and ingests them as scenes. Tested only against a mocked Sentinel Hub; the first live run is pending credentials.
+- **Sentinel-1 fetch from CDSE**: `python -m backend.sentinel1 --bbox W S E N --before START END --after START END` (needs `CDSE_CLIENT_ID` and `CDSE_CLIENT_SECRET`) picks a same-orbit-track pair, renders terrain-corrected gamma0 for both dates on one UTM grid and ingests them as scenes. `--event kosi-2024` (or `silchar-2022`, `kerala-2018-periyar`) uses a sourced AOI and date windows from `data/manifests/flood_events.v1.json`. Tested only against a mocked Sentinel Hub; the first live run is pending credentials.
 - **Multi-step change-to-grounding execution**: The plan can be represented, but execution remains explicitly unavailable until an intermediate spatial artifact contract exists.
 - **Benchmark and ISRO/SAC evidence**: Existing frozen evaluations and runners do not establish adapted-model, CDVQA, optical-SAR, national, or ISRO/SAC performance.
 

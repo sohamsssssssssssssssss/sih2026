@@ -12,9 +12,12 @@ or near radar shadow are marked invalid, because shadow reads as water. Bands
 follow the VV/VH/dataMask contract in linear power.
 
 Usage:
+    CDSE_CLIENT_ID=... CDSE_CLIENT_SECRET=... python -m backend.sentinel1 --event kosi-2024
     CDSE_CLIENT_ID=... CDSE_CLIENT_SECRET=... python -m backend.sentinel1 \\
         --bbox 85.0 25.55 85.2 25.7 --before 2024-07-20 2024-08-02 \\
         --after 2024-08-15 2024-08-25 --pair-group patna-2024
+
+Catalogued events live in data/manifests/flood_events.v1.json.
 
 Create the OAuth client at https://shapps.dataspace.copernicus.eu/dashboard/
 under User settings > OAuth clients.
@@ -27,6 +30,7 @@ import os
 import sys
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
+from pathlib import Path
 from typing import Any
 
 import httpx
@@ -58,6 +62,7 @@ SPECKLE_WINDOW_PIXELS = 5
 REQUEST_TIMEOUT_SECONDS = 120.0
 ERROR_EXCERPT_CHARS = 200
 PROVENANCE = "cdse_process_api"
+FLOOD_EVENTS_PATH = Path(__file__).resolve().parents[1] / "data" / "manifests" / "flood_events.v1.json"
 
 EVALSCRIPT = """//VERSION=3
 function setup() {
@@ -348,15 +353,51 @@ def _day(value: str) -> datetime:
     return datetime.strptime(value, "%Y-%m-%d").replace(tzinfo=timezone.utc)
 
 
+def _inclusive(start: str, end: str) -> tuple[datetime, datetime]:
+    """A window of whole UTC days; END is included."""
+    return _day(start), _day(end) + timedelta(days=1)
+
+
+def load_events() -> list[dict[str, Any]]:
+    return json.loads(FLOOD_EVENTS_PATH.read_text(encoding="utf-8"))["events"]
+
+
+Window = tuple[datetime, datetime]
+
+
+def event_request(event_id: str) -> tuple[tuple[float, float, float, float], Window, Window]:
+    """The catalogued AOI and inclusive before/after windows for one flood event."""
+    events = {event["event_id"]: event for event in load_events()}
+    if event_id not in events:
+        raise ValueError(f"Unknown flood event {event_id!r}; catalogued: {', '.join(sorted(events))}")
+    event = events[event_id]
+    windows = [_inclusive(event[name]["start"], event[name]["end"]) for name in ("before", "after")]
+    return tuple(event["aoi"]["bbox"]), windows[0], windows[1]
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         description="Fetch a co-gridded Sentinel-1 pair from CDSE and ingest it as runtime scenes."
     )
-    parser.add_argument("--bbox", nargs=4, type=float, required=True, metavar=("WEST", "SOUTH", "EAST", "NORTH"))
-    parser.add_argument("--before", nargs=2, type=_day, required=True, metavar=("START", "END"))
-    parser.add_argument("--after", nargs=2, type=_day, required=True, metavar=("START", "END"))
+    parser.add_argument("--event", help=f"a flood event_id from {FLOOD_EVENTS_PATH.name}")
+    parser.add_argument("--bbox", nargs=4, type=float, metavar=("WEST", "SOUTH", "EAST", "NORTH"))
+    parser.add_argument("--before", nargs=2, metavar=("START", "END"), help="inclusive YYYY-MM-DD dates")
+    parser.add_argument("--after", nargs=2, metavar=("START", "END"), help="inclusive YYYY-MM-DD dates")
     parser.add_argument("--pair-group")
     args = parser.parse_args(argv)
+    explicit = (args.bbox, args.before, args.after)
+    if args.event and any(explicit):
+        parser.error("--event replaces --bbox, --before and --after")
+    if not args.event and not all(explicit):
+        parser.error("give --event, or all of --bbox, --before and --after")
+    try:
+        if args.event:
+            bbox, before, after = event_request(args.event)
+        else:
+            bbox, before, after = tuple(args.bbox), _inclusive(*args.before), _inclusive(*args.after)
+    except ValueError as exc:
+        print(f"error: {exc}", file=sys.stderr)
+        return 1
     client_id, client_secret = os.environ.get("CDSE_CLIENT_ID"), os.environ.get("CDSE_CLIENT_SECRET")
     if not client_id or not client_secret:
         print(
@@ -365,13 +406,10 @@ def main(argv: list[str] | None = None) -> int:
             file=sys.stderr,
         )
         return 2
-    one_day = timedelta(days=1)  # END dates are inclusive
     try:
         with httpx.Client() as client:
             result = fetch_pair(
-                client, client_id, client_secret, tuple(args.bbox),
-                (args.before[0], args.before[1] + one_day), (args.after[0], args.after[1] + one_day),
-                args.pair_group,
+                client, client_id, client_secret, bbox, before, after, args.pair_group or args.event
             )
     except (CDSEError, ValueError, InvalidImageUpload, SceneStorageError) as exc:
         print(f"error: {exc}", file=sys.stderr)
