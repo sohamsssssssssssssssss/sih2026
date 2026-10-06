@@ -111,7 +111,7 @@ def test_request_must_be_exactly_one_form(body, monkeypatch, credentials) -> Non
         ({**EXPLICIT, "before": {"start": "2024-07-32", "end": "2024-08-02"}}, "2024-07-32"),
         ({**EXPLICIT, "before": EXPLICIT["after"], "after": EXPLICIT["before"]}, "ordered"),
         ({**EXPLICIT, "bbox": [85.2, 25.6, 85.0, 25.7]}, "west < east"),
-        ({**EXPLICIT, "bbox": [85.0, 25.0, 86.0, 26.0]}, "2500"),
+        ({**EXPLICIT, "bbox": [85.0, 25.0, 86.0, 26.0]}, "5000"),
     ],
 )
 def test_invalid_request_values_are_422_before_any_cdse_call(body, message, monkeypatch, credentials) -> None:
