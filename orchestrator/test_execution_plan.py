@@ -87,6 +87,20 @@ def test_temporal_plus_localization_produces_change_then_grounding_chain() -> No
     )
 
 
+def test_flood_question_over_sar_pair_is_one_change_vqa_step() -> None:
+    execution = build_execution_plan(
+        plan_request(
+            PlanRequest(
+                question="Where did flooding increase between these two scenes?",
+                scene_ids=("a", "b"),
+                sensor="Sentinel-1",
+            )
+        )
+    )
+    assert [step.capability for step in execution.steps] == [CHANGE_VQA]
+    assert execution.executable is True
+
+
 def test_single_intent_questions_stay_single_step() -> None:
     for question, capability in (
         ("What changed?", CHANGE_VQA),

@@ -204,7 +204,7 @@ def test_golden_analysis_replays_only_when_explicitly_requested(client: TestClie
     assert payload["answer"] == "Yes"
     assert payload["execution_mode"] == "cached_result"
     assert payload["trace"]["params"]["results_artifact"] == services.RESULTS_RELATIVE_PATH
-    assert payload["trace"]["params"]["planner_version"] == "phase0-rules-v1"
+    assert payload["trace"]["params"]["planner_version"] == "phase3-parsed-v1"
     assert payload["trace"]["params"]["planner_rule"] == "default_single_image_vqa"
     # The committed artifact stores Kaggle absolute paths; only the file name is replayed.
     assert payload["trace"]["input_summary"]["image_paths"] == [
@@ -945,7 +945,7 @@ def test_uploaded_scene_is_resolved_for_live_analysis(
         "sensor": None,
         "execution_mode": "live",
     }
-    assert routed["planner_version"] == "phase0-rules-v1"
+    assert routed["planner_version"] == "phase3-parsed-v1"
     assert routed["planner_rule"] == "default_single_image_vqa"
     assert routed["requested_capability"] is None
 
@@ -1361,7 +1361,7 @@ def test_trace_records_requested_capability(
     records = trace_store.records()
     assert len(records) == 1
     assert records[0]["params"]["capability"] == "single_image_vqa"
-    assert records[0]["params"]["planner_version"] == "phase0-rules-v1"
+    assert records[0]["params"]["planner_version"] == "phase3-parsed-v1"
     assert records[0]["params"]["planner_rule"] == "default_single_image_vqa"
     assert records[0]["params"]["requested_capability"] is None
     assert records[0]["model_name"] == "qwen2.5vl-3b"
@@ -1565,7 +1565,7 @@ def test_caller_cannot_forge_planner_trace_metadata(
     )
     assert response.status_code == 200
     params = response.json()["trace"]["params"]
-    assert params["planner_version"] == "phase0-rules-v1"
+    assert params["planner_version"] == "phase3-parsed-v1"
     assert params["planner_rule"] == "default_single_image_vqa"
 
 
@@ -1609,7 +1609,7 @@ def test_plan_endpoint_reports_vqa_without_model_or_trace(
     assert first.status_code == 200
     assert first.json() == second.json()
     assert first.json() == {
-        "planner_version": "phase0-rules-v1",
+        "planner_version": "phase3-parsed-v1",
         "rule_id": "default_single_image_vqa",
         "requested_capability": None,
         "selected_capability": "single_image_vqa",

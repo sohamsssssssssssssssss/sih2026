@@ -76,7 +76,7 @@ def test_executor_passes_correct_capability_and_plan_provenance() -> None:
 
     call(build("Is there a building in this image?"), route_fn=route_fn)
     assert calls[0]["capability"] == SINGLE_IMAGE_VQA
-    assert calls[0]["planner_version"] == "phase0-rules-v1"
+    assert calls[0]["planner_version"] == "phase3-parsed-v1"
     assert calls[0]["planner_rule"] == "default_single_image_vqa"
     assert calls[0]["requested_capability"] is None
     assert calls[0]["execution_plan_version"] == "phase0-plan-v1"
