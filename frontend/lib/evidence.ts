@@ -47,13 +47,45 @@ export function formatValue(value: unknown): string {
   return JSON.stringify(value);
 }
 
+export const UNKNOWN = "unknown";
+const NUMBER = new Intl.NumberFormat("en-US", { maximumFractionDigits: 1 });
+const PERCENT = new Intl.NumberFormat("en-US", { style: "percent", maximumFractionDigits: 1 });
+
+export const finiteNumber = (value: unknown): number | null => typeof value === "number" && Number.isFinite(value) ? value : null;
+
+/** Grouped, one-decimal number; anything else is shown as unknown, never guessed. */
+export function formatNumber(value: unknown): string {
+  const number = finiteNumber(value);
+  return number === null ? UNKNOWN : NUMBER.format(number);
+}
+
+export function formatHectares(value: unknown): string {
+  const number = formatNumber(value);
+  return number === UNKNOWN ? UNKNOWN : `${number} ha`;
+}
+
+/** A 0..1 fraction as a percentage. */
+export function formatPercent(value: unknown): string {
+  const number = finiteNumber(value);
+  return number === null ? UNKNOWN : PERCENT.format(number);
+}
+
+const countOf = (list: unknown, noun: string, view: string) => Array.isArray(list) ? `${list.length} ${noun} (${view})` : formatValue(null);
+
+// Bulky payloads with their own view in the workspace: rows show a count, not raw JSON.
+const SUMMARIZED: Record<string, (value: unknown) => string> = {
+  geojson: value => countOf((value as { features?: unknown } | null)?.features, "features", "drawn on the flood map"),
+  flooded_villages: value => countOf(value, "villages", "listed in the village table"),
+};
+
 /** Flatten one evidence item into readable label/value rows (nested keys joined with "›"). */
 export function evidenceRows(item: EvidenceItem, prefix = ""): Array<[string, string]> {
   const rows: Array<[string, string]> = [];
   for (const [key, value] of Object.entries(item)) {
     if (!prefix && key === "type") continue;
     const label = prefix ? `${prefix} › ${humanize(key)}` : humanize(key);
-    if (value && typeof value === "object" && !Array.isArray(value)) rows.push(...evidenceRows(value as EvidenceItem, label));
+    if (!prefix && Object.hasOwn(SUMMARIZED, key)) rows.push([label, SUMMARIZED[key](value)]);
+    else if (value && typeof value === "object" && !Array.isArray(value)) rows.push(...evidenceRows(value as EvidenceItem, label));
     else rows.push([label, formatValue(value)]);
   }
   return rows;
