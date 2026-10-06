@@ -1,0 +1,70 @@
+{
+  "kind": "loop10 final summary",
+  "git_sha": "1ceb9d161e1f654da96b1f57b31724e48ac29250",
+  "split_name": "caption-geo-split.v1/train + eval",
+  "n_train": 150000,
+  "n_eval": 2000,
+  "seed": 26170,
+  "device": "CPU only",
+  "timestamp_utc": "2026-10-05T07:00:14.126317+00:00",
+  "revision": "66285546d2b821cf421d4f5eb2576359d3770cd3",
+  "weight_sha256": {
+    "model-00001-of-00002.safetensors": "41a8895c164b4d32bae6b302f4603fcbc1797f32dafa45c7e9bcda23c6755df8",
+    "model-00002-of-00002.safetensors": "365531ff8752420e89dee707b79d021fb2d6e25abafe486f080555a4fe6972e4"
+  },
+  "frozen_sha256": {
+    "contract": "ab02179d2b4cf33c320a897d75318484189b249d99fff6cdd386016df908912d",
+    "split": "3e5b1d774125c7b48a9454dbb33e6144aee8d990d8966e830987836159bd83ee",
+    "model_artifacts": "72527fa9bb644cac71513b40a1a7e836a2044aae71ca6fb7095d4df643753e41"
+  },
+  "attempt_cap_per_problem": 2,
+  "root_cause": "Pixel arrays filled in archive-arrival order, sidecar IDs sorted independently by selection rank",
+  "writer": {
+    "record_coupling": "id caption tile and all 12 native uint16 arrays move together under any sort",
+    "per_patch_sha256": "canonical band order, band name + dtype + shape + contiguous uint16 bytes; source-read before shard write",
+    "regression": "synthetic archive arrival order differs from selection order; old code must fail and fixed code pass; zero row/pixel mismatches"
+  },
+  "verifier": {
+    "checksum_all_rows_required": true,
+    "checksum_mismatches_allowed": 0,
+    "raw_sample_rule": "at least max(100,40*ceil(shards/10)) distinct shard rows, spread across shard groups, fixed seed 26170",
+    "raw_native_mismatches_allowed": 0,
+    "caption_source_mismatches_allowed": 0,
+    "old_shard_expected_exit": "nonzero; preserve report",
+    "source_archive_read_only": true
+  },
+  "rebuild_plan": "results/stage1-loop10-rebuild-plan.json",
+  "package_pairing": "results/stage1-loop10-package-pairing.json",
+  "training_audit": "results/stage1-loop10-training-audit.json",
+  "scope": "no commit/push/upload/Kaggle/training/GPU/deletes/downloads/shard rebuild; contract/split/init/pinned checkpoint/eval shard unchanged",
+  "failed_attempts": "write separate files; never overwrite a failed result",
+  "n": 150000,
+  "status": "writer/verifier fixed; CPU audit complete; real rebuild NOT authorized",
+  "root_evidence": "results/stage1-loop10-root-cause-attempt2.json",
+  "writer_old_test": "results/stage1-loop10-writer-old-failure.json",
+  "writer_fixed_test": "results/stage1-loop10-writer-fixed-attempt2.json",
+  "old_shard_verifier": "results/stage1-loop10-old-shard-verifier-attempt2.json",
+  "old_shard_cli": "results/stage1-loop10-old-shard-cli-exit.json",
+  "focused_pass_count": 69,
+  "full_pass_count": 492,
+  "tests_evidence": [
+    "results/stage1-loop10-focused-attempt2.json",
+    "results/stage1-loop10-full-suite-attempt1.json"
+  ],
+  "frozen_evidence": "results/stage1-loop10-frozen-checks.json",
+  "python_version": "3.11.15 (main, Mar  3 2026, 00:52:57) [Clang 21.0.0 (clang-2100.0.123.102)]",
+  "environment_versions": {
+    "torch": "2.6.0",
+    "transformers": "4.49.0",
+    "peft": "0.15.2",
+    "accelerate": "1.5.2",
+    "rasterio": "1.4.3",
+    "numpy": "2.2.6",
+    "pyarrow": "19.0.1",
+    "pytest": "8.3.5"
+  },
+  "approval_needed": "APPROVE: delete old shards OR alternative storage path; no rebuild or deletion executed",
+  "real_model_loaded": false,
+  "training_or_gpu_run": false,
+  "downloads_uploads_commits_pushes": false
+}

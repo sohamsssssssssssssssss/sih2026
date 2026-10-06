@@ -1,6 +1,7 @@
 __pycache__/
 *.py[cod]
 .venv/
+.venv-stage1/
 node_modules/
 .next/
 /frontend/tsconfig.tsbuildinfo
@@ -22,6 +23,13 @@ trace.jsonl
 /data/sar_gate/raw/
 /data/sar_gate/rendered/
 /data/runtime/
+# Derived Stage-1 training shards (loop 8). One 2,000-patch shard is 320 MB and a
+# full-train build is ~68 GB of derived pixels; the manifest under
+# data/manifests/ is the record that travels, not the pixels. Anchored so the
+# tracked data/ package is untouched.
+data/shards/
+# Build logs from long CPU stream passes.
+/logs/
 
 # Datasets never go in git. The BigEarthNet.txt parquet (467 MB) lives at
 # ~/data/bigearthnet_txt/ — outside the repo entirely, which is what actually

@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 
 import numpy as np
@@ -6,7 +7,7 @@ import rasterio
 from rasterio.transform import from_origin
 import torch
 
-from data.bigearthnet_s2 import BANDS, load_s2_patch
+from data.bigearthnet_s2 import BANDS, load_norm_contract, load_s2_patch
 
 
 def write_band(patch: Path, band: str, value: int, shape=(2, 3), dtype="uint16", suffix=".tif"):
@@ -89,3 +90,37 @@ def test_multiband_and_nonzero_nodata_are_rejected(patch):
         dst.write(np.ones((2, 2), dtype="uint16"), 1)
     with pytest.raises(ValueError, match="B03 declares unsupported nodata"):
         load_s2_patch(patch)
+
+
+def test_frozen_contract_loads_and_normalizes_without_image_statistics(patch, tmp_path):
+    contract = {
+        "version": "1.0", "bands": list(BANDS), "input_dtype": "uint16", "output_dtype": "float32",
+        "target_size": [120, 120], "resampling": "rasterio bilinear",
+        "split_name": "caption-geo-split.v1/train", "divisor": 10000.0,
+        "clip_min": 0.0, "clip_max": 0.5,
+        "mean": {band: 0.1 for band in BANDS}, "std": {band: 0.2 for band in BANDS},
+        "nodata": {"source_value": 0, "action": "reject patch with any raw zero when normalization is requested"},
+        "raw_one_handling": "set pixels where all 12 resampled bands equal 1 to zero after standardization; retain band-specific ones",
+    }
+    path = tmp_path / "contract.json"
+    path.write_text(json.dumps(contract))
+    write_band(patch, "B12", 6000)
+    assert load_norm_contract(path)["bands"] == list(BANDS)
+    tensor = load_s2_patch(patch, norm_contract=path)
+    assert tensor.shape == (12, 120, 120) and torch.isfinite(tensor).all()
+    torch.testing.assert_close(tensor[0], torch.full((120, 120), -0.45))
+    torch.testing.assert_close(tensor[-1], torch.full((120, 120), 2.0))
+    contract["bands"] = list(reversed(BANDS))
+    path.write_text(json.dumps(contract))
+    with pytest.raises(ValueError, match="Invalid Stage-1 normalization contract"):
+        load_s2_patch(patch, norm_contract=path)
+    contract["bands"] = list(BANDS)
+    path.write_text(json.dumps(contract))
+    write_band(patch, "B01", 0)
+    with pytest.raises(ValueError, match="raw nodata zero"):
+        load_s2_patch(patch, norm_contract=path)
+    for band in BANDS:
+        write_band(patch, band, 1)
+    assert torch.all(load_s2_patch(patch, norm_contract=path) == 0)
+    write_band(patch, "B04", 100)
+    assert torch.all(load_s2_patch(patch, norm_contract=path)[BANDS.index("B09")] != 0)

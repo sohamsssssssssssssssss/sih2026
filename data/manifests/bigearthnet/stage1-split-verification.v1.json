@@ -1,0 +1,21 @@
+{
+  "captioning_rows": 463932,
+  "eval_tile_count": 6,
+  "git_sha": "1ceb9d161e1f654da96b1f57b31724e48ac29250",
+  "inventory_basis": "BigEarthNet V2 metadata.parquet patch_id, not archive member listing",
+  "manifest_sha256": "3e5b1d774125c7b48a9454dbb33e6144aee8d990d8966e830987836159bd83ee",
+  "metadata_patch_rows": 480038,
+  "n": 463932,
+  "n_eval": 41123,
+  "n_train": 422809,
+  "n_unmatched": {
+    "caption_without_s2_metadata_patch": 0,
+    "s2_metadata_patch_without_caption": 16106
+  },
+  "seed": 26167,
+  "shared_patch_id_count": 0,
+  "shared_tile_count": 0,
+  "split_name": "caption-geo-split.v1",
+  "timestamp_utc": "2026-10-04T11:31:09.729385+00:00",
+  "train_tile_count": 48
+}

@@ -1,0 +1,257 @@
+{
+  "kind": "Stage-1 CPU 30-step slow-device loss trend",
+  "git_sha": "1ceb9d161e1f654da96b1f57b31724e48ac29250",
+  "split_name": "caption-geo-split.v1/train",
+  "n": 16,
+  "seed": 0,
+  "device": "cpu",
+  "dtype": "torch.float32",
+  "timestamp_utc": "2026-10-04T17:55:29.824769+00:00",
+  "revision": "66285546d2b821cf421d4f5eb2576359d3770cd3",
+  "weight_sha256": {
+    "model-00001-of-00002.safetensors": "41a8895c164b4d32bae6b302f4603fcbc1797f32dafa45c7e9bcda23c6755df8",
+    "model-00002-of-00002.safetensors": "365531ff8752420e89dee707b79d021fb2d6e25abafe486f080555a4fe6972e4"
+  },
+  "config": "results/stage1-loop6-cpu-trend.yaml",
+  "steps_requested": 30,
+  "optimizer": "adafactor",
+  "losses": [
+    {
+      "step": 1,
+      "loss": 2.1991119384765625,
+      "seconds": 123.396184000012,
+      "samples_per_second": 0.008103978320755063,
+      "peak_memory_bytes": 4304699392
+    },
+    {
+      "step": 2,
+      "loss": 2.0490005016326904,
+      "seconds": 114.24017895798897,
+      "samples_per_second": 0.008753487688142917,
+      "peak_memory_bytes": 6481690624
+    },
+    {
+      "step": 3,
+      "loss": 3.4734742641448975,
+      "seconds": 91.48324424997554,
+      "samples_per_second": 0.010930963458920702,
+      "peak_memory_bytes": 9210511360
+    },
+    {
+      "step": 4,
+      "loss": 1.9319337606430054,
+      "seconds": 88.2706691249914,
+      "samples_per_second": 0.011328791431092456,
+      "peak_memory_bytes": 9210511360
+    },
+    {
+      "step": 5,
+      "loss": 1.9191340208053589,
+      "seconds": 91.53352466601063,
+      "samples_per_second": 0.010924958955189589,
+      "peak_memory_bytes": 9254371328
+    },
+    {
+      "step": 6,
+      "loss": 2.469712734222412,
+      "seconds": 89.29433366699959,
+      "samples_per_second": 0.011198918889178842,
+      "peak_memory_bytes": 9254371328
+    },
+    {
+      "step": 7,
+      "loss": 2.088439464569092,
+      "seconds": 86.91355258299154,
+      "samples_per_second": 0.011505685480352738,
+      "peak_memory_bytes": 9648685056
+    },
+    {
+      "step": 8,
+      "loss": 2.881917953491211,
+      "seconds": 85.06807716700132,
+      "samples_per_second": 0.011755290977564368,
+      "peak_memory_bytes": 10131161088
+    },
+    {
+      "step": 9,
+      "loss": 2.8866827487945557,
+      "seconds": 86.295512666984,
+      "samples_per_second": 0.011588088060372488,
+      "peak_memory_bytes": 10131161088
+    },
+    {
+      "step": 10,
+      "loss": 3.5600478649139404,
+      "seconds": 81.0359175420017,
+      "samples_per_second": 0.012340207038214757,
+      "peak_memory_bytes": 10131161088
+    },
+    {
+      "step": 11,
+      "loss": 2.6708924770355225,
+      "seconds": 85.6209204159968,
+      "samples_per_second": 0.011679388578648905,
+      "peak_memory_bytes": 10131161088
+    },
+    {
+      "step": 12,
+      "loss": 2.2542383670806885,
+      "seconds": 88.72092416600208,
+      "samples_per_second": 0.011271298280537983,
+      "peak_memory_bytes": 10131161088
+    },
+    {
+      "step": 13,
+      "loss": 2.2830700874328613,
+      "seconds": 85.51383716700366,
+      "samples_per_second": 0.011694013894465487,
+      "peak_memory_bytes": 10131161088
+    },
+    {
+      "step": 14,
+      "loss": 2.003135919570923,
+      "seconds": 90.14853370800847,
+      "samples_per_second": 0.011092803830165499,
+      "peak_memory_bytes": 10131161088
+    },
+    {
+      "step": 15,
+      "loss": 2.2189254760742188,
+      "seconds": 87.55012649999117,
+      "samples_per_second": 0.011422028042416373,
+      "peak_memory_bytes": 10131161088
+    },
+    {
+      "step": 16,
+      "loss": 2.2809464931488037,
+      "seconds": 85.29204095801106,
+      "samples_per_second": 0.011724423390129638,
+      "peak_memory_bytes": 10131161088
+    },
+    {
+      "step": 17,
+      "loss": 2.192018985748291,
+      "seconds": 90.81110708299093,
+      "samples_per_second": 0.011011868835451095,
+      "peak_memory_bytes": 10131161088
+    },
+    {
+      "step": 18,
+      "loss": 2.0357019901275635,
+      "seconds": 90.63785995799117,
+      "samples_per_second": 0.011032917154746151,
+      "peak_memory_bytes": 10131161088
+    },
+    {
+      "step": 19,
+      "loss": 3.451233148574829,
+      "seconds": 93.826047791983,
+      "samples_per_second": 0.01065802113094489,
+      "peak_memory_bytes": 10131161088
+    },
+    {
+      "step": 20,
+      "loss": 1.9189339876174927,
+      "seconds": 94.16040237498237,
+      "samples_per_second": 0.010620175517279774,
+      "peak_memory_bytes": 10131161088
+    },
+    {
+      "step": 21,
+      "loss": 1.903335452079773,
+      "seconds": 92.40859870798886,
+      "samples_per_second": 0.010821503777586755,
+      "peak_memory_bytes": 10131161088
+    },
+    {
+      "step": 22,
+      "loss": 2.458435535430908,
+      "seconds": 90.77318100002594,
+      "samples_per_second": 0.011016469721378545,
+      "peak_memory_bytes": 10131161088
+    },
+    {
+      "step": 23,
+      "loss": 2.080974578857422,
+      "seconds": 104.09261891699862,
+      "samples_per_second": 0.009606829095129022,
+      "peak_memory_bytes": 10131161088
+    },
+    {
+      "step": 24,
+      "loss": 2.8649253845214844,
+      "seconds": 93.26551920801285,
+      "samples_per_second": 0.010722076159461144,
+      "peak_memory_bytes": 10131161088
+    },
+    {
+      "step": 25,
+      "loss": 2.8766028881073,
+      "seconds": 88.03452529097558,
+      "samples_per_second": 0.011359179784235288,
+      "peak_memory_bytes": 10131161088
+    },
+    {
+      "step": 26,
+      "loss": 3.543626546859741,
+      "seconds": 112.10836912499508,
+      "samples_per_second": 0.008919940659247762,
+      "peak_memory_bytes": 10131161088
+    },
+    {
+      "step": 27,
+      "loss": 2.661637306213379,
+      "seconds": 105.43219545800821,
+      "samples_per_second": 0.0094847688190111,
+      "peak_memory_bytes": 10131161088
+    },
+    {
+      "step": 28,
+      "loss": 2.2488927841186523,
+      "seconds": 92.28548433299875,
+      "samples_per_second": 0.010835940313122759,
+      "peak_memory_bytes": 10131161088
+    },
+    {
+      "step": 29,
+      "loss": 2.2758519649505615,
+      "seconds": 98.29222762500285,
+      "samples_per_second": 0.010173744396302881,
+      "peak_memory_bytes": 10131161088
+    },
+    {
+      "step": 30,
+      "loss": 1.9894046783447266,
+      "seconds": 107.15169066601084,
+      "samples_per_second": 0.009332563898753359,
+      "peak_memory_bytes": 10131161088
+    }
+  ],
+  "status": "completed; trend only",
+  "weight_sha256_verified": true,
+  "group_parameter_counts": {
+    "vision": 681617408,
+    "patch_embed": 6021120,
+    "lm_lora": 59867136
+  },
+  "tokens_per_sample": [
+    346,
+    248,
+    99,
+    272,
+    234,
+    208,
+    292,
+    112,
+    112,
+    98,
+    186,
+    233,
+    233,
+    254,
+    218,
+    192
+  ],
+  "decoded_sample": "<|im_start|>system\nYou are a helpful assistant.<|im_end|>\n<|im_start|>user\n<|vision_start|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|vision_end|>Describe this satellite image.<|im_end|>\n<|im_start|>assistant\nThis satellite image, captured during the spring season in Lithuania, showcases a diverse landscape within the \"cold, no dry season, warm summer\" climate zone. The dominant feature is pastures, covering approximately 411,000 square meters, which are distributed across two areas, including one large area of 393,000 square meters and one marginal area. The pastures border with inland waters (~309,000 sqm), urban fabric (~287,000 sqm), land principally occupied by agriculture with significant areas of natural vegetation (~269,000 sqm), and complex cultivation patterns (~113,000 sqm). \n\nThe inland waters are adjacent to urban fabric, land principally occupied by agriculture with significant areas of natural vegetation, and a marginal area of transitional woodlands or shrubs, which covers less than 5% (72,000 sqm) of the total area and is distributed over two individual marginal areas. The urban fabric, which is spread across four individual areas, including one smaller area of 249,000 square meters and three marginal areas, shares borders with land principally occupied by agriculture with significant areas of natural vegetation and complex cultivation patterns. \n\nThe varied landscape is characterized by a mix of agricultural areas, artificial surfaces, and forest and seminatural areas, reflecting the complex interplay of different ecosystems in this region of Lithuania during the spring season.<|im_end|>",
+  "passed": true
+}

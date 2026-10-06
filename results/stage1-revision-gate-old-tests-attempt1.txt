@@ -1,0 +1,83 @@
+FFFFF                                                                    [100%]
+=================================== FAILURES ===================================
+___________________ test_local_dir_metadata_proves_revision ____________________
+
+proof = (PosixPath('/private/var/folders/_5/9qtxt5tn1hv56fhw2nh8skth0000gn/T/pytest-of-soham/pytest-137/test_local_dir_metadat...e/var/folders/_5/9qtxt5tn1hv56fhw2nh8skth0000gn/T/pytest-of-soham/pytest-137/test_local_dir_metadata_proves0/results'))
+
+    def test_local_dir_metadata_proves_revision(proof):
+        metadata(proof[0])
+        result = verify(proof)
+>       assert result["passed"]
+E       assert False
+
+scripts/test_stage1_revision_gate.py:44: AssertionError
+__________________________ test_missing_source_fails ___________________________
+
+proof = (PosixPath('/private/var/folders/_5/9qtxt5tn1hv56fhw2nh8skth0000gn/T/pytest-of-soham/pytest-137/test_missing_source_fa...rivate/var/folders/_5/9qtxt5tn1hv56fhw2nh8skth0000gn/T/pytest-of-soham/pytest-137/test_missing_source_fails0/results'))
+
+    def test_missing_source_fails(proof):
+        result = verify(proof)
+        assert not result["passed"]
+>       assert result["revision_source"] is None
+E       KeyError: 'revision_source'
+
+scripts/test_stage1_revision_gate.py:52: KeyError
+_________________________ test_metadata_mismatch_fails _________________________
+
+proof = (PosixPath('/private/var/folders/_5/9qtxt5tn1hv56fhw2nh8skth0000gn/T/pytest-of-soham/pytest-137/test_metadata_mismatch...ate/var/folders/_5/9qtxt5tn1hv56fhw2nh8skth0000gn/T/pytest-of-soham/pytest-137/test_metadata_mismatch_fails0/results'))
+
+    def test_metadata_mismatch_fails(proof):
+        metadata(proof[0], "7" * 40)
+        result = verify(proof)
+        assert not result["passed"]
+>       assert result["revision_source"] == "hf_download_metadata"
+E       KeyError: 'revision_source'
+
+scripts/test_stage1_revision_gate.py:60: KeyError
+__________________________ test_weight_mismatch_fails __________________________
+
+proof = (PosixPath('/private/var/folders/_5/9qtxt5tn1hv56fhw2nh8skth0000gn/T/pytest-of-soham/pytest-137/test_weight_mismatch_f...ivate/var/folders/_5/9qtxt5tn1hv56fhw2nh8skth0000gn/T/pytest-of-soham/pytest-137/test_weight_mismatch_fails0/results'))
+
+    def test_weight_mismatch_fails(proof):
+        metadata(proof[0])
+        (proof[0] / "model.safetensors").write_bytes(b"wrong")
+        result = verify(proof)
+        assert not result["passed"]
+>       assert result["revision_matches"] and not result["weights_match"]
+E       assert (False)
+
+scripts/test_stage1_revision_gate.py:69: AssertionError
+________________ test_smoke_missing_source_never_reaches_model _________________
+
+proof = (PosixPath('/private/var/folders/_5/9qtxt5tn1hv56fhw2nh8skth0000gn/T/pytest-of-soham/pytest-137/test_smoke_missing_sou...e/var/folders/_5/9qtxt5tn1hv56fhw2nh8skth0000gn/T/pytest-of-soham/pytest-137/test_smoke_missing_source_neve0/results'))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x11862f110>
+
+    def test_smoke_missing_source_never_reaches_model(proof, monkeypatch):
+        checkpoint, package, out = proof
+        def forbidden(*args, **kwargs):
+            raise RuntimeError("MODEL CONSTRUCTION REACHED")
+        monkeypatch.setattr(smoke, "build_model", forbidden)
+        with pytest.raises(ValueError, match="revision proof"):
+>           smoke.run(package / "config.yaml", checkpoint, package, out / "smoke.json")
+
+scripts/test_stage1_revision_gate.py:78:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+scripts/run_stage1_smoke.py:247: in run
+    model, groups = build_model(config, checkpoint, dtype, device)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+args = ({'attention': 'sdpa', 'batch_size': 1, 'captions': 'captions.json', 'check_vision_finite': True, ...}, PosixPath('/pr...hv56fhw2nh8skth0000gn/T/pytest-of-soham/pytest-137/test_smoke_missing_source_neve0/checkpoint'), torch.float16, 'cuda')
+kwargs = {}
+
+    def forbidden(*args, **kwargs):
+>       raise RuntimeError("MODEL CONSTRUCTION REACHED")
+E       RuntimeError: MODEL CONSTRUCTION REACHED
+
+scripts/test_stage1_revision_gate.py:75: RuntimeError
+=========================== short test summary info ============================
+FAILED scripts/test_stage1_revision_gate.py::test_local_dir_metadata_proves_revision
+FAILED scripts/test_stage1_revision_gate.py::test_missing_source_fails - KeyE...
+FAILED scripts/test_stage1_revision_gate.py::test_metadata_mismatch_fails - K...
+FAILED scripts/test_stage1_revision_gate.py::test_weight_mismatch_fails - ass...
+FAILED scripts/test_stage1_revision_gate.py::test_smoke_missing_source_never_reaches_model
+5 failed in 2.41s

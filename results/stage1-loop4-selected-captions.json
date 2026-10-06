@@ -1,0 +1,445 @@
+{
+  "git_sha": "1ceb9d161e1f654da96b1f57b31724e48ac29250",
+  "split_name": "caption-geo-split.v1/train",
+  "n": 16,
+  "seed": 0,
+  "device": "metadata-only",
+  "timestamp_utc": "2026-10-04T14:46:55.063669+00:00",
+  "selection": "16 train patches from prior deterministic 32-patch real validation",
+  "revision": "66285546d2b821cf421d4f5eb2576359d3770cd3",
+  "weight_sha256": {
+    "model-00001-of-00002.safetensors": "41a8895c164b4d32bae6b302f4603fcbc1797f32dafa45c7e9bcda23c6755df8",
+    "model-00002-of-00002.safetensors": "365531ff8752420e89dee707b79d021fb2d6e25abafe486f080555a4fe6972e4"
+  },
+  "captions": [
+    {
+      "patch_id": "S2A_MSIL2A_20180413T095031_N9999_R079_T34UEG_19_24",
+      "output": "This satellite image, captured during the spring season in Lithuania, showcases a diverse landscape within the \"cold, no dry season, warm summer\" climate zone. The dominant feature is pastures, covering approximately 411,000 square meters, which are distributed across two areas, including one large area of 393,000 square meters and one marginal area. The pastures border with inland waters (~309,000 sqm), urban fabric (~287,000 sqm), land principally occupied by agriculture with significant areas of natural vegetation (~269,000 sqm), and complex cultivation patterns (~113,000 sqm). \n\nThe inland waters are adjacent to urban fabric, land principally occupied by agriculture with significant areas of natural vegetation, and a marginal area of transitional woodlands or shrubs, which covers less than 5% (72,000 sqm) of the total area and is distributed over two individual marginal areas. The urban fabric, which is spread across four individual areas, including one smaller area of 249,000 square meters and three marginal areas, shares borders with land principally occupied by agriculture with significant areas of natural vegetation and complex cultivation patterns. \n\nThe varied landscape is characterized by a mix of agricultural areas, artificial surfaces, and forest and seminatural areas, reflecting the complex interplay of different ecosystems in this region of Lithuania during the spring season.",
+      "type": "captioning",
+      "caption_token_count": 304
+    },
+    {
+      "patch_id": "S2A_MSIL2A_20180413T095031_N9999_R079_T34UEG_56_65",
+      "output": "This satellite image, captured during the spring season in Lithuania, showcases a predominantly agricultural landscape within the \"cold, no dry season, warm summer\" climate zone. The largest area is arable land, spanning approximately 1,100,000 square meters. A smaller, yet notable, complex cultivation patterns area covers around 305,000 square meters, divided into two distinct patches of about 175,000 and 130,000 square meters. In addition to these agricultural areas, there are marginal regions of land principally occupied by agriculture with significant areas of natural vegetation and transitional woodland or shrub, each covering 72,000 square meters. The arable land borders with complex cultivation patterns, land principally occupied by agriculture with significant areas of natural vegetation, and transitional woodland or shrub. Moreover, the complex cultivation patterns area is adjacent to both land principally occupied by agriculture with significant areas of natural vegetation and transitional woodland or shrub.",
+      "type": "captioning",
+      "caption_token_count": 206
+    },
+    {
+      "patch_id": "S2A_MSIL2A_20180419T101031_N9999_R022_T34VDN_45_76",
+      "output": "This satellite image, captured during the spring season in Finland, showcases a landscape entirely dominated by marine waters (~1,440,000 sqm), indicating a coastal or marine environment, set within the \"cold, no dry season, warm summer\" climate zone.",
+      "type": "captioning",
+      "caption_token_count": 57
+    },
+    {
+      "patch_id": "S2A_MSIL2A_20180508T104031_N9999_R008_T31UGS_13_80",
+      "output": "This satellite image, captured during the spring season in Belgium, showcases a predominantly forested landscape within the \"temperate, no dry season, warm summer\" climate zone. The dominant feature is the expansive coniferous forest, covering approximately 750,000 square meters, which is distributed across two areas, one large (~748,000 sqm) and one marginal. The coniferous forest shares borders with a smaller mixed forest, spanning around 611,000 square meters. Additionally, it is adjacent to broad-leaved forest and inland wetlands, each covering less than 5% or 72,000 square meters of the total area. The broad-leaved forest, which is divided into two marginal areas, is adjacent to the inland wetlands. The landscape is characterized by a mix of forest and seminatural areas, with the coniferous and mixed forests being the most prominent features, and the relative sizes of the features, from largest to smallest, are coniferous forest, mixed forest, and then broad-leaved forest and inland wetlands.",
+      "type": "captioning",
+      "caption_token_count": 230
+    },
+    {
+      "patch_id": "S2A_MSIL2A_20180508T104031_N9999_R008_T31UGS_27_85",
+      "output": "This satellite image, captured during the spring season in Belgium, showcases a diverse forested landscape within the \"temperate, no dry season, warm summer\" climate zone. The dominant feature is the expansive mixed forest, covering approximately 863,000 square meters. It is bordered by transitional woodland and shrub areas, which total around 294,000 square meters and are distributed across two smaller patches of 208,000 and 85,000 square meters. The mixed forest also shares a border with coniferous forest, spanning about 284,000 square meters and comprising two smaller areas of 168,000 and 116,000 square meters. Furthermore, the transitional woodland and shrub areas are adjacent to the coniferous forest. The landscape is characterized by a mix of forest and seminatural areas.",
+      "type": "captioning",
+      "caption_token_count": 192
+    },
+    {
+      "patch_id": "S2B_MSIL2A_20170802T092029_N9999_R093_T34TFN_19_26",
+      "output": "This satellite image, captured during the summer season in Serbia, showcases a diverse landscape within the \"cold, no dry season, warm summer\" climate zone. The dominant feature is land principally occupied by agriculture with significant areas of natural vegetation (~932,000 sqm), which borders both transitional woodland and shrub (~313,000 sqm) and broad-leaved forest (~196,000 sqm). The transitional woodland and shrub areas are adjacent to the broad-leaved forest. Notably, the broad-leaved forest is fragmented into four areas, including one smaller patch (~94,000 sqm) and three marginal areas. The landscape presents a mix of agricultural areas and forest and seminatural areas, highlighting the ecological diversity of the region.",
+      "type": "captioning",
+      "caption_token_count": 166
+    },
+    {
+      "patch_id": "S2B_MSIL2A_20170802T092029_N9999_R093_T34TFN_32_11",
+      "output": "This satellite image, captured during the summer in Serbia, showcases a diverse landscape within the \"cold, no dry season, warm summer\" climate zone. The dominant feature is the broad-leaved forest, which spans approximately 585,000 square meters and is distributed across four individual areas, including one large area of 520,000 square meters and three marginal areas. The broad-leaved forest borders with transitional woodland and shrub (~430,000 sqm), which is divided into three individual areas, including two smaller areas of 249,000 and 177,000 square meters and one marginal area. Also adjacent to the broad-leaved forest are inland waters (~221,000 sqm) and land principally occupied by agriculture with significant areas of natural vegetation (~205,000 sqm). The transitional woodland and shrub is also next to the inland waters. Furthermore, the inland waters area is bordered by the land principally occupied by agriculture with significant areas of natural vegetation. The landscape presents a mix of forest and seminatural areas, agricultural areas, and water bodies, highlighting the region's ecological diversity.",
+      "type": "captioning",
+      "caption_token_count": 250
+    },
+    {
+      "patch_id": "S2B_MSIL2A_20170906T101019_N9999_R022_T34VDN_41_66",
+      "output": "This satellite image, captured during the fall season in Finland, showcases a landscape entirely dominated by marine waters (~1,440,000 sqm). The image presents a vast expanse of water, with no visible landmasses or other features, set within the \"cold, no dry season, warm summer\" climate zone.",
+      "type": "captioning",
+      "caption_token_count": 70
+    },
+    {
+      "patch_id": "S2B_MSIL2A_20170906T101019_N9999_R022_T34VDN_71_40",
+      "output": "This satellite image, captured during the fall season in Finland, showcases a landscape entirely dominated by marine waters (~1,440,000 sqm). The image presents a vast expanse of water, with no visible landmasses or other features, set within the \"cold, no dry season, warm summer\" climate zone.",
+      "type": "captioning",
+      "caption_token_count": 70
+    },
+    {
+      "patch_id": "S2B_MSIL2A_20170906T101019_N9999_R022_T34VDN_78_65",
+      "output": "This satellite image, captured during the fall season in Finland, showcases a landscape entirely dominated by marine waters (~1,440,000 sqm), with no other features visible, set within the \"cold, no dry season, warm summer\" climate zone.",
+      "type": "captioning",
+      "caption_token_count": 56
+    },
+    {
+      "patch_id": "S2B_MSIL2A_20170911T092019_N9999_R093_T34TFN_05_14",
+      "output": "This satellite image, captured during the fall season in Serbia, showcases a diverse landscape within the \"temperate, no dry season, hot summer\" climate zone. The dominant feature is land principally occupied by agriculture with significant areas of natural vegetation (810'000 sqm). This extensive area is bordered by transitional woodland and shrub (501'000 sqm) and complex cultivation patterns (129'000 sqm). Moreover, the transitional woodland and shrub areas are also adjacent to the complex cultivation patterns, indicating a varied and dynamic landscape. The image highlights a mix of agricultural areas and forest and seminatural areas, showcasing the region's ecological diversity.",
+      "type": "captioning",
+      "caption_token_count": 144
+    },
+    {
+      "patch_id": "S2B_MSIL2A_20170930T095019_N9999_R079_T34UEG_04_18",
+      "output": "This satellite image, captured during the fall season in Lithuania, showcases a diverse coastal landscape within the \"cold, no dry season, warm summer\" climate zone. The dominant feature is the expansive marine waters (~568,000 sqm), which borders a stretch of beaches, dunes, and sands (~270,000 sqm). Adjacent to the beaches are areas of mixed forest (~404,000 sqm) and coniferous forest (~170,000 sqm), with the mixed forest also bordering the coniferous forest and a small patch of urban fabric, which accounts for less than 5% (72,000 sqm) of the total area. The coniferous forest is also next to the urban fabric, indicating a complex landscape characterized by a mix of water bodies, forest and seminatural areas, and artificial surfaces.",
+      "type": "captioning",
+      "caption_token_count": 191
+    },
+    {
+      "patch_id": "S2B_MSIL2A_20170930T095019_N9999_R079_T34UEG_27_24",
+      "output": "This satellite image, captured during the fall season in Lithuania, showcases a predominantly agricultural landscape within the \"cold, no dry season, warm summer\" climate zone. The dominant feature is arable land, spanning approximately 1,151,000 square meters, which is distributed across two areas, one large (~1,139,000 sqm) and one marginal. This arable land borders with complex cultivation patterns (~269,000 sqm) and urban fabric (~72,000 sqm), which is divided into two marginal patches. The complex cultivation patterns, in turn, share a border with the urban fabric. Additionally, a small area of broad-leaved forest (~72,000 sqm) is present, also covering a marginal area. The landscape is characterized by a mix of agricultural and artificial surfaces, highlighting the varied use of land in this region.",
+      "type": "captioning",
+      "caption_token_count": 191
+    },
+    {
+      "patch_id": "S2B_MSIL2A_20171015T104009_N9999_R008_T31UGS_07_66",
+      "output": "This satellite image, captured during the fall season in Belgium, showcases a diverse landscape within the \"temperate, no dry season, warm summer\" climate zone. The dominant features are complex cultivation patterns, spanning approximately 695,000 square meters, which are distributed across four areas, including one large area of 363,000 square meters, one smaller area of 273,000 square meters, and two marginal areas. These complex cultivation patterns are adjacent to expansive pastures, covering around 597,000 square meters, as well as a smaller urban fabric area, which occupies about 148,000 square meters and is fragmented into five separate areas, including one smaller area of 98,000 square meters and four marginal areas. The complex cultivation patterns share borders with both the pastures and the urban fabric, while the pastures are also adjacent to the urban fabric. The landscape is characterized by a mix of agricultural areas and artificial surfaces.",
+      "type": "captioning",
+      "caption_token_count": 212
+    },
+    {
+      "patch_id": "S2B_MSIL2A_20171015T104009_N9999_R008_T31UGS_11_74",
+      "output": "This satellite image, captured during the fall season in Belgium, showcases a predominantly forested landscape within the \"temperate, no dry season, warm summer\" climate zone. The dominant feature is the expansive mixed forest, covering approximately 931,000 square meters, which shares a border with a coniferous forest, spanning around 398,000 square meters. The mixed forest also borders smaller areas of broad-leaved forest, urban fabric, and industrial or commercial units, each covering less than 5% of the total area, approximately 72,000 square meters. Furthermore, the urban fabric is adjacent to industrial or commercial units, indicating a transition from natural to artificial surfaces. The landscape is characterized by a mix of forest and seminatural areas, and artificial surfaces, highlighting the diversity of ecosystems within this region.",
+      "type": "captioning",
+      "caption_token_count": 176
+    },
+    {
+      "patch_id": "S2B_MSIL2A_20180509T092029_N9999_R093_T34TFN_04_44",
+      "output": "This satellite image, captured during the spring season in Serbia, showcases a predominantly forested landscape within the \"cold, no dry season, warm summer\" climate zone. The dominant feature is the expansive broad-leaved forest, covering approximately 1,326,000 square meters. Adjacent to the broad-leaved forest is a smaller area of transitional woodland or shrub, which spans around 114,000 square meters and is distributed over two individual areas, one of which is a smaller patch covering about 104,000 square meters and the other is a marginal area covering less than 5% of the total area. The broad-leaved forest borders the transitional woodland or shrub.",
+      "type": "captioning",
+      "caption_token_count": 150
+    }
+  ],
+  "loaded_patches": [
+    {
+      "patch_id": "S2A_MSIL2A_20180413T095031_N9999_R079_T34UEG_19_24",
+      "shape": [
+        12,
+        120,
+        120
+      ],
+      "dtype": "torch.float32",
+      "finite": true,
+      "qwen_pixel_values_shape": [
+        64,
+        4704
+      ],
+      "qwen_grid_thw": [
+        1,
+        8,
+        8
+      ],
+      "qwen_pixel_values_finite": true
+    },
+    {
+      "patch_id": "S2A_MSIL2A_20180413T095031_N9999_R079_T34UEG_56_65",
+      "shape": [
+        12,
+        120,
+        120
+      ],
+      "dtype": "torch.float32",
+      "finite": true,
+      "qwen_pixel_values_shape": [
+        64,
+        4704
+      ],
+      "qwen_grid_thw": [
+        1,
+        8,
+        8
+      ],
+      "qwen_pixel_values_finite": true
+    },
+    {
+      "patch_id": "S2A_MSIL2A_20180419T101031_N9999_R022_T34VDN_45_76",
+      "shape": [
+        12,
+        120,
+        120
+      ],
+      "dtype": "torch.float32",
+      "finite": true,
+      "qwen_pixel_values_shape": [
+        64,
+        4704
+      ],
+      "qwen_grid_thw": [
+        1,
+        8,
+        8
+      ],
+      "qwen_pixel_values_finite": true
+    },
+    {
+      "patch_id": "S2A_MSIL2A_20180508T104031_N9999_R008_T31UGS_13_80",
+      "shape": [
+        12,
+        120,
+        120
+      ],
+      "dtype": "torch.float32",
+      "finite": true,
+      "qwen_pixel_values_shape": [
+        64,
+        4704
+      ],
+      "qwen_grid_thw": [
+        1,
+        8,
+        8
+      ],
+      "qwen_pixel_values_finite": true
+    },
+    {
+      "patch_id": "S2A_MSIL2A_20180508T104031_N9999_R008_T31UGS_27_85",
+      "shape": [
+        12,
+        120,
+        120
+      ],
+      "dtype": "torch.float32",
+      "finite": true,
+      "qwen_pixel_values_shape": [
+        64,
+        4704
+      ],
+      "qwen_grid_thw": [
+        1,
+        8,
+        8
+      ],
+      "qwen_pixel_values_finite": true
+    },
+    {
+      "patch_id": "S2B_MSIL2A_20170802T092029_N9999_R093_T34TFN_19_26",
+      "shape": [
+        12,
+        120,
+        120
+      ],
+      "dtype": "torch.float32",
+      "finite": true,
+      "qwen_pixel_values_shape": [
+        64,
+        4704
+      ],
+      "qwen_grid_thw": [
+        1,
+        8,
+        8
+      ],
+      "qwen_pixel_values_finite": true
+    },
+    {
+      "patch_id": "S2B_MSIL2A_20170802T092029_N9999_R093_T34TFN_32_11",
+      "shape": [
+        12,
+        120,
+        120
+      ],
+      "dtype": "torch.float32",
+      "finite": true,
+      "qwen_pixel_values_shape": [
+        64,
+        4704
+      ],
+      "qwen_grid_thw": [
+        1,
+        8,
+        8
+      ],
+      "qwen_pixel_values_finite": true
+    },
+    {
+      "patch_id": "S2B_MSIL2A_20170906T101019_N9999_R022_T34VDN_41_66",
+      "shape": [
+        12,
+        120,
+        120
+      ],
+      "dtype": "torch.float32",
+      "finite": true,
+      "qwen_pixel_values_shape": [
+        64,
+        4704
+      ],
+      "qwen_grid_thw": [
+        1,
+        8,
+        8
+      ],
+      "qwen_pixel_values_finite": true
+    },
+    {
+      "patch_id": "S2B_MSIL2A_20170906T101019_N9999_R022_T34VDN_71_40",
+      "shape": [
+        12,
+        120,
+        120
+      ],
+      "dtype": "torch.float32",
+      "finite": true,
+      "qwen_pixel_values_shape": [
+        64,
+        4704
+      ],
+      "qwen_grid_thw": [
+        1,
+        8,
+        8
+      ],
+      "qwen_pixel_values_finite": true
+    },
+    {
+      "patch_id": "S2B_MSIL2A_20170906T101019_N9999_R022_T34VDN_78_65",
+      "shape": [
+        12,
+        120,
+        120
+      ],
+      "dtype": "torch.float32",
+      "finite": true,
+      "qwen_pixel_values_shape": [
+        64,
+        4704
+      ],
+      "qwen_grid_thw": [
+        1,
+        8,
+        8
+      ],
+      "qwen_pixel_values_finite": true
+    },
+    {
+      "patch_id": "S2B_MSIL2A_20170911T092019_N9999_R093_T34TFN_05_14",
+      "shape": [
+        12,
+        120,
+        120
+      ],
+      "dtype": "torch.float32",
+      "finite": true,
+      "qwen_pixel_values_shape": [
+        64,
+        4704
+      ],
+      "qwen_grid_thw": [
+        1,
+        8,
+        8
+      ],
+      "qwen_pixel_values_finite": true
+    },
+    {
+      "patch_id": "S2B_MSIL2A_20170930T095019_N9999_R079_T34UEG_04_18",
+      "shape": [
+        12,
+        120,
+        120
+      ],
+      "dtype": "torch.float32",
+      "finite": true,
+      "qwen_pixel_values_shape": [
+        64,
+        4704
+      ],
+      "qwen_grid_thw": [
+        1,
+        8,
+        8
+      ],
+      "qwen_pixel_values_finite": true
+    },
+    {
+      "patch_id": "S2B_MSIL2A_20170930T095019_N9999_R079_T34UEG_27_24",
+      "shape": [
+        12,
+        120,
+        120
+      ],
+      "dtype": "torch.float32",
+      "finite": true,
+      "qwen_pixel_values_shape": [
+        64,
+        4704
+      ],
+      "qwen_grid_thw": [
+        1,
+        8,
+        8
+      ],
+      "qwen_pixel_values_finite": true
+    },
+    {
+      "patch_id": "S2B_MSIL2A_20171015T104009_N9999_R008_T31UGS_07_66",
+      "shape": [
+        12,
+        120,
+        120
+      ],
+      "dtype": "torch.float32",
+      "finite": true,
+      "qwen_pixel_values_shape": [
+        64,
+        4704
+      ],
+      "qwen_grid_thw": [
+        1,
+        8,
+        8
+      ],
+      "qwen_pixel_values_finite": true
+    },
+    {
+      "patch_id": "S2B_MSIL2A_20171015T104009_N9999_R008_T31UGS_11_74",
+      "shape": [
+        12,
+        120,
+        120
+      ],
+      "dtype": "torch.float32",
+      "finite": true,
+      "qwen_pixel_values_shape": [
+        64,
+        4704
+      ],
+      "qwen_grid_thw": [
+        1,
+        8,
+        8
+      ],
+      "qwen_pixel_values_finite": true
+    },
+    {
+      "patch_id": "S2B_MSIL2A_20180509T092029_N9999_R093_T34TFN_04_44",
+      "shape": [
+        12,
+        120,
+        120
+      ],
+      "dtype": "torch.float32",
+      "finite": true,
+      "qwen_pixel_values_shape": [
+        64,
+        4704
+      ],
+      "qwen_grid_thw": [
+        1,
+        8,
+        8
+      ],
+      "qwen_pixel_values_finite": true
+    }
+  ],
+  "selected_tiff_count": 192,
+  "selected_tiff_bytes": 2632960,
+  "kind": "engineering checkpoint (pinned rev)",
+  "prompt_template": "<|im_start|>system\nYou are a helpful assistant.<|im_end|>\n<|im_start|>user\n<|vision_start|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|vision_end|>Describe this satellite image.<|im_end|>\n<|im_start|>assistant\n",
+  "prompt_token_count": 42,
+  "label_mask_check": {
+    "prompt_tokens_masked": 42,
+    "image_pad_tokens_in_prompt": 16,
+    "caption_only_loss": true,
+    "all_16_caption_rows_verified": true
+  }
+}

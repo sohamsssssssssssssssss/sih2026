@@ -1,0 +1,4247 @@
+{
+  "kind": "independent source-TIFF versus shard pixel audit A2",
+  "git_sha": "1ceb9d161e1f654da96b1f57b31724e48ac29250",
+  "split_name": "caption-geo-split.v1/train + eval",
+  "n": 40,
+  "n_train": 30,
+  "n_eval": 10,
+  "seed": 26169,
+  "device": "CPU",
+  "timestamp_utc": "2026-10-05T04:14:10.705693+00:00",
+  "revision": "66285546d2b821cf421d4f5eb2576359d3770cd3",
+  "weight_sha256": {
+    "model-00001-of-00002.safetensors": "41a8895c164b4d32bae6b302f4603fcbc1797f32dafa45c7e9bcda23c6755df8",
+    "model-00002-of-00002.safetensors": "365531ff8752420e89dee707b79d021fb2d6e25abafe486f080555a4fe6972e4"
+  },
+  "method": "single read-only sequential pass over split S2 gzip tar; rasterio MemoryFile independently decodes native TIFF; no extraction; compare shard uint16 exactly then loader resample_bands+apply_contract with atol 1e-6",
+  "selected_patch_ids": {
+    "train": [
+      "S2A_MSIL2A_20170717T113321_N9999_R080_T29UPV_60_31",
+      "S2A_MSIL2A_20171101T094131_N9999_R036_T35VNK_59_30",
+      "S2A_MSIL2A_20171121T112351_N9999_R037_T29SND_02_77",
+      "S2A_MSIL2A_20171201T112431_N9999_R037_T29SNB_84_07",
+      "S2A_MSIL2A_20171221T112501_N9999_R037_T29SND_06_81",
+      "S2A_MSIL2A_20180225T114351_N9999_R123_T29UPU_12_22",
+      "S2A_MSIL2A_20180225T114351_N9999_R123_T29UPU_23_41",
+      "S2A_MSIL2A_20180413T095031_N9999_R079_T34UEG_48_24",
+      "S2A_MSIL2A_20180413T095031_N9999_R079_T35VLG_69_21",
+      "S2A_MSIL2A_20180507T093041_N9999_R136_T35UMA_09_84",
+      "S2A_MSIL2A_20180508T104031_N9999_R008_T31UGR_04_70",
+      "S2A_MSIL2A_20180508T104031_N9999_R008_T31UGR_07_78",
+      "S2A_MSIL2A_20180508T104031_N9999_R008_T31UGR_30_07",
+      "S2A_MSIL2A_20180509T101031_N9999_R022_T34VDR_88_49",
+      "S2B_MSIL2A_20170709T094029_N9999_R036_T35VNL_88_25",
+      "S2B_MSIL2A_20170906T101019_N9999_R022_T34VDN_77_47",
+      "S2B_MSIL2A_20170914T093029_N9999_R136_T34TEQ_09_79",
+      "S2B_MSIL2A_20170923T100019_N9999_R122_T33TWM_15_29",
+      "S2B_MSIL2A_20170924T093019_N9999_R136_T35VPK_68_31",
+      "S2B_MSIL2A_20171016T101009_N9999_R022_T34VDM_25_19",
+      "S2B_MSIL2A_20171219T095409_N9999_R079_T33TWN_77_64",
+      "S2B_MSIL2A_20180326T112109_N9999_R037_T29SNB_68_09",
+      "S2B_MSIL2A_20180417T102019_N9999_R065_T34WFV_82_76",
+      "S2B_MSIL2A_20180421T100029_N9999_R122_T33TWN_73_54",
+      "S2B_MSIL2A_20180421T100029_N9999_R122_T33UXQ_29_86",
+      "S2B_MSIL2A_20180506T105029_N9999_R051_T31UER_87_47",
+      "S2B_MSIL2A_20180511T100029_N9999_R122_T34VDM_55_24",
+      "S2B_MSIL2A_20180515T094029_N9999_R036_T35VNJ_81_08",
+      "S2B_MSIL2A_20180522T093029_N9999_R136_T35VPJ_18_56",
+      "S2B_MSIL2A_20180522T093029_N9999_R136_T35VPJ_45_43"
+    ],
+    "eval": [
+      "S2A_MSIL2A_20170613T101031_N9999_R022_T33UUP_77_70",
+      "S2A_MSIL2A_20170613T101031_N9999_R022_T33UUP_78_71",
+      "S2A_MSIL2A_20170717T113321_N9999_R080_T29UPA_30_81",
+      "S2A_MSIL2A_20170720T100031_N9999_R122_T34UDG_73_28",
+      "S2A_MSIL2A_20171208T093351_N9999_R136_T34TEN_15_46",
+      "S2A_MSIL2A_20171208T093351_N9999_R136_T34TEN_42_90",
+      "S2B_MSIL2A_20170927T094019_N9999_R036_T35VLC_10_63",
+      "S2B_MSIL2A_20170927T094019_N9999_R036_T35VLC_73_76",
+      "S2B_MSIL2A_20180201T093219_N9999_R136_T34TEP_23_29",
+      "S2B_MSIL2A_20180502T093039_N9999_R136_T34TEP_18_89"
+    ]
+  },
+  "status": "fail",
+  "problems": [
+    "S2B_MSIL2A_20180417T102019_N9999_R065_T34WFV_82_76: normalized mismatch/nonfinite 10.01674747467041",
+    "S2B_MSIL2A_20180417T102019_N9999_R065_T34WFV_82_76: native mismatches ['B01', 'B02', 'B03', 'B04', 'B05', 'B06', 'B07', 'B08', 'B8A', 'B09', 'B11', 'B12']",
+    "S2A_MSIL2A_20180508T104031_N9999_R008_T31UGR_30_07: normalized mismatch/nonfinite 3.3603765964508057",
+    "S2A_MSIL2A_20180508T104031_N9999_R008_T31UGR_30_07: native mismatches ['B01', 'B02', 'B03', 'B04', 'B05', 'B06', 'B07', 'B08', 'B8A', 'B09', 'B11', 'B12']",
+    "S2B_MSIL2A_20180421T100029_N9999_R122_T33UXQ_29_86: normalized mismatch/nonfinite 4.578955173492432",
+    "S2B_MSIL2A_20180421T100029_N9999_R122_T33UXQ_29_86: native mismatches ['B01', 'B02', 'B03', 'B04', 'B05', 'B06', 'B07', 'B08', 'B8A', 'B09', 'B11', 'B12']",
+    "S2A_MSIL2A_20171221T112501_N9999_R037_T29SND_06_81: normalized mismatch/nonfinite 2.686040163040161",
+    "S2A_MSIL2A_20171221T112501_N9999_R037_T29SND_06_81: native mismatches ['B01', 'B02', 'B03', 'B04', 'B05', 'B06', 'B07', 'B08', 'B8A', 'B09', 'B11', 'B12']",
+    "S2B_MSIL2A_20180421T100029_N9999_R122_T33TWN_73_54: normalized mismatch/nonfinite 3.112438917160034",
+    "S2B_MSIL2A_20180421T100029_N9999_R122_T33TWN_73_54: native mismatches ['B01', 'B02', 'B03', 'B04', 'B05', 'B06', 'B07', 'B08', 'B8A', 'B09', 'B11', 'B12']",
+    "S2B_MSIL2A_20171219T095409_N9999_R079_T33TWN_77_64: normalized mismatch/nonfinite 10.286555290222168",
+    "S2B_MSIL2A_20171219T095409_N9999_R079_T33TWN_77_64: native mismatches ['B01', 'B02', 'B03', 'B04', 'B05', 'B06', 'B07', 'B08', 'B8A', 'B09', 'B11', 'B12']",
+    "S2A_MSIL2A_20180507T093041_N9999_R136_T35UMA_09_84: normalized mismatch/nonfinite 3.8299169540405273",
+    "S2A_MSIL2A_20180507T093041_N9999_R136_T35UMA_09_84: native mismatches ['B01', 'B02', 'B03', 'B04', 'B05', 'B06', 'B07', 'B08', 'B8A', 'B09', 'B11', 'B12']",
+    "S2A_MSIL2A_20180413T095031_N9999_R079_T34UEG_48_24: normalized mismatch/nonfinite 2.868065595626831",
+    "S2A_MSIL2A_20180413T095031_N9999_R079_T34UEG_48_24: native mismatches ['B01', 'B02', 'B03', 'B04', 'B05', 'B06', 'B07', 'B08', 'B8A', 'B09', 'B11', 'B12']",
+    "S2B_MSIL2A_20171016T101009_N9999_R022_T34VDM_25_19: normalized mismatch/nonfinite 4.569527626037598",
+    "S2B_MSIL2A_20171016T101009_N9999_R022_T34VDM_25_19: native mismatches ['B01', 'B02', 'B03', 'B04', 'B05', 'B06', 'B07', 'B08', 'B8A', 'B09', 'B11', 'B12']",
+    "S2A_MSIL2A_20180508T104031_N9999_R008_T31UGR_07_78: normalized mismatch/nonfinite 4.775937080383301",
+    "S2A_MSIL2A_20180508T104031_N9999_R008_T31UGR_07_78: native mismatches ['B01', 'B02', 'B03', 'B04', 'B05', 'B06', 'B07', 'B08', 'B8A', 'B09', 'B11', 'B12']",
+    "S2B_MSIL2A_20170906T101019_N9999_R022_T34VDN_77_47: normalized mismatch/nonfinite 3.1415810585021973",
+    "S2B_MSIL2A_20170906T101019_N9999_R022_T34VDN_77_47: native mismatches ['B01', 'B02', 'B03', 'B04', 'B05', 'B06', 'B07', 'B08', 'B8A', 'B09', 'B11', 'B12']",
+    "S2B_MSIL2A_20170914T093029_N9999_R136_T34TEQ_09_79: normalized mismatch/nonfinite 3.616560459136963",
+    "S2B_MSIL2A_20170914T093029_N9999_R136_T34TEQ_09_79: native mismatches ['B01', 'B02', 'B03', 'B04', 'B05', 'B06', 'B07', 'B08', 'B8A', 'B09', 'B11', 'B12']",
+    "S2B_MSIL2A_20170923T100019_N9999_R122_T33TWM_15_29: normalized mismatch/nonfinite 4.399782657623291",
+    "S2B_MSIL2A_20170923T100019_N9999_R122_T33TWM_15_29: native mismatches ['B01', 'B02', 'B03', 'B04', 'B05', 'B06', 'B07', 'B08', 'B8A', 'B09', 'B11', 'B12']",
+    "S2B_MSIL2A_20180522T093029_N9999_R136_T35VPJ_18_56: normalized mismatch/nonfinite 3.595574378967285",
+    "S2B_MSIL2A_20180522T093029_N9999_R136_T35VPJ_18_56: native mismatches ['B01', 'B02', 'B03', 'B04', 'B05', 'B06', 'B07', 'B08', 'B8A', 'B09', 'B11', 'B12']",
+    "S2B_MSIL2A_20170709T094029_N9999_R036_T35VNL_88_25: normalized mismatch/nonfinite 4.822107315063477",
+    "S2B_MSIL2A_20170709T094029_N9999_R036_T35VNL_88_25: native mismatches ['B01', 'B02', 'B03', 'B04', 'B05', 'B06', 'B07', 'B08', 'B8A', 'B09', 'B11', 'B12']",
+    "S2A_MSIL2A_20180225T114351_N9999_R123_T29UPU_12_22: normalized mismatch/nonfinite 9.772078514099121",
+    "S2A_MSIL2A_20180225T114351_N9999_R123_T29UPU_12_22: native mismatches ['B01', 'B02', 'B03', 'B04', 'B05', 'B06', 'B07', 'B08', 'B8A', 'B09', 'B11', 'B12']",
+    "S2A_MSIL2A_20180508T104031_N9999_R008_T31UGR_04_70: normalized mismatch/nonfinite 3.8090713024139404",
+    "S2A_MSIL2A_20180508T104031_N9999_R008_T31UGR_04_70: native mismatches ['B01', 'B02', 'B03', 'B04', 'B05', 'B06', 'B07', 'B08', 'B8A', 'B09', 'B11', 'B12']",
+    "S2A_MSIL2A_20180509T101031_N9999_R022_T34VDR_88_49: normalized mismatch/nonfinite 3.5109317302703857",
+    "S2A_MSIL2A_20180509T101031_N9999_R022_T34VDR_88_49: native mismatches ['B01', 'B02', 'B03', 'B04', 'B05', 'B06', 'B07', 'B08', 'B8A', 'B09', 'B11', 'B12']",
+    "S2A_MSIL2A_20171201T112431_N9999_R037_T29SNB_84_07: normalized mismatch/nonfinite 3.4752559661865234",
+    "S2A_MSIL2A_20171201T112431_N9999_R037_T29SNB_84_07: native mismatches ['B01', 'B02', 'B03', 'B04', 'B05', 'B06', 'B07', 'B08', 'B8A', 'B09', 'B11', 'B12']",
+    "S2A_MSIL2A_20171101T094131_N9999_R036_T35VNK_59_30: normalized mismatch/nonfinite 10.04496955871582",
+    "S2A_MSIL2A_20171101T094131_N9999_R036_T35VNK_59_30: native mismatches ['B01', 'B02', 'B03', 'B04', 'B05', 'B06', 'B07', 'B08', 'B8A', 'B09', 'B11', 'B12']",
+    "S2B_MSIL2A_20180515T094029_N9999_R036_T35VNJ_81_08: normalized mismatch/nonfinite 4.1716461181640625",
+    "S2B_MSIL2A_20180515T094029_N9999_R036_T35VNJ_81_08: native mismatches ['B01', 'B02', 'B03', 'B04', 'B05', 'B06', 'B07', 'B08', 'B8A', 'B09', 'B11', 'B12']",
+    "S2A_MSIL2A_20171121T112351_N9999_R037_T29SND_02_77: normalized mismatch/nonfinite 3.746605157852173",
+    "S2A_MSIL2A_20171121T112351_N9999_R037_T29SND_02_77: native mismatches ['B01', 'B02', 'B03', 'B04', 'B05', 'B06', 'B07', 'B08', 'B8A', 'B09', 'B11', 'B12']",
+    "S2B_MSIL2A_20180522T093029_N9999_R136_T35VPJ_45_43: normalized mismatch/nonfinite 2.6833243370056152",
+    "S2B_MSIL2A_20180522T093029_N9999_R136_T35VPJ_45_43: native mismatches ['B01', 'B02', 'B03', 'B04', 'B05', 'B06', 'B07', 'B08', 'B8A', 'B09', 'B11', 'B12']",
+    "S2B_MSIL2A_20180326T112109_N9999_R037_T29SNB_68_09: normalized mismatch/nonfinite 9.560297012329102",
+    "S2B_MSIL2A_20180326T112109_N9999_R037_T29SNB_68_09: native mismatches ['B01', 'B02', 'B03', 'B04', 'B05', 'B06', 'B07', 'B08', 'B8A', 'B09', 'B11', 'B12']",
+    "S2B_MSIL2A_20180506T105029_N9999_R051_T31UER_87_47: normalized mismatch/nonfinite 9.082568168640137",
+    "S2B_MSIL2A_20180506T105029_N9999_R051_T31UER_87_47: native mismatches ['B01', 'B02', 'B03', 'B04', 'B05', 'B06', 'B07', 'B08', 'B8A', 'B09', 'B11', 'B12']",
+    "S2B_MSIL2A_20170924T093019_N9999_R136_T35VPK_68_31: normalized mismatch/nonfinite 2.5448834896087646",
+    "S2B_MSIL2A_20170924T093019_N9999_R136_T35VPK_68_31: native mismatches ['B01', 'B02', 'B03', 'B04', 'B05', 'B06', 'B07', 'B08', 'B8A', 'B09', 'B11', 'B12']",
+    "S2A_MSIL2A_20180413T095031_N9999_R079_T35VLG_69_21: normalized mismatch/nonfinite 8.770075798034668",
+    "S2A_MSIL2A_20180413T095031_N9999_R079_T35VLG_69_21: native mismatches ['B01', 'B02', 'B03', 'B04', 'B05', 'B06', 'B07', 'B08', 'B8A', 'B09', 'B11', 'B12']",
+    "S2A_MSIL2A_20180225T114351_N9999_R123_T29UPU_23_41: normalized mismatch/nonfinite 2.9016430377960205",
+    "S2A_MSIL2A_20180225T114351_N9999_R123_T29UPU_23_41: native mismatches ['B01', 'B02', 'B03', 'B04', 'B05', 'B06', 'B07', 'B08', 'B8A', 'B09', 'B11', 'B12']",
+    "S2B_MSIL2A_20180511T100029_N9999_R122_T34VDM_55_24: normalized mismatch/nonfinite 3.95883846282959",
+    "S2B_MSIL2A_20180511T100029_N9999_R122_T34VDM_55_24: native mismatches ['B01', 'B02', 'B03', 'B04', 'B05', 'B06', 'B07', 'B08', 'B8A', 'B09', 'B11', 'B12']",
+    "S2A_MSIL2A_20170717T113321_N9999_R080_T29UPV_60_31: normalized mismatch/nonfinite 3.5171103477478027",
+    "S2A_MSIL2A_20170717T113321_N9999_R080_T29UPV_60_31: native mismatches ['B01', 'B02', 'B03', 'B04', 'B05', 'B06', 'B07', 'B08', 'B8A', 'B09', 'B11', 'B12']"
+  ],
+  "per_patch": [
+    {
+      "patch_id": "S2A_MSIL2A_20170613T101031_N9999_R022_T33UUP_77_70",
+      "side": "eval",
+      "source_band_count": 12,
+      "native_mismatched_bands": [],
+      "normalized_max_abs_diff": 0.0,
+      "source_native": {
+        "B01": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B02": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B03": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B04": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B05": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B06": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B07": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B08": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B8A": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B09": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B11": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B12": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        }
+      }
+    },
+    {
+      "patch_id": "S2A_MSIL2A_20170613T101031_N9999_R022_T33UUP_78_71",
+      "side": "eval",
+      "source_band_count": 12,
+      "native_mismatched_bands": [],
+      "normalized_max_abs_diff": 0.0,
+      "source_native": {
+        "B01": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B02": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B03": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B04": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B05": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B06": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B07": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B08": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B8A": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B09": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B11": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B12": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        }
+      }
+    },
+    {
+      "patch_id": "S2A_MSIL2A_20170717T113321_N9999_R080_T29UPA_30_81",
+      "side": "eval",
+      "source_band_count": 12,
+      "native_mismatched_bands": [],
+      "normalized_max_abs_diff": 0.0,
+      "source_native": {
+        "B01": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B02": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B03": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B04": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B05": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B06": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B07": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B08": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B8A": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B09": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B11": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B12": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        }
+      }
+    },
+    {
+      "patch_id": "S2A_MSIL2A_20170720T100031_N9999_R122_T34UDG_73_28",
+      "side": "eval",
+      "source_band_count": 12,
+      "native_mismatched_bands": [],
+      "normalized_max_abs_diff": 0.0,
+      "source_native": {
+        "B01": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B02": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B03": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B04": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B05": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B06": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B07": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B08": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B8A": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B09": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B11": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B12": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        }
+      }
+    },
+    {
+      "patch_id": "S2A_MSIL2A_20171208T093351_N9999_R136_T34TEN_15_46",
+      "side": "eval",
+      "source_band_count": 12,
+      "native_mismatched_bands": [],
+      "normalized_max_abs_diff": 0.0,
+      "source_native": {
+        "B01": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B02": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B03": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B04": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B05": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B06": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B07": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B08": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B8A": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B09": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B11": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B12": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        }
+      }
+    },
+    {
+      "patch_id": "S2A_MSIL2A_20171208T093351_N9999_R136_T34TEN_42_90",
+      "side": "eval",
+      "source_band_count": 12,
+      "native_mismatched_bands": [],
+      "normalized_max_abs_diff": 0.0,
+      "source_native": {
+        "B01": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B02": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B03": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B04": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B05": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B06": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B07": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B08": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B8A": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B09": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B11": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B12": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        }
+      }
+    },
+    {
+      "patch_id": "S2B_MSIL2A_20170927T094019_N9999_R036_T35VLC_10_63",
+      "side": "eval",
+      "source_band_count": 12,
+      "native_mismatched_bands": [],
+      "normalized_max_abs_diff": 0.0,
+      "source_native": {
+        "B01": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B02": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B03": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B04": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B05": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B06": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B07": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B08": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B8A": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B09": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B11": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B12": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        }
+      }
+    },
+    {
+      "patch_id": "S2B_MSIL2A_20170927T094019_N9999_R036_T35VLC_73_76",
+      "side": "eval",
+      "source_band_count": 12,
+      "native_mismatched_bands": [],
+      "normalized_max_abs_diff": 0.0,
+      "source_native": {
+        "B01": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B02": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B03": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B04": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B05": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B06": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B07": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B08": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B8A": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B09": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B11": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B12": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        }
+      }
+    },
+    {
+      "patch_id": "S2B_MSIL2A_20180201T093219_N9999_R136_T34TEP_23_29",
+      "side": "eval",
+      "source_band_count": 12,
+      "native_mismatched_bands": [],
+      "normalized_max_abs_diff": 0.0,
+      "source_native": {
+        "B01": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B02": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B03": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B04": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B05": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B06": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B07": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B08": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B8A": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B09": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B11": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B12": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        }
+      }
+    },
+    {
+      "patch_id": "S2B_MSIL2A_20180502T093039_N9999_R136_T34TEP_18_89",
+      "side": "eval",
+      "source_band_count": 12,
+      "native_mismatched_bands": [],
+      "normalized_max_abs_diff": 0.0,
+      "source_native": {
+        "B01": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B02": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B03": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B04": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B05": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B06": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B07": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B08": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B8A": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B09": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B11": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B12": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        }
+      }
+    },
+    {
+      "patch_id": "S2B_MSIL2A_20180417T102019_N9999_R065_T34WFV_82_76",
+      "side": "train",
+      "source_band_count": 12,
+      "native_mismatched_bands": [
+        "B01",
+        "B02",
+        "B03",
+        "B04",
+        "B05",
+        "B06",
+        "B07",
+        "B08",
+        "B8A",
+        "B09",
+        "B11",
+        "B12"
+      ],
+      "normalized_max_abs_diff": 10.01674747467041,
+      "source_native": {
+        "B01": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B02": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B03": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B04": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B05": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B06": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B07": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B08": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B8A": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B09": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B11": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B12": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        }
+      }
+    },
+    {
+      "patch_id": "S2A_MSIL2A_20180508T104031_N9999_R008_T31UGR_30_07",
+      "side": "train",
+      "source_band_count": 12,
+      "native_mismatched_bands": [
+        "B01",
+        "B02",
+        "B03",
+        "B04",
+        "B05",
+        "B06",
+        "B07",
+        "B08",
+        "B8A",
+        "B09",
+        "B11",
+        "B12"
+      ],
+      "normalized_max_abs_diff": 3.3603765964508057,
+      "source_native": {
+        "B01": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B02": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B03": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B04": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B05": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B06": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B07": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B08": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B8A": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B09": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B11": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B12": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        }
+      }
+    },
+    {
+      "patch_id": "S2B_MSIL2A_20180421T100029_N9999_R122_T33UXQ_29_86",
+      "side": "train",
+      "source_band_count": 12,
+      "native_mismatched_bands": [
+        "B01",
+        "B02",
+        "B03",
+        "B04",
+        "B05",
+        "B06",
+        "B07",
+        "B08",
+        "B8A",
+        "B09",
+        "B11",
+        "B12"
+      ],
+      "normalized_max_abs_diff": 4.578955173492432,
+      "source_native": {
+        "B01": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B02": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B03": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B04": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B05": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B06": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B07": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B08": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B8A": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B09": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B11": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B12": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        }
+      }
+    },
+    {
+      "patch_id": "S2A_MSIL2A_20171221T112501_N9999_R037_T29SND_06_81",
+      "side": "train",
+      "source_band_count": 12,
+      "native_mismatched_bands": [
+        "B01",
+        "B02",
+        "B03",
+        "B04",
+        "B05",
+        "B06",
+        "B07",
+        "B08",
+        "B8A",
+        "B09",
+        "B11",
+        "B12"
+      ],
+      "normalized_max_abs_diff": 2.686040163040161,
+      "source_native": {
+        "B01": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B02": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B03": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B04": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B05": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B06": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B07": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B08": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B8A": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B09": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B11": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B12": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        }
+      }
+    },
+    {
+      "patch_id": "S2B_MSIL2A_20180421T100029_N9999_R122_T33TWN_73_54",
+      "side": "train",
+      "source_band_count": 12,
+      "native_mismatched_bands": [
+        "B01",
+        "B02",
+        "B03",
+        "B04",
+        "B05",
+        "B06",
+        "B07",
+        "B08",
+        "B8A",
+        "B09",
+        "B11",
+        "B12"
+      ],
+      "normalized_max_abs_diff": 3.112438917160034,
+      "source_native": {
+        "B01": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B02": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B03": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B04": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B05": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B06": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B07": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B08": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B8A": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B09": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B11": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B12": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        }
+      }
+    },
+    {
+      "patch_id": "S2B_MSIL2A_20171219T095409_N9999_R079_T33TWN_77_64",
+      "side": "train",
+      "source_band_count": 12,
+      "native_mismatched_bands": [
+        "B01",
+        "B02",
+        "B03",
+        "B04",
+        "B05",
+        "B06",
+        "B07",
+        "B08",
+        "B8A",
+        "B09",
+        "B11",
+        "B12"
+      ],
+      "normalized_max_abs_diff": 10.286555290222168,
+      "source_native": {
+        "B01": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B02": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B03": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B04": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B05": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B06": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B07": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B08": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B8A": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B09": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B11": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B12": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        }
+      }
+    },
+    {
+      "patch_id": "S2A_MSIL2A_20180507T093041_N9999_R136_T35UMA_09_84",
+      "side": "train",
+      "source_band_count": 12,
+      "native_mismatched_bands": [
+        "B01",
+        "B02",
+        "B03",
+        "B04",
+        "B05",
+        "B06",
+        "B07",
+        "B08",
+        "B8A",
+        "B09",
+        "B11",
+        "B12"
+      ],
+      "normalized_max_abs_diff": 3.8299169540405273,
+      "source_native": {
+        "B01": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B02": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B03": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B04": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B05": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B06": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B07": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B08": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B8A": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B09": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B11": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B12": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        }
+      }
+    },
+    {
+      "patch_id": "S2A_MSIL2A_20180413T095031_N9999_R079_T34UEG_48_24",
+      "side": "train",
+      "source_band_count": 12,
+      "native_mismatched_bands": [
+        "B01",
+        "B02",
+        "B03",
+        "B04",
+        "B05",
+        "B06",
+        "B07",
+        "B08",
+        "B8A",
+        "B09",
+        "B11",
+        "B12"
+      ],
+      "normalized_max_abs_diff": 2.868065595626831,
+      "source_native": {
+        "B01": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B02": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B03": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B04": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B05": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B06": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B07": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B08": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B8A": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B09": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B11": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B12": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        }
+      }
+    },
+    {
+      "patch_id": "S2B_MSIL2A_20171016T101009_N9999_R022_T34VDM_25_19",
+      "side": "train",
+      "source_band_count": 12,
+      "native_mismatched_bands": [
+        "B01",
+        "B02",
+        "B03",
+        "B04",
+        "B05",
+        "B06",
+        "B07",
+        "B08",
+        "B8A",
+        "B09",
+        "B11",
+        "B12"
+      ],
+      "normalized_max_abs_diff": 4.569527626037598,
+      "source_native": {
+        "B01": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B02": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B03": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B04": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B05": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B06": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B07": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B08": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B8A": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B09": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B11": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B12": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        }
+      }
+    },
+    {
+      "patch_id": "S2A_MSIL2A_20180508T104031_N9999_R008_T31UGR_07_78",
+      "side": "train",
+      "source_band_count": 12,
+      "native_mismatched_bands": [
+        "B01",
+        "B02",
+        "B03",
+        "B04",
+        "B05",
+        "B06",
+        "B07",
+        "B08",
+        "B8A",
+        "B09",
+        "B11",
+        "B12"
+      ],
+      "normalized_max_abs_diff": 4.775937080383301,
+      "source_native": {
+        "B01": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B02": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B03": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B04": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B05": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B06": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B07": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B08": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B8A": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B09": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B11": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B12": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        }
+      }
+    },
+    {
+      "patch_id": "S2B_MSIL2A_20170906T101019_N9999_R022_T34VDN_77_47",
+      "side": "train",
+      "source_band_count": 12,
+      "native_mismatched_bands": [
+        "B01",
+        "B02",
+        "B03",
+        "B04",
+        "B05",
+        "B06",
+        "B07",
+        "B08",
+        "B8A",
+        "B09",
+        "B11",
+        "B12"
+      ],
+      "normalized_max_abs_diff": 3.1415810585021973,
+      "source_native": {
+        "B01": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B02": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B03": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B04": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B05": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B06": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B07": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B08": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B8A": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B09": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B11": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B12": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        }
+      }
+    },
+    {
+      "patch_id": "S2B_MSIL2A_20170914T093029_N9999_R136_T34TEQ_09_79",
+      "side": "train",
+      "source_band_count": 12,
+      "native_mismatched_bands": [
+        "B01",
+        "B02",
+        "B03",
+        "B04",
+        "B05",
+        "B06",
+        "B07",
+        "B08",
+        "B8A",
+        "B09",
+        "B11",
+        "B12"
+      ],
+      "normalized_max_abs_diff": 3.616560459136963,
+      "source_native": {
+        "B01": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B02": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B03": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B04": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B05": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B06": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B07": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B08": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B8A": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B09": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B11": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B12": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        }
+      }
+    },
+    {
+      "patch_id": "S2B_MSIL2A_20170923T100019_N9999_R122_T33TWM_15_29",
+      "side": "train",
+      "source_band_count": 12,
+      "native_mismatched_bands": [
+        "B01",
+        "B02",
+        "B03",
+        "B04",
+        "B05",
+        "B06",
+        "B07",
+        "B08",
+        "B8A",
+        "B09",
+        "B11",
+        "B12"
+      ],
+      "normalized_max_abs_diff": 4.399782657623291,
+      "source_native": {
+        "B01": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B02": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B03": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B04": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B05": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B06": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B07": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B08": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B8A": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B09": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B11": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B12": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        }
+      }
+    },
+    {
+      "patch_id": "S2B_MSIL2A_20180522T093029_N9999_R136_T35VPJ_18_56",
+      "side": "train",
+      "source_band_count": 12,
+      "native_mismatched_bands": [
+        "B01",
+        "B02",
+        "B03",
+        "B04",
+        "B05",
+        "B06",
+        "B07",
+        "B08",
+        "B8A",
+        "B09",
+        "B11",
+        "B12"
+      ],
+      "normalized_max_abs_diff": 3.595574378967285,
+      "source_native": {
+        "B01": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B02": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B03": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B04": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B05": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B06": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B07": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B08": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B8A": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B09": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B11": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B12": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        }
+      }
+    },
+    {
+      "patch_id": "S2B_MSIL2A_20170709T094029_N9999_R036_T35VNL_88_25",
+      "side": "train",
+      "source_band_count": 12,
+      "native_mismatched_bands": [
+        "B01",
+        "B02",
+        "B03",
+        "B04",
+        "B05",
+        "B06",
+        "B07",
+        "B08",
+        "B8A",
+        "B09",
+        "B11",
+        "B12"
+      ],
+      "normalized_max_abs_diff": 4.822107315063477,
+      "source_native": {
+        "B01": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B02": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B03": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B04": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B05": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B06": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B07": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B08": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B8A": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B09": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B11": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B12": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        }
+      }
+    },
+    {
+      "patch_id": "S2A_MSIL2A_20180225T114351_N9999_R123_T29UPU_12_22",
+      "side": "train",
+      "source_band_count": 12,
+      "native_mismatched_bands": [
+        "B01",
+        "B02",
+        "B03",
+        "B04",
+        "B05",
+        "B06",
+        "B07",
+        "B08",
+        "B8A",
+        "B09",
+        "B11",
+        "B12"
+      ],
+      "normalized_max_abs_diff": 9.772078514099121,
+      "source_native": {
+        "B01": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B02": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B03": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B04": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B05": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B06": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B07": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B08": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B8A": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B09": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B11": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B12": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        }
+      }
+    },
+    {
+      "patch_id": "S2A_MSIL2A_20180508T104031_N9999_R008_T31UGR_04_70",
+      "side": "train",
+      "source_band_count": 12,
+      "native_mismatched_bands": [
+        "B01",
+        "B02",
+        "B03",
+        "B04",
+        "B05",
+        "B06",
+        "B07",
+        "B08",
+        "B8A",
+        "B09",
+        "B11",
+        "B12"
+      ],
+      "normalized_max_abs_diff": 3.8090713024139404,
+      "source_native": {
+        "B01": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B02": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B03": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B04": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B05": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B06": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B07": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B08": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B8A": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B09": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B11": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B12": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        }
+      }
+    },
+    {
+      "patch_id": "S2A_MSIL2A_20180509T101031_N9999_R022_T34VDR_88_49",
+      "side": "train",
+      "source_band_count": 12,
+      "native_mismatched_bands": [
+        "B01",
+        "B02",
+        "B03",
+        "B04",
+        "B05",
+        "B06",
+        "B07",
+        "B08",
+        "B8A",
+        "B09",
+        "B11",
+        "B12"
+      ],
+      "normalized_max_abs_diff": 3.5109317302703857,
+      "source_native": {
+        "B01": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B02": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B03": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B04": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B05": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B06": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B07": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B08": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B8A": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B09": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B11": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B12": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        }
+      }
+    },
+    {
+      "patch_id": "S2A_MSIL2A_20171201T112431_N9999_R037_T29SNB_84_07",
+      "side": "train",
+      "source_band_count": 12,
+      "native_mismatched_bands": [
+        "B01",
+        "B02",
+        "B03",
+        "B04",
+        "B05",
+        "B06",
+        "B07",
+        "B08",
+        "B8A",
+        "B09",
+        "B11",
+        "B12"
+      ],
+      "normalized_max_abs_diff": 3.4752559661865234,
+      "source_native": {
+        "B01": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B02": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B03": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B04": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B05": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B06": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B07": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B08": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B8A": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B09": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B11": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B12": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        }
+      }
+    },
+    {
+      "patch_id": "S2A_MSIL2A_20171101T094131_N9999_R036_T35VNK_59_30",
+      "side": "train",
+      "source_band_count": 12,
+      "native_mismatched_bands": [
+        "B01",
+        "B02",
+        "B03",
+        "B04",
+        "B05",
+        "B06",
+        "B07",
+        "B08",
+        "B8A",
+        "B09",
+        "B11",
+        "B12"
+      ],
+      "normalized_max_abs_diff": 10.04496955871582,
+      "source_native": {
+        "B01": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B02": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B03": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B04": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B05": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B06": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B07": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B08": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B8A": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B09": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B11": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B12": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        }
+      }
+    },
+    {
+      "patch_id": "S2B_MSIL2A_20180515T094029_N9999_R036_T35VNJ_81_08",
+      "side": "train",
+      "source_band_count": 12,
+      "native_mismatched_bands": [
+        "B01",
+        "B02",
+        "B03",
+        "B04",
+        "B05",
+        "B06",
+        "B07",
+        "B08",
+        "B8A",
+        "B09",
+        "B11",
+        "B12"
+      ],
+      "normalized_max_abs_diff": 4.1716461181640625,
+      "source_native": {
+        "B01": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B02": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B03": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B04": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B05": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B06": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B07": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B08": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B8A": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B09": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B11": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B12": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        }
+      }
+    },
+    {
+      "patch_id": "S2A_MSIL2A_20171121T112351_N9999_R037_T29SND_02_77",
+      "side": "train",
+      "source_band_count": 12,
+      "native_mismatched_bands": [
+        "B01",
+        "B02",
+        "B03",
+        "B04",
+        "B05",
+        "B06",
+        "B07",
+        "B08",
+        "B8A",
+        "B09",
+        "B11",
+        "B12"
+      ],
+      "normalized_max_abs_diff": 3.746605157852173,
+      "source_native": {
+        "B01": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B02": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B03": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B04": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B05": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B06": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B07": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B08": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B8A": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B09": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B11": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B12": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        }
+      }
+    },
+    {
+      "patch_id": "S2B_MSIL2A_20180522T093029_N9999_R136_T35VPJ_45_43",
+      "side": "train",
+      "source_band_count": 12,
+      "native_mismatched_bands": [
+        "B01",
+        "B02",
+        "B03",
+        "B04",
+        "B05",
+        "B06",
+        "B07",
+        "B08",
+        "B8A",
+        "B09",
+        "B11",
+        "B12"
+      ],
+      "normalized_max_abs_diff": 2.6833243370056152,
+      "source_native": {
+        "B01": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B02": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B03": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B04": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B05": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B06": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B07": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B08": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B8A": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B09": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B11": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B12": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        }
+      }
+    },
+    {
+      "patch_id": "S2B_MSIL2A_20180326T112109_N9999_R037_T29SNB_68_09",
+      "side": "train",
+      "source_band_count": 12,
+      "native_mismatched_bands": [
+        "B01",
+        "B02",
+        "B03",
+        "B04",
+        "B05",
+        "B06",
+        "B07",
+        "B08",
+        "B8A",
+        "B09",
+        "B11",
+        "B12"
+      ],
+      "normalized_max_abs_diff": 9.560297012329102,
+      "source_native": {
+        "B01": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B02": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B03": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B04": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B05": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B06": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B07": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B08": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B8A": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B09": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B11": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B12": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        }
+      }
+    },
+    {
+      "patch_id": "S2B_MSIL2A_20180506T105029_N9999_R051_T31UER_87_47",
+      "side": "train",
+      "source_band_count": 12,
+      "native_mismatched_bands": [
+        "B01",
+        "B02",
+        "B03",
+        "B04",
+        "B05",
+        "B06",
+        "B07",
+        "B08",
+        "B8A",
+        "B09",
+        "B11",
+        "B12"
+      ],
+      "normalized_max_abs_diff": 9.082568168640137,
+      "source_native": {
+        "B01": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B02": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B03": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B04": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B05": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B06": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B07": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B08": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B8A": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B09": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B11": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B12": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        }
+      }
+    },
+    {
+      "patch_id": "S2B_MSIL2A_20170924T093019_N9999_R136_T35VPK_68_31",
+      "side": "train",
+      "source_band_count": 12,
+      "native_mismatched_bands": [
+        "B01",
+        "B02",
+        "B03",
+        "B04",
+        "B05",
+        "B06",
+        "B07",
+        "B08",
+        "B8A",
+        "B09",
+        "B11",
+        "B12"
+      ],
+      "normalized_max_abs_diff": 2.5448834896087646,
+      "source_native": {
+        "B01": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B02": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B03": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B04": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B05": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B06": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B07": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B08": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B8A": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B09": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B11": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B12": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        }
+      }
+    },
+    {
+      "patch_id": "S2A_MSIL2A_20180413T095031_N9999_R079_T35VLG_69_21",
+      "side": "train",
+      "source_band_count": 12,
+      "native_mismatched_bands": [
+        "B01",
+        "B02",
+        "B03",
+        "B04",
+        "B05",
+        "B06",
+        "B07",
+        "B08",
+        "B8A",
+        "B09",
+        "B11",
+        "B12"
+      ],
+      "normalized_max_abs_diff": 8.770075798034668,
+      "source_native": {
+        "B01": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B02": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B03": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B04": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B05": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B06": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B07": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B08": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B8A": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B09": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B11": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B12": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        }
+      }
+    },
+    {
+      "patch_id": "S2A_MSIL2A_20180225T114351_N9999_R123_T29UPU_23_41",
+      "side": "train",
+      "source_band_count": 12,
+      "native_mismatched_bands": [
+        "B01",
+        "B02",
+        "B03",
+        "B04",
+        "B05",
+        "B06",
+        "B07",
+        "B08",
+        "B8A",
+        "B09",
+        "B11",
+        "B12"
+      ],
+      "normalized_max_abs_diff": 2.9016430377960205,
+      "source_native": {
+        "B01": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B02": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B03": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B04": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B05": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B06": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B07": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B08": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B8A": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B09": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B11": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B12": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        }
+      }
+    },
+    {
+      "patch_id": "S2B_MSIL2A_20180511T100029_N9999_R122_T34VDM_55_24",
+      "side": "train",
+      "source_band_count": 12,
+      "native_mismatched_bands": [
+        "B01",
+        "B02",
+        "B03",
+        "B04",
+        "B05",
+        "B06",
+        "B07",
+        "B08",
+        "B8A",
+        "B09",
+        "B11",
+        "B12"
+      ],
+      "normalized_max_abs_diff": 3.95883846282959,
+      "source_native": {
+        "B01": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B02": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B03": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B04": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B05": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B06": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B07": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B08": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B8A": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B09": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B11": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B12": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        }
+      }
+    },
+    {
+      "patch_id": "S2A_MSIL2A_20170717T113321_N9999_R080_T29UPV_60_31",
+      "side": "train",
+      "source_band_count": 12,
+      "native_mismatched_bands": [
+        "B01",
+        "B02",
+        "B03",
+        "B04",
+        "B05",
+        "B06",
+        "B07",
+        "B08",
+        "B8A",
+        "B09",
+        "B11",
+        "B12"
+      ],
+      "normalized_max_abs_diff": 3.5171103477478027,
+      "source_native": {
+        "B01": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B02": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B03": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B04": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B05": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B06": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B07": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B08": {
+          "shape": [
+            120,
+            120
+          ],
+          "dtype": "uint16"
+        },
+        "B8A": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B09": {
+          "shape": [
+            20,
+            20
+          ],
+          "dtype": "uint16"
+        },
+        "B11": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        },
+        "B12": {
+          "shape": [
+            60,
+            60
+          ],
+          "dtype": "uint16"
+        }
+      }
+    }
+  ],
+  "last_progress": 30,
+  "archive_bytes_streamed": 60921569280,
+  "archive_pass_seconds": 310.80537808398367,
+  "source_complete_patch_count": 40,
+  "compared_patch_count": 40,
+  "native_mismatched_band_count": 360,
+  "normalized_mismatched_patch_count": 30,
+  "normalized_max_abs_diff": 10.286555290222168,
+  "pass": false
+}

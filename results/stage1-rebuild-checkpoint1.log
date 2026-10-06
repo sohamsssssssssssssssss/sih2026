@@ -1,0 +1,10 @@
+building first shard only
+COMMAND ["/Users/soham/sih2026/.venv-stage1/bin/python", "-u", "scripts/build_stage1_train_shards.py", "--out", "data/shards/train-150000-v2", "--selection-id-list", "data/manifests/bigearthnet/stage1-train-rebuild-ids-loop10.v1.json", "--seed", "26168", "--patches-per-shard", "2000", "--n-total", "2000", "--published-manifest", "data/manifests/bigearthnet/stage1-shards-train-150000.v2.json", "--selection-record", "results/stage1-rebuild-checkpoint1-selection.json", "--exclude-shards", "data/shards/eval-2000", "--min-free-bytes", "45000000000", "--shard-window", "1", "--report", "results/stage1-rebuild-checkpoint1-build.json"]
+OMP: Error #179: Function Can't open SHM failed:
+OMP: System error #0: Undefined error: 0
+STOPPED ON FAILURE
+Traceback (most recent call last):
+  File "/private/tmp/stage1_checkpoint1_controller.py", line 31, in <module>
+    if code:raise RuntimeError('Build CLI failed')
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: Build CLI failed

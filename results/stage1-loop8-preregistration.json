@@ -1,0 +1,176 @@
+{
+  "kind": "loop 8 preregistration (full-run data pipeline + training stage, prepare only; no training run in this session)",
+  "git_sha": "1ceb9d161e1f654da96b1f57b31724e48ac29250",
+  "split_name": "caption-geo-split.v1/train",
+  "n": 0,
+  "seed": 26168,
+  "device": "CPU-only preparation (Apple M5 MacBook Pro, py3.11.15 .venv-stage1); no training run in this session",
+  "timestamp_utc": "2026-10-04T21:22:46+00:00",
+  "revision": "66285546d2b821cf421d4f5eb2576359d3770cd3",
+  "weight_sha256": {
+    "model-00001-of-00002.safetensors": "41a8895c164b4d32bae6b302f4603fcbc1797f32dafa45c7e9bcda23c6755df8",
+    "model-00002-of-00002.safetensors": "365531ff8752420e89dee707b79d021fb2d6e25abafe486f080555a4fe6972e4"
+  },
+  "frozen_contract_sha256": "ab02179d2b4cf33c320a897d75318484189b249d99fff6cdd386016df908912d",
+  "frozen_split_sha256": "3e5b1d774125c7b48a9454dbb33e6144aee8d990d8966e830987836159bd83ee",
+  "scope": {
+    "commit": false,
+    "push": false,
+    "deletes": false,
+    "kaggle_upload": false,
+    "training_run": false,
+    "downloads": false,
+    "archive_extraction": false,
+    "extraction_rationale": "BigEarthNet-S2 extracts to roughly 0.5 TB; free disk is 81 GiB with a 40 GiB buffer, so no extraction is permitted. Every archive access in this loop is a single sequential gzip stream that keeps only the selected members in memory.",
+    "unchanged_by_this_loop": [
+      "data/manifests/bigearthnet/norm_contract.json",
+      "data/manifests/bigearthnet/caption-geo-split.v1.csv.gz",
+      "models/qwen_vl/stage1.py patch-embed initialization",
+      "configs/model_artifacts.json pinned checkpoint"
+    ],
+    "numbers_recorded_by_this_loop": "CPU unit-test outcomes, file hashes, measured shard bytes for one 2000-patch shard, and RSVQA-LR facts read from this repository. No training, throughput, memory, or accuracy number is recorded here."
+  },
+  "inventory_observed": {
+    "root": "/Users/soham/Datasets/BigEarthNet",
+    "s2_archive_parts": [
+      {"name": "V2/BigEarthNet-S2.tar.gzaa", "bytes": 48318382080, "hf_lfs_sha256": "a44e4c9d8dde1affd7107640dd0070b811ca848205363f8dd8f75bebccea0ed3", "hf_commit": "6055d57f855c13479bf11498cddf11f83db557c7"},
+      {"name": "V2/BigEarthNet-S2.tar.gzab", "bytes": 15193663638, "hf_lfs_sha256": "e0bfe57038e07ff09add42e5bff108d221da10a6e45533fd2eb4ac05e6d90dc2", "hf_commit": "6055d57f855c13479bf11498cddf11f83db557c7"}
+    ],
+    "s2_archive_total_bytes": 63512045718,
+    "s2_complete_per_hf_tree": true,
+    "s2_completeness_method": "local part sizes equal the HF tree lfs_size for both parts at commit 6055d57f855c13479bf11498cddf11f83db557c7; the two parts are the only V2 S2 files in that tree, so the set is complete. Full-part SHA256 was NOT recomputed in this loop (about 63.5 GB of hashing); the recorded lfs_sha256 values are the reference for the future Kaggle build.",
+    "ben_txt": {"name": "BigEarthNet.txt.parquet", "bytes": 466819745, "rows": 9553962},
+    "split_manifest": {"name": "data/manifests/bigearthnet/caption-geo-split.v1.csv.gz", "rows": 463932, "train_patches": 422809, "train_tiles": 48, "eval_patches": 41123, "eval_tiles": 6},
+    "missing": "nothing required for a 12-band train shard build; S1 and Reference_Maps parts are also present but out of scope",
+    "rsvqa_lr_present_locally": false,
+    "disk_free_bytes_at_start": 86871000000,
+    "disk_buffer_bytes": 42949672960
+  },
+  "shard_spec": {
+    "split": "train only (eval tiles never enter a train shard)",
+    "bands": ["B01", "B02", "B03", "B04", "B05", "B06", "B07", "B08", "B8A", "B09", "B11", "B12"],
+    "dtype": "uint16",
+    "layout": "one array per band at its native GSD: B02/B03/B04/B08 (patches, 120, 120), the six 20 m bands (patches, 60, 60), B01/B09 (patches, 20, 20); no resample in the shard (amendments[2])",
+    "normalization": "none in the shard; the frozen norm contract is applied at load time by the existing data.bigearthnet_s2 loader path",
+    "shard_patches": 2000,
+    "container": "one .npz per shard (ZIP store, no deflate) holding one array per band; one sidecar .json holding the rows",
+    "row_fields": ["patch_id", "mgrs_tile", "country", "official_split", "caption"],
+    "container_rationale": "per-shard random access, no per-sample decode, and no CPU cost at training time. The deflate ratio is measured on the proof shard and recorded; a compressed variant is NOT adopted in this loop and would need its own pre-registration.",
+    "manifest": "data/manifests/bigearthnet/stage1-shards.v1.json with per-shard sha256, byte sizes, row counts, tile histogram, and the selection description",
+    "streaming": "single sequential gzip tar pass over the two S2 parts; only selected members are decoded, through rasterio MemoryFile, never written to disk"
+  },
+  "selection": {
+    "algorithm": "numpy.default_rng(seed); train tiles in sorted order; patch IDs sorted within a tile; round-robin equal quotas capped by each tile's available count; no replacement; per-tile take order is that tile's rng permutation; shard order is the selection order",
+    "algorithm_note": "mirrors the accepted loop-4 '4000-patch-style' selection recorded in data/manifests/bigearthnet/stage1-norm-train-ids.v1.json; it is a new selection at a new seed, not a reuse of the 4,000-ID list",
+    "seed": 26168,
+    "stratification": "all 48 train tiles are represented in every shard build for N >= 48; tile quotas differ by at most one patch until a tile is exhausted",
+    "n_total_parameter": true,
+    "n_grid": [100000, 150000, 250000, 422809],
+    "n_selection_rule": "N is chosen as the largest value in n_grid whose measured-derived total shard bytes fit the confirmed Kaggle session disk budget. Default budget SESSION_DISK_BUDGET_BYTES = 30000000000 until the session disk is measured; the builder measures shutil.disk_usage at start and refuses to exceed the budget or to cross the 40 GiB local buffer.",
+    "no_fixed_n_before_measurement": true
+  },
+  "shard_build_gates": {
+    "split_purity": {"rule": "every shard patch_id is in caption-geo-split.v1 train; zero eval-tile patch IDs", "threshold": 0},
+    "no_duplicates": {"rule": "patch IDs are unique across the whole build", "threshold": 0},
+    "bands_present": {"rule": "each shard row has all 12 bands decoded at 120x120 uint16", "threshold": 0},
+    "caption_join": {"rule": "each shard caption is byte-identical to the type=='captioning' BigEarthNet.txt 'output' for that patch_id", "threshold": 0},
+    "native_resolution": {"rule": "each band decodes at its native GSD (120/60/20 as measured; amendments[2])", "threshold": 0},
+    "raw_zero_fraction": {"rule": "fraction of built patches containing any raw DN 0 (which the frozen contract rejects at normalization time)", "max_fraction": 0.01, "on_violation": "abort the build and report; patches are never silently dropped"},
+    "all_one_pixel_report_only": {"rule": "fraction of pixels where all 12 bands equal 1 is recorded, not gated (loop 3/4 already characterised it)"},
+    "manifest_integrity": {"rule": "every shard file's SHA256 and byte size in the manifest match the file on disk", "threshold": 0},
+    "determinism": {"rule": "same seed and same N produce byte-identical per-shard SHA256 values", "threshold": 0},
+    "max_attempts_per_problem": 2
+  },
+  "dataset_and_resume": {
+    "loader": "streaming shard reader: shard index, offset within shard, per-epoch seeded permutation, and RNG state",
+    "checkpoint_contents": ["adapter/visual/patch-embed state dict", "optimizer state", "scheduler state", "data position (shard index, offset)", "RNG state", "step", "epoch", "config sha256"],
+    "resume_gates": {
+      "no_skip_no_duplicate": {"rule": "the concatenated patch_id sequence of a kill/resume run equals the uninterrupted run exactly, element for element", "threshold": 0},
+      "continuity": {"rule": "resumed step counter, LR, and optimizer state continue from the checkpoint without re-initialization", "threshold": 0}
+    },
+    "epoch_behaviour": "deterministic per-epoch permutation from (seed, epoch); an epoch boundary is a legal checkpoint position"
+  },
+  "train_stage": {
+    "entry": "scripts/run_stage1_full.py (mirrored into packages/stage1-t4-smoke/src/scripts/)",
+    "config": "packages/stage1-t4-smoke/config-full.yaml",
+    "hyperparameters": "identical to the accepted loop-7 plan: vision 1e-5, patch-embed 1e-4, LoRA 1e-4, r=32 alpha=64, targets q,k,v,o,gate,up,down, cosine schedule with 3% warmup, grad clip 1.0, gradient checkpointing on, fp16 + sdpa, batch size 1",
+    "steps": "parameter; set from measured samples/s so a session fits its budget, recorded in the stage JSON",
+    "checkpoint_every_steps": 500,
+    "wall_clock_guard": {
+      "default_limit_seconds": 39600,
+      "rule": "at the guard the run writes a final checkpoint, flushes the results JSON, and exits cleanly with status 'wall_clock_guard_exit'; the exit is not an error and the stage records steps_completed vs steps_requested",
+      "reserve_seconds": 300,
+      "configurable": true
+    },
+    "logging": ["loss per optimizer step", "samples_per_second (rolling)", "peak GPU memory", "checkpoint wall-clock position"],
+    "periodic_eval": {
+      "every_steps": 2000,
+      "set": "eval-split patches only, from a separate small shard built from the 6 eval tiles",
+      "size": 2000,
+      "metric": "mean caption-only cross-entropy on the frozen contract",
+      "no_optimizer_updates": true
+    },
+    "results_json_provenance": ["git_sha", "revision", "split_name", "n", "seed", "device", "dtype", "timestamp_utc", "shard_manifest_sha256", "steps_requested", "steps_completed", "wall_clock_limit_seconds"],
+    "no_gates_on_learning": "a full run has no pre-registered pass/fail quality gate; it records measurements only"
+  },
+  "gate_eval_protocol_preregistration": {
+    "run": false,
+    "code_changes": false,
+    "options_to_evaluate": [
+      "A: zero-fill the 9 missing bands after normalization",
+      "B: map RGB to B04/B03/B02 with a stated scale conversion and zero-fill the rest",
+      "C: map available bands by spectral match where present, zero otherwise"
+    ],
+    "must_be_preregistered_before_any_rsvqa_gate_eval": [
+      "chosen fill option and its exact normalization order (normalize then fill, or fill then normalize)",
+      "target pixel size and resampling for the 256x256 RSVQA-LR images",
+      "the DN/reflectance scale assumed for RSVQA-LR TIFFs (unverified locally; the files are not on this machine)",
+      "band mapping table and any scale factor, frozen before the first eval sample",
+      "that the eval-time patch embed must be the Stage-1 12-band path rather than the stock 3-channel processor path"
+    ],
+    "known_risks_to_record": [
+      "zero-filled bands shift the input distribution away from training on all 12 real bands",
+      "spectral confusion if an RGB band is placed in a non-RGB slot",
+      "RSVQA-LR regions and BEN countries differ, so the domain gap is not measured by any local artifact"
+    ]
+  },
+  "amendments": [
+    {
+      "index": 0,
+      "timestamp_utc": "2026-10-04T20:05:00+00:00",
+      "trigger": "results/stage1-loop8-shard-build-attempt1-failure.json: a selected train patch band decodes as uint16 (20, 20), not (120, 120), so attempt 1 aborted during the archive pass",
+      "change": "the builder now applies explicit per-patch acceptance rules instead of aborting on the first off-size member: R1 every band must decode as 120x120 uint16; R2 all twelve bands must be present; R3 a patch containing any raw DN 0 is rejected because the frozen contract refuses to normalize such a patch; accepted patches fill shard rows in candidate order, and rejected patches are recorded with their reason and shape",
+      "candidate_pool": "the candidate set is the stratified selection computed up front (select_patch_ids over the train side at the fixed seed), exactly as the accepted loop-4 selection was; only those patches are decoded, and they land in the shards in archive order",
+      "shortfall_rule": "a rejected candidate is not refilled, so the accepted count can be below the selection size; the shortfall, the never-seen candidates, and every rejected patch with its reason are recorded in the manifest and the build report. Training N is the accepted count, never the requested count.",
+      "gates_added": {
+        "raw_zero_fraction": "unchanged at <= 0.01 over accepted patches; the fraction of candidates rejected by R3 is reported separately as candidate_rejected_fraction",
+        "shape_rejected_recorded": "every rejected patch is listed with its reason and observed shape; a rejection is never silent"
+      },
+      "gates_loosened": "none. native_resolution stays a zero-violation gate over accepted patches; the previous abort-on-first-violation behaviour is replaced by an explicit, recorded rejection rule"
+    },
+    {
+      "index": 1,
+      "timestamp_utc": "2026-10-04T20:18:00+00:00",
+      "trigger": "implementation review of amendment 0: filling rows in candidate order would have to buffer every candidate decoded ahead of the head of the queue, which is unbounded for a full-train build, and accepting whatever the stream reaches first would have destroyed the tile stratification of the seeded selection",
+      "change": "the selection set is computed up front and the stream keeps only those patches, so shard row order is archive order and the accepted set keeps the seeded per-tile quotas; no refilling across rejections",
+      "consequence": "row order inside a shard is archive order rather than selection order; training shuffles per epoch from (seed, epoch), so row order has no effect on the training sequence",
+      "gates_loosened": "none"
+    },
+    {
+      "index": 2,
+      "timestamp_utc": "2026-10-04T20:40:00+00:00",
+      "trigger": "results/stage1-loop8-shard-build-attempt2-failure.json: with a uniform 120x120 acceptance rule every selected patch was rejected. Read-only diagnostics over the archive (no writes) measured the real band geometry: the 10 m bands (B02, B03, B04, B08) are 120x120, the 20 m bands (B05, B06, B07, B8A, B11, B12) are 60x60, and the 60 m bands (B01, B09) are 20x20. This is the same fact loop 3 recorded as 'B01/B09 retain visibly coarse 60 m texture after 6x bilinear upsampling'.",
+      "change": "the shard stores each band at its own native GSD (uint16, no resample, no normalization), which is what 'native-res uint16 per band' means for this dataset; the frozen contract's rasterio bilinear upsampling to 120x120 and the per-band mean/std are applied at load time through data.bigearthnet_s2.apply_contract, the same path the extracted-directory loader uses. R1 becomes 'every band decodes at its documented native size (120/60/20)'. Correction: the first pass of this amendment put B08 among the 20 m bands; a diagnostic build then rejected every patch with 'shape:B08:120x120'. Sentinel-2 B08 is a 10 m band and is now grouped with B02/B03/B04. The correction was measured from the archive, not assumed.",
+      "verification": "data/test_bigearthnet_shards.py::test_shard_pixels_match_the_extracted_directory_loader asserts that a shard row and the equivalent extracted TIFF directory produce identical contract-normalized tensors, so the shard path cannot drift from the frozen loader",
+      "byte_model_change": "one patch is now 4x120x120x2 + 6x60x60x2 + 2x20x20x2 = 160000 bytes instead of 12x120x120x2 = 345600 bytes; all size figures and projections must come from the newly measured shard",
+      "report_only_change": "the loop-3 'all twelve bands equal 1' pixel metric is not computable across native GSDs without resampling; per-band DN-1 fractions are recorded instead and remain ungated",
+      "gates_loosened": "none. native_resolution is still a zero-violation gate, now defined per band's native size; the raw DN 0 rejection rule is unchanged"
+    }
+  ],
+  "tests_planned": {
+    "new": "data/test_bigearthnet_shards.py and scripts/test_stage1_full.py (CPU, mocked model, no archive access)",
+    "covers": ["shard determinism for a fixed seed", "split purity", "resume exactness of the sample sequence", "wall-clock guard", "manifest integrity"],
+    "focused_then_full": true,
+    "full_suite_expected_min_pass": 441
+  }
+}

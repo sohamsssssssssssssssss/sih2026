@@ -1,0 +1,987 @@
+{
+  "kind": "stage-1 training shard set",
+  "git_sha": "1ceb9d161e1f654da96b1f57b31724e48ac29250",
+  "seed": 26168,
+  "side": "train",
+  "split_name": "caption-geo-split.v1/train",
+  "status": "aborted",
+  "stopped_reason": null,
+  "timestamp_utc": "2026-10-04T22:49:52+00:00",
+  "selection": "numpy.default_rng(seed); train tiles in sorted order; patch IDs sorted within a tile; round-robin equal quotas capped by each tile's available count; no replacement; per-tile take order is that tile's rng permutation; shard order is the selection order",
+  "selection_algorithm": "numpy.random.default_rng([seed, tile_index]) per tile; patch IDs sorted within a tile; round-robin equal quotas dealt one at a time across the side's tiles in sorted order and capped by each tile's available count; the selection is then emitted round-robin across tiles, so every prefix is tile-balanced",
+  "bands": [
+    "B01",
+    "B02",
+    "B03",
+    "B04",
+    "B05",
+    "B06",
+    "B07",
+    "B08",
+    "B8A",
+    "B09",
+    "B11",
+    "B12"
+  ],
+  "dtype": "uint16",
+  "native_size": {
+    "B01": 20,
+    "B02": 120,
+    "B03": 120,
+    "B04": 120,
+    "B05": 60,
+    "B06": 60,
+    "B07": 60,
+    "B08": 120,
+    "B8A": 60,
+    "B09": 20,
+    "B11": 60,
+    "B12": 60
+  },
+  "resampled_in_shard": false,
+  "normalized_in_shard": false,
+  "patches_per_shard": 2000,
+  "selection_size": 150000,
+  "shard_count": 75,
+  "shards_written": 40,
+  "n_patches": 80000,
+  "total_bytes": 12800115120,
+  "verified_on_resume": [],
+  "skipped_upfront_patches": 0,
+  "accepted_this_run": 80000,
+  "rejected_this_run": 0,
+  "rejected_count_total": 0,
+  "rejection_fraction_this_run": 0.0,
+  "rejected_by_reason": {},
+  "rejected_examples": {},
+  "archive_parts": [
+    {
+      "name": "BigEarthNet-S2.tar.gzaa",
+      "bytes": 48318382080
+    },
+    {
+      "name": "BigEarthNet-S2.tar.gzab",
+      "bytes": 15193663638
+    }
+  ],
+  "archive_bytes_streamed": 25176504320,
+  "seconds_elapsed": 412.2307410829817,
+  "seconds_per_patch_this_run": 0.005152884263537271,
+  "free_bytes_min": 73075023872,
+  "progress": [
+    {
+      "shard": 0,
+      "rows": 2000,
+      "bytes": 320002878,
+      "seconds": 9.84
+    },
+    {
+      "shard": 1,
+      "rows": 2000,
+      "bytes": 320002878,
+      "seconds": 9.67
+    },
+    {
+      "shard": 2,
+      "rows": 2000,
+      "bytes": 320002878,
+      "seconds": 8.15
+    },
+    {
+      "shard": 3,
+      "rows": 2000,
+      "bytes": 320002878,
+      "seconds": 10.42
+    },
+    {
+      "shard": 4,
+      "rows": 2000,
+      "bytes": 320002878,
+      "seconds": 8.22
+    },
+    {
+      "shard": 5,
+      "rows": 2000,
+      "bytes": 320002878,
+      "seconds": 10.58
+    },
+    {
+      "shard": 6,
+      "rows": 2000,
+      "bytes": 320002878,
+      "seconds": 8.29
+    },
+    {
+      "shard": 7,
+      "rows": 2000,
+      "bytes": 320002878,
+      "seconds": 11.03
+    },
+    {
+      "shard": 8,
+      "rows": 2000,
+      "bytes": 320002878,
+      "seconds": 8.41
+    },
+    {
+      "shard": 9,
+      "rows": 2000,
+      "bytes": 320002878,
+      "seconds": 10.15
+    },
+    {
+      "shard": 10,
+      "rows": 2000,
+      "bytes": 320002878,
+      "seconds": 8.22
+    },
+    {
+      "shard": 11,
+      "rows": 2000,
+      "bytes": 320002878,
+      "seconds": 8.77
+    },
+    {
+      "shard": 12,
+      "rows": 2000,
+      "bytes": 320002878,
+      "seconds": 8.25
+    },
+    {
+      "shard": 13,
+      "rows": 2000,
+      "bytes": 320002878,
+      "seconds": 10.85
+    },
+    {
+      "shard": 14,
+      "rows": 2000,
+      "bytes": 320002878,
+      "seconds": 9.24
+    },
+    {
+      "shard": 15,
+      "rows": 2000,
+      "bytes": 320002878,
+      "seconds": 9.06
+    },
+    {
+      "shard": 16,
+      "rows": 2000,
+      "bytes": 320002878,
+      "seconds": 8.27
+    },
+    {
+      "shard": 17,
+      "rows": 2000,
+      "bytes": 320002878,
+      "seconds": 10.83
+    },
+    {
+      "shard": 18,
+      "rows": 2000,
+      "bytes": 320002878,
+      "seconds": 11.35
+    },
+    {
+      "shard": 19,
+      "rows": 2000,
+      "bytes": 320002878,
+      "seconds": 8.18
+    },
+    {
+      "shard": 20,
+      "rows": 2000,
+      "bytes": 320002878,
+      "seconds": 15.69
+    },
+    {
+      "shard": 21,
+      "rows": 2000,
+      "bytes": 320002878,
+      "seconds": 8.46
+    },
+    {
+      "shard": 22,
+      "rows": 2000,
+      "bytes": 320002878,
+      "seconds": 9.34
+    },
+    {
+      "shard": 23,
+      "rows": 2000,
+      "bytes": 320002878,
+      "seconds": 9.09
+    },
+    {
+      "shard": 24,
+      "rows": 2000,
+      "bytes": 320002878,
+      "seconds": 10.0
+    },
+    {
+      "shard": 25,
+      "rows": 2000,
+      "bytes": 320002878,
+      "seconds": 9.03
+    },
+    {
+      "shard": 26,
+      "rows": 2000,
+      "bytes": 320002878,
+      "seconds": 29.11
+    },
+    {
+      "shard": 27,
+      "rows": 2000,
+      "bytes": 320002878,
+      "seconds": 10.81
+    },
+    {
+      "shard": 28,
+      "rows": 2000,
+      "bytes": 320002878,
+      "seconds": 19.89
+    },
+    {
+      "shard": 29,
+      "rows": 2000,
+      "bytes": 320002878,
+      "seconds": 9.36
+    },
+    {
+      "shard": 30,
+      "rows": 2000,
+      "bytes": 320002878,
+      "seconds": 8.49
+    },
+    {
+      "shard": 31,
+      "rows": 2000,
+      "bytes": 320002878,
+      "seconds": 10.24
+    },
+    {
+      "shard": 32,
+      "rows": 2000,
+      "bytes": 320002878,
+      "seconds": 8.6
+    },
+    {
+      "shard": 33,
+      "rows": 2000,
+      "bytes": 320002878,
+      "seconds": 8.22
+    },
+    {
+      "shard": 34,
+      "rows": 2000,
+      "bytes": 320002878,
+      "seconds": 10.94
+    },
+    {
+      "shard": 35,
+      "rows": 2000,
+      "bytes": 320002878,
+      "seconds": 8.31
+    },
+    {
+      "shard": 36,
+      "rows": 2000,
+      "bytes": 320002878,
+      "seconds": 11.63
+    },
+    {
+      "shard": 37,
+      "rows": 2000,
+      "bytes": 320002878,
+      "seconds": 8.35
+    },
+    {
+      "shard": 38,
+      "rows": 2000,
+      "bytes": 320002878,
+      "seconds": 8.34
+    },
+    {
+      "shard": 39,
+      "rows": 2000,
+      "bytes": 320002878,
+      "seconds": 10.54
+    }
+  ],
+  "shards": [
+    {
+      "index": 0,
+      "npz": "shard-00000.npz",
+      "npz_bytes": 320002878,
+      "npz_sha256": "c825d812a3ae715bd277213b1880e6ca7b526129734fa6cb5c59e5ba8e6ae1bd",
+      "sidecar": "shard-00000.json",
+      "rows": 2000,
+      "raw_pixel_bytes": 320000000,
+      "built_at_utc": "2026-10-04T22:43:09+00:00",
+      "seconds": 9.838523415994132,
+      "tile_counts": {
+        "T34VER": 2000
+      },
+      "tile_min": 2000,
+      "tile_max": 2000
+    },
+    {
+      "index": 1,
+      "npz": "shard-00001.npz",
+      "npz_bytes": 320002878,
+      "npz_sha256": "54654fac239d3968317c0d46e8006a0d4193f54af16b77461afd8aa1a7764fb7",
+      "sidecar": "shard-00001.json",
+      "rows": 2000,
+      "raw_pixel_bytes": 320000000,
+      "built_at_utc": "2026-10-04T22:43:19+00:00",
+      "seconds": 9.666468042007182,
+      "tile_counts": {
+        "T29UPU": 156,
+        "T34VER": 1844
+      },
+      "tile_min": 156,
+      "tile_max": 1844
+    },
+    {
+      "index": 2,
+      "npz": "shard-00002.npz",
+      "npz_bytes": 320002878,
+      "npz_sha256": "6d678175033d31fd949886e4c37375989391baeb0f131a30b2191d15884663e6",
+      "sidecar": "shard-00002.json",
+      "rows": 2000,
+      "raw_pixel_bytes": 320000000,
+      "built_at_utc": "2026-10-04T22:43:27+00:00",
+      "seconds": 8.154374624980846,
+      "tile_counts": {
+        "T29UPU": 2000
+      },
+      "tile_min": 2000,
+      "tile_max": 2000
+    },
+    {
+      "index": 3,
+      "npz": "shard-00003.npz",
+      "npz_bytes": 320002878,
+      "npz_sha256": "12a73186f8838e3e7dafa92b205362a5854ba2bf7a836e7dceaba66910a4e3c8",
+      "sidecar": "shard-00003.json",
+      "rows": 2000,
+      "raw_pixel_bytes": 320000000,
+      "built_at_utc": "2026-10-04T22:43:38+00:00",
+      "seconds": 10.422737667016918,
+      "tile_counts": {
+        "T29UPU": 1688,
+        "T35VPK": 312
+      },
+      "tile_min": 312,
+      "tile_max": 1688
+    },
+    {
+      "index": 4,
+      "npz": "shard-00004.npz",
+      "npz_bytes": 320002878,
+      "npz_sha256": "fb0ad62ab558264450ab17e20eb9fd9f74d5299ddcd7517d140ae775931dda7c",
+      "sidecar": "shard-00004.json",
+      "rows": 2000,
+      "raw_pixel_bytes": 320000000,
+      "built_at_utc": "2026-10-04T22:43:46+00:00",
+      "seconds": 8.220369292015675,
+      "tile_counts": {
+        "T35VPK": 2000
+      },
+      "tile_min": 2000,
+      "tile_max": 2000
+    },
+    {
+      "index": 5,
+      "npz": "shard-00005.npz",
+      "npz_bytes": 320002878,
+      "npz_sha256": "1a615e4654d1093bcbc23d13dc653f84869311038e92460be2d3f9b0d53bad86",
+      "sidecar": "shard-00005.json",
+      "rows": 2000,
+      "raw_pixel_bytes": 320000000,
+      "built_at_utc": "2026-10-04T22:43:56+00:00",
+      "seconds": 10.583034915995086,
+      "tile_counts": {
+        "T29SND": 468,
+        "T35VPK": 1532
+      },
+      "tile_min": 468,
+      "tile_max": 1532
+    },
+    {
+      "index": 6,
+      "npz": "shard-00006.npz",
+      "npz_bytes": 320002878,
+      "npz_sha256": "127a6cd7bc694c64992dd70c9a98e8f54e0cb23b6426d2222c2f8f452e2562e4",
+      "sidecar": "shard-00006.json",
+      "rows": 2000,
+      "raw_pixel_bytes": 320000000,
+      "built_at_utc": "2026-10-04T22:44:05+00:00",
+      "seconds": 8.286921500024619,
+      "tile_counts": {
+        "T29SND": 2000
+      },
+      "tile_min": 2000,
+      "tile_max": 2000
+    },
+    {
+      "index": 7,
+      "npz": "shard-00007.npz",
+      "npz_bytes": 320002878,
+      "npz_sha256": "ddf99ec6841d24f80656aef00471ae47f3200f4c9377cc632e32866f790e7962",
+      "sidecar": "shard-00007.json",
+      "rows": 2000,
+      "raw_pixel_bytes": 320000000,
+      "built_at_utc": "2026-10-04T22:44:16+00:00",
+      "seconds": 11.032970041007502,
+      "tile_counts": {
+        "T29SND": 1377,
+        "T29UPV": 623
+      },
+      "tile_min": 623,
+      "tile_max": 1377
+    },
+    {
+      "index": 8,
+      "npz": "shard-00008.npz",
+      "npz_bytes": 320002878,
+      "npz_sha256": "a8cfad14b27197e34d7ddc394a3482b46568afa12edeb218ac64838dbf3a9c11",
+      "sidecar": "shard-00008.json",
+      "rows": 2000,
+      "raw_pixel_bytes": 320000000,
+      "built_at_utc": "2026-10-04T22:44:24+00:00",
+      "seconds": 8.410978082974907,
+      "tile_counts": {
+        "T29UPV": 2000
+      },
+      "tile_min": 2000,
+      "tile_max": 2000
+    },
+    {
+      "index": 9,
+      "npz": "shard-00009.npz",
+      "npz_bytes": 320002878,
+      "npz_sha256": "fda769a05ceb4f560ae9919321159524424a6cf979613d6cee5fb8f44b2d55b5",
+      "sidecar": "shard-00009.json",
+      "rows": 2000,
+      "raw_pixel_bytes": 320000000,
+      "built_at_utc": "2026-10-04T22:44:34+00:00",
+      "seconds": 10.152432542003226,
+      "tile_counts": {
+        "T29UPV": 1221,
+        "T34TCR": 779
+      },
+      "tile_min": 779,
+      "tile_max": 1221
+    },
+    {
+      "index": 10,
+      "npz": "shard-00010.npz",
+      "npz_bytes": 320002878,
+      "npz_sha256": "74df326c7d94eeb688b750da2a576006de1ef2be2a760eeab431dad2122a7703",
+      "sidecar": "shard-00010.json",
+      "rows": 2000,
+      "raw_pixel_bytes": 320000000,
+      "built_at_utc": "2026-10-04T22:44:42+00:00",
+      "seconds": 8.215885165991494,
+      "tile_counts": {
+        "T34TCR": 2000
+      },
+      "tile_min": 2000,
+      "tile_max": 2000
+    },
+    {
+      "index": 11,
+      "npz": "shard-00011.npz",
+      "npz_bytes": 320002878,
+      "npz_sha256": "5a08785d460688feb1459d7cbda8f60386d248fb8e70bae556f076f861132c4c",
+      "sidecar": "shard-00011.json",
+      "rows": 2000,
+      "raw_pixel_bytes": 320000000,
+      "built_at_utc": "2026-10-04T22:44:51+00:00",
+      "seconds": 8.766877207992366,
+      "tile_counts": {
+        "T29SNC": 935,
+        "T34TCR": 1065
+      },
+      "tile_min": 935,
+      "tile_max": 1065
+    },
+    {
+      "index": 12,
+      "npz": "shard-00012.npz",
+      "npz_bytes": 320002878,
+      "npz_sha256": "5338e27729b9313806ad328aad02e2e5eec89b5744f44139d99c8540393f739c",
+      "sidecar": "shard-00012.json",
+      "rows": 2000,
+      "raw_pixel_bytes": 320000000,
+      "built_at_utc": "2026-10-04T22:44:59+00:00",
+      "seconds": 8.24918329200591,
+      "tile_counts": {
+        "T29SNC": 2000
+      },
+      "tile_min": 2000,
+      "tile_max": 2000
+    },
+    {
+      "index": 13,
+      "npz": "shard-00013.npz",
+      "npz_bytes": 320002878,
+      "npz_sha256": "b8f83bd4b24a118b405987bceee30dd15250046554fd3090b58dd1fe70abca03",
+      "sidecar": "shard-00013.json",
+      "rows": 2000,
+      "raw_pixel_bytes": 320000000,
+      "built_at_utc": "2026-10-04T22:45:10+00:00",
+      "seconds": 10.852251749980496,
+      "tile_counts": {
+        "T29SNC": 910,
+        "T32TMT": 1090
+      },
+      "tile_min": 910,
+      "tile_max": 1090
+    },
+    {
+      "index": 14,
+      "npz": "shard-00014.npz",
+      "npz_bytes": 320002878,
+      "npz_sha256": "b6981432a60d94d537a3a06d9a11649931d9e81f61cedae002dbd355606fe223",
+      "sidecar": "shard-00014.json",
+      "rows": 2000,
+      "raw_pixel_bytes": 320000000,
+      "built_at_utc": "2026-10-04T22:45:20+00:00",
+      "seconds": 9.236203125008615,
+      "tile_counts": {
+        "T32TMT": 2000
+      },
+      "tile_min": 2000,
+      "tile_max": 2000
+    },
+    {
+      "index": 15,
+      "npz": "shard-00015.npz",
+      "npz_bytes": 320002878,
+      "npz_sha256": "5769ad3f414722f84f7501310c0fc9baae819f9fefe8c5c629ee79289b8da598",
+      "sidecar": "shard-00015.json",
+      "rows": 2000,
+      "raw_pixel_bytes": 320000000,
+      "built_at_utc": "2026-10-04T22:45:29+00:00",
+      "seconds": 9.059221792005701,
+      "tile_counts": {
+        "T32TMT": 754,
+        "T35VNL": 1246
+      },
+      "tile_min": 754,
+      "tile_max": 1246
+    },
+    {
+      "index": 16,
+      "npz": "shard-00016.npz",
+      "npz_bytes": 320002878,
+      "npz_sha256": "c06a55c07b315f03a599c710223c63e74c7573540327c41d426c3319d5b483de",
+      "sidecar": "shard-00016.json",
+      "rows": 2000,
+      "raw_pixel_bytes": 320000000,
+      "built_at_utc": "2026-10-04T22:45:37+00:00",
+      "seconds": 8.265920333011309,
+      "tile_counts": {
+        "T35VNL": 2000
+      },
+      "tile_min": 2000,
+      "tile_max": 2000
+    },
+    {
+      "index": 17,
+      "npz": "shard-00017.npz",
+      "npz_bytes": 320002878,
+      "npz_sha256": "8e7b874aa5195a333210808e794fb210d3663d93154711566a0ecd633c59a1b3",
+      "sidecar": "shard-00017.json",
+      "rows": 2000,
+      "raw_pixel_bytes": 320000000,
+      "built_at_utc": "2026-10-04T22:45:48+00:00",
+      "seconds": 10.825462249980774,
+      "tile_counts": {
+        "T35VNL": 598,
+        "T35WPN": 1402
+      },
+      "tile_min": 598,
+      "tile_max": 1402
+    },
+    {
+      "index": 18,
+      "npz": "shard-00018.npz",
+      "npz_bytes": 320002878,
+      "npz_sha256": "74b70c3ee85b64abae77611e6ba1f4b80e78c56c2dee959bcdbf07f151afe013",
+      "sidecar": "shard-00018.json",
+      "rows": 2000,
+      "raw_pixel_bytes": 320000000,
+      "built_at_utc": "2026-10-04T22:45:59+00:00",
+      "seconds": 11.351072124991333,
+      "tile_counts": {
+        "T29SNB": 557,
+        "T34TCS": 605,
+        "T35WPN": 838
+      },
+      "tile_min": 557,
+      "tile_max": 838
+    },
+    {
+      "index": 19,
+      "npz": "shard-00019.npz",
+      "npz_bytes": 320002878,
+      "npz_sha256": "7fdcc86af44813fb90a27132adad067b30773a3556537400982c1515114f6244",
+      "sidecar": "shard-00019.json",
+      "rows": 2000,
+      "raw_pixel_bytes": 320000000,
+      "built_at_utc": "2026-10-04T22:46:07+00:00",
+      "seconds": 8.181502040999476,
+      "tile_counts": {
+        "T29SNB": 2000
+      },
+      "tile_min": 2000,
+      "tile_max": 2000
+    },
+    {
+      "index": 20,
+      "npz": "shard-00020.npz",
+      "npz_bytes": 320002878,
+      "npz_sha256": "e51e25f15e3164ed032d62abf1a5500611412918e5e049a248a558951a3fc194",
+      "sidecar": "shard-00020.json",
+      "rows": 2000,
+      "raw_pixel_bytes": 320000000,
+      "built_at_utc": "2026-10-04T22:46:23+00:00",
+      "seconds": 15.690728041983675,
+      "tile_counts": {
+        "T29SNB": 1288,
+        "T33UXP": 712
+      },
+      "tile_min": 712,
+      "tile_max": 1288
+    },
+    {
+      "index": 21,
+      "npz": "shard-00021.npz",
+      "npz_bytes": 320002878,
+      "npz_sha256": "d6fc1c6d036e340ef2dd208eb5eca7cbddcb5cfa4fcd74dd14e41ed31e56698a",
+      "sidecar": "shard-00021.json",
+      "rows": 2000,
+      "raw_pixel_bytes": 320000000,
+      "built_at_utc": "2026-10-04T22:46:31+00:00",
+      "seconds": 8.45526170899393,
+      "tile_counts": {
+        "T33UXP": 2000
+      },
+      "tile_min": 2000,
+      "tile_max": 2000
+    },
+    {
+      "index": 22,
+      "npz": "shard-00022.npz",
+      "npz_bytes": 320002878,
+      "npz_sha256": "def09097987cbc0a60a2d1468068af8cdd56833e0f49b0a7c9685d7986345837",
+      "sidecar": "shard-00022.json",
+      "rows": 2000,
+      "raw_pixel_bytes": 320000000,
+      "built_at_utc": "2026-10-04T22:46:41+00:00",
+      "seconds": 9.340374291990884,
+      "tile_counts": {
+        "T33UXP": 485,
+        "T35VNJ": 1515
+      },
+      "tile_min": 485,
+      "tile_max": 1515
+    },
+    {
+      "index": 23,
+      "npz": "shard-00023.npz",
+      "npz_bytes": 320002878,
+      "npz_sha256": "c96195c94c852d96a71be58f1235d8c23bc242f3eee486fcb012b2b4a50b59ed",
+      "sidecar": "shard-00023.json",
+      "rows": 2000,
+      "raw_pixel_bytes": 320000000,
+      "built_at_utc": "2026-10-04T22:46:50+00:00",
+      "seconds": 9.085353709000628,
+      "tile_counts": {
+        "T35VNJ": 2000
+      },
+      "tile_min": 2000,
+      "tile_max": 2000
+    },
+    {
+      "index": 24,
+      "npz": "shard-00024.npz",
+      "npz_bytes": 320002878,
+      "npz_sha256": "88fbebfa3dd10732edf4ca8fcd71c8e8c09b4f7861c89bafc7a1e28ac17a4eef",
+      "sidecar": "shard-00024.json",
+      "rows": 2000,
+      "raw_pixel_bytes": 320000000,
+      "built_at_utc": "2026-10-04T22:47:00+00:00",
+      "seconds": 9.997717416990781,
+      "tile_counts": {
+        "T35VNJ": 329,
+        "T35VNK": 1671
+      },
+      "tile_min": 329,
+      "tile_max": 1671
+    },
+    {
+      "index": 25,
+      "npz": "shard-00025.npz",
+      "npz_bytes": 320002878,
+      "npz_sha256": "4ab6365173eb47fe579a3d1169739cafe5215e729a0fc1ef46905b78485d0168",
+      "sidecar": "shard-00025.json",
+      "rows": 2000,
+      "raw_pixel_bytes": 320000000,
+      "built_at_utc": "2026-10-04T22:47:09+00:00",
+      "seconds": 9.028832874988439,
+      "tile_counts": {
+        "T35VNK": 2000
+      },
+      "tile_min": 2000,
+      "tile_max": 2000
+    },
+    {
+      "index": 26,
+      "npz": "shard-00026.npz",
+      "npz_bytes": 320002878,
+      "npz_sha256": "42276e4b396e37e99b6c0586c583d081a51d95cae2ca509cca9de8b932a20893",
+      "sidecar": "shard-00026.json",
+      "rows": 2000,
+      "raw_pixel_bytes": 320000000,
+      "built_at_utc": "2026-10-04T22:47:38+00:00",
+      "seconds": 29.105312291998416,
+      "tile_counts": {
+        "T33TXN": 1473,
+        "T33UWP": 45,
+        "T35VLJ": 309,
+        "T35VNK": 173
+      },
+      "tile_min": 45,
+      "tile_max": 1473
+    },
+    {
+      "index": 27,
+      "npz": "shard-00027.npz",
+      "npz_bytes": 320002878,
+      "npz_sha256": "efa8317ce5804de300e72455b11088f73f5a0f93162d8b7c9b688a178ad71b3f",
+      "sidecar": "shard-00027.json",
+      "rows": 2000,
+      "raw_pixel_bytes": 320000000,
+      "built_at_utc": "2026-10-04T22:47:49+00:00",
+      "seconds": 10.805506915989099,
+      "tile_counts": {
+        "T35VLJ": 2000
+      },
+      "tile_min": 2000,
+      "tile_max": 2000
+    },
+    {
+      "index": 28,
+      "npz": "shard-00028.npz",
+      "npz_bytes": 320002878,
+      "npz_sha256": "640f62fc85c646c8d4f7beac82c87564e01ad2b6182be3dcc5e4c60195cf1a8d",
+      "sidecar": "shard-00028.json",
+      "rows": 2000,
+      "raw_pixel_bytes": 320000000,
+      "built_at_utc": "2026-10-04T22:48:09+00:00",
+      "seconds": 19.88896537499386,
+      "tile_counts": {
+        "T34WFS": 118,
+        "T35UMB": 1337,
+        "T35VLJ": 403,
+        "T35WPP": 142
+      },
+      "tile_min": 118,
+      "tile_max": 1337
+    },
+    {
+      "index": 29,
+      "npz": "shard-00029.npz",
+      "npz_bytes": 320002878,
+      "npz_sha256": "e815f026040ab4594fbcdacef34bfa9e202c196c0e5f4f2223b96ca85e06a266",
+      "sidecar": "shard-00029.json",
+      "rows": 2000,
+      "raw_pixel_bytes": 320000000,
+      "built_at_utc": "2026-10-04T22:48:18+00:00",
+      "seconds": 9.362985665997257,
+      "tile_counts": {
+        "T34UEG": 1114,
+        "T35UMB": 886
+      },
+      "tile_min": 886,
+      "tile_max": 1114
+    },
+    {
+      "index": 30,
+      "npz": "shard-00030.npz",
+      "npz_bytes": 320002878,
+      "npz_sha256": "563c12ac5094460e4f8692f50dc015465b22464175cde7aaae2991a431fc1da6",
+      "sidecar": "shard-00030.json",
+      "rows": 2000,
+      "raw_pixel_bytes": 320000000,
+      "built_at_utc": "2026-10-04T22:48:26+00:00",
+      "seconds": 8.494664041994838,
+      "tile_counts": {
+        "T34UEG": 2000
+      },
+      "tile_min": 2000,
+      "tile_max": 2000
+    },
+    {
+      "index": 31,
+      "npz": "shard-00031.npz",
+      "npz_bytes": 320002878,
+      "npz_sha256": "6add1c6f3b77ceaf961613bb815ee18b37f652b47c91f2bc3bf2a6e91a1ca7b8",
+      "sidecar": "shard-00031.json",
+      "rows": 2000,
+      "raw_pixel_bytes": 320000000,
+      "built_at_utc": "2026-10-04T22:48:37+00:00",
+      "seconds": 10.243885624979157,
+      "tile_counts": {
+        "T34UEG": 730,
+        "T35VLG": 1270
+      },
+      "tile_min": 730,
+      "tile_max": 1270
+    },
+    {
+      "index": 32,
+      "npz": "shard-00032.npz",
+      "npz_bytes": 320002878,
+      "npz_sha256": "694a1069ecd987927b299d9ad00f9c2e30dd905f23a387a8cd0714a86174ef7b",
+      "sidecar": "shard-00032.json",
+      "rows": 2000,
+      "raw_pixel_bytes": 320000000,
+      "built_at_utc": "2026-10-04T22:48:45+00:00",
+      "seconds": 8.598854665993713,
+      "tile_counts": {
+        "T35VLG": 2000
+      },
+      "tile_min": 2000,
+      "tile_max": 2000
+    },
+    {
+      "index": 33,
+      "npz": "shard-00033.npz",
+      "npz_bytes": 320002878,
+      "npz_sha256": "94f8c7a338b1a35472bcd4c8d52ba48c470633dbd724633f3ca6b682cdd91751",
+      "sidecar": "shard-00033.json",
+      "rows": 2000,
+      "raw_pixel_bytes": 320000000,
+      "built_at_utc": "2026-10-04T22:48:54+00:00",
+      "seconds": 8.21854433300905,
+      "tile_counts": {
+        "T34VDN": 1700,
+        "T35VLG": 300
+      },
+      "tile_min": 300,
+      "tile_max": 1700
+    },
+    {
+      "index": 34,
+      "npz": "shard-00034.npz",
+      "npz_bytes": 320002878,
+      "npz_sha256": "d8fb0856d77bb4a41cd94273c03365dfe9a4f61ca2f4f55893d22ae92478edd9",
+      "sidecar": "shard-00034.json",
+      "rows": 2000,
+      "raw_pixel_bytes": 320000000,
+      "built_at_utc": "2026-10-04T22:49:04+00:00",
+      "seconds": 10.93690129200695,
+      "tile_counts": {
+        "T33UWP": 116,
+        "T34VDN": 1884
+      },
+      "tile_min": 116,
+      "tile_max": 1884
+    },
+    {
+      "index": 35,
+      "npz": "shard-00035.npz",
+      "npz_bytes": 320002878,
+      "npz_sha256": "7b77b96a3e008c06046366450b9516e88509b734ce7813d681d1050e67050d10",
+      "sidecar": "shard-00035.json",
+      "rows": 2000,
+      "raw_pixel_bytes": 320000000,
+      "built_at_utc": "2026-10-04T22:49:13+00:00",
+      "seconds": 8.31384991700179,
+      "tile_counts": {
+        "T33UWP": 2000
+      },
+      "tile_min": 2000,
+      "tile_max": 2000
+    },
+    {
+      "index": 36,
+      "npz": "shard-00036.npz",
+      "npz_bytes": 320002878,
+      "npz_sha256": "faa90f18db16f180198a3d4a8ee0669df6172bbb32c38adb68b9459dee1ab185",
+      "sidecar": "shard-00036.json",
+      "rows": 2000,
+      "raw_pixel_bytes": 320000000,
+      "built_at_utc": "2026-10-04T22:49:24+00:00",
+      "seconds": 11.631280417001108,
+      "tile_counts": {
+        "T33UWP": 1683,
+        "T35UMA": 317
+      },
+      "tile_min": 317,
+      "tile_max": 1683
+    },
+    {
+      "index": 37,
+      "npz": "shard-00037.npz",
+      "npz_bytes": 320002878,
+      "npz_sha256": "7cd6219eda145c7fcba783a015c565786bd9b3edb87fce4834b89500d0e67be0",
+      "sidecar": "shard-00037.json",
+      "rows": 2000,
+      "raw_pixel_bytes": 320000000,
+      "built_at_utc": "2026-10-04T22:49:33+00:00",
+      "seconds": 8.350503916997695,
+      "tile_counts": {
+        "T31UGR": 988,
+        "T35UMA": 1012
+      },
+      "tile_min": 988,
+      "tile_max": 1012
+    },
+    {
+      "index": 38,
+      "npz": "shard-00038.npz",
+      "npz_bytes": 320002878,
+      "npz_sha256": "c45f170d8c3a944709b891e70729ef8b58652baf7c7e05a8e699c31744695375",
+      "sidecar": "shard-00038.json",
+      "rows": 2000,
+      "raw_pixel_bytes": 320000000,
+      "built_at_utc": "2026-10-04T22:49:41+00:00",
+      "seconds": 8.337881750019733,
+      "tile_counts": {
+        "T31UGR": 1759,
+        "T31UGS": 241
+      },
+      "tile_min": 241,
+      "tile_max": 1759
+    },
+    {
+      "index": 39,
+      "npz": "shard-00039.npz",
+      "npz_bytes": 320002878,
+      "npz_sha256": "6c53d0c6df27c573bb5e18a74a845701d08031db5b71a5db56552091b3bfdc35",
+      "sidecar": "shard-00039.json",
+      "rows": 2000,
+      "raw_pixel_bytes": 320000000,
+      "built_at_utc": "2026-10-04T22:49:52+00:00",
+      "seconds": 10.541835209005512,
+      "tile_counts": {
+        "T31UGS": 448,
+        "T34VDR": 1524,
+        "T35WPN": 28
+      },
+      "tile_min": 28,
+      "tile_max": 1524
+    }
+  ],
+  "aborted_reason": "archive_order_shard_membership",
+  "aborted_detail": "build_shard_set appended accepted patches in tar arrival order, so shard 0 held 2000 patches of T34VER alone and shard prefixes were tile-blocked. The prefix-stratified selection was correct; the builder did not honour it.",
+  "artifact_files_deleted": "data/shards/train-150000/shard-000{00..39}.{npz,json}"
+}

@@ -1,0 +1,112 @@
+{
+  "kind": "independent loops 7-9 audit stopped at data failure",
+  "git_sha": "1ceb9d161e1f654da96b1f57b31724e48ac29250",
+  "split_name": "caption-geo-split.v1/train + eval",
+  "n_train": 150000,
+  "n_eval": 2000,
+  "seed": 26169,
+  "device": "CPU only",
+  "timestamp_utc": "2026-10-05T05:24:21.515416+00:00",
+  "revision": "66285546d2b821cf421d4f5eb2576359d3770cd3",
+  "weight_sha256": {
+    "model-00001-of-00002.safetensors": "41a8895c164b4d32bae6b302f4603fcbc1797f32dafa45c7e9bcda23c6755df8",
+    "model-00002-of-00002.safetensors": "365531ff8752420e89dee707b79d021fb2d6e25abafe486f080555a4fe6972e4"
+  },
+  "preregistration": "results/stage1-loops7-9-audit-preregistration.json",
+  "A1": {
+    "status": "pass",
+    "shards_hashed": 76,
+    "problems": [],
+    "first_attempt": "results/stage1-loops7-9-audit-A1-attempt1.json",
+    "local_train_manifest_present": false,
+    "evidence": "results/stage1-loops7-9-audit-A1-attempt2.json"
+  },
+  "A2": {
+    "status": "fail",
+    "sample_train": 30,
+    "sample_eval": 10,
+    "source_complete": 40,
+    "native_mismatched_band_count": 360,
+    "train_mismatched_patches": 30,
+    "eval_mismatched_patches": 0,
+    "normalized_mismatched_patch_count": 30,
+    "normalized_max_abs_diff": 10.286555290222168,
+    "archive_bytes_streamed": 60921569280,
+    "evidence": "results/stage1-loops7-9-audit-A2-attempt1.json",
+    "code_cause": "data/bigearthnet_shards.py writes pixel buffer row at archive-arrival index then sorts sidecar IDs by selection rank without reordering pixel arrays"
+  },
+  "A3": {
+    "status": "pass",
+    "matched": 100,
+    "mismatches": 0,
+    "evidence": "results/stage1-loops7-9-audit-A3.json"
+  },
+  "A4": {
+    "status": "pass",
+    "duplicate_ids": 0,
+    "train_eval_patch_overlap": 0,
+    "train_eval_tile_overlap": 0,
+    "train_tile_count": 48,
+    "eval_tile_count": 6,
+    "prefix_from_shards": {
+      "10000": {
+        "tiles": 48,
+        "min": 40,
+        "max": 212,
+        "spread": 172,
+        "max_deviation_pp": 1.9460000000000002
+      },
+      "50000": {
+        "tiles": 48,
+        "min": 40,
+        "max": 1113,
+        "spread": 1073,
+        "max_deviation_pp": 1.4586666666666663
+      },
+      "100000": {
+        "tiles": 48,
+        "min": 40,
+        "max": 2390,
+        "spread": 2350,
+        "max_deviation_pp": 0.790666666666667
+      },
+      "150000": {
+        "tiles": 48,
+        "min": 40,
+        "max": 3845,
+        "spread": 3805,
+        "max_deviation_pp": 0.0
+      }
+    },
+    "evidence": "results/stage1-loops7-9-audit-A4A5.json"
+  },
+  "A5": {
+    "status": "pass",
+    "selection_order_mismatch_count": 0,
+    "rejection_stats": {
+      "selection_size": 150000,
+      "n_patches": 150000,
+      "rejected_count_total": 0,
+      "rejected_by_reason": {},
+      "shortfall": 0
+    },
+    "id_list_path": "data/manifests/bigearthnet/stage1-train-shard-ids-audit.v1.json",
+    "ids_sha256": "3efc52dbbaf39416f31a7927d76fda81f582440dcd93fe3c74209b3bf30f84a5",
+    "evidence": "results/stage1-loops7-9-audit-A4A5.json"
+  },
+  "B1_B8": "not audited: A2 failed, mandatory stop",
+  "focused_tests": "not run: A2 failed, mandatory stop",
+  "full_suite": "not run: A2 failed, mandatory stop",
+  "code_fix": "none",
+  "disk_free_bytes": 60211200000,
+  "frozen_sha256_actual": {
+    "contract": "ab02179d2b4cf33c320a897d75318484189b249d99fff6cdd386016df908912d",
+    "split": "3e5b1d774125c7b48a9454dbb33e6144aee8d990d8966e830987836159bd83ee",
+    "model_artifacts": "72527fa9bb644cac71513b40a1a7e836a2044aae71ca6fb7095d4df643753e41"
+  },
+  "open_issues": [
+    "Train shard row-to-pixel alignment broken; do not train or upload these shards.",
+    "Train shard directory lacks local shards-manifest.json expected by current full-run CLI; published manifest exists.",
+    "Training code review and tests deferred by A-failure stop rule."
+  ]
+}

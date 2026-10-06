@@ -1,0 +1,29 @@
+{
+  "kind": "stage-verify-attempt1-kaggle",
+  "recorded_at_utc": "2026-10-05T12:28:51.501736+00:00",
+  "git_sha": "1ceb9d161e1f654da96b1f57b31724e48ac29250",
+  "evidence_origin": "user-supplied verified Kaggle facts; not rerun locally",
+  "reported_run_time": "2026-10-05 approximately11:26UTC",
+  "revision": "66285546d2b821cf421d4f5eb2576359d3770cd3",
+  "n": 0,
+  "seed": 0,
+  "device": "Kaggle T4",
+  "stack": {
+    "python": "3.13.15",
+    "torch": "2.11.0+cu128",
+    "transformers": "4.49.0",
+    "peft": "0.15.2",
+    "accelerate": "1.5.2",
+    "rasterio": "1.4.3"
+  },
+  "weights_match": true,
+  "config_json_commit_hash": null,
+  "revision_matches": false,
+  "passed": false,
+  "status": "mismatch; abort before any training stage",
+  "training_stage_ran": false,
+  "throughput_available": false,
+  "duration": "approximately20s (user report)",
+  "metadata_first_line": "66285546d2b821cf421d4f5eb2576359d3770cd3",
+  "package": "Kaggle dataset v1 predates loop10; STALE; no claim this validates current code"
+}

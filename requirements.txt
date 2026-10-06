@@ -14,6 +14,10 @@ qwen-vl-utils
 # qwen-vl-utils imports torchvision but does not declare it, so without this line
 # `from qwen_vl_utils import process_vision_info` raises ModuleNotFoundError and the
 # live Qwen path fails before it ever reaches the accelerator check.
+groundingdino
+# `groundingdino` provides the GroundingDINO package used by the grounding
+# capability provider; the Swin-T OGC configuration and checkpoint are
+# separately downloaded/provisioned via Hugging Face and environment vars.
 torchvision
 accelerate
 asf_search

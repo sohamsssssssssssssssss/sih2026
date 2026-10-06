@@ -1,0 +1,12 @@
+{
+  "focused_tests_passed": 9,
+  "full_subtests_passed": 28,
+  "full_tests_passed": 421,
+  "git_diff_check_passed": true,
+  "git_sha": "1ceb9d161e1f654da96b1f57b31724e48ac29250",
+  "n": 4000,
+  "seed": 0,
+  "split_name": "caption-geo-split.v1/train",
+  "temporary_extraction_removed": true,
+  "timestamp_utc": "2026-10-04T11:59:01.396488+00:00"
+}

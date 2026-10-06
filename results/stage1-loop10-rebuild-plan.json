@@ -1,0 +1,148 @@
+{
+  "kind": "loop10 rebuild preparation ONLY; not executed",
+  "git_sha": "1ceb9d161e1f654da96b1f57b31724e48ac29250",
+  "split_name": "caption-geo-split.v1/train + eval",
+  "n_train": 150000,
+  "n_eval": 2000,
+  "seed": 26168,
+  "device": "CPU only",
+  "timestamp_utc": "2026-10-05T06:58:13.355816+00:00",
+  "revision": "66285546d2b821cf421d4f5eb2576359d3770cd3",
+  "weight_sha256": {
+    "model-00001-of-00002.safetensors": "41a8895c164b4d32bae6b302f4603fcbc1797f32dafa45c7e9bcda23c6755df8",
+    "model-00002-of-00002.safetensors": "365531ff8752420e89dee707b79d021fb2d6e25abafe486f080555a4fe6972e4"
+  },
+  "frozen_sha256": {
+    "contract": "ab02179d2b4cf33c320a897d75318484189b249d99fff6cdd386016df908912d",
+    "split": "3e5b1d774125c7b48a9454dbb33e6144aee8d990d8966e830987836159bd83ee",
+    "model_artifacts": "72527fa9bb644cac71513b40a1a7e836a2044aae71ca6fb7095d4df643753e41"
+  },
+  "attempt_cap_per_problem": 2,
+  "root_cause": {
+    "bad_shard_index": 0,
+    "arrival_mapped_patch_checks": 10,
+    "native_array_mismatches_allowed": 0,
+    "loop8_patch_checks": 10,
+    "eval_patch_checks": 10,
+    "package_patch_checks": 3,
+    "archive_source": "existing split S2 archive read-only, independent rasterio MemoryFile decode, no extraction",
+    "show_row_mapping": true
+  },
+  "writer": {
+    "record_coupling": "id caption tile and all 12 native uint16 arrays move together under any sort",
+    "per_patch_sha256": "canonical band order, band name + dtype + shape + contiguous uint16 bytes; source-read before shard write",
+    "regression": "synthetic archive arrival order differs from selection order; old code must fail and fixed code pass; zero row/pixel mismatches"
+  },
+  "verifier": {
+    "checksum_all_rows_required": true,
+    "checksum_mismatches_allowed": 0,
+    "raw_sample_rule": "at least max(100,40*ceil(shards/10)) distinct shard rows, spread across shard groups, fixed seed 26170",
+    "raw_native_mismatches_allowed": 0,
+    "caption_source_mismatches_allowed": 0,
+    "old_shard_expected_exit": "nonzero; preserve report",
+    "source_archive_read_only": true
+  },
+  "rebuild_plan": {
+    "new_dir": "data/shards/train-150000-v2",
+    "phase1_patches": 100000,
+    "phase1_shards": 50,
+    "phase2_patches": 50000,
+    "phase2_shards": 25,
+    "seconds_per_patch_projection_assumption": 0.144,
+    "label": "projection from user-specified rate, not a measured rebuild",
+    "disk_guard_bytes": 45000000000,
+    "no_delete_or_rebuild_without_user_text": true
+  },
+  "package_pairing": {
+    "sample_count": 3,
+    "native_mismatch_allowed": 0,
+    "caption_id_tiff_id_mismatch_allowed": 0
+  },
+  "training_audit": {
+    "B1": "caption tokens only, EOS included, padding ignored",
+    "B2": "frozen fp16 base, fp32 trainable masters, autocast and GradScaler",
+    "B3": "three distinct LRs, cosine 3% warmup from planned total, accumulation boundaries",
+    "B4": "vision requires_grad and labeled T4 peak memory estimate",
+    "B5": "adapter, full patch embed, unfrozen vision, optimizer, scaler, scheduler, RNG, data state, step and checkpoint size",
+    "B6": "CPU mocked continuous loss/LR/data order across resume",
+    "B7": "wall guard saves and clean exit; eval shard only no_grad same preprocessing; throughput required",
+    "B8": "package source hash equals repo; requirements no torch install and accelerate pin"
+  },
+  "scope": "no commit/push/upload/Kaggle/training/GPU/deletes/downloads/shard rebuild; contract/split/init/pinned checkpoint/eval shard unchanged",
+  "failed_attempts": "write separate files; never overwrite a failed result",
+  "n": 150000,
+  "selection_file": "data/manifests/bigearthnet/stage1-train-rebuild-ids-loop10.v1.json",
+  "id_list_sha256": "3efc52dbbaf39416f31a7927d76fda81f582440dcd93fe3c74209b3bf30f84a5",
+  "selection_file_sha256": "495fca3db7919fd627a937632bd5479337ad588f665e50d1551f418bdc37067f",
+  "prefix_tile_balance": {
+    "10000": {
+      "tiles_present": 48,
+      "min": 40,
+      "max": 212,
+      "spread": 172,
+      "max_deviation_pp": 1.9460000000000002
+    },
+    "50000": {
+      "tiles_present": 48,
+      "min": 40,
+      "max": 1113,
+      "spread": 1073,
+      "max_deviation_pp": 1.4586666666666663
+    },
+    "100000": {
+      "tiles_present": 48,
+      "min": 40,
+      "max": 2390,
+      "spread": 2350,
+      "max_deviation_pp": 0.790666666666667
+    },
+    "150000": {
+      "tiles_present": 48,
+      "min": 40,
+      "max": 3845,
+      "spread": 3805,
+      "max_deviation_pp": 0.0
+    }
+  },
+  "old_bad_shard_dir": "/Users/soham/sih2026/data/shards/train-150000",
+  "old_files": 150,
+  "old_total_bytes": 24138425886,
+  "old_npz_bytes": 24000215850,
+  "new_dir": "/Users/soham/sih2026/data/shards/train-150000-v2",
+  "new_pixel_projection_bytes": 24000215850,
+  "new_metadata_allowance_bytes": 168210036,
+  "new_total_projection_bytes": 24168425886,
+  "free_bytes_measured": 57753600000,
+  "guard_bytes": 45000000000,
+  "projected_free_with_old_retained": 33585174114,
+  "projected_free_with_approved_old_delete": 57723600000,
+  "additional_free_required": 11414825886,
+  "phases": [
+    {
+      "n": 100000,
+      "shards": 50,
+      "projected_seconds": 14399.999999999998,
+      "projected_hours": 3.9999999999999996
+    },
+    {
+      "n": 50000,
+      "shards": 25,
+      "projected_seconds": 7199.999999999999,
+      "projected_hours": 1.9999999999999998
+    }
+  ],
+  "projection_label": "0.144 s/patch user supplied projection, not a measured rebuild; repeated archive passes and new checksums may change wall time",
+  "phase_selection_rule": "use first100000 of this saved150000 selection, not a fresh n=100000 selection; extend same rank list in phase2",
+  "after_build": "full verifier ALL row checksums + >=320 independent raw patches; rerun audit A1-A5",
+  "approval_required": "APPROVE: delete old shards OR supply an alternative volume path with >= new_projection +45GB free",
+  "executed": false,
+  "metadata_projection_note": "measured old metadata bytes plus explicitly assumed200bytes/row allowance for new checksum metadata; projection, not rebuilt size",
+  "alternative_volume_free_required": 69168425886,
+  "commands_require_explicit_approval": true,
+  "prepared_commands_not_executed": [
+    ".venv-stage1/bin/python scripts/build_stage1_train_shards.py --out data/shards/train-150000-v2 --selection-id-list data/manifests/bigearthnet/stage1-train-rebuild-ids-loop10.v1.json --seed 26168 --patches-per-shard 2000 --published-manifest data/manifests/bigearthnet/stage1-shards-train-150000.v2.json --exclude-shards data/shards/eval-2000 --min-free-bytes 45000000000 --n-total 100000 --selection-record results/stage1-loop10-phase1-selection.json --report results/stage1-loop10-phase1-build.json",
+    ".venv-stage1/bin/python scripts/build_stage1_train_shards.py --out data/shards/train-150000-v2 --selection-id-list data/manifests/bigearthnet/stage1-train-rebuild-ids-loop10.v1.json --seed 26168 --patches-per-shard 2000 --published-manifest data/manifests/bigearthnet/stage1-shards-train-150000.v2.json --exclude-shards data/shards/eval-2000 --min-free-bytes 45000000000 --n-total 150000 --selection-record results/stage1-loop10-phase2-selection.json --report results/stage1-loop10-phase2-build.json",
+    ".venv-stage1/bin/python scripts/verify_stage1_train_shards.py --shards data/shards/train-150000-v2 --manifest data/manifests/bigearthnet/stage1-shards-train-150000.v2.json --exclude-shards data/shards/eval-2000 --captions /Users/soham/Datasets/BigEarthNet/BigEarthNet.txt.parquet --split data/manifests/bigearthnet/caption-geo-split.v1.csv.gz --archive-part /Users/soham/Datasets/BigEarthNet/V2/BigEarthNet-S2.tar.gzaa --archive-part /Users/soham/Datasets/BigEarthNet/V2/BigEarthNet-S2.tar.gzab --report results/stage1-loop10-rebuild-full-verification.json"
+  ],
+  "disk_measurement_timestamp_utc": "2026-10-05T07:00:14.150254+00:00"
+}

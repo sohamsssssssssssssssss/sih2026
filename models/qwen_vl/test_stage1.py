@@ -4,7 +4,7 @@ import pytest
 torch = pytest.importorskip("torch")
 from torch import nn  # noqa: E402
 
-from models.qwen_vl.stage1 import convert_patch_embed, stage1_parameter_groups  # noqa: E402
+from models.qwen_vl.stage1 import convert_patch_embed, pack_s2_pixel_values, stage1_parameter_groups  # noqa: E402
 
 
 class TinyModel(nn.Module):
@@ -60,3 +60,36 @@ def test_parameter_groups_classify_trainable_parameters():
     model.lm.unexpected = nn.Linear(2, 2)
     with pytest.raises(ValueError, match="Unexpected trainable parameter"):
         stage1_parameter_groups(model)
+
+
+def test_temporal_patch_embed_conversion():
+    model = nn.Module()
+    model.visual = nn.Module()
+    model.visual.patch_embed = nn.Module()
+    model.visual.patch_embed.in_channels = 3
+    model.visual.patch_embed.proj = nn.Conv3d(3, 5, (2, 14, 14), stride=(2, 14, 14), bias=False)
+    old = model.visual.patch_embed.proj
+    weight = old.weight.detach().clone()
+    gray = torch.randn(2, 1, 2, 28, 28)
+    reference = old(gray.repeat(1, 3, 1, 1, 1))
+    new = convert_patch_embed(model)
+    assert model.visual.patch_embed.in_channels == 12
+    assert new.weight.shape == (5, 12, 2, 14, 14)
+    torch.testing.assert_close(new.weight, weight.mean(1, keepdim=True).repeat(1, 12, 1, 1, 1) * .25, rtol=0, atol=0)
+    torch.testing.assert_close(new(gray.repeat(1, 12, 1, 1, 1)), reference, rtol=0, atol=1e-5)
+    with pytest.raises(ValueError, match="unconverted 3-channel"):
+        convert_patch_embed(model)
+
+
+def test_pack_s2_pixel_values():
+    source = torch.arange(12 * 120 * 120, dtype=torch.float32).reshape(12, 120, 120)
+    values, grid = pack_s2_pixel_values(source)
+    assert values.shape == (64, 4704)
+    assert grid.tolist() == [[1, 8, 8]]
+    recovered = values.reshape(1, 4, 4, 2, 2, 12, 2, 14, 14).permute(0, 6, 5, 1, 3, 7, 2, 4, 8)
+    recovered = recovered.reshape(2, 12, 112, 112)
+    expected = torch.nn.functional.interpolate(source[None], size=(112, 112), mode="bicubic", align_corners=False)[0]
+    torch.testing.assert_close(recovered[0], expected, rtol=0, atol=0)
+    torch.testing.assert_close(recovered[1], expected, rtol=0, atol=0)
+    with pytest.raises(ValueError, match="Expected finite"):
+        pack_s2_pixel_values(source.double())

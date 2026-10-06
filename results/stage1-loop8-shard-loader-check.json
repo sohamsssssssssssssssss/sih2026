@@ -1,0 +1,203 @@
+{
+  "verify": {
+    "manifest": "data/shards/train-2000/shards-manifest.json",
+    "ok": true,
+    "problems": [],
+    "n_patches": 2000,
+    "tiles": [
+      "T29SNB",
+      "T29SNC",
+      "T29SND",
+      "T29UNB",
+      "T29UPB",
+      "T29UPU",
+      "T29UPV",
+      "T31UER",
+      "T31UGR",
+      "T31UGS",
+      "T32TMT",
+      "T33TWM",
+      "T33TWN",
+      "T33TXN",
+      "T33UWP",
+      "T33UWQ",
+      "T33UXP",
+      "T33UXQ",
+      "T34TCR",
+      "T34TCS",
+      "T34TEQ",
+      "T34TFN",
+      "T34UEG",
+      "T34VDM",
+      "T34VDN",
+      "T34VDR",
+      "T34VER",
+      "T34WFS",
+      "T34WFT",
+      "T34WFU",
+      "T34WFV",
+      "T35ULA",
+      "T35ULB",
+      "T35UMA",
+      "T35UMB",
+      "T35VLG",
+      "T35VLJ",
+      "T35VNH",
+      "T35VNJ",
+      "T35VNK",
+      "T35VNL",
+      "T35VPJ",
+      "T35VPK",
+      "T35WPN",
+      "T35WPP",
+      "T35WPR",
+      "T36VVQ",
+      "T36VVR"
+    ]
+  },
+  "dataset_n": 2000,
+  "tiles": 48,
+  "samples": [
+    {
+      "patch_id": "S2A_MSIL2A_20170613T101031_N9999_R022_T34VER_00_77",
+      "tile": "T34VER",
+      "native_shapes": {
+        "B02": [
+          120,
+          120
+        ],
+        "B05": [
+          60,
+          60
+        ],
+        "B01": [
+          20,
+          20
+        ]
+      },
+      "normalized_shape": [
+        12,
+        120,
+        120
+      ],
+      "dtype": "torch.float32",
+      "finite": true,
+      "mean": -0.970374345779419,
+      "std": 0.505049467086792,
+      "caption_chars": 234
+    },
+    {
+      "patch_id": "S2A_MSIL2A_20170613T101031_N9999_R022_T34VER_03_69",
+      "tile": "T34VER",
+      "native_shapes": {
+        "B02": [
+          120,
+          120
+        ],
+        "B05": [
+          60,
+          60
+        ],
+        "B01": [
+          20,
+          20
+        ]
+      },
+      "normalized_shape": [
+        12,
+        120,
+        120
+      ],
+      "dtype": "torch.float32",
+      "finite": true,
+      "mean": -0.7808138132095337,
+      "std": 0.5576034188270569,
+      "caption_chars": 872
+    },
+    {
+      "patch_id": "S2A_MSIL2A_20170613T101031_N9999_R022_T34VER_03_86",
+      "tile": "T34VER",
+      "native_shapes": {
+        "B02": [
+          120,
+          120
+        ],
+        "B05": [
+          60,
+          60
+        ],
+        "B01": [
+          20,
+          20
+        ]
+      },
+      "normalized_shape": [
+        12,
+        120,
+        120
+      ],
+      "dtype": "torch.float32",
+      "finite": true,
+      "mean": -0.9821937680244446,
+      "std": 0.5055456161499023,
+      "caption_chars": 234
+    },
+    {
+      "patch_id": "S2A_MSIL2A_20170613T101031_N9999_R022_T34VER_51_32",
+      "tile": "T34VER",
+      "native_shapes": {
+        "B02": [
+          120,
+          120
+        ],
+        "B05": [
+          60,
+          60
+        ],
+        "B01": [
+          20,
+          20
+        ]
+      },
+      "normalized_shape": [
+        12,
+        120,
+        120
+      ],
+      "dtype": "torch.float32",
+      "finite": true,
+      "mean": -0.9948828220367432,
+      "std": 0.49442440271377563,
+      "caption_chars": 232
+    },
+    {
+      "patch_id": "S2B_MSIL2A_20170808T094029_N9999_R036_T35ULA_71_14",
+      "tile": "T35ULA",
+      "native_shapes": {
+        "B02": [
+          120,
+          120
+        ],
+        "B05": [
+          60,
+          60
+        ],
+        "B01": [
+          20,
+          20
+        ]
+      },
+      "normalized_shape": [
+        12,
+        120,
+        120
+      ],
+      "dtype": "torch.float32",
+      "finite": true,
+      "mean": 0.013667852617800236,
+      "std": 0.562979519367218,
+      "caption_chars": 1061
+    }
+  ],
+  "five_sample_seconds": 0.06376604200340807
+}

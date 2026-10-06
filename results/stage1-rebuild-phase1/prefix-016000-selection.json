@@ -1,0 +1,43 @@
+{
+  "kind": "stage-1 train selection record",
+  "git_sha": "1ceb9d161e1f654da96b1f57b31724e48ac29250",
+  "seed": 26168,
+  "n_total": 16000,
+  "split_name": "caption-geo-split.v1/train",
+  "algorithm": "numpy.random.default_rng([seed, tile_index]) per tile; patch IDs sorted within a tile; round-robin equal quotas dealt one at a time across the side's tiles in sorted order and capped by each tile's available count; the selection is then emitted round-robin across tiles, so every prefix is tile-balanced",
+  "prefix_tile_balance": {
+    "10000": {
+      "tiles_present": 48,
+      "min": 40,
+      "max": 212,
+      "spread": 172,
+      "max_deviation_pp": 0.5725000000000001
+    }
+  },
+  "prefix_balance_gate": "max - min <= 1 per tile for every reported prefix",
+  "first_ten_ids": [
+    "S2A_MSIL2A_20171201T112431_N9999_R037_T29SNB_07_90",
+    "S2B_MSIL2A_20180515T112109_N9999_R037_T29SNC_29_30",
+    "S2A_MSIL2A_20171121T112351_N9999_R037_T29SND_75_70",
+    "S2A_MSIL2A_20180529T115401_N9999_R023_T29UNB_08_80",
+    "S2B_MSIL2A_20170718T115359_N9999_R023_T29UPB_03_61",
+    "S2B_MSIL2A_20171112T114339_N9999_R123_T29UPU_59_59",
+    "S2B_MSIL2A_20180220T114339_N9999_R123_T29UPV_72_43",
+    "S2B_MSIL2A_20180225T105019_N9999_R051_T31UER_89_09",
+    "S2B_MSIL2A_20171015T104009_N9999_R008_T31UGR_20_29",
+    "S2A_MSIL2A_20180508T104031_N9999_R008_T31UGS_17_89"
+  ],
+  "last_ten_ids": [
+    "S2A_MSIL2A_20171002T094031_N9999_R036_T34TCR_88_11",
+    "S2B_MSIL2A_20171226T094359_N9999_R036_T34TCS_66_86",
+    "S2B_MSIL2A_20170914T093029_N9999_R136_T34TEQ_26_67",
+    "S2B_MSIL2A_20170802T092029_N9999_R093_T34TFN_23_01",
+    "S2A_MSIL2A_20180413T095031_N9999_R079_T34UEG_56_26",
+    "S2B_MSIL2A_20180511T100029_N9999_R122_T34VDM_49_48",
+    "S2B_MSIL2A_20170906T101019_N9999_R022_T34VDN_85_61",
+    "S2B_MSIL2A_20171019T102019_N9999_R065_T34VDR_63_67",
+    "S2A_MSIL2A_20170613T101031_N9999_R022_T34VER_70_80",
+    "S2B_MSIL2A_20170817T101019_N9999_R022_T34WFS_68_59"
+  ],
+  "note": "the full ID list is not stored here; rerun select_patch_ids_interleaved with this seed and n_total to reproduce it, and the per-shard sidecars carry the IDs that were actually written"
+}

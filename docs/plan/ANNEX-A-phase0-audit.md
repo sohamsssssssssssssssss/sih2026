@@ -132,7 +132,7 @@ No `.py` files. No `__init__.py`. **Zero files tracked by git.** It is nothing b
 ### `results/` — the audit trail
 | file | tracked | what it claims |
 |---|---|---|
-| `qwen2.5vl-3b__rsvqa__20260903T175900Z.json` (3.4 MB) | yes | RSVQA-LR full test split, n=10004, acc 0.513095, open 0.165080, yes-rate 0.3635, **no warning**. `git_sha 777707a`, `gpu Tesla T4`. |
+| `qwen2.5vl-3b__rsvqa__20260903T175900Z.json` (3.4 MB) | yes | Legacy RSVQA-LR full test result, n=10004, acc 0.513095, open 0.165080, yes-rate 0.3635. Checkpoint revision was unrecorded and is unrecoverable; do not compare new engineering-checkpoint results to it. `git_sha 777707a`, `gpu Tesla T4`. |
 | `qwen2.5vl-3b__ladder__rescored__20260904.json` (892 KB) | yes | Ladder, n=2000, per-rung stratified, `degenerate_rungs: ["5.0","10.0"]`. `git_sha c54da56`, `gpu "Tesla T4 (original inference run)"`, plus a `provenance` string stating it is a **re-score of stored predictions, not new inference**. |
 | `ladder_curve_qwen_stratified.png` | yes | the README figure |
 | `RESCORE_NOTE.md` | yes | explains the 0.5131→0.5142 delta, names the 11 flipped samples, and is pinned by `eval/test_baseline_rescore.py` |
