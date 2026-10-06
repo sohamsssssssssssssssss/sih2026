@@ -18,7 +18,7 @@ SatQuery AI is a capability-oriented remote-sensing visual intelligence system b
 - **Pair compatibility**: Optical-SAR and bi-temporal requests are checked for modality, acquisition metadata, overlap, dimensions, CRS, and affine grid before dispatch.
 - **Deterministic optical-SAR analysis**: Joint Sentinel-2 index and Sentinel-1 backscatter summaries consume both co-registered inputs. This is not a learned fusion model.
 - **Deterministic change analysis**: Co-registered multispectral or RGB pairs produce heuristic magnitude, changed-pixel, coverage, and spatial-extent evidence. This is not semantic change understanding.
-- **Sentinel-1 water change**: Two co-registered VV/VH/dataMask SAR scenes sent to `change_vqa` report new and receded open water in hectares and as GeoJSON polygons, from a pooled-Otsu baseline that abstains when the scene has no open-water mode. Confidence is `null`. See `docs/change-baseline.md`.
+- **Sentinel-1 water change**: Two co-registered VV/VH/dataMask SAR scenes sent to `change_vqa` report new and receded open water in hectares and as GeoJSON polygons, from a pooled-Otsu baseline that abstains when the scene has no open-water mode. Where village boundaries exist (the Bihar and Kerala catalogue events), the answer names the most flooded villages with hectares. Confidence is `null`. See `docs/change-baseline.md`.
 - **Cryptographic audit trace**: Live and cached-result executions are distinguished in a SHA-256 hash-chained trace.
 - **Explicit cached replay**: The designated committed VQA result is returned only when the caller requests `execution_mode: "cached_result"`; live failure never silently falls back.
 

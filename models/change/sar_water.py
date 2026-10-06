@@ -16,6 +16,8 @@ import numpy as np
 from rasterio.features import shapes, sieve
 from rasterio.warp import transform, transform_geom
 
+from models.change.villages import answer_sentence, village_flooding
+
 SAR_BANDS = ("VV", "VH", "dataMask")
 OTSU_BINS = 256
 # A handful of extreme pixels (radar shadow, calibration artefacts) must not stretch the bins.
@@ -171,10 +173,11 @@ def water_change(t1: Any, t2: Any) -> WaterChange:
         new_water_ha=new_ha, receded_water_ha=receded_ha,
     )
     polygons = _polygons({"new_water": new_water, "receded_water": receded}, t1)
+    overlay = village_flooding(new_water, valid, row_area, t1)
     answer = (
         f"Sentinel-1 water-change baseline: {new_ha:.1f} ha became open water between T1 and T2 "
-        f"and {receded_ha:.1f} ha stopped being open water. Water is a single uncalibrated "
-        f"threshold of {threshold:.1f} dB on VV backscatter; it does not identify villages, "
-        "flood depth or causes, and smooth surfaces or radar shadow can read as water."
+        f"and {receded_ha:.1f} ha stopped being open water. {answer_sentence(overlay)} Water is a "
+        f"single uncalibrated threshold of {threshold:.1f} dB on VV backscatter; it does not "
+        "measure flood depth or causes, and smooth surfaces or radar shadow can read as water."
     )
-    return WaterChange(answer, [statistics, polygons], valid, new_water)
+    return WaterChange(answer, [statistics, polygons, overlay], valid, new_water)
