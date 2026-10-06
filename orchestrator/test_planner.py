@@ -14,12 +14,15 @@ from orchestrator.capabilities import (
     SINGLE_IMAGE_VQA,
     UnknownCapability,
 )
+from orchestrator import planner
 from orchestrator.planner import (
     PLANNER_VERSION,
+    TEMPORAL_LOCALIZATION_RULE_ID,
     InvalidPlanRequest,
     PlanRequest,
     plan_request,
 )
+from orchestrator.question import ParsedQuestion
 
 
 def plan(
@@ -244,3 +247,81 @@ def test_planning_invokes_no_model_and_writes_no_trace() -> None:
     assert result.executable is True
     infer.assert_not_called()
     append.assert_not_called()
+
+
+DEMO_QUESTION = (
+    "Which villages near Patna flooded on 20 Aug 2024 that weren't flooded on 1 Aug?"
+)
+
+
+def test_planner_version_marks_parsed_routing() -> None:
+    assert PLANNER_VERSION == "phase3-parsed-v1"
+
+
+@pytest.mark.parametrize(
+    "question",
+    ["Find all aircraft", "Show the ships", "Detect oil spills in this radar image"],
+)
+def test_documented_keyword_misroutes_now_select_grounding(question: str) -> None:
+    result = plan(question)
+    assert result.selected_capability == GROUNDING
+    assert result.rule_id == "parsed_locate"
+    assert result.executable is True
+
+
+def test_demo_flood_question_selects_change_vqa() -> None:
+    result = plan(DEMO_QUESTION, scenes=("before", "after"))
+    assert result.selected_capability == CHANGE_VQA
+    assert result.rule_id == "parsed_flood_change"
+    assert result.missing_inputs == ()
+    assert result.executable is True
+
+
+def test_parse_that_agrees_with_keyword_rules_keeps_their_rule_id() -> None:
+    assert plan("Did flooding expand?").rule_id == "change_temporal_compare"
+    assert plan("Highlight flooding.").rule_id == "grounding_spatial_localization"
+
+
+def test_flood_question_over_sar_pair_replaces_unimplemented_chain() -> None:
+    result = plan(
+        "Where did flooding increase between these two scenes?",
+        scenes=("scene_a", "scene_b"),
+        sensor="Sentinel-1",
+    )
+    assert result.selected_capability == CHANGE_VQA
+    assert result.rule_id == "parsed_flood_change"
+    assert result.unavailable_reason is None
+    assert result.executable is True
+
+
+@pytest.mark.parametrize(
+    ("question", "scenes", "sensor"),
+    [
+        ("Where did flooding increase between these two scenes?", ("a", "b"), None),
+        ("Where did flooding increase between these two scenes?", ("a", "b"), "LoveDA"),
+        ("Where did flooding increase?", ("a",), "Sentinel-1"),
+        ("Where has the forest decreased?", ("a", "b"), "SAR"),
+    ],
+)
+def test_combined_rule_holds_unless_flood_question_over_sar_pair(
+    question: str, scenes: tuple[str, ...], sensor: str | None
+) -> None:
+    result = plan(question, scenes=scenes, sensor=sensor)
+    assert result.rule_id == TEMPORAL_LOCALIZATION_RULE_ID
+    assert result.executable is False
+
+
+def test_unknown_parse_falls_back_to_keyword_rules(monkeypatch) -> None:
+    unknown = ParsedQuestion("", "unknown", None, None, None, (), ())
+    monkeypatch.setattr(planner, "parse_question", lambda _: unknown)
+    assert plan("Find all aircraft").rule_id == "default_single_image_vqa"
+    assert plan("Where is the building?").rule_id == "grounding_spatial_localization"
+
+
+def test_explicit_capability_does_not_parse(monkeypatch) -> None:
+    def refuse(_: str) -> ParsedQuestion:
+        raise AssertionError("explicit capability must not be parsed")
+
+    monkeypatch.setattr(planner, "parse_question", refuse)
+    result = plan("Find all aircraft", capability=SINGLE_IMAGE_VQA)
+    assert result.rule_id == "explicit_capability"

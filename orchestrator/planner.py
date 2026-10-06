@@ -1,14 +1,21 @@
-"""Pure Phase 0 request planning with deterministic, auditable rules.
+"""Pure request planning with deterministic, auditable rules.
 
-Precedence is explicit capability, optical/SAR, combined temporal change plus
-spatial localization, temporal change, grounding, then single-image VQA. The
-combined rule is the only multi-step decomposition: it selects change_vqa as
-the primary capability while the execution-plan layer represents the future
+An explicit capability always wins. Otherwise the parsed question
+(orchestrator.question) routes, and the keyword rules are the fallback:
+optical/SAR, combined temporal change plus spatial localization, temporal
+change, grounding, then single-image VQA. The parse only overrides the keyword
+rules when it picks a different capability; then the rule id is
+``parsed_<intent>``. When both agree the keyword rule id is kept, so a
+``parsed_*`` id marks exactly the routings the keyword rules got wrong.
+
+The combined rule is the only multi-step decomposition: it selects change_vqa
+as the primary capability while the execution-plan layer represents the future
 change_vqa → grounding chain. Such plans remain representation only until
-providers exist; there is no replanning and no autonomy.
+providers exist; there is no replanning and no autonomy. It holds unless the
+question is a flood_change over a SAR pair, whose water-change polygons
+already localize, so one change_vqa step answers it.
 """
 
-import re
 from dataclasses import dataclass
 
 from orchestrator.capabilities import (
@@ -21,8 +28,40 @@ from orchestrator.capabilities import (
     UnknownCapability,
     resolve_provider,
 )
+from orchestrator.question import (
+    CHANGE,
+    DESCRIBE,
+    FLOOD_CHANGE,
+    LOCATE,
+    ParsedQuestion,
+    has_change_intent,
+    has_grounding_intent,
+    has_optical_sar_intent,
+    parse_question,
+    tokenize,
+)
+from orchestrator.question import OPTICAL_SAR as OPTICAL_SAR_INTENT
 
-PLANNER_VERSION = "phase0-rules-v1"
+PLANNER_VERSION = "phase3-parsed-v1"
+
+SAR_SENSORS = frozenset({"sar", "radar", "sentinel 1", "synthetic aperture radar"})
+# Parsed intent -> capability; "unknown" has none and leaves routing to the keyword rules.
+INTENT_CAPABILITIES = {
+    FLOOD_CHANGE: CHANGE_VQA,
+    CHANGE: CHANGE_VQA,
+    LOCATE: GROUNDING,
+    DESCRIBE: SINGLE_IMAGE_VQA,
+    OPTICAL_SAR_INTENT: OPTICAL_SAR,
+}
+INTENT_REASONS = {
+    FLOOD_CHANGE: "The question asks where flooding changed between two dates.",
+    CHANGE: "The question asks for temporal comparison.",
+    LOCATE: "The question asks to find or localize objects in the scene.",
+    DESCRIBE: "The question asks about the contents of a single scene.",
+    OPTICAL_SAR_INTENT: "The question asks for combined optical and SAR analysis.",
+}
+
+Selection = tuple[str, str, str, str | None]  # capability, rule id, reason, requested
 
 # Narrow combined intent: temporal change AND spatial localization together.
 TEMPORAL_LOCALIZATION_RULE_ID = "temporal_change_then_grounding"
@@ -55,137 +94,6 @@ class Plan:
     unavailable_reason: str | None
 
 
-def _tokens(value: str) -> tuple[str, ...]:
-    return tuple(re.findall(r"[a-z0-9]+", value.casefold()))
-
-
-def _phrase(tokens: tuple[str, ...], words: str) -> bool:
-    needle = tuple(words.split())
-    size = len(needle)
-    return any(tokens[index : index + size] == needle for index in range(len(tokens)))
-
-
-def _has_optical_sar_intent(tokens: tuple[str, ...]) -> bool:
-    if any(_phrase(tokens, phrase) for phrase in ("cross modal", "multi sensor")):
-        return True
-    sar = (
-        "sar" in tokens
-        or "radar" in tokens
-        or _phrase(tokens, "sentinel 1")
-        or _phrase(tokens, "synthetic aperture radar")
-    )
-    optical = "optical" in tokens or _phrase(tokens, "sentinel 2")
-    paired = _phrase(tokens, "sar optical") or _phrase(tokens, "optical sar")
-    joint = any(
-        word in tokens
-        for word in (
-            "and",
-            "both",
-            "compare",
-            "together",
-            "use",
-            "using",
-            "versus",
-            "vs",
-            "confirm",
-            "miss",
-            "misses",
-        )
-    )
-    return sar and optical and (joint or paired)
-
-
-def _has_change_intent(tokens: tuple[str, ...]) -> bool:
-    phrases = (
-        "what changed",
-        "what change",
-        "before and after",
-        "between these images",
-        "between the images",
-        "between two images",
-        "between the two images",
-        "between these scenes",
-        "between the scenes",
-        "between two scenes",
-        "between the two scenes",
-        "over time",
-        "new since",
-        "removed since",
-        "appeared since",
-        "disappeared since",
-    )
-    if any(_phrase(tokens, phrase) for phrase in phrases):
-        return True
-    temporal_verbs = {
-        "change",
-        "changed",
-        "increase",
-        "increased",
-        "decrease",
-        "decreased",
-        "expand",
-        "expanded",
-        "shrink",
-        "shrunk",
-        "appear",
-        "appeared",
-        "disappear",
-        "disappeared",
-    }
-    temporal_cues = {"has", "have", "did", "where", "since", "between", "from"}
-    if temporal_verbs.intersection(tokens) and temporal_cues.intersection(tokens):
-        return True
-    return (
-        "from" in tokens
-        and "to" in tokens
-        and sum(token.isdigit() and len(token) == 4 for token in tokens) >= 2
-    )
-
-
-def _has_grounding_intent(tokens: tuple[str, ...]) -> bool:
-    phrases = (
-        "where is",
-        "where are",
-        "where can",
-        "show me where",
-        "which part of the image",
-        "location of",
-        "point to",
-        "give me the bounding box",
-        "bounding box of",
-        "draw a bounding box",
-        "coordinates in the image",
-        "can you locate",
-        "can you localize",
-    )
-    if any(_phrase(tokens, phrase) for phrase in phrases):
-        return True
-    if "locate" in tokens or "localize" in tokens:
-        return True
-    if tokens and tokens[0] in {
-        "mark",
-        "highlight",
-        "segment",
-        "mask",
-    }:
-        return True
-    if "bbox" in tokens or (
-        "polygon" in tokens and tokens and tokens[0] in {"give", "draw", "return"}
-    ):
-        return True
-    directions = {
-        "north",
-        "south",
-        "east",
-        "west",
-        "northeast",
-        "northwest",
-        "southeast",
-        "southwest",
-    }
-    return "concentrated" in tokens and bool(directions.intersection(tokens))
-
-
 def _has_temporal_verb(tokens: tuple[str, ...]) -> bool:
     temporal_verbs = {
         "change",
@@ -215,12 +123,10 @@ def _has_combined_temporal_localization_intent(tokens: tuple[str, ...]) -> bool:
     """
     if not _has_temporal_verb(tokens):
         return False
-    return "where" in tokens or _has_grounding_intent(tokens)
+    return "where" in tokens or has_grounding_intent(tokens)
 
 
-def _selection(
-    request: PlanRequest, tokens: tuple[str, ...]
-) -> tuple[str, str, str, str | None]:
+def _selection(request: PlanRequest, tokens: tuple[str, ...]) -> Selection:
     requested = (
         request.requested_capability.strip()
         if request.requested_capability is not None
@@ -237,7 +143,25 @@ def _selection(
             "The request explicitly selects this capability.",
             requested,
         )
-    if _has_optical_sar_intent(tokens):
+    sar_pair = len(request.scene_ids) >= 2 and _sensor_key(request.sensor) in SAR_SENSORS
+    return _parsed_selection(parse_question(request.question), _keyword_selection(tokens), sar_pair)
+
+
+def _parsed_selection(parsed: ParsedQuestion, keyword: Selection, sar_pair: bool) -> Selection:
+    """The parse routes; the keyword selection stands when the parse is unknown or agrees."""
+    intent = parsed.intent
+    capability = INTENT_CAPABILITIES.get(intent)
+    if keyword[1] == TEMPORAL_LOCALIZATION_RULE_ID:
+        overrides = intent == FLOOD_CHANGE and sar_pair
+    else:
+        overrides = capability not in (None, keyword[0])
+    if not overrides:
+        return keyword
+    return capability, f"parsed_{intent}", INTENT_REASONS[intent], None
+
+
+def _keyword_selection(tokens: tuple[str, ...]) -> Selection:
+    if has_optical_sar_intent(tokens):
         return (
             OPTICAL_SAR,
             "optical_sar_cross_modal",
@@ -251,14 +175,14 @@ def _selection(
             "The request requires temporal change analysis followed by spatial localization.",
             None,
         )
-    if _has_change_intent(tokens):
+    if has_change_intent(tokens):
         return (
             CHANGE_VQA,
             "change_temporal_compare",
             "The request asks for temporal comparison.",
             None,
         )
-    if _has_grounding_intent(tokens):
+    if has_grounding_intent(tokens):
         return (
             GROUNDING,
             "grounding_spatial_localization",
@@ -271,6 +195,10 @@ def _selection(
         "The request asks about the contents of a single scene.",
         None,
     )
+
+
+def _sensor_key(sensor: str | None) -> str:
+    return " ".join(tokenize(sensor or ""))
 
 
 def _inputs(capability: str, scene_count: int) -> tuple[tuple[str, ...], tuple[str, ...]]:
@@ -293,7 +221,7 @@ def _inputs(capability: str, scene_count: int) -> tuple[tuple[str, ...], tuple[s
 
 def plan_request(request: PlanRequest) -> Plan:
     """Return the same immutable plan for the same request and registry state."""
-    tokens = _tokens(request.question)
+    tokens = tokenize(request.question)
     if not tokens:
         raise InvalidPlanRequest("A non-empty question is required.")
     capability, rule_id, reason, requested = _selection(request, tokens)
@@ -315,13 +243,7 @@ def plan_request(request: PlanRequest) -> Plan:
     if rule_id == TEMPORAL_LOCALIZATION_RULE_ID:
         unavailable_reason = "Multi-step change-to-grounding execution is not implemented."
 
-    sensor = " ".join(_tokens(request.sensor or ""))
-    if capability == SINGLE_IMAGE_VQA and sensor in {
-        "sar",
-        "radar",
-        "sentinel 1",
-        "synthetic aperture radar",
-    }:
+    if capability == SINGLE_IMAGE_VQA and _sensor_key(request.sensor) in SAR_SENSORS:
         unavailable_reason = "Single-image SAR interpretation is not currently supported."
 
     return Plan(
