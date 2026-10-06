@@ -5,6 +5,7 @@ import * as maplibregl from "maplibre-gl";
 import { Crosshair, Layers3 } from "lucide-react";
 import { getSceneImageUrl } from "@/lib/api";
 import type { OverlayBox } from "@/lib/evidence";
+import { MAPLIBRE_WORKER_URL } from "@/lib/maplibre";
 import { GOLDEN_SCENE } from "@/lib/workspace-contract";
 
 // Scenes are NOT placed on Earth here. The golden LoveDA scene ships no geographic
@@ -66,6 +67,7 @@ export function ImageryViewer({ sceneId = GOLDEN_SCENE.id, label, width, height,
 
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return;
+    maplibregl.setWorkerUrl(MAPLIBRE_WORKER_URL);
     const map = new maplibregl.Map({
       container: containerRef.current,
       style: { version: 8, sources: {}, layers: [{ id: "background", type: "background", paint: { "background-color": "#f5f5f7" } }] },
