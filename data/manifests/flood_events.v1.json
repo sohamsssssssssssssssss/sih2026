@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "description": "Past Indian flood events for Sentinel-1 flood change. Each entry is a fetch request for `python -m backend.sentinel1 --event <event_id>`: an AOI that fits one Process API request and inclusive UTC date windows. Facts come only from the listed sources; anything not yet checked against data is listed under `unverified`.",
+  "description": "Past Indian flood events for Sentinel-1 flood change. Each entry is a fetch request for `python -m backend.sentinel1 --event <event_id>`: an AOI that fits one Process API request and inclusive UTC date windows. Facts come only from the listed sources; anything not yet checked against data is listed under `unverified`. A shared-track Sentinel-1 pair was found for every event; see data/manifests/cdse/flood-runs.v1.json.",
   "events": [
     {
       "event_id": "kosi-2024",
@@ -29,7 +29,6 @@
         }
       ],
       "unverified": [
-        "Sentinel-1 acquisitions on one shared track exist in both windows.",
         "The before window is free of earlier monsoon flooding in this block."
       ]
     },
@@ -56,7 +55,6 @@
         }
       ],
       "unverified": [
-        "Sentinel-1 acquisitions on one shared track exist in both windows.",
         "The before window is free of earlier flooding in Cachar."
       ]
     },
@@ -79,7 +77,6 @@
         }
       ],
       "unverified": [
-        "Sentinel-1 acquisitions on one shared track exist in both windows.",
         "The Aluva AOI itself was dry in the before window."
       ]
     }

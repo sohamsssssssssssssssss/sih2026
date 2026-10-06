@@ -19,6 +19,7 @@ SatQuery AI is a capability-oriented remote-sensing visual intelligence system b
 - **Deterministic optical-SAR analysis**: Joint Sentinel-2 index and Sentinel-1 backscatter summaries consume both co-registered inputs. This is not a learned fusion model.
 - **Deterministic change analysis**: Co-registered multispectral or RGB pairs produce heuristic magnitude, changed-pixel, coverage, and spatial-extent evidence. This is not semantic change understanding.
 - **Sentinel-1 water change**: Two co-registered VV/VH/dataMask SAR scenes sent to `change_vqa` report new and receded open water in hectares and as GeoJSON polygons, from a split-based Otsu baseline (bimodal tiles, after Chini et al. 2017) that abstains when no part of the scene shows an open-water mode, with a ±1 dB sensitivity range. Where village boundaries exist (the Bihar and Kerala catalogue events), the answer names the most flooded villages with hectares. Confidence is `null`. See `docs/change-baseline.md`.
+- **Sentinel-1 fetch from CDSE**: `POST /api/sentinel1/pairs` or `python -m backend.sentinel1 --event kosi-2024` (or an explicit `--bbox`, `--before` and `--after`; needs `CDSE_CLIENT_ID` and `CDSE_CLIENT_SECRET`) picks a same-orbit-track pair, renders terrain-corrected gamma0 for both dates on one UTM grid (tiled and mosaicked up to 50 km per side) and ingests them as scenes. It also records how cloudy Sentinel-2 was over the AOI near the post-event date. Verified live on all three catalogued events; results are in `data/manifests/cdse/flood-runs.v1.json`. The endpoint has no authentication and runs one fetch at a time, so don't expose it publicly yet.
 - **Cryptographic audit trace**: Live and cached-result executions are distinguished in a SHA-256 hash-chained trace.
 - **Explicit cached replay**: The designated committed VQA result is returned only when the caller requests `execution_mode: "cached_result"`; live failure never silently falls back.
 
@@ -26,7 +27,6 @@ Historical Kaggle Tesla T4 smoke verification passed through the repository prov
 
 ### PARTIAL / BLOCKED ON GPU OR DATA
 - **Remote-sensing adaptation**: The offline RSVQA-LR QLoRA pipeline and held-out comparison runner are ready. No adapter has been trained and no improvement is claimed.
-- **Sentinel-1 fetch from CDSE**: `python -m backend.sentinel1 --bbox W S E N --before START END --after START END` (needs `CDSE_CLIENT_ID` and `CDSE_CLIENT_SECRET`) picks a same-orbit-track pair, renders terrain-corrected gamma0 for both dates on one UTM grid and ingests them as scenes. `--event kosi-2024` (or `silchar-2022`, `kerala-2018-periyar`) uses a sourced AOI and date windows from `data/manifests/flood_events.v1.json`. Tested only against a mocked Sentinel Hub; the first live run is pending credentials.
 - **Multi-step change-to-grounding execution**: The plan can be represented, but execution remains explicitly unavailable until an intermediate spatial artifact contract exists.
 - **Benchmark and ISRO/SAC evidence**: Existing frozen evaluations and runners do not establish adapted-model, CDVQA, optical-SAR, national, or ISRO/SAC performance.
 
