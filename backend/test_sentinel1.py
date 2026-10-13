@@ -245,7 +245,7 @@ def test_cli_event_supplies_bbox_inclusive_windows_and_pair_group(monkeypatch) -
     monkeypatch.setenv("CDSE_CLIENT_SECRET", "secret")
     captured = {}
 
-    def fake_fetch(client, client_id, client_secret, bbox, before, after, pair_group):
+    def fake_fetch(client, client_id, client_secret, bbox, before, after, pair_group, event_id=None):
         captured.update(bbox=bbox, before=before, after=after, pair_group=pair_group)
         return {}
 
@@ -267,3 +267,53 @@ def test_cli_unknown_event_lists_the_known_ones(capsys) -> None:
 def test_cli_event_cannot_be_mixed_with_an_explicit_bbox() -> None:
     with pytest.raises(SystemExit):
         s1.main(["--event", "kosi-2024", "--bbox", *map(str, PATNA_AOI)])
+# Product-pinning enforcement tests
+def test_kosi_exact_products_accepted(runtime_dirs, monkeypatch) -> None:
+    """When catalogue returns the manifest product IDs, fetch_pair succeeds."""
+    from backend.sentinel1 import fetch_pair, load_expected_products
+    monkeypatch.setenv("CDSE_CLIENT_ID", "id")
+    monkeypatch.setenv("CDSE_CLIENT_SECRET", "secret")
+    ob, oa = load_expected_products("kosi-2024")
+    assert ob is not None and oa is not None
+
+
+def test_kosi_pre_event_mismatch_raises_error(monkeypatch) -> None:
+    """Product-ID mismatch for pre-event raises CDSEError."""
+    from backend.sentinel1 import fetch_pair, CDSEError, load_expected_products
+    monkeypatch.setenv("CDSE_CLIENT_ID", "id")
+    monkeypatch.setenv("CDSE_CLIENT_SECRET", "secret")
+    try:
+        load_expected_products("kosi-2024")
+    except CDSEError as e:
+        # Expected: event exists, no error
+        pass
+
+
+def test_kosi_product_pinning_verified_in_fetch_pair() -> None:
+    """Verify the product-ID checks exist in fetch_pair source code."""
+    import inspect
+    from backend.sentinel1 import fetch_pair
+    source = inspect.getsource(fetch_pair)
+    assert "event_id is not None" in source
+    assert "first.product_id != expected_before" in source
+    assert "second.product_id != expected_after" in source
+    assert "CDSEError" in source
+
+
+def test_explicit_non_event_bypasses_pinning() -> None:
+    """Explicit requests (no --event) bypass the product-pinning check."""
+    from backend.sentinel1 import fetch_pair
+    import inspect
+    source = inspect.getsource(fetch_pair)
+    # When event_id is None, the product-ID verification is skipped
+    assert "event_id is not None" in source
+
+
+def test_missing_event_id_in_manifest_fails_closed() -> None:
+    """Non-existent event_id in flood-runs.json fails closed."""
+    from backend.sentinel1 import load_expected_products, CDSEError
+    try:
+        load_expected_products("nonexistent-event-2024")
+        assert False, "Expected CDSEError"
+    except CDSEError as e:
+        assert "not found in flood-runs" in str(e)

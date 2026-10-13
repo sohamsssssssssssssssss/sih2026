@@ -68,6 +68,7 @@ REQUEST_TIMEOUT_SECONDS = 120.0
 ERROR_EXCERPT_CHARS = 200
 PROVENANCE = "cdse_process_api"
 FLOOD_EVENTS_PATH = Path(__file__).resolve().parents[1] / "data" / "manifests" / "flood_events.v1.json"
+FLOOD_RUNS_PATH = Path(__file__).resolve().parents[1] / "data" / "manifests" / "cdse" / "flood-runs.v1.json"
 
 EVALSCRIPT = """//VERSION=3
 function setup() {
@@ -351,17 +352,36 @@ def fetch_pair(
     before: tuple[datetime, datetime],
     after: tuple[datetime, datetime],
     pair_group: str | None = None,
+    event_id: str | None = None,
 ) -> dict[str, Any]:
     """Search, pair, render and ingest.
 
     Nothing is stored unless both dates render. If the second scene then fails
     to store, the error names the first, already-stored scene.
+
+    When ``event_id`` is provided, the selected pre-event and post-event
+    acquisition product IDs are verified against the pinned records in
+    ``flood-runs.v1.json`` before any Process API rendering occurs.  A mismatch
+    raises ``CDSEError`` and no data is ingested.
     """
     if not before[0] < before[1] <= after[0] < after[1]:
         raise ValueError("Windows must be ordered: before start < before end <= after start < after end")
     grid = utm_grid(bbox)
     token = access_token(client, client_id, client_secret)
     first, second = pick_pair(search(client, token, bbox, before), search(client, token, bbox, after))
+
+    # Product pinning: verify selected IDs match the historical manifest for --event runs
+    if event_id is not None:
+        expected_before, expected_after = load_expected_products(event_id)
+        if first.product_id != expected_before:
+            raise CDSEError(
+                f"Pre-event product ID mismatch: expected {expected_before}, got {first.product_id}"
+            )
+        if second.product_id != expected_after:
+            raise CDSEError(
+                f"Post-event product ID mismatch: expected {expected_after}, got {second.product_id}"
+            )
+
     rasters = [render(client, token, item, grid) for item in (first, second)]
     # Imported here: optical_clouds builds on this module's CDSE helpers.
     from backend.optical_clouds import check_optical_clouds
@@ -401,6 +421,15 @@ def _inclusive(start: str, end: str) -> tuple[datetime, datetime]:
 
 def load_events() -> list[dict[str, Any]]:
     return json.loads(FLOOD_EVENTS_PATH.read_text(encoding="utf-8"))["events"]
+
+
+def load_expected_products(event_id: str) -> tuple[str, str]:
+    """Load the expected pre-event and post-event product IDs from flood-runs.v1.json."""
+    events = json.loads(FLOOD_RUNS_PATH.read_text(encoding="utf-8"))["events"]
+    for event in events:
+        if event["event_id"] == event_id:
+            return event["before"]["product_id"], event["after"]["product_id"]
+    raise CDSEError(f"Event {event_id!r} not found in flood-runs.v1.json")
 
 
 Window = tuple[datetime, datetime]
@@ -472,7 +501,7 @@ def main(argv: list[str] | None = None) -> int:
         return 2
     try:
         with httpx.Client() as client:
-            result = fetch_pair(client, *credentials, bbox, before, after, args.pair_group or args.event)
+            result = fetch_pair(client, *credentials, bbox, before, after, args.pair_group or args.event, event_id=args.event)
     except (CDSEError, ValueError, InvalidImageUpload, SceneStorageError) as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 1
