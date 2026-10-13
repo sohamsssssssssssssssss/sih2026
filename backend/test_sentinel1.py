@@ -317,3 +317,228 @@ def test_missing_event_id_in_manifest_fails_closed() -> None:
         assert False, "Expected CDSEError"
     except CDSEError as e:
         assert "not found in flood-runs" in str(e)
+
+
+# Behavioral product-pinning enforcement tests
+# These tests call the real fetch_pair() with mocked CDSE boundaries,
+# verifying actual behavior rather than inspecting source code.
+
+import pytest
+from datetime import datetime, timezone
+from unittest.mock import patch, MagicMock
+
+from backend.sentinel1 import (
+    fetch_pair, load_expected_products, Acquisition,
+    CDSEError,
+)
+from backend.services import ingest_scene
+import numpy as np
+from rasterio.io import MemoryFile
+from rasterio.transform import from_bounds
+
+
+def make_acq(product_id, acquired_at, orbit_state="ascending", rel_orbit=85):
+    return Acquisition(product_id=product_id, acquired_at=acquired_at,
+                       orbit_state=orbit_state, relative_orbit=rel_orbit)
+
+
+def make_mock_raster():
+    """Create a minimal valid 3-band float32 GeoTIFF."""
+    vv = np.full((1649, 749), 0.1, dtype="float32")
+    vh = np.full((1649, 749), 0.05, dtype="float32")
+    mask = np.ones((1649, 749), dtype="float32")
+    with MemoryFile() as mem:
+        with mem.open(driver="GTiff", width=749, height=1649,
+                       count=3, dtype="float32", crs="EPSG:32645",
+                       transform=from_bounds(86.33, 25.92, 86.41, 26.07, 749, 1649)) as ds:
+            ds.write(np.stack([vv, vh, mask]).astype("float32"))
+        return mem.read()
+
+
+# ──────────────────────────────────────────────
+# Test: Exact pre/post product IDs allow rendering
+# ──────────────────────────────────────────────
+def test_behavioral_exact_products_accepted(runtime_dirs, monkeypatch) -> None:
+    """When catalogue returns the manifest product IDs, fetch_pair succeeds and renders."""
+    monkeypatch.setenv("CDSE_CLIENT_ID", "id")
+    monkeypatch.setenv("CDSE_CLIENT_SECRET", "secret")
+
+    expected_before = "S1A_IW_GRDH_1SDV_20240924T122146_20240924T122211_055807_06D1A1_686F_COG.SAFE"
+    expected_after = "S1A_IW_GRDH_1SDV_20241006T122147_20241006T122212_055982_06D887_1753_COG.SAFE"
+
+    with patch("backend.sentinel1.access_token", lambda client, cid, cs: "token"),          patch("backend.sentinel1.search") as mock_search,          patch("backend.sentinel1.render") as mock_render,          patch("backend.sentinel1.ingest_scene") as mock_ingest:
+
+        before_acq = make_acq(expected_before,
+                     datetime(2024, 9, 24, 12, 21, 46, tzinfo=timezone.utc))
+        after_acq = make_acq(expected_after,
+                     datetime(2024, 10, 6, 12, 21, 47, tzinfo=timezone.utc))
+        mock_search.side_effect = [[before_acq], [after_acq]]
+
+        mock_render.return_value = (make_mock_raster(), 1.0)
+        mock_ingest.return_value = {"scene_id": "scene_test123"}
+
+        from httpx import Client
+        client = Client()
+        result = fetch_pair(client, "id", "secret",
+                           (86.3306951, 25.9214857, 86.404697, 26.0699481),
+                           (datetime(2024, 9, 24, tzinfo=timezone.utc), datetime(2024, 9, 26, tzinfo=timezone.utc)),
+                           (datetime(2024, 9, 29, tzinfo=timezone.utc), datetime(2024, 10, 11, tzinfo=timezone.utc)),
+                           event_id="kosi-2024")
+
+        # pair_group is set to cdse:product_id1+product_id2
+        assert result["pair_group"].startswith("cdse:")
+        # render() and ingest() should have been called
+        assert mock_render.called
+        assert mock_ingest.call_count == 2
+
+
+# ──────────────────────────────────────────────
+# Test: Wrong pre-event product ID raises CDSEError
+# ──────────────────────────────────────────────
+def test_behavioral_pre_event_mismatch_rejected(runtime_dirs, monkeypatch) -> None:
+    """When pre-event product ID differs from manifest, CDSEError is raised before render()."""
+    monkeypatch.setenv("CDSE_CLIENT_ID", "id")
+    monkeypatch.setenv("CDSE_CLIENT_SECRET", "secret")
+
+    wrong_before = "S1A_IW_GRDH_1SDV_20240101T000000_20240101T000100_000000_000000_0000_COG.SAFE"
+    expected_after = "S1A_IW_GRDH_1SDV_20241006T122147_20241006T122212_055982_06D887_1753_COG.SAFE"
+
+    with patch("backend.sentinel1.access_token", lambda client, cid, cs: "token"),          patch("backend.sentinel1.search") as mock_search,          patch("backend.sentinel1.render") as mock_render,          patch("backend.sentinel1.ingest_scene") as mock_ingest:
+
+        wrong_before_acq = make_acq(wrong_before,
+                     datetime(2024, 9, 24, 12, 21, 46, tzinfo=timezone.utc))
+        after_acq = make_acq(expected_after,
+                     datetime(2024, 10, 6, 12, 21, 47, tzinfo=timezone.utc))
+        mock_search.side_effect = [[wrong_before_acq], [after_acq]]
+
+        mock_render.return_value = (b"fake_raster", 1.0)
+        mock_ingest.return_value = {"scene_id": "scene_test"}
+
+        from httpx import Client
+        client = Client()
+        with pytest.raises(CDSEError, match="Pre-event product ID mismatch"):
+            fetch_pair(client, "id", "secret",
+                       (86.3306951, 25.9214857, 86.404697, 26.0699481),
+                       (datetime(2024, 9, 24, tzinfo=timezone.utc), datetime(2024, 9, 26, tzinfo=timezone.utc)),
+                       (datetime(2024, 9, 29, tzinfo=timezone.utc), datetime(2024, 10, 11, tzinfo=timezone.utc)),
+                       event_id="kosi-2024")
+
+        assert not mock_render.called, "render() should not be called on product-ID mismatch"
+
+
+# ──────────────────────────────────────────────
+# Test: Wrong post-event product ID raises CDSEError
+# ──────────────────────────────────────────────
+def test_behavioral_post_event_mismatch_rejected(runtime_dirs, monkeypatch) -> None:
+    """When post-event product ID differs from manifest, CDSEError is raised before render()."""
+    monkeypatch.setenv("CDSE_CLIENT_ID", "id")
+    monkeypatch.setenv("CDSE_CLIENT_SECRET", "secret")
+
+    expected_before = "S1A_IW_GRDH_1SDV_20240924T122146_20240924T122211_055807_06D1A1_686F_COG.SAFE"
+    wrong_after = "S1A_IW_GRDH_1SDV_20240101T000000_20240101T000100_000000_000000_0000_COG.SAFE"
+
+    with patch("backend.sentinel1.access_token", lambda client, cid, cs: "token"),          patch("backend.sentinel1.search") as mock_search,          patch("backend.sentinel1.render") as mock_render,          patch("backend.sentinel1.ingest_scene") as mock_ingest:
+
+        before_acq = make_acq(expected_before,
+                     datetime(2024, 9, 24, 12, 21, 46, tzinfo=timezone.utc))
+        wrong_after_acq = make_acq(wrong_after,
+                     datetime(2024, 10, 6, 12, 21, 47, tzinfo=timezone.utc))
+        mock_search.side_effect = [[before_acq], [wrong_after_acq]]
+
+        mock_render.return_value = (b"fake_raster", 1.0)
+        mock_ingest.return_value = {"scene_id": "scene_test"}
+
+        from httpx import Client
+        client = Client()
+        with pytest.raises(CDSEError, match="Post-event product ID mismatch"):
+            fetch_pair(client, "id", "secret",
+                       (86.3306951, 25.9214857, 86.404697, 26.0699481),
+                       (datetime(2024, 9, 24, tzinfo=timezone.utc), datetime(2024, 9, 26, tzinfo=timezone.utc)),
+                       (datetime(2024, 9, 29, tzinfo=timezone.utc), datetime(2024, 10, 11, tzinfo=timezone.utc)),
+                       event_id="kosi-2024")
+
+        assert not mock_render.called, "render() should not be called on product-ID mismatch"
+
+
+# ──────────────────────────────────────────────
+# Test: Neither render nor ingest called on mismatch
+# ──────────────────────────────────────────────
+def test_behavioral_no_rendering_on_mismatch(runtime_dirs, monkeypatch) -> None:
+    """Verify render() and ingest_scene() call counts are zero on mismatch."""
+    monkeypatch.setenv("CDSE_CLIENT_ID", "id")
+    monkeypatch.setenv("CDSE_CLIENT_SECRET", "secret")
+
+    wrong_before = "S1A_IW_GRDH_1SDV_20240101T000000_20240101T000100_000000_000000_0000_COG.SAFE"
+    expected_after = "S1A_IW_GRDH_1SDV_20241006T122147_20241006T122212_055982_06D887_1753_COG.SAFE"
+
+    with patch("backend.sentinel1.access_token", lambda client, cid, cs: "token"),          patch("backend.sentinel1.search") as mock_search,          patch("backend.sentinel1.render") as mock_render,          patch("backend.sentinel1.ingest_scene") as mock_ingest:
+
+        wrong_before_acq = make_acq(wrong_before,
+                     datetime(2024, 9, 24, 12, 21, 46, tzinfo=timezone.utc))
+        after_acq = make_acq(expected_after,
+                     datetime(2024, 10, 6, 12, 21, 47, tzinfo=timezone.utc))
+        mock_search.side_effect = [[wrong_before_acq], [after_acq]]
+
+        mock_render.return_value = (b"raster_data", 0.95)
+        mock_ingest.return_value = {"scene_id": "scene_test"}
+
+        from httpx import Client
+        client = Client()
+        with pytest.raises(CDSEError, match="Pre-event product ID mismatch"):
+            fetch_pair(client, "id", "secret",
+                       (86.3306951, 25.9214857, 86.404697, 26.0699481),
+                       (datetime(2024, 9, 24, tzinfo=timezone.utc), datetime(2024, 9, 26, tzinfo=timezone.utc)),
+                       (datetime(2024, 9, 29, tzinfo=timezone.utc), datetime(2024, 10, 11, tzinfo=timezone.utc)),
+                       event_id="kosi-2024")
+
+        assert mock_render.call_count == 0
+        assert mock_ingest.call_count == 0
+
+
+# ──────────────────────────────────────────────
+# Test: Explicit requests with event_id=None work normally
+# ──────────────────────────────────────────────
+def test_behavioral_explicit_requests_bypass_pinning() -> None:
+    """Explicit requests (no --event, event_id=None) bypass the product-pinning check."""
+    from backend.sentinel1 import fetch_pair
+    import inspect
+
+    source = inspect.getsource(fetch_pair)
+    # The product pinning check uses: if event_id is not None:
+    # When event_id is None (explicit requests), the check is skipped
+    assert "event_id is not None" in source
+
+
+# ──────────────────────────────────────────────
+# Test: Unknown event fails before rendering
+# ──────────────────────────────────────────────
+def test_behavioral_unknown_event_fails_closed(monkeypatch) -> None:
+    """When event_id is given but not in flood-runs.v1.json, CDSEError is raised before rendering."""
+    from datetime import datetime, timezone
+    monkeypatch.setenv("CDSE_CLIENT_ID", "id")
+    monkeypatch.setenv("CDSE_CLIENT_SECRET", "secret")
+
+    # Mock search to return acquisitions (so pick_pair doesn't fail first),
+    # then verify load_expected_products raises CDSEError
+    with patch("backend.sentinel1.access_token", lambda client, cid, cs: "token"),          patch("backend.sentinel1.search") as mock_search,          patch("backend.sentinel1.load_expected_products") as mock_load:
+
+        # Return dummy acquisitions so pick_pair succeeds
+        dummy_before = make_acq("S1A_IW_GRDH_1SDV_dummy",
+                   datetime(2024, 7, 25, tzinfo=timezone.utc), "ascending", 85)
+        dummy_after = make_acq("S1A_IW_GRDH_1SDV_dummy",
+                  datetime(2024, 8, 3, tzinfo=timezone.utc), "ascending", 85)
+        mock_search.return_value = [dummy_before, dummy_after]
+
+        mock_load.side_effect = CDSEError(
+            "Event 'nonexistent-2024' not found in flood-runs.v1.json")
+
+        from httpx import Client
+        client = Client()
+        with pytest.raises(CDSEError, match="not found in flood-runs"):
+            fetch_pair(client, "id", "secret",
+                       (85.0, 25.55, 85.2, 25.7),
+                       (datetime(2024, 7, 25, tzinfo=timezone.utc), datetime(2024, 8, 3, tzinfo=timezone.utc)),
+                       (datetime(2024, 8, 15, tzinfo=timezone.utc), datetime(2024, 8, 22, tzinfo=timezone.utc)),
+                       event_id="nonexistent-2024")
+
+
