@@ -124,3 +124,20 @@ export interface SceneUploadMetadata {
   acquisition_timestamp?: string;
   polarization?: string;
 }
+
+/** Curated preserved result from GET /api/sar/change/kosi-2024. */
+export interface KosiSarChange {
+  artifact_id: "kosi-2024-sar-change";
+  scientific_result_type: "sar_backscatter_change";
+  scientific_label: "Measured SAR backscatter change; flood interpretation unvalidated.";
+  flood_interpretation_validated: false;
+  statistics: Record<"VV_change_dB" | "VH_change_dB", { count: number; min: number; max: number; mean: number; std: number }>;
+  formula: { vv_change_db: string; vh_change_db: string; units: "dB"; intermediate_precision: "float64"; output_dtype: "float32" };
+  grid: { epsg: number; width: number; height: number; resolution_m: number; bounds: number[]; crs: string };
+  input_archives: Record<"before" | "after", { product_id: string; acquisition_date: string; sha256: string }>;
+  output_artifact_hashes: Record<"sar_change.tif" | "sar_change.json", string>;
+  code_fingerprints: Record<"sentinel1" | "sar_water" | "s1_offline_change", string>;
+  coverage: { valid_pixels: number; total_pixels: number; valid_fraction: number };
+  raster_download_url: "/api/sar/change/kosi-2024/raster";
+  provenance_caveats: string[];
+}

@@ -5,6 +5,8 @@ import type { SarReport } from "@/lib/types";
 vi.mock("@/lib/api", () => ({
   API_URL: "http://localhost:8000",
   getSar: vi.fn(),
+  getKosiSarChange: vi.fn().mockRejectedValue(new Error("Preserved artifacts unavailable")),
+  getKosiSarRasterUrl: vi.fn(),
 }));
 
 import { getSar } from "@/lib/api";

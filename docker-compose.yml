@@ -12,6 +12,7 @@
 #   NEXT_PUBLIC_API_URL    baked into the frontend at build time; keep EMPTY so the
 #                          browser calls same-origin /api/...
 #   SATQUERY_MODELS_DIR    GPU override only: host directory with model artifacts
+#   SATQUERY_KOSI_ARTIFACT_DIR  host directory containing the two pinned Kosi files
 
 name: satquery
 
@@ -32,6 +33,12 @@ services:
       - satquery-state:/app/state
       # Uploaded scenes, rasters and scene manifests (data/runtime/).
       - satquery-runtime:/app/data/runtime
+      - type: bind
+        source: ${SATQUERY_KOSI_ARTIFACT_DIR:-/srv/satquery/change-artifacts/kosi-2024}
+        target: /home/app/.local/share/satquery/change-artifacts/kosi-2024
+        read_only: true
+        bind:
+          create_host_path: false
     expose:
       - "8000"
     # Healthcheck is defined in Dockerfile.backend (GET /api/health; 503 = trace

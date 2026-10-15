@@ -376,11 +376,13 @@ def ingest_scene(
     provenance: str = "user_declared_upload",
     acquisition_id: str | None = None,
     optical_check: dict[str, Any] | None = None,
+    process_evidence: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Store a scene and its manifest. Server-side fetchers name their own provenance.
 
     ``optical_check`` is the Sentinel-2 cloud check a radar fetcher ran for this
     scene; it is stored as one extra manifest field when given.
+    ``process_evidence`` retains server-reported SAR sources and processing settings.
     """
     if not data:
         raise InvalidImageUpload("The uploaded image is empty.")
@@ -487,6 +489,7 @@ def ingest_scene(
         stored: dict[str, Any] = {
             **manifest,
             "uploaded_at": datetime.now(timezone.utc).isoformat(),
+            **({"process_evidence": process_evidence} if process_evidence is not None else {}),
             **({"optical_check": optical_check} if optical_check is not None else {}),
         }
         manifest_temporary.write_text(

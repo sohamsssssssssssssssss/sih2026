@@ -12,7 +12,7 @@ from fastapi.testclient import TestClient
 import backend.sentinel1 as s1
 from backend.main import app
 from backend.routes import sentinel1 as sentinel1_routes
-from backend.test_sentinel1 import PATNA_AOI, FakeSentinelHub, acquisition, runtime_dirs  # noqa: F401
+from backend.test_sentinel1 import PATNA_AOI, FakeSentinelHub, acquisition, synthetic_pinned_run, runtime_dirs  # noqa: F401
 
 URL = "/api/sentinel1/pairs"
 SECRET = "top-secret"
@@ -26,7 +26,7 @@ PATNA_EVENT = {
     "event_id": "patna-2024",
     "aoi": {"bbox": list(PATNA_AOI)},
     "before": EXPLICIT["before"],
-    "after": EXPLICIT["after"],
+    "after": {"start": "2024-08-10", "end": "2024-08-24"},
 }
 
 
@@ -52,6 +52,7 @@ def flood_hub() -> FakeSentinelHub:
 
 def test_event_pair_is_fetched_and_listed_with_the_uploads(monkeypatch, runtime_dirs, credentials) -> None:
     monkeypatch.setattr(s1, "load_events", lambda: [PATNA_EVENT])
+    monkeypatch.setattr(s1, "load_pinned_run", lambda _: synthetic_pinned_run())
     use_transport(monkeypatch, flood_hub())
     client = TestClient(app)
 
@@ -166,3 +167,16 @@ def test_second_fetch_while_one_runs_is_409(monkeypatch, runtime_dirs, credentia
 
     assert second.status_code == 409
     assert first.result().status_code == 201
+
+
+def test_http_event_cannot_bypass_pinned_selection(monkeypatch, runtime_dirs, credentials):
+    monkeypatch.setattr(s1, "load_events", lambda: [PATNA_EVENT])
+    pinned = synthetic_pinned_run()
+    pinned["before"]["product_id"] = "S1A_MISSING_PIN"
+    monkeypatch.setattr(s1, "load_pinned_run", lambda _: pinned)
+    hub = flood_hub()
+    use_transport(monkeypatch, hub)
+    response = TestClient(app).post(URL, json={"event_id": "patna-2024"})
+    assert response.status_code == 502
+    assert hub.process_bodies == []
+    assert TestClient(app).get("/api/scenes").json()["uploads"] == []

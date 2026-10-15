@@ -1,5 +1,5 @@
 import type {
-  AnalysisResponse, ExecutionMode, ResolutionReport, SarReport, SceneCatalog, SceneUploadMetadata,
+  AnalysisResponse, ExecutionMode, KosiSarChange, ResolutionReport, SarReport, SceneCatalog, SceneUploadMetadata,
   SceneUploadResponse, TraceRecord, UploadedScene,
 } from "./types";
 import {
@@ -162,4 +162,32 @@ export async function getHealth(): Promise<HealthResponse> {
   const body = (await response.json().catch(() => null)) as HealthResponse | null;
   if (body && typeof body.status === "string") return body;
   throw new Error(`Request failed (${response.status})`);
+}
+
+export async function getKosiSarChange(): Promise<KosiSarChange> {
+  const result = await request<KosiSarChange>("/api/sar/change/kosi-2024");
+  if (result?.artifact_id !== "kosi-2024-sar-change"
+    || result.scientific_result_type !== "sar_backscatter_change"
+    || result.flood_interpretation_validated !== false
+    || result.scientific_label !== "Measured SAR backscatter change; flood interpretation unvalidated."
+    || result.raster_download_url !== "/api/sar/change/kosi-2024/raster"
+    || ![result.grid?.width, result.grid?.height, result.grid?.resolution_m,
+      result.coverage?.valid_pixels, result.coverage?.total_pixels, result.coverage?.valid_fraction,
+      ...(["VV_change_dB", "VH_change_dB"] as const).flatMap(band =>
+        (["count", "mean", "std", "min", "max"] as const).map(key => result.statistics?.[band]?.[key]))]
+      .every(value => typeof value === "number" && Number.isFinite(value))
+    || ![result.grid?.crs, result.input_archives?.before?.product_id, result.input_archives?.after?.product_id,
+      result.input_archives?.before?.sha256, result.input_archives?.after?.sha256,
+      result.output_artifact_hashes?.["sar_change.tif"], result.output_artifact_hashes?.["sar_change.json"]]
+      .every(value => typeof value === "string" && value.length > 0)
+    || result.input_archives?.before?.acquisition_date !== "2024-09-24T12:21:46Z"
+    || result.input_archives?.after?.acquisition_date !== "2024-10-06T12:21:47Z"
+    || !Array.isArray(result.provenance_caveats) || !result.provenance_caveats.every(value => typeof value === "string")) {
+    throw new Error("SAR change metadata is invalid. No verified result was displayed.");
+  }
+  return result;
+}
+
+export function getKosiSarRasterUrl(path: KosiSarChange["raster_download_url"]) {
+  return `${API_URL}${path}`;
 }

@@ -1,6 +1,8 @@
 """CDSE Sentinel-1 fetch against a mocked Sentinel Hub; no network, no credentials."""
 
+import io
 import json
+import tarfile
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -31,7 +33,9 @@ def acquisition(day: int, orbit_state: str = "ascending", relative_orbit: int | 
 def feature(item: s1.Acquisition) -> dict:
     return {
         "id": item.product_id,
+        "collection": s1.COLLECTION,
         "properties": {
+            "sar:instrument_mode": "IW", "s1:polarization": "DV", "s1:resolution": "HIGH",
             "datetime": item.acquired_at.isoformat().replace("+00:00", "Z"),
             "sat:orbit_state": item.orbit_state,
             "sat:relative_orbit": item.relative_orbit,
@@ -54,10 +58,30 @@ def geotiff(
         return memory.read()
 
 
+def userdata_json(product_id: str) -> bytes:
+    return json.dumps({"orbits": [{"tiles": [{"sentinel1ProductId": product_id}]}],
+                       "inputMetadata": {"serviceVersion": "test-service"}}).encode()
+
+
+def tar_members(members) -> bytes:
+    output = io.BytesIO()
+    with tarfile.open(fileobj=output, mode="w") as archive:
+        for name, data in members:
+            member = tarfile.TarInfo(name)
+            member.size = len(data)
+            archive.addfile(member, io.BytesIO(data))
+    return output.getvalue()
+
+
+def tar_response(tiff_bytes: bytes, userdata_bytes: bytes) -> bytes:
+    return tar_members([("default.tif", tiff_bytes), ("userdata.json", userdata_bytes)])
+
+
 class FakeSentinelHub:
     """Token, paginated catalog and process endpoints, recording what was asked.
 
     Sentinel-2 requests go to ``optical(url, body)``; by default there are no acquisitions.
+    Now returns TAR responses with TIFF + userdata.json for Process API.
     """
 
     def __init__(
@@ -83,16 +107,32 @@ class FakeSentinelHub:
             self.catalog_pages += 1
             if self.catalog_reply is not None:
                 return httpx.Response(200, json=self.catalog_reply)
-            items = self.before if body["datetime"].startswith("2024-07-25") else self.after
+            if "ids" in body:
+                items = [item for item in self.before + self.after if item.product_id in body["ids"]]
+            else:
+                items = self.before if body["datetime"].startswith("2024-07-25") else self.after
             if "next" not in body and len(items) > 1:  # first page holds one item
                 return httpx.Response(200, json={"features": [feature(items[0])], "context": {"next": 1}})
             page = items[1:] if "next" in body else items
             return httpx.Response(200, json={"features": [feature(item) for item in page], "context": {}})
         if url == s1.PROCESS_URL:
+            assert request.headers["Accept"] == "application/x-tar"
             self.process_bodies.append(body)
             width, height = self.shape_override or (body["output"]["width"], body["output"]["height"])
             epsg = int(body["input"]["bounds"]["properties"]["crs"].rsplit("/", 1)[1])
-            return httpx.Response(200, content=self.tiff(body, width, height, epsg))
+            # Determine which acquisition this request is for based on time range
+            time_from = body["input"]["data"][0]["dataFilter"]["timeRange"]["from"]
+            # Find the matching acquisition product_id
+            product_id = None
+            for acq in self.before + self.after:
+                if time_from <= acq.acquired_at.isoformat().replace("+00:00", "Z") <= body["input"]["data"][0]["dataFilter"]["timeRange"]["to"]:
+                    product_id = acq.product_id
+                    break
+            if product_id is None:
+                product_id = (self.before[0] if self.before else self.after[0]).product_id
+            tiff_bytes = self.tiff(body, width, height, epsg)
+            userdata_bytes = userdata_json(product_id)
+            return httpx.Response(200, content=tar_response(tiff_bytes, userdata_bytes), headers={"Content-Type": "application/x-tar"})
         return httpx.Response(404)
 
     def tiff(self, body: dict, width: int, height: int, epsg: int) -> bytes:
@@ -294,9 +334,9 @@ def test_kosi_product_pinning_verified_in_fetch_pair() -> None:
     import inspect
     from backend.sentinel1 import fetch_pair
     source = inspect.getsource(fetch_pair)
-    assert "event_id is not None" in source
-    assert "first.product_id != expected_before" in source
-    assert "second.product_id != expected_after" in source
+    assert "event_id is None" in source
+    assert "product_id=expected[\"product_id\"]" in source
+    assert "load_pinned_run(event_id)" in source
     assert "CDSEError" in source
 
 
@@ -306,7 +346,7 @@ def test_explicit_non_event_bypasses_pinning() -> None:
     import inspect
     source = inspect.getsource(fetch_pair)
     # When event_id is None, the product-ID verification is skipped
-    assert "event_id is not None" in source
+    assert "event_id is None" in source
 
 
 def test_missing_event_id_in_manifest_fails_closed() -> None:
@@ -374,7 +414,7 @@ def test_behavioral_exact_products_accepted(runtime_dirs, monkeypatch) -> None:
                      datetime(2024, 10, 6, 12, 21, 47, tzinfo=timezone.utc))
         mock_search.side_effect = [[before_acq], [after_acq]]
 
-        mock_render.return_value = (make_mock_raster(), 1.0)
+        mock_render.return_value = (make_mock_raster(), 1.0, {})
         mock_ingest.return_value = {"scene_id": "scene_test123"}
 
         from httpx import Client
@@ -506,7 +546,7 @@ def test_behavioral_explicit_requests_bypass_pinning() -> None:
     source = inspect.getsource(fetch_pair)
     # The product pinning check uses: if event_id is not None:
     # When event_id is None (explicit requests), the check is skipped
-    assert "event_id is not None" in source
+    assert "event_id is None" in source
 
 
 # ──────────────────────────────────────────────
@@ -520,7 +560,7 @@ def test_behavioral_unknown_event_fails_closed(monkeypatch) -> None:
 
     # Mock search to return acquisitions (so pick_pair doesn't fail first),
     # then verify load_expected_products raises CDSEError
-    with patch("backend.sentinel1.access_token", lambda client, cid, cs: "token"),          patch("backend.sentinel1.search") as mock_search,          patch("backend.sentinel1.load_expected_products") as mock_load:
+    with patch("backend.sentinel1.access_token", lambda client, cid, cs: "token"),          patch("backend.sentinel1.search") as mock_search,          patch("backend.sentinel1.load_pinned_run") as mock_load:
 
         # Return dummy acquisitions so pick_pair succeeds
         dummy_before = make_acq("S1A_IW_GRDH_1SDV_dummy",
@@ -542,3 +582,483 @@ def test_behavioral_unknown_event_fails_closed(monkeypatch) -> None:
                        event_id="nonexistent-2024")
 
 
+# ──────────────────────────────────────────────
+# Provenance validation tests (strict SAR source provenance)
+# ──────────────────────────────────────────────
+
+class ProvenanceSuccessHub(FakeSentinelHub):
+    """Hub that returns correct userdata matching the expected product IDs."""
+    pass  # FakeSentinelHub already generates correct userdata
+
+
+class ProvenanceMismatchHub(FakeSentinelHub):
+    """Hub that returns userdata with a mismatched product ID."""
+
+    def __call__(self, request: httpx.Request) -> httpx.Response:
+        url = str(request.url)
+        if url == s1.PROCESS_URL:
+            body = json.loads(request.content)
+            self.process_bodies.append(body)
+            width, height = self.shape_override or (body["output"]["width"], body["output"]["height"])
+            epsg = int(body["input"]["bounds"]["properties"]["crs"].rsplit("/", 1)[1])
+            tiff_bytes = self.tiff(body, width, height, epsg)
+            # Return WRONG product ID in userdata
+            wrong_id = "S1A_IW_GRDH_1SDV_WRONG_PRODUCT_ID"
+            userdata_bytes = userdata_json(wrong_id)
+            return httpx.Response(200, content=tar_response(tiff_bytes, userdata_bytes), headers={"Content-Type": "application/x-tar"})
+        return super().__call__(request)
+
+
+class ProvenanceMultiSourceHub(FakeSentinelHub):
+    """Hub that returns userdata with multiple source product IDs."""
+
+    def __call__(self, request: httpx.Request) -> httpx.Response:
+        url = str(request.url)
+        if url == s1.PROCESS_URL:
+            body = json.loads(request.content)
+            self.process_bodies.append(body)
+            width, height = self.shape_override or (body["output"]["width"], body["output"]["height"])
+            epsg = int(body["input"]["bounds"]["properties"]["crs"].rsplit("/", 1)[1])
+            tiff_bytes = self.tiff(body, width, height, epsg)
+            # Return multiple product IDs in userdata
+            userdata_bytes = json.dumps({"orbits": [{"tiles": [
+                {"sentinel1ProductId": self.before[0].product_id},
+                {"sentinel1ProductId": "S1A_IW_GRDH_1SDV_SECOND"},
+            ]}]}).encode()
+            return httpx.Response(200, content=tar_response(tiff_bytes, userdata_bytes), headers={"Content-Type": "application/x-tar"})
+        return super().__call__(request)
+
+
+class ProvenanceMissingUserdataHub(FakeSentinelHub):
+    """Hub that returns a response without userdata part."""
+
+    def __call__(self, request: httpx.Request) -> httpx.Response:
+        url = str(request.url)
+        if url == s1.PROCESS_URL:
+            body = json.loads(request.content)
+            self.process_bodies.append(body)
+            width, height = self.shape_override or (body["output"]["width"], body["output"]["height"])
+            epsg = int(body["input"]["bounds"]["properties"]["crs"].rsplit("/", 1)[1])
+            tiff_bytes = self.tiff(body, width, height, epsg)
+            # Return only TIFF, no userdata
+            return httpx.Response(200, content=tiff_bytes)
+        return super().__call__(request)
+
+
+class ProvenanceMalformedUserdataHub(FakeSentinelHub):
+    """Hub that returns malformed JSON in userdata."""
+
+    def __call__(self, request: httpx.Request) -> httpx.Response:
+        url = str(request.url)
+        if url == s1.PROCESS_URL:
+            body = json.loads(request.content)
+            self.process_bodies.append(body)
+            width, height = self.shape_override or (body["output"]["width"], body["output"]["height"])
+            epsg = int(body["input"]["bounds"]["properties"]["crs"].rsplit("/", 1)[1])
+            tiff_bytes = self.tiff(body, width, height, epsg)
+            # Return invalid JSON in userdata
+            userdata_bytes = b"not valid json"
+            return httpx.Response(200, content=tar_response(tiff_bytes, userdata_bytes), headers={"Content-Type": "application/x-tar"})
+        return super().__call__(request)
+
+
+def test_provenance_validation_success(runtime_dirs) -> None:
+    """When userdata product ID matches expected, fetch_pair succeeds."""
+    hub = ProvenanceSuccessHub(before=[acquisition(1)], after=[acquisition(13)])
+
+    with httpx.Client(transport=httpx.MockTransport(hub)) as client:
+        result = s1.fetch_pair(client, "id", "secret", PATNA_AOI, BEFORE, AFTER)
+
+    assert result["before"]["acquisition_id"] == "S1A_IW_GRDH_1SDV_20240801T001234"
+    assert result["after"]["acquisition_id"] == "S1A_IW_GRDH_1SDV_20240813T001234"
+    # Verify the request included mosaickingOrder and userdata response
+    for body in hub.process_bodies:
+        assert "mosaickingOrder" not in body["input"]["data"][0]["dataFilter"]
+        assert 'mosaicking: "ORBIT"' in body["evalscript"]
+        responses = body["output"]["responses"]
+        assert any(r["identifier"] == "userdata" for r in responses)
+
+
+def test_provenance_validation_mismatch_rejected(runtime_dirs, monkeypatch) -> None:
+    """When userdata product ID differs from expected, CDSEError is raised."""
+    monkeypatch.setattr(s1, "load_pinned_run", lambda _: synthetic_pinned_run())
+    hub = ProvenanceMismatchHub(before=[acquisition(1)], after=[acquisition(13)])
+
+    with httpx.Client(transport=httpx.MockTransport(hub)) as client, pytest.raises(
+        s1.CDSEError, match="source product ID mismatch"
+    ):
+        s1.fetch_pair(client, "id", "secret", PATNA_AOI, BEFORE, (datetime(2024, 8, 10, tzinfo=timezone.utc), AFTER[1]), event_id="pinned")
+
+    assert len(hub.process_bodies) >= 1
+
+
+def test_provenance_validation_multiple_sources_rejected(runtime_dirs, monkeypatch) -> None:
+    """When userdata contains multiple sources, CDSEError is raised."""
+    monkeypatch.setattr(s1, "load_pinned_run", lambda _: synthetic_pinned_run())
+    hub = ProvenanceMultiSourceHub(before=[acquisition(1)], after=[acquisition(13)])
+
+    with httpx.Client(transport=httpx.MockTransport(hub)) as client, pytest.raises(
+        s1.CDSEError, match="source product ID mismatch"
+    ):
+        s1.fetch_pair(client, "id", "secret", PATNA_AOI, BEFORE, (datetime(2024, 8, 10, tzinfo=timezone.utc), AFTER[1]), event_id="pinned")
+
+    assert len(hub.process_bodies) >= 1
+
+
+def test_provenance_validation_missing_userdata_rejected(runtime_dirs) -> None:
+    """When response lacks userdata part, CDSEError is raised."""
+    hub = ProvenanceMissingUserdataHub(before=[acquisition(1)], after=[acquisition(13)])
+
+    with httpx.Client(transport=httpx.MockTransport(hub)) as client, pytest.raises(
+        s1.CDSEError, match="Content-Type"
+    ):
+        s1.fetch_pair(client, "id", "secret", PATNA_AOI, BEFORE, AFTER)
+
+    assert len(hub.process_bodies) >= 1
+
+
+def test_provenance_validation_malformed_userdata_rejected(runtime_dirs) -> None:
+    """When userdata is not valid JSON, CDSEError is raised."""
+    hub = ProvenanceMalformedUserdataHub(before=[acquisition(1)], after=[acquisition(13)])
+
+    with httpx.Client(transport=httpx.MockTransport(hub)) as client, pytest.raises(
+        s1.CDSEError, match="not valid JSON"
+    ):
+        s1.fetch_pair(client, "id", "secret", PATNA_AOI, BEFORE, AFTER)
+
+    assert len(hub.process_bodies) >= 1
+
+
+def test_provenance_both_acquisitions_validated_before_ingest(runtime_dirs, monkeypatch) -> None:
+    """Both acquisitions are validated via userdata before either is ingested."""
+    from backend.services import ingest_scene
+    ingest_calls = []
+
+    def tracking_ingest(*args, **kwargs):
+        ingest_calls.append(kwargs.get("acquisition_id", args[3] if len(args) > 3 else "unknown"))
+        return {"scene_id": f"scene_{len(ingest_calls)}"}
+
+    monkeypatch.setattr("backend.sentinel1.ingest_scene", tracking_ingest)
+
+    # First acquisition succeeds, second fails provenance
+    class MixedHub(FakeSentinelHub):
+        def __call__(self, request: httpx.Request) -> httpx.Response:
+            url = str(request.url)
+            if url == s1.PROCESS_URL:
+                body = json.loads(request.content)
+                self.process_bodies.append(body)
+                width, height = self.shape_override or (body["output"]["width"], body["output"]["height"])
+                epsg = int(body["input"]["bounds"]["properties"]["crs"].rsplit("/", 1)[1])
+                tiff_bytes = self.tiff(body, width, height, epsg)
+                time_from = body["input"]["data"][0]["dataFilter"]["timeRange"]["from"]
+                # First request (before) gets correct userdata, second (after) gets wrong
+                if time_from < "2024-08-10":
+                    product_id = "S1A_IW_GRDH_1SDV_20240801T001234"
+                else:
+                    product_id = "S1A_IW_GRDH_1SDV_WRONG"
+                userdata_bytes = userdata_json(product_id)
+                return httpx.Response(200, content=tar_response(tiff_bytes, userdata_bytes), headers={"Content-Type": "application/x-tar"})
+            return super().__call__(request)
+
+    monkeypatch.setattr(s1, "load_pinned_run", lambda _: synthetic_pinned_run())
+    hub = MixedHub(before=[acquisition(1)], after=[acquisition(13)])
+
+    with httpx.Client(transport=httpx.MockTransport(hub)) as client, pytest.raises(
+        s1.CDSEError, match="source product ID mismatch"
+    ):
+        s1.fetch_pair(client, "id", "secret", PATNA_AOI, BEFORE, (datetime(2024, 8, 10, tzinfo=timezone.utc), AFTER[1]), event_id="pinned")
+
+    # Neither should be ingested since validation happens during render, before ingest
+    assert len(ingest_calls) == 0
+
+
+
+@pytest.mark.parametrize("metadata", [None, {}, {"orbits": []}, {"orbits": [{}]},
+    {"orbits": [{"tiles": [{}]}]}, {"orbits": [{"tiles": [{"sentinel1ProductId": 7}]}]},
+    {"orbits": [{"tiles": [{"sentinel1ProductId": "bad id"}]}]}])
+def test_missing_or_malformed_source_metadata(metadata):
+    with pytest.raises(s1.CDSEError):
+        s1._parse_userdata(json.dumps(metadata).encode(), acquisition(1).product_id)
+
+
+def test_exact_source_set_and_suffix_are_not_normalized():
+    product = acquisition(1).product_id
+    s1._parse_userdata(userdata_json(product), product)
+    with pytest.raises(s1.CDSEError, match="mismatch"):
+        s1._parse_userdata(userdata_json(product + "_COG.SAFE"), product)
+    extra = {"orbits": [{"tiles": [{"sentinel1ProductId": product},
+                                  {"sentinel1ProductId": acquisition(2).product_id}]}]}
+    with pytest.raises(s1.CDSEError, match="mismatch"):
+        s1._parse_userdata(json.dumps(extra).encode(), product)
+    assert s1._parse_userdata(json.dumps(extra).encode(), None) == extra
+
+
+@pytest.mark.parametrize("members", [
+    [("default.tif", b"tiff")],
+    [("default.tif", b"tiff"), ("userdata.json", b"{}"), ("default.tif", b"again")],
+    [("default.tif", b"tiff"), ("userdata.json", b"{}"), ("other", b"x")],
+])
+def test_tar_rejects_missing_duplicate_and_unexpected_members(members):
+    with pytest.raises(s1.CDSEError):
+        s1._parse_tar_response(tar_members(members))
+
+
+@pytest.mark.parametrize("content", [b"not tar", tar_response(b"tiff", b"{}")[:1024]])
+def test_malformed_tar(content):
+    with pytest.raises(s1.CDSEError, match="TAR"):
+        s1._parse_tar_response(content)
+
+
+def test_tar_member_size_limits(monkeypatch):
+    monkeypatch.setattr(s1, "MAX_USERDATA_BYTES", 1)
+    with pytest.raises(s1.CDSEError, match="byte limit"):
+        s1._parse_tar_response(tar_response(b"tiff", b"{}"))
+
+
+@pytest.mark.parametrize("headers", [
+    {"Content-Type": "image/tiff"},
+    {"Content-Type": "application/x-tar", "Content-Length": "101"},
+    {"Content-Type": "application/x-tar", "Content-Length": "invalid"},
+])
+def test_process_response_headers_are_checked(headers, monkeypatch):
+    monkeypatch.setattr(s1, "MAX_PROCESS_BYTES", 100)
+    with httpx.Client(transport=httpx.MockTransport(
+        lambda _: httpx.Response(200, headers=headers, content=b"x")
+    )) as client, pytest.raises(s1.CDSEError):
+        s1._process_request(client, "test", {})
+
+
+class ChunkStream(httpx.SyncByteStream):
+    def __iter__(self):
+        yield b"x" * 80
+        yield b"x" * 80
+
+
+@pytest.mark.parametrize("length", [None, "1"])
+def test_actual_stream_limit_without_trusting_content_length(monkeypatch, length):
+    monkeypatch.setattr(s1, "MAX_PROCESS_BYTES", 100)
+    headers = {"Content-Type": "application/x-tar"}
+    if length:
+        headers["Content-Length"] = length
+    with httpx.Client(transport=httpx.MockTransport(
+        lambda _: httpx.Response(200, headers=headers, stream=ChunkStream())
+    )) as client, pytest.raises(s1.CDSEError, match="byte limit"):
+        s1._process_request(client, "test", {})
+
+
+def test_error_response_is_bounded(monkeypatch):
+    monkeypatch.setattr(s1, "MAX_ERROR_BYTES", 100)
+    with httpx.Client(transport=httpx.MockTransport(
+        lambda _: httpx.Response(500, stream=ChunkStream())
+    )) as client, pytest.raises(s1.CDSEError, match="byte limit"):
+        s1._process_request(client, "test", {})
+
+
+def test_non_event_multi_product_sources_and_evidence_are_preserved(runtime_dirs):
+    hub = ProvenanceMultiSourceHub(before=[acquisition(1)], after=[acquisition(13)])
+    with httpx.Client(transport=httpx.MockTransport(hub)) as client:
+        result = s1.fetch_pair(client, "id", "secret", PATNA_AOI, BEFORE, AFTER)
+    manifest = json.loads((services.SCENE_MANIFEST_DIR / (result["before"]["scene_id"] + ".json")).read_text())
+    evidence = manifest["process_evidence"]
+    assert len(evidence["tiles"][0]["userdata"]["orbits"][0]["tiles"]) == 2
+    assert evidence["processing"]["backCoeff"] == "GAMMA0_TERRAIN"
+    assert evidence["evalscript"] == s1.EVALSCRIPT
+
+
+def test_userdata_validated_before_tiff_decode(monkeypatch):
+    monkeypatch.setattr(s1, "_process_request", lambda *args: tar_response(b"invalid TIFF", b"{}"))
+    monkeypatch.setattr(s1, "_on_grid", lambda *args: pytest.fail("TIFF decoded before metadata validation"))
+    with pytest.raises(s1.CDSEError, match="orbit metadata"):
+        s1.render(None, "test", acquisition(1), s1.utm_grid(PATNA_AOI), strict=True)
+
+
+def test_pinned_event_exact_sources_succeed(runtime_dirs, monkeypatch):
+    monkeypatch.setattr(s1, "load_pinned_run", lambda _: synthetic_pinned_run())
+    hub = FakeSentinelHub(before=[acquisition(1)], after=[acquisition(13)])
+    with httpx.Client(transport=httpx.MockTransport(hub)) as client:
+        result = s1.fetch_pair(client, "id", "secret", PATNA_AOI, BEFORE, (datetime(2024, 8, 10, tzinfo=timezone.utc), AFTER[1]), event_id="pinned")
+    for side, day in [("before", 1), ("after", 13)]:
+        manifest = json.loads((services.SCENE_MANIFEST_DIR / (result[side]["scene_id"] + ".json")).read_text())
+        tiles = manifest["process_evidence"]["tiles"][0]["userdata"]["orbits"][0]["tiles"]
+        assert {tile["sentinel1ProductId"] for tile in tiles} == {acquisition(day).product_id}
+        assert manifest["process_evidence"]["tiles"][0]["userdata"]["inputMetadata"] == {"serviceVersion": "test-service"}
+
+
+def test_tar_symlink_is_rejected():
+    output = io.BytesIO()
+    with tarfile.open(fileobj=output, mode="w") as archive:
+        member = tarfile.TarInfo("default.tif")
+        member.type = tarfile.SYMTYPE
+        member.linkname = "/tmp/untrusted"
+        archive.addfile(member)
+    with pytest.raises(s1.CDSEError, match="unexpected"):
+        s1._parse_tar_response(output.getvalue())
+
+
+@pytest.mark.parametrize("payload", [
+    '{"orbits":[{"tiles":[{"sentinel1ProductId":"S1A_WRONG","sentinel1ProductId":"S1A_EXPECTED"}]}]}',
+    '{"orbits":[],"orbits":[{"tiles":[{"sentinel1ProductId":"S1A_EXPECTED"}]}]}',
+    '{"orbits":[{"tiles":[],"tiles":[{"sentinel1ProductId":"S1A_EXPECTED"}]}]}',
+    '{"orbits":[{"tiles":[{"sentinel1ProductId":"S1A_EXPECTED"}]}],"inputMetadata":{"nested":{"key":1,"key":1}}}',
+])
+def test_userdata_duplicate_keys_fail_closed(payload):
+    with pytest.raises(s1.CDSEError, match="duplicate object keys"):
+        s1._parse_userdata(payload.encode(), "S1A_EXPECTED")
+
+
+def test_valid_userdata_preserves_service_metadata():
+    payload = userdata_json(acquisition(1).product_id)
+    assert s1._parse_userdata(payload, acquisition(1).product_id) == json.loads(payload)
+
+
+def test_evalscript_callback_preserves_input_metadata():
+    import subprocess
+
+    subprocess.run(["node", "-e", s1.EVALSCRIPT + '''
+const assert = require("node:assert/strict");
+const scenes = {orbits: [{tiles: [{sentinel1ProductId: "S1A_EXPECTED"}]}]};
+const inputMetadata = {serviceVersion: "test-service", normalizationFactor: 1};
+const outputMetadata = {};
+updateOutputMetadata(scenes, inputMetadata, outputMetadata);
+assert.deepEqual(outputMetadata.userData, {orbits: scenes.orbits, inputMetadata});
+'''], check=True, capture_output=True)
+
+
+@pytest.mark.parametrize("extra_padding", [0, 512, 10240, 1, 513])
+def test_tar_accepts_complete_eof_and_additional_zero_padding(extra_padding):
+    content = tar_response(b"tiff", b"{}")
+    with tarfile.open(fileobj=io.BytesIO(content), mode="r:") as archive:
+        list(archive)
+        end = archive.offset
+    # Exactly two EOF blocks, optionally followed by more zero padding.
+    content = content[:end] + b"\0" * (1024 + extra_padding)
+    assert s1._parse_tar_response(content) == (b"tiff", b"{}")
+
+
+@pytest.mark.parametrize("eof_bytes", [0, 511, 512, 1023])
+def test_tar_rejects_truncated_eof(eof_bytes):
+    content = tar_response(b"tiff", b"{}")
+    with tarfile.open(fileobj=io.BytesIO(content), mode="r:") as archive:
+        list(archive)
+        end = archive.offset
+    with pytest.raises(s1.CDSEError, match="malformed TAR ending"):
+        s1._parse_tar_response(content[:end] + b"\0" * eof_bytes)
+
+
+def test_tar_rejects_truncated_member_data():
+    content = tar_response(b"tiff", b"u" * 600)
+    with tarfile.open(fileobj=io.BytesIO(content), mode="r:") as archive:
+        members = list(archive)
+        end = members[-1].offset_data + members[-1].size
+    with pytest.raises(s1.CDSEError, match="TAR"):
+        s1._parse_tar_response(content[:end - 1])
+
+
+@pytest.mark.parametrize("garbage", [b"x", b"\0" * 512 + b"x", b"x" + b"\0" * 511])
+def test_tar_rejects_nonzero_trailing_garbage(garbage):
+    with pytest.raises(s1.CDSEError, match="malformed TAR ending"):
+        s1._parse_tar_response(tar_response(b"tiff", b"{}") + garbage)
+
+
+@pytest.mark.parametrize("name", ["../default.tif", "/default.tif", "folder/default.tif"])
+def test_tar_rejects_unsafe_or_unexpected_paths(name):
+    with pytest.raises(s1.CDSEError, match="unexpected"):
+        s1._parse_tar_response(tar_members([(name, b"tiff"), ("userdata.json", b"{}")]))
+
+
+def test_process_capture_layout_without_eof_is_rejected():
+    """Synthetic live layout: complete padded members, but no archive EOF blocks."""
+    tiff, userdata = b"t" * 14537, b"u" * 461
+    content = tar_response(tiff, userdata)
+    with tarfile.open(fileobj=io.BytesIO(content), mode="r:") as archive:
+        members = list(archive)
+        assert [(member.name, member.offset, member.offset_data, member.size) for member in members] == [
+            ("default.tif", 0, 512, 14537), ("userdata.json", 15360, 15872, 461),
+        ]
+        end = archive.offset
+    content = content[:end]
+    assert len(content) == 16384
+    # Python accepts physical EOF; the strict Process contract still requires its markers.
+    with tarfile.open(fileobj=io.BytesIO(content), mode="r:") as archive:
+        members = list(archive)
+        assert [archive.extractfile(member).read() for member in members] == [tiff, userdata]
+        assert archive.offset == len(content)
+    with pytest.raises(s1.CDSEError) as error:
+        s1._parse_tar_response(content)
+    assert error.value.diagnostic_category == "tar_eof_invalid"
+    # Control: the same member layout with complete EOF markers is accepted.
+    assert s1._parse_tar_response(content + b"\0" * 1024) == (tiff, userdata)
+
+
+@pytest.mark.parametrize("with_eof", [False, True])
+def test_bounded_tar_eof_modes(with_eof):
+    content = tar_response(b"t" * 14537, b"u" * 461)
+    with tarfile.open(fileobj=io.BytesIO(content), mode="r:") as archive:
+        list(archive)
+        content = content[:archive.offset]
+    if with_eof:
+        content += b"\0" * 1024
+    diagnostic = {}
+    assert s1._parse_tar_response(content, allow_missing_eof=True, diagnostics=diagnostic) == (
+        b"t" * 14537, b"u" * 461)
+    assert diagnostic == {"tar_eof_mode": "standard" if with_eof else "missing_accepted"}
+
+
+@pytest.mark.parametrize("bad", ["data", "padding", "nonzero_padding", "header", "duplicate",
+                                 "unexpected", "garbage", "partial_eof", "missing_member", "oversize"])
+def test_missing_eof_compatibility_rejects_invalid_archives(bad, monkeypatch):
+    members = [("default.tif", b"t" * 14537), ("userdata.json", b"u" * 461)]
+    if bad == "duplicate":
+        members.append(members[1])
+    elif bad == "unexpected":
+        members.append(("other", b"x"))
+    elif bad == "missing_member":
+        members.pop()
+    content = tar_members(members)
+    with tarfile.open(fileobj=io.BytesIO(content), mode="r:") as archive:
+        parsed = list(archive)
+        content = content[:archive.offset]
+    if bad == "data":
+        content = content[:parsed[-1].offset_data + parsed[-1].size - 1]
+    elif bad == "padding":
+        content = content[:-1]
+    elif bad == "nonzero_padding":
+        content = content[:-1] + b"x"
+    elif bad == "header":
+        content = b"x" + content[1:]
+    elif bad == "garbage":
+        content += b"x" * 512
+    elif bad == "partial_eof":
+        content += b"\0" * 512
+    elif bad == "oversize":
+        monkeypatch.setattr(s1, "MAX_PROCESS_BYTES", len(content) - 1)
+    diagnostic = {}
+    with pytest.raises(s1.CDSEError):
+        s1._parse_tar_response(content, allow_missing_eof=True, diagnostics=diagnostic)
+    assert diagnostic == {}
+
+
+def test_process_response_must_finish_and_match_declared_length():
+    response = httpx.Response(200, content=b"short", headers={
+        "Content-Type": "application/x-tar", "Content-Length": "10"})
+    with httpx.Client(transport=httpx.MockTransport(lambda _: response)) as client:
+        with pytest.raises(s1.CDSEError, match="incomplete response"):
+            s1._process_request(client, "offline", {})
+
+    class Interrupted(httpx.SyncByteStream):
+        def __iter__(self):
+            yield tar_response(b"tiff", b"{}")
+            raise httpx.ReadError("offline interrupted stream")
+
+    with httpx.Client(transport=httpx.MockTransport(lambda _: httpx.Response(
+            200, stream=Interrupted(), headers={"Content-Type": "application/x-tar"}))) as client:
+        with pytest.raises(s1.CDSEError):
+            s1._process_request(client, "offline", {})
+
+
+def synthetic_pinned_run():
+    return {"before": {"product_id": acquisition(1).product_id,
+                       "acquired_at": acquisition(1).acquired_at.isoformat()},
+            "after": {"product_id": acquisition(13).product_id,
+                      "acquired_at": acquisition(13).acquired_at.isoformat()},
+            "orbit_direction": "ascending", "relative_orbit": 12}

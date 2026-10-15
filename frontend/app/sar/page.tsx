@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { BadgeAlert, LoaderCircle } from "lucide-react";
 import { getSar } from "@/lib/api";
 import type { SarReport } from "@/lib/types";
+import { KosiChangePanel } from "@/components/sar/KosiChangePanel";
 import { SarViewer } from "@/components/sar/SarViewer";
 import { SarInterpretation } from "@/components/sar/SarInterpretation";
 import type { RegionKey } from "@/components/sar/regions";
@@ -50,6 +51,7 @@ export default function SarPage() {
           <SarInterpretation report={report} active={active} onActive={setActive} />
         </div>
       )}
+      <div className="mt-10 border-t border-border pt-8"><KosiChangePanel /></div>
     </div>
   );
 }

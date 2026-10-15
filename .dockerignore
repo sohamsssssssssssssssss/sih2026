@@ -9,6 +9,10 @@
 **/.pytest_cache
 .venv
 **/.venv
+.venv-stage1/
+**/.venv-stage1/
+packages/
+**/packages/
 .coverage
 .coverage.*
 .DS_Store
@@ -20,6 +24,44 @@ trace.jsonl
 trace.jsonl.*
 data/runtime/
 deploy/state/
+
+# Local caches and generated content
+**/.cache/
+**/.mypy_cache/
+**/.ruff_cache/
+**/node_modules/
+**/*.egg-info/
+**/dist/
+**/build/
+**/*.whl
+*.log
+*.tmp
+*.temp
+
+# Credentials and environment files
+.env
+.env.*
+**/.env
+**/.env.*
+**/credentials/
+**/secrets/
+
+# Runtime artifacts and captures
+**/probe-captures/
+**/captures/
+**/artifacts/
+**/outputs/
+**/trace.jsonl*
+**/*.tif
+**/*.tiff
+**/*.jsonl
+# Narrow the broad JSONL exclusion above: the tracked evaluation set is a
+# required build input. Runtime traces (trace.jsonl*, **/trace.jsonl*) and
+# generated JSONL remain excluded.
+!data/eval/questions.v1.jsonl
+**/*.sqlite
+**/*.sqlite3
+**/*.db
 
 # Weights and datasets are mounted read-only at run time, never baked in.
 models-artifacts/
@@ -40,5 +82,3 @@ kaggle/
 training/
 outputs/
 PROJECT_OVERVIEW.pdf
-.env
-.env.*

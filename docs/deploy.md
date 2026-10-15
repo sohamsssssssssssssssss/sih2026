@@ -319,3 +319,101 @@ all work.
       works, and the UI and backend label it `cached_result`. Never present
       it as live.
 - [ ] Shut down or snapshot the VM afterwards, because GPU instances bill by the hour.
+
+## Preserved Kosi 2024 SAR change bundle
+
+The base Compose stack now requires a provisioned Kosi directory. Missing host
+sources fail container creation (`bind.create_host_path: false`); Docker will
+not create an empty directory. General `/api/health` semantics are unchanged.
+Serving this preserved result needs no GPU, source satellite archives, inference,
+or processing. Do not run the processing script to provision it.
+
+Set `SATQUERY_KOSI_ARTIFACT_DIR` in the repository-root deployment `.env` to an
+absolute host directory. The safe default is
+`/srv/satquery/change-artifacts/kosi-2024`. Only this directory is mounted:
+
+```text
+/srv/satquery/change-artifacts/kosi-2024/
+  sar_change.tif      13,007,495 bytes
+  sar_change.json    2,838 bytes
+```
+
+The target is
+`/home/app/.local/share/satquery/change-artifacts/kosi-2024`, matching the existing
+loader. Both CPU and GPU Compose deployments inherit the read-only mount.
+Do not mount a user home, source captures, or the writable uploads volume here.
+
+Pinned SHA256 values (verify the exact bytes; never rewrite the JSON):
+
+```text
+7d63525d8851c695c9f1e5e72719b80aebd3e6d18581e875bc60ba5d28f6d3a4  sar_change.tif
+792492a47b18111d0aa92a6d613ec3ec0f60a6de557e1ddfec4c597a507d2747  sar_change.json
+```
+
+Provisioning procedure for a Linux deployment host, performed by its operator:
+
+1. Transfer only the two preserved files from the verified source into a new
+   staging directory on the deployment host. Do not edit or regenerate either.
+2. Run `sha256sum sar_change.tif sar_change.json` in staging and compare both
+   outputs to the pins above. Check sizes with `wc -c sar_change.tif sar_change.json`.
+   Publish the complete pair only after both checks pass.
+3. Use a dedicated, versioned directory, for example
+   `/srv/satquery/change-artifacts/kosi-2024-v1`. Make it root-owned, group
+   `10001`, with directory mode `0750` and file modes `0640`. Ensure host
+   parent directories are traversable by the operator as needed. The mounted
+   directory itself must be traversable and both files readable by container
+   UID/GID `10001`; local macOS `0700`/`0600` ownership is not portable.
+4. Set `SATQUERY_KOSI_ARTIFACT_DIR` to that directory. Validate configuration
+   without starting containers:
+   `docker compose config --quiet` (include `-f docker-compose.yml -f docker-compose.gpu.yml`
+   before `config` when using GPU).
+5. At the separately authorized deployment, verify container access:
+   `docker compose exec -T backend python -c "from backend.sar_change_artifacts import verified_change_artifacts; verified_change_artifacts(); print('Kosi bundle verified')"`.
+   This reads and verifies the pair without inference. Rootless Docker or user
+   namespace remapping may require host ownership mapped to container GID 10001.
+
+The application cannot write through this mount. Read-only mounting does not
+prevent a privileged host operator from changing the source: keep deployment
+ownership, and never replace files in place while requests are being served.
+Both files are verified on every API read. Missing, corrupt or unreadable files
+fail closed even if general health remains healthy.
+
+Back up the unchanged pair plus its checksum manifest outside the container,
+with restricted access, and verify hashes on restore. Host bind-mounted data
+survives container recreation and `compose down`; it is not included in named
+volume backups. For replacement, stage and verify a complete new directory,
+update `SATQUERY_KOSI_ARTIFACT_DIR`, then recreate the backend during an approved
+maintenance window. Preserve the old directory for rollback. Different artifact
+bytes require an explicitly reviewed change to the backend's pinned contract;
+do not simply update the manifest or overwrite the existing pair.
+
+### GET-only Kosi deployment smoke
+
+```bash
+python3 deploy/smoke_kosi.py https://sat.example.org
+# Or use exported BASE_URL, DOMAIN, or HTTP_PORT (in that precedence):
+BASE_URL=http://localhost:80 python3 deploy/smoke_kosi.py
+```
+
+This standard-library checker does not load `.env` automatically; pass the public
+origin explicitly or export the deployment values. It sends only two GETs, uses
+60-second socket timeouts, rejects redirects, checks metadata HTTP 200, artifact
+ID, exact scientific label, literal `false` flood validation, and the fixed raster
+URL. It streams the raster, requiring HTTP 200, `image/tiff`, exactly 13,007,495
+bytes and the pinned full SHA256. It exits nonzero on failure. It does not write
+the download to disk or call health, analyze, upload, or trace endpoints.
+
+After an authorized container recreation, repeat both the in-container verifier
+and this public-origin smoke check. For CPU the recreation command is
+`docker compose up -d --no-deps --force-recreate backend`; use both Compose files
+for GPU. This command is an operator deployment step, not part of the checker.
+Do not substitute the general `deploy/smoke.sh`, whose GPU mode performs inference
+and uploads. Local checker tests: `python3 -m pytest deploy/test_smoke_kosi.py -q`.
+
+Before releasing, include all Kosi integration files in the release revision,
+including currently untracked `backend/sar_change_artifacts.py`,
+`backend/test_sar_change_api.py`, `frontend/components/sar/KosiChangePanel.tsx`,
+its test, and `frontend/lib/kosi-api.test.ts` / `frontend/test/kosi-change-fixture.ts`,
+along with the tracked API/page/type changes and these deployment files. A clean
+checkout of the release must contain the whole slice; the artifact pair remains
+separately provisioned, outside Git and the images.

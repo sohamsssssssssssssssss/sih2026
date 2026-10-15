@@ -45,14 +45,14 @@ function SarInterpretationGuide({
   return (
     <div>
       <div className="relative flex min-h-[420px] flex-col overflow-hidden rounded-cards bg-[#0b0e13] text-white/90">
-        <div className="flex items-start justify-between gap-3 border-b border-white/10 px-5 py-4">
+        <div className="flex flex-col items-start justify-between gap-3 sm:flex-row border-b border-white/10 px-5 py-4">
           <div>
             <p className="text-[11px] font-[500] uppercase tracking-[0.18em] text-white/70">
               Sentinel-1 · SAR Interpretation Guide
             </p>
             <p className="mt-1 text-xs text-white/45">How radar backscatter patterns are interpreted</p>
           </div>
-          <span className="shrink-0 rounded-full border border-white/15 px-2.5 py-1 text-[10px] font-[500] uppercase tracking-wider text-white/60">
+          <span className="max-w-full break-words rounded-full border border-white/15 px-2.5 py-1 text-[10px] font-[500] uppercase tracking-wider text-white/60">
             Reference visualization
           </span>
         </div>

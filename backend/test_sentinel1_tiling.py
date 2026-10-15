@@ -1,5 +1,6 @@
 """Sentinel-1 AOIs wider than one Process request: tiles rendered on one grid and mosaicked."""
 
+import json
 import httpx
 import numpy as np
 import pytest
@@ -9,7 +10,7 @@ from rasterio.transform import from_bounds
 import backend.sentinel1 as s1
 import backend.services as services
 from backend.test_sentinel1 import (  # noqa: F401  (runtime_dirs is a fixture)
-    AFTER, BEFORE, PATNA_AOI, FakeSentinelHub, acquisition, geotiff, runtime_dirs,
+    AFTER, BEFORE, PATNA_AOI, FakeSentinelHub, acquisition, geotiff, tar_response, runtime_dirs,
 )
 
 # Stands in for the Process API's 2500 px, so the 42x46 px Patna grid needs 2x2
@@ -44,7 +45,10 @@ PATNA_BODY = {  # what a one-request AOI sent before tiling existed
     "output": {
         "width": 42,
         "height": 46,
-        "responses": [{"identifier": "default", "format": {"type": "image/tiff"}}],
+        "responses": [
+            {"identifier": "default", "format": {"type": "image/tiff"}},
+            {"identifier": "userdata", "format": {"type": "application/json"}},
+        ],
     },
     "evalscript": s1.EVALSCRIPT,
 }
@@ -58,6 +62,27 @@ def small_tiles(monkeypatch: pytest.MonkeyPatch) -> None:
 class TaggedTileHub(FakeSentinelHub):
     """Request N has N water rows, and each date's last tile is off-swath (dataMask 0)."""
 
+    def __call__(self, request: httpx.Request) -> httpx.Response:
+        url = str(request.url)
+        if url == s1.PROCESS_URL:
+            body = json.loads(request.content)
+            self.process_bodies.append(body)
+            width, height = self.shape_override or (body["output"]["width"], body["output"]["height"])
+            epsg = int(body["input"]["bounds"]["properties"]["crs"].rsplit("/", 1)[1])
+            time_from = body["input"]["data"][0]["dataFilter"]["timeRange"]["from"]
+            product_id = None
+            for acq in self.before + self.after:
+                if time_from <= acq.acquired_at.isoformat().replace("+00:00", "Z") <= body["input"]["data"][0]["dataFilter"]["timeRange"]["to"]:
+                    product_id = acq.product_id
+                    break
+            if product_id is None:
+                product_id = (self.before[0] if self.before else self.after[0]).product_id
+            tiff_bytes = self.tiff(body, width, height, epsg)
+            from backend.test_sentinel1 import userdata_json
+            userdata_bytes = userdata_json(product_id)
+            return httpx.Response(200, content=tar_response(tiff_bytes, userdata_bytes), headers={"Content-Type": "application/x-tar"})
+        return super().__call__(request)
+
     def tiff(self, body: dict, width: int, height: int, epsg: int) -> bytes:
         count = len(self.process_bodies)
         valid = 0.0 if count % TILES_PER_DATE == 0 else 1.0
@@ -66,6 +91,27 @@ class TaggedTileHub(FakeSentinelHub):
 
 class ShiftedTileHub(FakeSentinelHub):
     """The post-event date's last tile comes back one pixel east of where it was asked for."""
+
+    def __call__(self, request: httpx.Request) -> httpx.Response:
+        url = str(request.url)
+        if url == s1.PROCESS_URL:
+            body = json.loads(request.content)
+            self.process_bodies.append(body)
+            width, height = self.shape_override or (body["output"]["width"], body["output"]["height"])
+            epsg = int(body["input"]["bounds"]["properties"]["crs"].rsplit("/", 1)[1])
+            time_from = body["input"]["data"][0]["dataFilter"]["timeRange"]["from"]
+            product_id = None
+            for acq in self.before + self.after:
+                if time_from <= acq.acquired_at.isoformat().replace("+00:00", "Z") <= body["input"]["data"][0]["dataFilter"]["timeRange"]["to"]:
+                    product_id = acq.product_id
+                    break
+            if product_id is None:
+                product_id = (self.before[0] if self.before else self.after[0]).product_id
+            tiff_bytes = self.tiff(body, width, height, epsg)
+            from backend.test_sentinel1 import userdata_json
+            userdata_bytes = userdata_json(product_id)
+            return httpx.Response(200, content=tar_response(tiff_bytes, userdata_bytes), headers={"Content-Type": "application/x-tar"})
+        return super().__call__(request)
 
     def tiff(self, body: dict, width: int, height: int, epsg: int) -> bytes:
         left, bottom, right, top = body["input"]["bounds"]["bbox"]

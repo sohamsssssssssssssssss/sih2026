@@ -45,7 +45,8 @@ def fetch_sentinel1_pair(request: Sentinel1PairRequest) -> Sentinel1PairResponse
     try:
         with cdse_client() as client:
             result = fetch_pair(
-                client, *credentials, bbox, before, after, request.pair_group or request.event_id
+                client, *credentials, bbox, before, after, request.pair_group or request.event_id,
+                event_id=request.event_id
             )
     # InvalidImageUpload is a ValueError, but here it means CDSE sent an unusable raster.
     except (CDSEError, InvalidImageUpload) as exc:
