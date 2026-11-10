@@ -257,7 +257,7 @@ def _greedy_decode(package_root, config_name, checkpoint, patch_root, captions, 
     gate; changing configuration would no longer evaluate the trained variant.
     """
     from data.bigearthnet_s2 import load_s2_patch
-    from models.qwen_vl.stage1 import pack_s2_pixel_values
+    from models.qwen_vl.stage1 import pack_s2_pixel_values, resolve_vision_module, vision_output_tensor
     from transformers import AutoTokenizer
 
     attempts = []
@@ -276,10 +276,10 @@ def _greedy_decode(package_root, config_name, checkpoint, patch_root, captions, 
             model.eval()
 
             def check_vision(_module, _inputs, output):
-                if not torch.isfinite(output).all():
+                if not torch.isfinite(vision_output_tensor(output)).all():
                     raise FloatingPointError("Vision tower produced inf/NaN during generation")
 
-            hook = model.get_base_model().visual.register_forward_hook(check_vision)
+            hook = resolve_vision_module(model).register_forward_hook(check_vision)
             tokenizer = AutoTokenizer.from_pretrained(checkpoint, local_files_only=True)
             prompt_ids = tokenizer(captions["prompt_template"], add_special_tokens=False).input_ids
             contract = package_root / "norm_contract.json"

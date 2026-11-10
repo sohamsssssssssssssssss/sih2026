@@ -189,6 +189,27 @@ def test_collator_masks_prompt_and_padding_but_keeps_target(tmp_path: Path) -> N
     assert batch["labels"].tolist() == [[-100, -100, 1, 1, -100]]
 
 
+def test_collator_rejects_overlong_encoded_example_without_truncating(tmp_path: Path) -> None:
+    example = load_manifest(
+        manifest(tmp_path / "samples.jsonl", [record(image(tmp_path / "scene.png"), "one")])
+    )[0]
+
+    class RecordingProcessor(FakeProcessor):
+        calls = []
+
+        def __call__(self, *, text, **kwargs):
+            self.calls.append(kwargs)
+            return super().__call__(text=text, **kwargs)
+
+    processor = RecordingProcessor()
+    with pytest.raises(ValueError, match="max_sequence_length=4; no tokens were truncated"):
+        QwenVQACollator(
+            processor, 224, process_vision_info=lambda _: ([object()], None), max_sequence_length=4
+        )([example])
+
+    assert all("truncation" not in call and "max_length" not in call for call in processor.calls)
+
+
 def test_configuration_serialization(tmp_path: Path) -> None:
     config = TrainingConfig(
         model_path=tmp_path / "model",
@@ -201,6 +222,17 @@ def test_configuration_serialization(tmp_path: Path) -> None:
     assert serialized["lora_rank"] == 8
     assert serialized["model_path"].endswith("model")
     assert serialized["lora_target_modules"] == ["q_proj", "k_proj", "v_proj", "o_proj"]
+    assert {key: serialized[key] for key in (
+        "optimizer", "lr_scheduler_type", "warmup_steps", "warmup_ratio", "weight_decay",
+        "adam_beta1", "adam_beta2", "adam_epsilon", "max_grad_norm", "half_precision_backend",
+        "fp16_full_eval", "bf16_full_eval", "tf32", "max_sequence_length",
+    )} == {
+        "optimizer": "adamw_torch", "lr_scheduler_type": "linear", "warmup_steps": 0,
+        "warmup_ratio": 0.0, "weight_decay": 0.0, "adam_beta1": 0.9, "adam_beta2": 0.999,
+        "adam_epsilon": 1e-8, "max_grad_norm": 1.0, "half_precision_backend": "auto",
+        "fp16_full_eval": False, "bf16_full_eval": False, "tf32": False,
+        "max_sequence_length": 32768,
+    }
 
 
 def test_model_and_processor_loading_is_local_only(tmp_path: Path, monkeypatch) -> None:
@@ -280,7 +312,7 @@ def test_dry_run_is_offline_and_performs_no_optimizer_step(tmp_path: Path) -> No
         config,
         dry_run=True,
         component_loader=lambda _: (model, object()),
-        collator_factory=lambda *_: (lambda _: {"input_ids": torch.tensor([[1]])}),
+        collator_factory=lambda *_, **__: (lambda _: {"input_ids": torch.tensor([[1]])}),
     )
 
     assert report["status"] == "dry_run_passed"

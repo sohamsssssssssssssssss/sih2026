@@ -13,6 +13,7 @@ are asserted.
 
 import hashlib
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -22,7 +23,8 @@ import yaml
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
-PKG = ROOT / "packages" / "stage1-t4-smoke"
+# Select a rebuilt package explicitly while preserving older evidence packages.
+PKG = Path(os.environ.get("SATQUERY_STAGE1_PACKAGE_ROOT", ROOT / "packages" / "stage1-t4-smoke")).resolve()
 if str(PKG) not in sys.path:
     sys.path.insert(0, str(PKG))
 if str(PKG / "src") not in sys.path:

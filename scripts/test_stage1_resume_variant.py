@@ -151,3 +151,60 @@ def test_missing_identity_and_bad_data_position_are_rejected(tiny_run):
     state["data_position"]["next_micro_sample"] += 1
     with pytest.raises(ValueError, match="data position"):
         smoke.restore_training_state(None, None, None, None, state, path, total_steps=6)
+
+
+@pytest.mark.parametrize("phase", ["train", "eval"])
+@pytest.mark.parametrize("structured", [False, True])
+@pytest.mark.parametrize("value", [1.0, float("nan"), float("inf")])
+def test_real_vision_finiteness_hooks_keep_gate(tiny_run, monkeypatch, phase, structured, value):
+    """Exercise actual hooks with CPU doubles, including Qwen's new return type."""
+    from transformers.modeling_outputs import BaseModelOutputWithPooling
+
+    path, root = tiny_run
+    if phase == "eval":
+        smoke.run(path, root, root, root / "trained.json", max_steps=2)
+    original_build = smoke.build_model
+
+    def build(*args):
+        model, groups = original_build(*args)
+        tensor = torch.full((4, 8), value)
+        output = (BaseModelOutputWithPooling(
+            last_hidden_state=torch.ones(16, 2), pooler_output=tensor) if structured else tensor)
+        model.visual.forward = lambda: output
+        original_forward = model.forward
+
+        def forward(**kwargs):
+            model.visual()  # Calls the real training/evaluation finiteness hook.
+            return original_forward(**kwargs)
+
+        model.forward = forward
+        return model, groups
+
+    monkeypatch.setattr(smoke, "build_model", build)
+
+    def execute():
+        if phase == "train":
+            return smoke.run(path, root, root, root / "checked.json", max_steps=2)
+        return smoke.evaluate_losses(path, root, root, root / "checked.json",
+                                     from_checkpoint=root / "trained.pt")
+
+    if np.isfinite(value):
+        assert execute()["passed"]
+    else:
+        with pytest.raises(FloatingPointError, match="Vision tower produced inf/NaN"):
+            execute()
+        assert json.loads((root / "checked.json").read_text())["passed"] is False
+
+
+def test_synthetic_new_initialization_metadata_and_resume(tiny_run):
+    path, root = tiny_run
+    config = yaml.safe_load(path.read_text())
+    config["patch_embed_initialization"] = "rgb_preserving_zero9_v1"
+    path.write_text(yaml.safe_dump(config))
+    smoke.run(path, root, root, root / "rgb-prefix.json", stop_after_step=3)
+    saved = torch.load(root / "rgb-prefix.pt", map_location="cpu", weights_only=False)
+    assert saved["patch_embed_initialization"] == config["patch_embed_initialization"]
+    smoke.validate_checkpoint_identity(saved, path)
+    del saved["patch_embed_initialization"]
+    with pytest.raises(ValueError, match="initialization"):
+        smoke.validate_checkpoint_identity(saved, path)

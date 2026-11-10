@@ -1,0 +1,21 @@
+{
+  "decoded_and_hashed_images": 558,
+  "frozen_b12_files_unchanged": true,
+  "frozen_b12_validation_overlap": 0,
+  "manifest_identity": "16f97f1f332725d7ddf6cfbe643d1e0a61f20ac32f0ad83399bf5e367de01282",
+  "max_qa_per_image": 11,
+  "median_qa_per_image": 11.0,
+  "min_qa_per_image": 10,
+  "official_metadata_unchanged": true,
+  "official_test_image_and_question_overlap": 0,
+  "official_val_image_and_question_overlap": 0,
+  "per_type": {
+    "comp": 2362,
+    "count": 1793,
+    "presence": 1785,
+    "rural_urban": 60
+  },
+  "status": "PASS",
+  "train_images": 558,
+  "train_qa": 6000
+}

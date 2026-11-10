@@ -4,7 +4,7 @@ import pytest
 torch = pytest.importorskip("torch")
 from torch import nn  # noqa: E402
 
-from models.qwen_vl.stage1 import convert_patch_embed, pack_s2_pixel_values, stage1_parameter_groups  # noqa: E402
+from models.qwen_vl.stage1 import convert_patch_embed, pack_s2_pixel_values, stage1_parameter_groups, resolve_vision_module, vision_output_tensor  # noqa: E402
 
 
 class TinyModel(nn.Module):
@@ -19,6 +19,55 @@ class TinyModel(nn.Module):
         self.visual.other = nn.Linear(2, 2, dtype=dtype)
         self.lm = nn.Module()
         self.lm.lora_A = nn.Linear(2, 2, dtype=dtype)
+
+
+def test_raw_vision_output_preserves_tensor_and_gradient():
+    tensor = torch.ones(4, 8, requires_grad=True)
+    assert vision_output_tensor(tensor) is tensor
+
+
+def test_structured_vision_output_selects_consumed_pooler_tensor():
+    outputs = pytest.importorskip("transformers.modeling_outputs")
+    tensor = torch.ones(4, 8, requires_grad=True)
+    output = outputs.BaseModelOutputWithPooling(
+        last_hidden_state=torch.full((16, 2), float("nan")), pooler_output=tensor)
+    assert vision_output_tensor(output) is tensor
+    output.pooler_output = torch.full((4, 8), float("inf"))
+    assert not torch.isfinite(vision_output_tensor(output)).all()
+
+
+@pytest.mark.parametrize("invalid", [None, {}, (torch.ones(4, 8),), "not a tensor"])
+def test_vision_output_rejects_unsupported_types(invalid):
+    pytest.importorskip("transformers.modeling_outputs")
+    with pytest.raises(TypeError, match="Unsupported Qwen vision output"):
+        vision_output_tensor(invalid)
+
+
+@pytest.mark.parametrize("invalid", [None, (torch.ones(4, 8),), torch.ones(8),
+                                    torch.ones(1, 4, 8), torch.ones(0, 8), torch.ones(4, 8, dtype=torch.int64)])
+def test_vision_output_rejects_missing_or_invalid_pooler_without_fallback(invalid):
+    outputs = pytest.importorskip("transformers.modeling_outputs")
+    output = outputs.BaseModelOutputWithPooling(last_hidden_state=torch.ones(4, 8), pooler_output=invalid)
+    with pytest.raises((TypeError, ValueError), match="Qwen vision"):
+        vision_output_tensor(output)
+
+
+@pytest.mark.parametrize("invalid", [torch.ones(8), torch.ones(1, 4, 8), torch.ones(0, 8),
+                                    torch.ones(4, 8, dtype=torch.int64)])
+def test_raw_vision_output_rejects_invalid_shapes(invalid):
+    with pytest.raises(ValueError, match="Qwen vision embeddings"):
+        vision_output_tensor(invalid)
+
+
+@pytest.mark.parametrize("failure", ["missing", "invalid", "ambiguous"])
+def test_vision_resolution_rejects_wrong_or_ambiguous_towers(failure):
+    model = nn.Module() if failure == "missing" else TinyModel()
+    if failure == "invalid":
+        model.visual = nn.Linear(2, 2)
+    elif failure == "ambiguous":
+        model.model = TinyModel()
+    with pytest.raises(ValueError, match="vision"):
+        resolve_vision_module(model)
 
 
 @pytest.mark.parametrize("bias", [True, False])
@@ -93,3 +142,38 @@ def test_pack_s2_pixel_values():
     torch.testing.assert_close(recovered[1], expected, rtol=0, atol=0)
     with pytest.raises(ValueError, match="Expected finite"):
         pack_s2_pixel_values(source.double())
+
+
+@pytest.mark.parametrize("bias", [True, False])
+def test_synthetic_rgb_initialization_preserves_filters_and_conv_settings(bias):
+    model = TinyModel(bias=bias)
+    model.visual.patch_embed.proj = nn.Conv3d(
+        3, 5, (2, 3, 3), stride=(2, 2, 2), padding=(0, 1, 1),
+        dilation=(1, 2, 2), bias=bias, dtype=torch.float64)
+    old = model.visual.patch_embed.proj
+    old.requires_grad_(False)
+    new = convert_patch_embed(model, initialization="rgb_preserving_zero9_v1")
+    for channel, band in enumerate((3, 2, 1)):
+        assert torch.equal(new.weight[:, band], old.weight[:, channel])
+    assert torch.count_nonzero(new.weight[:, [0, 4, 5, 6, 7, 8, 9, 10, 11]]) == 0
+    assert (new.kernel_size, new.stride, new.padding, new.dilation, new.groups, new.padding_mode) == (
+        old.kernel_size, old.stride, old.padding, old.dilation, old.groups, old.padding_mode)
+    assert new.weight.dtype == old.weight.dtype and new.weight.device == old.weight.device
+    assert not new.weight.requires_grad
+    if bias:
+        assert torch.equal(new.bias, old.bias) and not new.bias.requires_grad
+    else:
+        assert new.bias is None
+    # A trained 12-band projection must never be initialized again.
+    before = new.weight.detach().clone()
+    with pytest.raises(ValueError, match="unconverted 3-channel"):
+        convert_patch_embed(model, initialization="rgb_preserving_zero9_v1")
+    assert torch.equal(before, new.weight)
+
+
+def test_unknown_initialization_rejected_before_mutation():
+    model = TinyModel()
+    old = model.visual.patch_embed.proj
+    with pytest.raises(ValueError, match="Unsupported"):
+        convert_patch_embed(model, initialization="typo")
+    assert model.visual.patch_embed.proj is old

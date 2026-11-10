@@ -85,6 +85,7 @@ def run(
     *,
     component_loader=None,
     collator_factory=None,
+    trainer_factory=None,
 ) -> dict:
     os.environ["HF_HUB_OFFLINE"] = "1"
     os.environ["TRANSFORMERS_OFFLINE"] = "1"
@@ -94,7 +95,9 @@ def run(
     all_examples = load_manifest(config.dataset_manifest, config.image_root)
     examples = select_examples(all_examples, config.split, config.max_samples, config.seed)
     model, processor = (component_loader or load_training_components)(config)
-    collator = (collator_factory or QwenVQACollator)(processor, config.image_size)
+    collator = (collator_factory or QwenVQACollator)(
+        processor, config.image_size, max_sequence_length=config.max_sequence_length
+    )
     if dry_run:
         import torch
 
@@ -125,8 +128,21 @@ def run(
             num_train_epochs=config.epochs,
             max_steps=config.max_steps,
             learning_rate=config.learning_rate,
+            optim=config.optimizer,
+            lr_scheduler_type=config.lr_scheduler_type,
+            warmup_steps=config.warmup_steps,
+            warmup_ratio=config.warmup_ratio,
+            weight_decay=config.weight_decay,
+            adam_beta1=config.adam_beta1,
+            adam_beta2=config.adam_beta2,
+            adam_epsilon=config.adam_epsilon,
+            max_grad_norm=config.max_grad_norm,
             fp16=config.precision == "fp16",
             bf16=config.precision == "bf16",
+            half_precision_backend=config.half_precision_backend,
+            fp16_full_eval=config.fp16_full_eval,
+            bf16_full_eval=config.bf16_full_eval,
+            tf32=config.tf32,
             logging_steps=1,
             save_strategy="steps",
             save_steps=max(1, config.max_steps if config.max_steps > 0 else 100),
@@ -135,7 +151,7 @@ def run(
             seed=config.seed,
             data_seed=config.seed,
         )
-        trainer = Trainer(
+        trainer = (trainer_factory or Trainer)(
             model=model,
             args=arguments,
             train_dataset=examples,

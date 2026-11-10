@@ -41,7 +41,8 @@ from transformers import AutoTokenizer
 
 from data.bigearthnet_s2 import apply_contract, load_norm_contract, resample_bands
 from data.bigearthnet_shards import ShardDataset
-from models.qwen_vl.stage1 import pack_s2_pixel_values
+from models.qwen_vl.stage1 import pack_s2_pixel_values, resolve_vision_module, vision_output_tensor
+from models.qwen_vl.stage1 import patch_initialization, validate_initialization_metadata
 from scripts.stage1_runtime import verify_checkpoint, bounded_checkpoint_save, bounded_write_json
 from scripts.run_stage1_smoke import (build_model, canonical_digest, amp_context, make_scaler,
                                      rng_state, restore_rng, trainable_state, load_trainable_state)
@@ -62,10 +63,19 @@ SESSION_ONLY_KEYS = ("name", "max_steps_per_session", "wall_clock_limit_seconds"
 
 def config_identity(config: dict) -> str:
     """SHA256 over the training-relevant config keys only."""
+    patch_initialization(config)
     relevant = {key: value for key, value in sorted(config.items())
                 if key not in SESSION_ONLY_KEYS}
     return hashlib.sha256(
         json.dumps(relevant, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
+
+
+def validate_resume_identity(saved: dict, config: dict) -> None:
+    validate_initialization_metadata(saved, config)
+    identity = config_identity(config)
+    allowed = (identity,) if "patch_embed_initialization" in config else (None, identity)
+    if saved.get("config_sha256") not in allowed:
+        raise ValueError("Checkpoint was written by a different config")
 
 
 # --------------------------------------------------------------------------- #
@@ -214,7 +224,8 @@ def build_optimizer_scheduler(config, groups, total_steps: int):
 
 def save_checkpoint(path: Path, *, model, optimizer, scheduler, dataset, step: int,
                     config_sha256: str, wall_clock_seconds: float,
-                    sample_sequence_digest: str, scaler=None, total_steps: int | None = None) -> dict:
+                    sample_sequence_digest: str, scaler=None, total_steps: int | None = None,
+                    patch_embed_initialization: str = "mean_repeat_v1") -> dict:
     path.parent.mkdir(parents=True, exist_ok=True)
     return bounded_checkpoint_save({
         "model": trainable_state(model),
@@ -223,6 +234,7 @@ def save_checkpoint(path: Path, *, model, optimizer, scheduler, dataset, step: i
         "data_position": dataset.state(),
         "step": step,
         "config_sha256": config_sha256,
+        "patch_embed_initialization": patch_embed_initialization,
         "sample_sequence_digest": sample_sequence_digest,
         "scaler": scaler.state_dict() if scaler is not None else {},
         "total_steps": total_steps,
@@ -317,6 +329,7 @@ def run_full(
         "weight_sha256": config["weight_sha256"],
         "config": str(config_path),
         "config_sha256": config_sha256,
+        "patch_embed_initialization": patch_initialization(config),
         "config_file_sha256": config_file_sha256,
         "shard_manifest_sha256": dataset.manifest_sha256,
         "eval_shard_manifest_sha256": eval_dataset.manifest_sha256 if eval_dataset else None,
@@ -371,11 +384,11 @@ def run_full(
             torch.cuda.reset_peak_memory_stats()
         model, groups = build_model(config, checkpoint_dir, dtype, device)
         def check_vision(_module, _inputs, value):
-            if not torch.isfinite(value).all():
+            if not torch.isfinite(vision_output_tensor(value)).all():
                 raise FloatingPointError("Vision tower produced inf/NaN; use vision-fp32 variant")
 
         if hasattr(model, "get_base_model"):
-            model.get_base_model().visual.register_forward_hook(check_vision)
+            resolve_vision_module(model).register_forward_hook(check_vision)
         result["group_parameter_counts"] = {group["name"]: sum(p.numel() for p in group["params"])
                                             for group in groups}
         tokenizer = AutoTokenizer.from_pretrained(checkpoint_dir, local_files_only=True)
@@ -388,8 +401,7 @@ def run_full(
                          else None))
         if resume_state is not None:
             saved = torch.load(resume_state, map_location=device, weights_only=False)
-            if saved.get("config_sha256") not in (None, config_sha256):
-                raise ValueError("Checkpoint was written by a different config")
+            validate_resume_identity(saved, config)
             load_trainable_state(model, saved["model"])
             optimizer.load_state_dict(saved["optimizer"])
             scheduler.load_state_dict(saved["scheduler"])
@@ -477,7 +489,8 @@ def run_full(
                                 config_sha256=config_sha256,
                                 wall_clock_seconds=now() - started_at,
                                 sample_sequence_digest=sequence["chain"],
-                                scaler=scaler, total_steps=total_steps)
+                                scaler=scaler, total_steps=total_steps,
+                                patch_embed_initialization=patch_initialization(config))
                 result["optimizer_state_digest"] = canonical_digest(optimizer.state_dict())
                 result["last_checkpoint"] = str(checkpoint_path)
                 save()
@@ -491,7 +504,8 @@ def run_full(
                                 config_sha256=config_sha256,
                                 wall_clock_seconds=now() - started_at,
                                 sample_sequence_digest=sequence["chain"],
-                                scaler=scaler, total_steps=total_steps)
+                                scaler=scaler, total_steps=total_steps,
+                                patch_embed_initialization=patch_initialization(config))
                 result["status"] = "wall_clock_guard_exit"
                 result["wall_clock_stopped_at_step"] = step + 1
                 result["wall_clock_seconds"] = now() - started_at

@@ -41,7 +41,21 @@ class TrainingConfig:
     batch_size: int = 1
     gradient_accumulation_steps: int = 8
     learning_rate: float = 2e-4
+    optimizer: str = "adamw_torch"
+    lr_scheduler_type: str = "linear"
+    warmup_steps: int = 0
+    warmup_ratio: float = 0.0
+    weight_decay: float = 0.0
+    adam_beta1: float = 0.9
+    adam_beta2: float = 0.999
+    adam_epsilon: float = 1e-8
+    max_grad_norm: float = 1.0
     precision: str = "fp16"
+    half_precision_backend: str = "auto"
+    fp16_full_eval: bool = False
+    bf16_full_eval: bool = False
+    tf32: bool = False
+    max_sequence_length: int = 32768
     quantization: str = "4bit"
     lora_rank: int = 16
     lora_alpha: int = 32
@@ -59,6 +73,10 @@ class TrainingConfig:
             raise ValueError("max_steps must be -1 or positive")
         if self.learning_rate <= 0 or self.lora_rank < 1 or self.lora_alpha < 1:
             raise ValueError("learning rate and LoRA rank/alpha must be positive")
+        if self.warmup_steps < 0 or not 0 <= self.warmup_ratio <= 1:
+            raise ValueError("warmup steps and ratio must be non-negative, with ratio at most 1")
+        if self.max_sequence_length < 1:
+            raise ValueError("max_sequence_length must be positive")
         if not 0 <= self.lora_dropout < 1:
             raise ValueError("LoRA dropout must be in [0, 1)")
         if self.precision not in {"fp16", "bf16"}:
@@ -184,12 +202,16 @@ class QwenVQACollator:
         processor: Any,
         image_size: int,
         process_vision_info: Callable | None = None,
+        max_sequence_length: int = 32768,
     ) -> None:
         if process_vision_info is None:
             from qwen_vl_utils import process_vision_info
         self.processor = processor
         self.processor.tokenizer.padding_side = "right"
         self.image_size = image_size
+        if max_sequence_length < 1:
+            raise ValueError("max_sequence_length must be positive")
+        self.max_sequence_length = max_sequence_length
         self.process_vision_info = process_vision_info
 
     def _encode(self, batch: list[TrainingExample], include_target: bool) -> Any:
@@ -217,6 +239,11 @@ class QwenVQACollator:
 
     def __call__(self, batch: list[TrainingExample]) -> dict[str, Any]:
         encoded = self._encode(batch, include_target=True)
+        if encoded["input_ids"].shape[1] > self.max_sequence_length:
+            raise ValueError(
+                f"Encoded training example exceeds max_sequence_length="
+                f"{self.max_sequence_length}; no tokens were truncated"
+            )
         prompt = self._encode(batch, include_target=False)
         labels = encoded["input_ids"].clone()
         labels[labels == self.processor.tokenizer.pad_token_id] = -100

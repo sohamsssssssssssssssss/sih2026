@@ -1,0 +1,6 @@
+transformers==4.49.0
+accelerate==1.5.2
+peft==0.15.2
+rasterio==1.4.3
+PyYAML==6.0.3
+safetensors==0.5.3

@@ -1,0 +1,17 @@
+{
+  "policy_id": "rsvqa-lr-pilot-exclusions-v1",
+  "basis": "B3 positive-area cross-split footprint intersections; official metadata unchanged; no distance buffer",
+  "excluded_image_ids": {
+    "train": [74, 361, 365, 379, 576, 620, 623, 682, 689, 714, 740, 746, 749, 759],
+    "validation": [481, 506, 507, 509, 511, 527, 528, 530, 546, 550, 569],
+    "test": []
+  },
+  "expected_remaining": {
+    "train": {"images": 558, "qa": 55821},
+    "validation": {"images": 89, "qa": 8903}
+  },
+  "test_selection_permitted": false,
+  "seed": 17,
+  "train_qa_limit": 1024,
+  "validation_per_type_limit": 100
+}

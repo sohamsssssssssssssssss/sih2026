@@ -35,7 +35,7 @@ from transformers import AutoTokenizer, Qwen2_5_VLForConditionalGeneration
 
 from scripts.stage1_runtime import verify_checkpoint, bounded_checkpoint_save, bounded_write_json
 from data.bigearthnet_s2 import load_s2_patch
-from models.qwen_vl.stage1 import convert_patch_embed, pack_s2_pixel_values, stage1_parameter_groups
+from models.qwen_vl.stage1 import patch_initialization, validate_initialization_metadata, convert_patch_embed, pack_s2_pixel_values, stage1_parameter_groups, resolve_vision_module, vision_output_tensor
 
 
 def canonical_digest(obj) -> str:
@@ -106,6 +106,7 @@ def checkpoint_identity(config_path, *, total_steps, shuffle_images=False):
     """Bind a state to its config, schedule, captions and normalization bytes."""
     config_path = Path(config_path)
     config = yaml.safe_load(config_path.read_text())
+    patch_initialization(config)
     return canonical_digest({
         "config": config,
         "total_steps": total_steps,
@@ -116,6 +117,7 @@ def checkpoint_identity(config_path, *, total_steps, shuffle_images=False):
 
 
 def validate_checkpoint_identity(saved, config_path, *, total_steps=None, shuffle_images=False):
+    validate_initialization_metadata(saved, yaml.safe_load(Path(config_path).read_text()))
     total_steps = saved["total_steps"] if total_steps is None else total_steps
     expected = checkpoint_identity(config_path, total_steps=total_steps, shuffle_images=shuffle_images)
     if saved.get("config_identity") != expected or saved.get("total_steps") != total_steps:
@@ -158,8 +160,8 @@ def build_model(config, checkpoint, dtype, device):
         attn_implementation=config["attention"],
     )
     if config.get("vision_fp32", False):
-        model.visual.float()
-    convert_patch_embed(model)
+        resolve_vision_module(model).float()
+    convert_patch_embed(model, initialization=patch_initialization(config))
     model.config.use_cache = False
     if config["gradient_checkpointing"]:
         model.gradient_checkpointing_enable(gradient_checkpointing_kwargs={"use_reentrant": False})
@@ -168,7 +170,7 @@ def build_model(config, checkpoint, dtype, device):
         r=lora["r"], lora_alpha=lora["alpha"], lora_dropout=0,
         bias="none", task_type="CAUSAL_LM", target_modules=lora["target_modules"],
     ))
-    visual = model.get_base_model().visual
+    visual = resolve_vision_module(model)
     last_n = config.get("vision_trainable_last_n_blocks")
     if last_n is None:
         for parameter in visual.parameters():
@@ -197,7 +199,7 @@ def build_model(config, checkpoint, dtype, device):
         def exit_fp32(module, _inputs, _output):
             module._stage1_amp_context.__exit__(None, None, None)
 
-        visual = model.get_base_model().visual
+        visual = resolve_vision_module(model)
         visual.register_forward_pre_hook(enter_fp32)
         visual.register_forward_hook(exit_fp32, always_call=True)
     groups = stage1_parameter_groups(model)
@@ -317,10 +319,10 @@ def run(
         result["group_parameter_counts"] = {g["name"]: sum(p.numel() for p in g["params"]) for g in groups}
 
         def check_vision(_module, _inputs, output):
-            if not torch.isfinite(output).all():
+            if not torch.isfinite(vision_output_tensor(output)).all():
                 raise FloatingPointError("Vision tower produced inf/NaN; use vision-fp32 variant")
 
-        hook = model.get_base_model().visual.register_forward_hook(check_vision)
+        hook = resolve_vision_module(model).register_forward_hook(check_vision)
         tokenizer = AutoTokenizer.from_pretrained(checkpoint, local_files_only=True)
         samples, _prompt_ids = load_samples(config, captions, contract, checkpoint, patch_root, device, dtype, tokenizer)
         if config.get("shuffle_images", False) or shuffle_images:
@@ -384,6 +386,7 @@ def run(
                             "scheduler": scheduler.state_dict(), "scaler": scaler.state_dict(),
                             "step": step + 1, "total_steps": total_steps,
                             "config_identity": identity,
+                            "patch_embed_initialization": patch_initialization(config),
                             "data_position": {"next_micro_sample": (step + 1) * accumulation},
                             **rng_state()}, checkpoint_file)
         hook.remove()
@@ -458,10 +461,10 @@ def evaluate_losses(
         model.eval()
 
         def check_vision(_module, _inputs, vision_output):
-            if not torch.isfinite(vision_output).all():
+            if not torch.isfinite(vision_output_tensor(vision_output)).all():
                 raise FloatingPointError("Vision tower produced inf/NaN during evaluation")
 
-        hook = model.get_base_model().visual.register_forward_hook(check_vision)
+        hook = resolve_vision_module(model).register_forward_hook(check_vision)
         tokenizer = AutoTokenizer.from_pretrained(checkpoint, local_files_only=True)
         samples, _prompt_ids = load_samples(config, captions, contract, checkpoint, patch_root, device, dtype, tokenizer)
         if shuffle_images:

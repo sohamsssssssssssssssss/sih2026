@@ -1,0 +1,7 @@
+{
+  "stage": "evaluate",
+  "run_identity": "133e9a5632afcd6aad63e127853e30133cdca1f1a482a8369bd1a40324952876",
+  "budget_seconds": 2400,
+  "budget_ledger": "/kaggle/working/rgb-b12-evaluation-budget.json",
+  "resume_from": null
+}

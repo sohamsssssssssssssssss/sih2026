@@ -1,0 +1,156 @@
+{
+  "kind": "A2 rgb_preserving_zero9_v1 source package; unexecuted",
+  "timestamp_utc": "20261015T134401792962Z",
+  "source_snapshot": {
+    "head": "0fc4c40e9036aff50dc98adb3695c6d307f1c271",
+    "working_tree_dirty": true,
+    "files_sha256": {
+      "data/bigearthnet_s2.py": "870092ae9ac0bdea0869cc8a9ba10ded1e14c304a9c0fa8cd1fd93d1268975d0",
+      "data/bigearthnet_shards.py": "f8f4f3eecf3d56fad5664471b24bb7d18319aad3623a156b641d5c3ede24469b",
+      "models/qwen_vl/stage1.py": "ec41f3989491e6f643db2a2c3168cdaba03b77b39380515ee2b7705d6c979ac0",
+      "scripts/run_stage1_full.py": "a3da6dea7073d8a4877f1ce1e06ab920ff4a517fe1761169d811ceddc9ea2c96",
+      "scripts/run_stage1_smoke.py": "fcc8d9fc0d273ea44f2e08d8d48e6f2cdc58a40b76bb02089565489541a88057",
+      "scripts/run_stage1_t4.py": "29c07116512ba899ef285d8ed241c3bf8c7bf00e4c801b300ac6c43d2aa9de88",
+      "scripts/stage1_runtime.py": "0fdc80c338eb9be8179807f9498a31c2e036a21e3030c3994d644592cfb416c2",
+      "scripts/diagnose_qwen_rgb_initialization.py": "78258b1d5a30b714859a95eb0ed5e41d4245e96d161f4224a999950ed63b3bac",
+      "scripts/test_diagnose_qwen_rgb_initialization.py": "fb5cf0c9fe095b789be240ce27bda5617b951204f324064867a23e509edd1e81",
+      "scripts/test_stage1_initialization.py": "8300f685d034b72fbc0a4b5dc68177693d1af186241fb1714498df1e204c43b6",
+      "models/qwen_vl/test_stage1.py": "f315f25b42d7235a7a864e8f0d7737f14b29df744a704e2bb36cd0c5edb58cf3",
+      "configs/model_artifacts.json": "72527fa9bb644cac71513b40a1a7e836a2044aae71ca6fb7095d4df643753e41"
+    }
+  },
+  "historical_package": "packages/stage1-t4-smoke",
+  "historical_files_sha256": {
+    "README.md": "9accb63d684cc1d13b1f66134b76f81fc95365dbea5199ca98d57e6ca3adb014",
+    "captions.json": "7f762060e7814542ce95186db97aa2cc2847519f677a725a93bc8416429882b6",
+    "config-full-last4.yaml": "a8fd345b2eb9bd5f0bbf3bbb95aa3f8c6aff92f92e8e6aa336e2cd34f7af7914",
+    "config-full.yaml": "1327c9411d3f54275ac95ca577bfd87b5ca88fe86b93cd381e5ac468d3c564b3",
+    "config-last4-vision-fp32.yaml": "53b8b6ea9267f9c3e3ea5315510623100c3e708b5afe9dbcade97265197d63c2",
+    "config-last4.yaml": "e70b430f5db56a657ff756ab6dc5ed4949dd49013606e225dc798d2725708430",
+    "config-vision-fp32.yaml": "7c3a8368f306e3592cc9d7c6522559d8a51c2ed179ffee06094766c58935b34f",
+    "config.yaml": "91aa6e3edde296ec6f05325e3874827813b3ddfde0454d8b6ee010c936e6265f",
+    "norm_contract.json": "ab02179d2b4cf33c320a897d75318484189b249d99fff6cdd386016df908912d",
+    "package-manifest.json": "c84b7f83e87a06a087d04c672d6b0fbd42e3deb6387dc8b638ba74e76cbb1b57",
+    "patches.tar.gz": "b77d21791a91ff81328408e9701fb2b7ce48874fbf962d153c8ad3ecf520fa65",
+    "requirements.txt": "9a7e2666f9572c077b1ab226e364c2c6310998649a41889568ffb7706ed03712",
+    "revision.json": "cc164a18abf30dbf70dc5437d5088fe688dbaad081d082791266ae7ad85c066d",
+    "run.py": "a538eca0deda8c00cdf590dddbb6ee752d3b611ede507d39e04a99bd0e2ecf3a",
+    "src/data/bigearthnet_s2.py": "870092ae9ac0bdea0869cc8a9ba10ded1e14c304a9c0fa8cd1fd93d1268975d0",
+    "src/data/bigearthnet_shards.py": "f8f4f3eecf3d56fad5664471b24bb7d18319aad3623a156b641d5c3ede24469b",
+    "src/models/qwen_vl/stage1.py": "459a9d581e88853b380081f8f3902418c5ffc0a83f644eaa6625a27181a8f206",
+    "src/scripts/run_stage1_full.py": "82273b1aaa1fce2f6fab7f6c52a7d376b52f29e90117cd6ce497e552ad579a67",
+    "src/scripts/run_stage1_smoke.py": "a63e34aaffff4bfeeec46d129163a50b3f889b08cc21cd6fec704382fb24f622",
+    "src/scripts/run_stage1_t4.py": "9f8089b26fd198e23b7c133a98d800849ee2fee36c863499c736d456ade18412",
+    "src/scripts/stage1_runtime.py": "0fdc80c338eb9be8179807f9498a31c2e036a21e3030c3994d644592cfb416c2"
+  },
+  "experiment_config": "config-rgb-preserving-zero9-v1.yaml",
+  "initialization": "rgb_preserving_zero9_v1",
+  "pretrained_equivalence": "PENDING; weights unavailable",
+  "total_bytes": 1804595,
+  "files": {
+    "README.md": {
+      "bytes": 1592,
+      "sha256": "f2a91b9822cc1cffbb3c4f4bdbb08b580029e2c3c6bcd4ba34b4f8eb05266f1d"
+    },
+    "captions.json": {
+      "bytes": 14439,
+      "sha256": "7f762060e7814542ce95186db97aa2cc2847519f677a725a93bc8416429882b6"
+    },
+    "config-full-last4.yaml": {
+      "bytes": 1736,
+      "sha256": "a8fd345b2eb9bd5f0bbf3bbb95aa3f8c6aff92f92e8e6aa336e2cd34f7af7914"
+    },
+    "config-full.yaml": {
+      "bytes": 1641,
+      "sha256": "1327c9411d3f54275ac95ca577bfd87b5ca88fe86b93cd381e5ac468d3c564b3"
+    },
+    "config-last4-vision-fp32.yaml": {
+      "bytes": 1077,
+      "sha256": "53b8b6ea9267f9c3e3ea5315510623100c3e708b5afe9dbcade97265197d63c2"
+    },
+    "config-last4.yaml": {
+      "bytes": 1080,
+      "sha256": "e70b430f5db56a657ff756ab6dc5ed4949dd49013606e225dc798d2725708430"
+    },
+    "config-rgb-preserving-zero9-v1.yaml": {
+      "bytes": 1082,
+      "sha256": "f2934e6f8c14a61700b9729fca413942447e51ff600f6f6a3c55f431f4d2a4c5"
+    },
+    "config-vision-fp32.yaml": {
+      "bytes": 982,
+      "sha256": "7c3a8368f306e3592cc9d7c6522559d8a51c2ed179ffee06094766c58935b34f"
+    },
+    "config.yaml": {
+      "bytes": 985,
+      "sha256": "91aa6e3edde296ec6f05325e3874827813b3ddfde0454d8b6ee010c936e6265f"
+    },
+    "norm_contract.json": {
+      "bytes": 1777,
+      "sha256": "ab02179d2b4cf33c320a897d75318484189b249d99fff6cdd386016df908912d"
+    },
+    "patches.tar.gz": {
+      "bytes": 1592788,
+      "sha256": "b77d21791a91ff81328408e9701fb2b7ce48874fbf962d153c8ad3ecf520fa65"
+    },
+    "requirements.txt": {
+      "bytes": 101,
+      "sha256": "9a7e2666f9572c077b1ab226e364c2c6310998649a41889568ffb7706ed03712"
+    },
+    "revision.json": {
+      "bytes": 721,
+      "sha256": "cc164a18abf30dbf70dc5437d5088fe688dbaad081d082791266ae7ad85c066d"
+    },
+    "run.py": {
+      "bytes": 2047,
+      "sha256": "a538eca0deda8c00cdf590dddbb6ee752d3b611ede507d39e04a99bd0e2ecf3a"
+    },
+    "src/configs/model_artifacts.json": {
+      "bytes": 1129,
+      "sha256": "72527fa9bb644cac71513b40a1a7e836a2044aae71ca6fb7095d4df643753e41"
+    },
+    "src/data/bigearthnet_s2.py": {
+      "bytes": 6798,
+      "sha256": "870092ae9ac0bdea0869cc8a9ba10ded1e14c304a9c0fa8cd1fd93d1268975d0"
+    },
+    "src/data/bigearthnet_shards.py": {
+      "bytes": 54348,
+      "sha256": "f8f4f3eecf3d56fad5664471b24bb7d18319aad3623a156b641d5c3ede24469b"
+    },
+    "src/models/qwen_vl/stage1.py": {
+      "bytes": 6584,
+      "sha256": "ec41f3989491e6f643db2a2c3168cdaba03b77b39380515ee2b7705d6c979ac0"
+    },
+    "src/models/qwen_vl/test_stage1.py": {
+      "bytes": 8525,
+      "sha256": "f315f25b42d7235a7a864e8f0d7737f14b29df744a704e2bb36cd0c5edb58cf3"
+    },
+    "src/scripts/diagnose_qwen_rgb_initialization.py": {
+      "bytes": 9662,
+      "sha256": "78258b1d5a30b714859a95eb0ed5e41d4245e96d161f4224a999950ed63b3bac"
+    },
+    "src/scripts/run_stage1_full.py": {
+      "bytes": 29889,
+      "sha256": "a3da6dea7073d8a4877f1ce1e06ab920ff4a517fe1761169d811ceddc9ea2c96"
+    },
+    "src/scripts/run_stage1_smoke.py": {
+      "bytes": 27422,
+      "sha256": "fcc8d9fc0d273ea44f2e08d8d48e6f2cdc58a40b76bb02089565489541a88057"
+    },
+    "src/scripts/run_stage1_t4.py": {
+      "bytes": 25022,
+      "sha256": "29c07116512ba899ef285d8ed241c3bf8c7bf00e4c801b300ac6c43d2aa9de88"
+    },
+    "src/scripts/stage1_runtime.py": {
+      "bytes": 6461,
+      "sha256": "0fdc80c338eb9be8179807f9498a31c2e036a21e3030c3994d644592cfb416c2"
+    },
+    "src/scripts/test_diagnose_qwen_rgb_initialization.py": {
+      "bytes": 2705,
+      "sha256": "fb5cf0c9fe095b789be240ce27bda5617b951204f324064867a23e509edd1e81"
+    },
+    "src/scripts/test_stage1_initialization.py": {
+      "bytes": 4002,
+      "sha256": "8300f685d034b72fbc0a4b5dc68177693d1af186241fb1714498df1e204c43b6"
+    }
+  }
+}

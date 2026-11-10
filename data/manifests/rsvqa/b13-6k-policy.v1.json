@@ -1,0 +1,28 @@
+{
+  "policy_id": "rsvqa-lr-b13-6k-v1",
+  "parent_exclusion_policy": "data/manifests/rsvqa/pilot-exclusion-policy.v1.json",
+  "parent_exclusion_policy_sha256": "7aeb3cdb075761fd7d54802ad108029f9fe5ad43719deaa8e540f4d98f5ccae8",
+  "b12_files_sha256": {
+    "data/manifests/rsvqa/pilot.v1/train.jsonl": "192fe0938ab194bd4d01948d30e10a1f61a6a5fb0ca29a95fa5ecbcf6c38961d",
+    "data/manifests/rsvqa/pilot.v1/validation.jsonl": "b55842a801b76e680e5aee3cded8bc47dad72498a10629b5648db2c07831973c",
+    "data/manifests/rsvqa/pilot.v1/pilot.jsonl": "bef735c4ae4c8178d4ea60004e66b6c8ac150764f0ff4b1a2c602713a6b2f1dc",
+    "data/manifests/rsvqa/pilot.v1/provenance.json": "8dd9a604d97b00fc6a1d8e4f0517228ce20be5f82c522a5d034ab81ea52fdce9"
+  },
+  "selection_algorithm": "image-balanced-sha256-v1-exact-quotas",
+  "seed": 17,
+  "train_qa_limit": 6000,
+  "train_type_quotas": {
+    "comp": 2362,
+    "count": 1793,
+    "presence": 1785,
+    "rural_urban": 60
+  },
+  "expected_eligible_train": {
+    "images": 558,
+    "qa": 55821
+  },
+  "expected_selected_images": 558,
+  "max_selected_qa_per_image": 11,
+  "validation_manifest_unchanged": true,
+  "test_selection_permitted": false
+}
