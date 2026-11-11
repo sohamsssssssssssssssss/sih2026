@@ -255,16 +255,13 @@ def preflight(root, image_root=None):
     return report
 
 
-def token_preflight(root, weights, image_root):
-    """Real processor, CPU: every training example must fit, with answer-only labels."""
-    os.environ.update(HF_HUB_OFFLINE="1", TRANSFORMERS_OFFLINE="1", CUDA_VISIBLE_DEVICES="")
-    check_payload(root)
-    proof = verify_base(root, Path(weights))
-    from transformers import AutoProcessor
-    processor = AutoProcessor.from_pretrained(weights, local_files_only=True)
-    examples = pair_examples(root / TRAIN_MANIFEST, image_root, root)
-    plan = load_plan(root)["training"]
-    collator = QwenVQACollator(processor, plan["image_size"], max_sequence_length=plan["max_sequence_length"])
+def token_check(plan, examples, processor, process_vision_info=None):
+    """Every example must encode with an answer-only label mask and fit the sequence limit.
+
+    `plan` is the shipped training block; it must carry image_size and max_sequence_length.
+    """
+    collator = QwenVQACollator(processor, plan["image_size"], process_vision_info=process_vision_info,
+                               max_sequence_length=plan["max_sequence_length"])
     failures = []
     for example in examples:
         try:
@@ -275,21 +272,22 @@ def token_preflight(root, weights, image_root):
                 raise ValueError("exceeds sequence limit")
         except Exception as exc:  # collect every failure, do not stop at the first
             failures.append({"sample_id": example.sample_id, "error": f"{type(exc).__name__}: {exc}"})
-    return {"examples_checked": len(examples), "base_revision": proof["measured_revision"],
+    return {"examples_checked": len(examples), "max_sequence_length": plan["max_sequence_length"],
             "all_fit": not failures, "failures": failures[:50]}
 
 
-def answer_pair(model, processor, process_vision_info, example, image_size):
-    """Greedy decode for one pair prompt: [before, after, question] at the same resize."""
-    import torch
-    conversation = messages(example, image_size, include_target=False)
-    prompt = processor.apply_chat_template(conversation, tokenize=False, add_generation_prompt=True)
-    images, videos = process_vision_info(conversation)
-    inputs = processor(text=[prompt], images=images, videos=videos, return_tensors="pt").to(model.device)
-    with torch.inference_mode():
-        generated = model.generate(**inputs, do_sample=False, max_new_tokens=32)
-    trimmed = generated[:, inputs.input_ids.shape[1]:]
-    return processor.batch_decode(trimmed, skip_special_tokens=True, clean_up_tokenization_spaces=False)[0].strip()
+def token_preflight(root, weights, image_root):
+    """Real processor, CPU: checks every training example with the pinned base processor."""
+    os.environ.update(HF_HUB_OFFLINE="1", TRANSFORMERS_OFFLINE="1", CUDA_VISIBLE_DEVICES="")
+    check_payload(root)
+    proof = verify_base(root, Path(weights))
+    from transformers import AutoProcessor
+    processor = AutoProcessor.from_pretrained(weights, local_files_only=True)
+    examples = pair_examples(root / TRAIN_MANIFEST, image_root, root)
+    report = token_check(load_plan(root)["training"], examples, processor)
+    report["base_revision"] = proof["measured_revision"]
+    report["revision_source"] = proof["revision_source"]
+    return report
 
 
 def evaluate_gpu(root, weights, adapter, image_root, eval_name, output, *, bootstrap=BOOTSTRAP):
@@ -327,13 +325,24 @@ def evaluate_gpu(root, weights, adapter, image_root, eval_name, output, *, boots
         mode="adapter" if adapter is not None else "base_only", eval_name=eval_name,
         eval_manifest_sha256=sha256_file(manifest), rows=rows, conditions=conditions,
         provenance=provenance, base_meta={"base_model_id": BASE_MODEL_ID, "base_revision": spec["revision"],
-                                          "base_verification": proof},
+                                          "base_verification": proof,
+                                          "revision_proof": revision_proof_note(proof)},
         adapter_meta=None if adapter is None else {n: sha256_file(Path(adapter) / n)
                                                    for n in ("adapter_config.json", "adapter_model.safetensors")},
         run_identity=binding(root), bootstrap=bootstrap)
     Path(output).mkdir(parents=True, exist_ok=True)
     (Path(output) / RESULT_NAME).write_text(json.dumps(result, indent=2, sort_keys=True, allow_nan=False) + "\n")
     return result
+
+
+def revision_proof_note(proof):
+    """How the pinned revision was proven. Kaggle: weight hashes match + restored HF metadata."""
+    source = proof.get("revision_source")
+    if source == "config.json":
+        return "config.json _commit_hash + weight sha256 match"
+    if source == "hf_download_metadata":
+        return "restored .cache/huggingface/download/config.json.metadata (pinned commit) + weight sha256 match"
+    return "no revision proof found"
 
 
 def build_pair_result(*, mode, eval_name, eval_manifest_sha256, rows, conditions, provenance, base_meta,
