@@ -1,0 +1,30 @@
+{
+  "distinct_images_used": 3572,
+  "failure_count": 0,
+  "failures": [],
+  "image_root": "~/data/cdvqa/images/SECOND_train_set (folders im1, im2, label1, label2)",
+  "images_ok": 3572,
+  "per_manifest": {
+    "eval-test1-400.v1.jsonl": {
+      "pairs": 99,
+      "pairs_resolved": 99,
+      "pairs_resolved_pct": 100.0,
+      "qa": 400
+    },
+    "eval-test2-400.v1.jsonl": {
+      "pairs": 100,
+      "pairs_resolved": 100,
+      "pairs_resolved_pct": 100.0,
+      "qa": 400
+    },
+    "train-8k.v2.jsonl": {
+      "pairs": 1600,
+      "pairs_resolved": 1600,
+      "pairs_resolved_pct": 100.0,
+      "qa": 8000
+    }
+  },
+  "requirement": "512x512 RGB, both before (im1) and after (im2)",
+  "used_images_sha256_list": "SHA256SUMS-used-images.txt",
+  "used_images_sha256_list_sha256": "c1232cd0b038b1e375d1dd300a8ef66af00dcdb6833954ec9f004b24ff739da1"
+}

@@ -1,0 +1,295 @@
+{
+  "answer_choices": {
+    "change_or_not": [
+      "no",
+      "yes"
+    ],
+    "change_ratio": [
+      "0",
+      "0_to_10",
+      "10_to_20",
+      "20_to_30",
+      "30_to_40",
+      "40_to_50",
+      "50_to_60",
+      "60_to_70",
+      "70_to_80",
+      "80_to_90",
+      "90_to_100"
+    ],
+    "change_ratio_types": [
+      "0",
+      "0_to_10",
+      "10_to_20",
+      "20_to_30",
+      "30_to_40",
+      "40_to_50",
+      "50_to_60",
+      "60_to_70",
+      "70_to_80"
+    ],
+    "change_to_what": [
+      "NVG_surface",
+      "buildings",
+      "low_vegetation",
+      "playgrounds",
+      "trees",
+      "water"
+    ],
+    "decrease_or_not": [
+      "no",
+      "yes"
+    ],
+    "increase_or_not": [
+      "no",
+      "yes"
+    ],
+    "largest_change": [
+      "NVG_surface",
+      "buildings",
+      "low_vegetation",
+      "playgrounds",
+      "trees",
+      "water"
+    ],
+    "smallest_change": [
+      "NVG_surface",
+      "buildings",
+      "low_vegetation",
+      "playgrounds",
+      "trees",
+      "water"
+    ]
+  },
+  "answer_vocabulary": {
+    "change_or_not": [
+      "no",
+      "yes"
+    ],
+    "change_ratio": [
+      "0",
+      "0_to_10",
+      "10_to_20",
+      "20_to_30",
+      "30_to_40",
+      "40_to_50",
+      "50_to_60",
+      "60_to_70",
+      "70_to_80",
+      "80_to_90",
+      "90_to_100"
+    ],
+    "change_ratio_types": [
+      "0",
+      "0_to_10",
+      "10_to_20",
+      "20_to_30",
+      "30_to_40",
+      "40_to_50",
+      "50_to_60",
+      "60_to_70",
+      "70_to_80"
+    ],
+    "change_to_what": [
+      "buildings",
+      "low_vegetation",
+      "nvg_surface",
+      "playgrounds",
+      "trees",
+      "water"
+    ],
+    "decrease_or_not": [
+      "no",
+      "yes"
+    ],
+    "increase_or_not": [
+      "no",
+      "yes"
+    ],
+    "largest_change": [
+      "buildings",
+      "low_vegetation",
+      "nvg_surface",
+      "playgrounds",
+      "trees",
+      "water"
+    ],
+    "smallest_change": [
+      "buildings",
+      "low_vegetation",
+      "nvg_surface",
+      "playgrounds",
+      "trees",
+      "water"
+    ]
+  },
+  "answer_vocabulary_from": "full Train split, casefolded",
+  "builder": "data/cdvqa/build_manifests.py",
+  "counts": {
+    "eval-test1-400.v1": {
+      "pairs": 99,
+      "per_type": {
+        "change_or_not": 50,
+        "change_ratio": 50,
+        "change_ratio_types": 50,
+        "change_to_what": 50,
+        "decrease_or_not": 50,
+        "increase_or_not": 50,
+        "largest_change": 50,
+        "smallest_change": 50
+      },
+      "qa": 400
+    },
+    "eval-test2-400.v1": {
+      "pairs": 100,
+      "per_type": {
+        "change_or_not": 50,
+        "change_ratio": 50,
+        "change_ratio_types": 50,
+        "change_to_what": 50,
+        "decrease_or_not": 50,
+        "increase_or_not": 50,
+        "largest_change": 50,
+        "smallest_change": 50
+      },
+      "qa": 400
+    },
+    "train-8k.v1": {
+      "pairs": 500,
+      "per_type": {
+        "change_or_not": 1000,
+        "change_ratio": 1000,
+        "change_ratio_types": 1000,
+        "change_to_what": 1000,
+        "decrease_or_not": 1000,
+        "increase_or_not": 1000,
+        "largest_change": 1000,
+        "smallest_change": 1000
+      },
+      "qa": 8000
+    },
+    "train-8k.v2": {
+      "pairs": 1600,
+      "per_type": {
+        "change_or_not": 1000,
+        "change_ratio": 1000,
+        "change_ratio_types": 1000,
+        "change_to_what": 1000,
+        "decrease_or_not": 1000,
+        "increase_or_not": 1000,
+        "largest_change": 1000,
+        "smallest_change": 1000
+      },
+      "qa": 8000
+    }
+  },
+  "dataset": "CDVQA (Change Detection VQA), QA from YZHJessica/CDVQA (Apache-2.0)",
+  "image_convention": {
+    "after": "im2/<file_name>",
+    "before": "im1/<file_name>",
+    "status": "UNVERIFIED until the SECOND archive is extracted"
+  },
+  "image_source": "SECOND dataset (Yang et al. 2021), Google Drive; NOT downloaded (manual click required)",
+  "images": {
+    "archives": {
+      "SECOND_total_test.zip": {
+        "note": "downloaded through the browser; the browser auto-unpacked the outer second_dataset.zip, so no outer-archive hash exists",
+        "sha256": "bf347e52bb802a17878faccee455319a38360dab94c202d88ee6746e9d7253c9",
+        "source": "Google Drive folder linked from captain-whu.github.io/SCD (second_dataset)"
+      },
+      "SECOND_train_set.rar": {
+        "note": "downloaded through the browser; the browser auto-unpacked the outer second_dataset.zip, so no outer-archive hash exists",
+        "sha256": "5ee2a82b5824b3f5e3c5bfaf018835862e7623993ff9ac5ce57fd11fcfad2b4e",
+        "source": "Google Drive folder linked from captain-whu.github.io/SCD (second_dataset)"
+      }
+    },
+    "image_root": "~/data/cdvqa/images/SECOND_train_set (im1, im2, label1, label2)",
+    "layout": "CDVQA file names all live in SECOND_train_set; test/ is unused",
+    "sha256sum_list": {
+      "entries": 3572,
+      "path": "~/data/cdvqa/SHA256SUMS-used-images.txt",
+      "sha256": "c1232cd0b038b1e375d1dd300a8ef66af00dcdb6833954ec9f004b24ff739da1"
+    },
+    "verified": {
+      "all_512x512_rgb": true,
+      "distinct_images": 3572,
+      "failures": 0
+    },
+    "zip": {
+      "entries": 3572,
+      "path": "~/data/cdvqa/cdvqa-images.zip",
+      "sha256": "15d3c896a4f3c171e352bb1e11f39c6b9878bd99b1acc88f6c3f5fbffbb32db9"
+    }
+  },
+  "leakage_check": {
+    "note": "Test and Test2 share the same 968 image pairs; they are separate eval manifests",
+    "train_pairs_in_eval": 0,
+    "train_pairs_in_test_universe": 0
+  },
+  "majority_answer": {
+    "change_or_not": "yes",
+    "change_ratio": "10_to_20",
+    "change_ratio_types": "0",
+    "change_to_what": "nvg_surface",
+    "decrease_or_not": "no",
+    "increase_or_not": "no",
+    "largest_change": "nvg_surface",
+    "smallest_change": "buildings"
+  },
+  "manifest_sha256": {
+    "eval-test1-400.v1.jsonl": "4689eb8a45fecb6e0ca42f3c209d64425f3b9068091337469ece8da588e16993",
+    "eval-test2-400.v1.jsonl": "f79da8027377422e15af62edf4797c412c1ed61241d10b2ee55a685362314425",
+    "train-8k.v1.jsonl": "8de63c0bb890db7317a665d23c76d0b6fdedd047914f97e50b13cff536fd7e86",
+    "train-8k.v2.jsonl": "c238281802afe3b18b450b40f19e65c95c7f153d124eca64a910b36e81828d82"
+  },
+  "pair_definition": "pair_id = file_name stem; one bi-temporal image pair per file_name",
+  "qa_download_dir": "~/data/cdvqa/qa (not in git)",
+  "qa_sha256": {
+    "Test2_answers.json": "33ea8ccd9ee219e558665c1a570390ccd52ffe54526ee410b46cffc6420cdba4",
+    "Test2_images.json": "4ed7979ceca614c1c91c133e227a8a06d769040ab4f130d88350714f80b2ef07",
+    "Test2_questions.json": "89245ef8f77e14b5a3a6b86dd4b3c6992fbd8ac5b816d604ea6b36104ab9408b",
+    "Test_answers.json": "6f1b7bb5db44f8fb003e12d44c685b1a84478986e1874d14c1f314543dc40ee1",
+    "Test_images.json": "99b8151791ab4c4e6e57cb8d548dbb7c0e93c0890692379d61f63e4a940f1ba5",
+    "Test_questions.json": "58eb0e091d143c719a979bb7b8fa34ff9bcabae126ee40b29309c699c806d9e2",
+    "Train_answers.json": "8858fd1c281459f9a4d8422da58a7d958513e0037bf5f6b3dc2838e347f1e610",
+    "Train_images.json": "b75ac75022abb1ff9ddbbf239d629351f18d94ce11ce3119c6a17089c82f9a9c",
+    "Train_questions.json": "21a1ee7cb0de8e6873736461e83447c9afc7075c8f0788724d799df906679958",
+    "Val_answers.json": "38b613a3190049971627893f896310b6ddf711fc2fd44c01d635c19a241d0b5d",
+    "Val_images.json": "72e3adda2a41e5ca56685652012bea42619baa9dce4469d0b98f3340446a37f0",
+    "Val_questions.json": "45343b49d8b0a0bcdbd246367c3d8243e517732f08cea74407130e657912ac80"
+  },
+  "qa_sources": {
+    "Test2_answers.json": "https://raw.githubusercontent.com/YZHJessica/CDVQA/main/Test2_answers.json",
+    "Test2_images.json": "https://raw.githubusercontent.com/YZHJessica/CDVQA/main/Test2_images.json",
+    "Test2_questions.json": "https://raw.githubusercontent.com/YZHJessica/CDVQA/main/Test2_questions.json",
+    "Test_answers.json": "https://raw.githubusercontent.com/YZHJessica/CDVQA/main/Test_answers.json",
+    "Test_images.json": "https://raw.githubusercontent.com/YZHJessica/CDVQA/main/Test_images.json",
+    "Test_questions.json": "https://raw.githubusercontent.com/YZHJessica/CDVQA/main/Test_questions.json",
+    "Train_answers.json": "https://raw.githubusercontent.com/YZHJessica/CDVQA/main/Train_answers.json",
+    "Train_images.json": "https://raw.githubusercontent.com/YZHJessica/CDVQA/main/Train_images.json",
+    "Train_questions.json": "https://raw.githubusercontent.com/YZHJessica/CDVQA/main/Train_questions.json",
+    "Val_answers.json": "https://raw.githubusercontent.com/YZHJessica/CDVQA/main/Val_answers.json",
+    "Val_images.json": "https://raw.githubusercontent.com/YZHJessica/CDVQA/main/Val_images.json",
+    "Val_questions.json": "https://raw.githubusercontent.com/YZHJessica/CDVQA/main/Val_questions.json"
+  },
+  "sampling": {
+    "eval-test1-400.v1": "first 100 pairs by sha256(seed|eval-test1|pair); 50 QA per type by sha256(seed|eval-test1|question_id)",
+    "eval-test2-400.v1": "first 100 pairs by sha256(seed|eval-test2|pair); 50 QA per type by sha256(seed|eval-test2|question_id)",
+    "train-8k.v1": "pairs ordered by sha256(seed|train|pair); rows ordered by sha256 pair then question_id; keep row while its type has < 1000"
+  },
+  "seed": 17,
+  "split_pairs": {
+    "Test": 15488,
+    "Test2": 15488,
+    "Train": 25600,
+    "Val": 6400
+  },
+  "train_v2": {
+    "algorithm": "types filled scarcest-first; each QA taken from the pair with fewest selected QA (ties by sha256(seed|train-v2|pair)) that has an unused question of that type; per-pair cap 5; QA order by sha256(seed|train-v2|question_id)",
+    "cap_per_pair": 5,
+    "max_qa_per_pair": 5,
+    "min_qa_per_pair": 5,
+    "pairs_available": 1600,
+    "pairs_used": 1600
+  }
+}

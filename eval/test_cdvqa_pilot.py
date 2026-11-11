@@ -272,3 +272,22 @@ def test_evaluate_stage_all_conditions_on_tiny_manifest(tmp_path):
     assert set(result["prompt"]["allowed_answers"]) == set(QUESTION_TYPES)
     base_only = pilot.build_pair_result(mode="base_only", conditions={"base_real": conditions["base_real"]}, **kwargs)
     assert base_only["paired_differences"] is None and base_only["mode"] == "base_only"
+
+
+def test_ledger_total_defaults_and_overrides():
+    b13_default = {"training": {}}
+    assert pilot.ledger_total(b13_default, "train") == 7200
+    assert pilot.ledger_total(b13_default, "evaluate") == 7200
+    cdvqa = {"budget": {"ledger_total_seconds": {"train": 25200, "evaluate": 7200}}}
+    assert pilot.ledger_total(cdvqa, "train") == 25200
+    assert pilot.ledger_total(cdvqa, "evaluate") == 7200
+    assert pilot.ledger_total(cdvqa, "train", override=9000) == 9000
+
+
+def test_reservation_guard_refuses_over_cap():
+    entries = [{"charged_seconds": 3600}] * 6
+    pilot.check_reservation(entries, 3600, 25200)  # 7 x 3600 = 25200 fits exactly
+    with pytest.raises(ValueError, match="exhausted"):
+        pilot.check_reservation(entries + [{"charged_seconds": 3600}], 1, 25200)
+    with pytest.raises(ValueError, match="exhausted"):
+        pilot.check_reservation([{"charged_seconds": 3600}] * 2, 3600, 7200)

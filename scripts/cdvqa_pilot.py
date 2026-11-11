@@ -37,7 +37,7 @@ IMAGE_SIZE = 392
 SEED = 17
 BOOTSTRAP = 2000
 LIMITS = {"train": 3600, "evaluate": 2400}
-LEDGER_TOTAL = 7200
+LEDGER_TOTAL_DEFAULT = 7200  # B13 inherited shared-ledger cap, used when pilot-config has no budget block
 REPORT_NAME = "training-report.json"
 RESULT_NAME = "result.json"
 REQUIRED_CHECKPOINT_FILES = frozenset(("optimizer.pt", "scheduler.pt", "trainer_state.json", "rng_state.pth",
@@ -46,6 +46,22 @@ REQUIRED_CHECKPOINT_FILES = frozenset(("optimizer.pt", "scheduler.pt", "trainer_
 
 def load_plan(root):
     return json.loads((root / "pilot-config.json").read_text())
+
+
+def ledger_total(plan, stage, override=None):
+    """Shared-ledger cap in seconds: CLI override, else pilot-config budget, else the B13 default 7200."""
+    if override is not None:
+        return override
+    totals = (plan.get("budget") or {}).get("ledger_total_seconds") or {}
+    return int(totals.get(stage, LEDGER_TOTAL_DEFAULT))
+
+
+def check_reservation(entries, seconds, total):
+    """Refuse a new reservation that would push the shared ledger over its cap."""
+    spent = sum(e["charged_seconds"] for e in entries)
+    if spent + seconds > total:
+        raise ValueError(f"Shared budget exhausted: {spent} s charged + {seconds} s requested > {total} s cap; "
+                         "new approval required")
 
 
 def pair_examples(manifest, image_root, root):
@@ -381,6 +397,7 @@ def main(argv=None):
     p.add_argument("--resume-from", type=Path)
     p.add_argument("--budget-ledger", type=Path)
     p.add_argument("--max-seconds", type=int)
+    p.add_argument("--ledger-total", type=int, help="Override the shared-ledger cap (seconds)")
     p.add_argument("--worker", action="store_true", help=argparse.SUPPRESS)
     args = p.parse_args(argv)
     os.environ.update(HF_HUB_OFFLINE="1", TRANSFORMERS_OFFLINE="1", PYTHONDONTWRITEBYTECODE="1")
@@ -417,8 +434,8 @@ def main(argv=None):
         started = time.monotonic()
         try:
             entries = json.loads(ledger.read_text()) if ledger.exists() else []
-            if sum(e["charged_seconds"] for e in entries) + args.max_seconds > LEDGER_TOTAL:
-                raise ValueError("Shared two-hour budget exhausted; new approval required")
+            check_reservation(entries, args.max_seconds,
+                              ledger_total(load_plan(ROOT), args.stage, args.ledger_total))
             entries.append({"output": str(args.output.resolve()), "stage": args.stage,
                             "charged_seconds": args.max_seconds})
             ledger.write_text(json.dumps(entries, indent=2))

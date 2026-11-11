@@ -190,6 +190,37 @@
     "status": "UNVERIFIED until the SECOND archive is extracted"
   },
   "image_source": "SECOND dataset (Yang et al. 2021), Google Drive; NOT downloaded (manual click required)",
+  "images": {
+    "archives": {
+      "SECOND_total_test.zip": {
+        "note": "downloaded through the browser; the browser auto-unpacked the outer second_dataset.zip, so no outer-archive hash exists",
+        "sha256": "bf347e52bb802a17878faccee455319a38360dab94c202d88ee6746e9d7253c9",
+        "source": "Google Drive folder linked from captain-whu.github.io/SCD (second_dataset)"
+      },
+      "SECOND_train_set.rar": {
+        "note": "downloaded through the browser; the browser auto-unpacked the outer second_dataset.zip, so no outer-archive hash exists",
+        "sha256": "5ee2a82b5824b3f5e3c5bfaf018835862e7623993ff9ac5ce57fd11fcfad2b4e",
+        "source": "Google Drive folder linked from captain-whu.github.io/SCD (second_dataset)"
+      }
+    },
+    "image_root": "~/data/cdvqa/images/SECOND_train_set (im1, im2, label1, label2)",
+    "layout": "CDVQA file names all live in SECOND_train_set; test/ is unused",
+    "sha256sum_list": {
+      "entries": 3572,
+      "path": "~/data/cdvqa/SHA256SUMS-used-images.txt",
+      "sha256": "c1232cd0b038b1e375d1dd300a8ef66af00dcdb6833954ec9f004b24ff739da1"
+    },
+    "verified": {
+      "all_512x512_rgb": true,
+      "distinct_images": 3572,
+      "failures": 0
+    },
+    "zip": {
+      "entries": 3572,
+      "path": "~/data/cdvqa/cdvqa-images.zip",
+      "sha256": "15d3c896a4f3c171e352bb1e11f39c6b9878bd99b1acc88f6c3f5fbffbb32db9"
+    }
+  },
   "leakage_check": {
     "note": "Test and Test2 share the same 968 image pairs; they are separate eval manifests",
     "train_pairs_in_eval": 0,

@@ -1,0 +1,36 @@
+{
+  "questions": 15367,
+  "pairs": 1600,
+  "classes": [
+    "buildings",
+    "low vegetation",
+    "non-vegetated ground surface",
+    "playgrounds",
+    "trees",
+    "water"
+  ],
+  "result": {
+    "label2_is_later": {
+      "agreement": 1.0,
+      "mapping": {
+        "buildings": "dark_red",
+        "low vegetation": "dark_green",
+        "non-vegetated ground surface": "grey",
+        "playgrounds": "red",
+        "trees": "bright_green",
+        "water": "blue"
+      }
+    },
+    "label1_is_later": {
+      "agreement": 0.733519880262901,
+      "mapping": {
+        "buildings": "dark_green",
+        "low vegetation": "grey",
+        "non-vegetated ground surface": "dark_red",
+        "playgrounds": "white",
+        "trees": "blue",
+        "water": "red"
+      }
+    }
+  }
+}
