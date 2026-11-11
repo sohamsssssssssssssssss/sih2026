@@ -1,0 +1,958 @@
+{
+  "status": "incomplete",
+  "requested_device": "mps_with_cpu_fallback",
+  "versions": {
+    "torch": "2.10.0",
+    "transformers": "4.49.0",
+    "peft": "0.15.2",
+    "qwen-vl-utils": "0.0.8"
+  },
+  "manifest_identity": "1eb622b1ca4bec1d2d849f049623f015f3e015c423ce8fab146e91e5b86f43ea",
+  "reference_sha256": "93608083c5df7b1045e02d3787e040b46ccb334b83bc845f22e0044a7022fefd",
+  "selection": "First ten records of each type in frozen reference order; no cherry-picking",
+  "adapter_identity": {
+    "name": "B13",
+    "base_revision": "66285546d2b821cf421d4f5eb2576359d3770cd3",
+    "files_sha256": {
+      "adapter_config.json": "716251f9cfbb73ed5fb408e41f2eb2b30281b8f98fb7c6a92a1dd0b9204e3644",
+      "adapter_model.safetensors": "7f0b1ebc84106b485784e9a45a96e624dc31a1f7698b76efac174f1db86e393a"
+    }
+  },
+  "base_load_seconds": 39.48306783300359,
+  "load_error": null,
+  "base_artifact": {
+    "available": true,
+    "detail": null
+  },
+  "peak_process_rss_bytes": 3654647808,
+  "sampled_peak_mps_driver_bytes": 9470803968,
+  "memory_scope": "In-process app router; RSS includes interpreter; MPS sampled after each question, not a kernel peak",
+  "inference_seconds_per_question": 1.2895967318695816,
+  "comparison": "Kaggle 4-bit adapter versus local fp16 app; count uses Grounding DINO and is not adapter parity",
+  "summary": {
+    "comp": {
+      "attempted": 10,
+      "completed": 10,
+      "agreement": 1.0,
+      "accuracy": 1.0,
+      "kaggle_accuracy": 1.0,
+      "seconds_per_question": 1.501724412405747
+    },
+    "count": {
+      "attempted": 10,
+      "completed": 0,
+      "agreement": null,
+      "accuracy": null,
+      "kaggle_accuracy": 0.0,
+      "seconds_per_question": null
+    },
+    "presence": {
+      "attempted": 10,
+      "completed": 10,
+      "agreement": 0.8,
+      "accuracy": 0.8,
+      "kaggle_accuracy": 0.8,
+      "seconds_per_question": 1.1798355998063925
+    },
+    "rural_urban": {
+      "attempted": 10,
+      "completed": 10,
+      "agreement": 0.8,
+      "accuracy": 0.7,
+      "kaggle_accuracy": 0.9,
+      "seconds_per_question": 1.1872301833966048
+    }
+  },
+  "records": [
+    {
+      "sample_id": "validation-49508",
+      "question_type": "comp",
+      "question": "Are there more commercial buildings than farmlands?",
+      "expected": "no",
+      "image": "494.tif",
+      "kaggle_prediction": "no",
+      "kaggle_correct": true,
+      "prediction": "no",
+      "agrees": true,
+      "correct": true,
+      "answer_source": "b13_adapter",
+      "model_provenance": {
+        "name": "B13",
+        "base_revision": "66285546d2b821cf421d4f5eb2576359d3770cd3",
+        "files_sha256": {
+          "adapter_config.json": "716251f9cfbb73ed5fb408e41f2eb2b30281b8f98fb7c6a92a1dd0b9204e3644",
+          "adapter_model.safetensors": "7f0b1ebc84106b485784e9a45a96e624dc31a1f7698b76efac174f1db86e393a"
+        },
+        "device": "mps",
+        "dtype": "float16",
+        "quantization": null,
+        "mps_fallback": null
+      },
+      "seconds": 3.8371551249874756
+    },
+    {
+      "sample_id": "validation-56450",
+      "question_type": "comp",
+      "question": "Are there more water areas than residential buildings?",
+      "expected": "no",
+      "image": "564.tif",
+      "kaggle_prediction": "no",
+      "kaggle_correct": true,
+      "prediction": "no",
+      "agrees": true,
+      "correct": true,
+      "answer_source": "b13_adapter",
+      "model_provenance": {
+        "name": "B13",
+        "base_revision": "66285546d2b821cf421d4f5eb2576359d3770cd3",
+        "files_sha256": {
+          "adapter_config.json": "716251f9cfbb73ed5fb408e41f2eb2b30281b8f98fb7c6a92a1dd0b9204e3644",
+          "adapter_model.safetensors": "7f0b1ebc84106b485784e9a45a96e624dc31a1f7698b76efac174f1db86e393a"
+        },
+        "device": "mps",
+        "dtype": "float16",
+        "quantization": null,
+        "mps_fallback": null
+      },
+      "seconds": 1.1172781659988686
+    },
+    {
+      "sample_id": "validation-56088",
+      "question_type": "comp",
+      "question": "Is the number of roads equal to the number of medium water areas?",
+      "expected": "no",
+      "image": "560.tif",
+      "kaggle_prediction": "no",
+      "kaggle_correct": true,
+      "prediction": "no",
+      "agrees": true,
+      "correct": true,
+      "answer_source": "b13_adapter",
+      "model_provenance": {
+        "name": "B13",
+        "base_revision": "66285546d2b821cf421d4f5eb2576359d3770cd3",
+        "files_sha256": {
+          "adapter_config.json": "716251f9cfbb73ed5fb408e41f2eb2b30281b8f98fb7c6a92a1dd0b9204e3644",
+          "adapter_model.safetensors": "7f0b1ebc84106b485784e9a45a96e624dc31a1f7698b76efac174f1db86e393a"
+        },
+        "device": "mps",
+        "dtype": "float16",
+        "quantization": null,
+        "mps_fallback": null
+      },
+      "seconds": 1.1269705840095412
+    },
+    {
+      "sample_id": "validation-54815",
+      "question_type": "comp",
+      "question": "Are there more circular roads than roads?",
+      "expected": "no",
+      "image": "547.tif",
+      "kaggle_prediction": "no",
+      "kaggle_correct": true,
+      "prediction": "no",
+      "agrees": true,
+      "correct": true,
+      "answer_source": "b13_adapter",
+      "model_provenance": {
+        "name": "B13",
+        "base_revision": "66285546d2b821cf421d4f5eb2576359d3770cd3",
+        "files_sha256": {
+          "adapter_config.json": "716251f9cfbb73ed5fb408e41f2eb2b30281b8f98fb7c6a92a1dd0b9204e3644",
+          "adapter_model.safetensors": "7f0b1ebc84106b485784e9a45a96e624dc31a1f7698b76efac174f1db86e393a"
+        },
+        "device": "mps",
+        "dtype": "float16",
+        "quantization": null,
+        "mps_fallback": null
+      },
+      "seconds": 1.1162426660011988
+    },
+    {
+      "sample_id": "validation-49564",
+      "question_type": "comp",
+      "question": "Is the number of large commercial buildings equal to the number of meadows?",
+      "expected": "no",
+      "image": "495.tif",
+      "kaggle_prediction": "no",
+      "kaggle_correct": true,
+      "prediction": "no",
+      "agrees": true,
+      "correct": true,
+      "answer_source": "b13_adapter",
+      "model_provenance": {
+        "name": "B13",
+        "base_revision": "66285546d2b821cf421d4f5eb2576359d3770cd3",
+        "files_sha256": {
+          "adapter_config.json": "716251f9cfbb73ed5fb408e41f2eb2b30281b8f98fb7c6a92a1dd0b9204e3644",
+          "adapter_model.safetensors": "7f0b1ebc84106b485784e9a45a96e624dc31a1f7698b76efac174f1db86e393a"
+        },
+        "device": "mps",
+        "dtype": "float16",
+        "quantization": null,
+        "mps_fallback": null
+      },
+      "seconds": 1.2017085000115912
+    },
+    {
+      "sample_id": "validation-48692",
+      "question_type": "comp",
+      "question": "Is the number of residential buildings equal to the number of water areas in the image?",
+      "expected": "no",
+      "image": "486.tif",
+      "kaggle_prediction": "no",
+      "kaggle_correct": true,
+      "prediction": "no",
+      "agrees": true,
+      "correct": true,
+      "answer_source": "b13_adapter",
+      "model_provenance": {
+        "name": "B13",
+        "base_revision": "66285546d2b821cf421d4f5eb2576359d3770cd3",
+        "files_sha256": {
+          "adapter_config.json": "716251f9cfbb73ed5fb408e41f2eb2b30281b8f98fb7c6a92a1dd0b9204e3644",
+          "adapter_model.safetensors": "7f0b1ebc84106b485784e9a45a96e624dc31a1f7698b76efac174f1db86e393a"
+        },
+        "device": "mps",
+        "dtype": "float16",
+        "quantization": null,
+        "mps_fallback": null
+      },
+      "seconds": 1.3836586250108667
+    },
+    {
+      "sample_id": "validation-51334",
+      "question_type": "comp",
+      "question": "Are there more forests than roads?",
+      "expected": "no",
+      "image": "513.tif",
+      "kaggle_prediction": "no",
+      "kaggle_correct": true,
+      "prediction": "no",
+      "agrees": true,
+      "correct": true,
+      "answer_source": "b13_adapter",
+      "model_provenance": {
+        "name": "B13",
+        "base_revision": "66285546d2b821cf421d4f5eb2576359d3770cd3",
+        "files_sha256": {
+          "adapter_config.json": "716251f9cfbb73ed5fb408e41f2eb2b30281b8f98fb7c6a92a1dd0b9204e3644",
+          "adapter_model.safetensors": "7f0b1ebc84106b485784e9a45a96e624dc31a1f7698b76efac174f1db86e393a"
+        },
+        "device": "mps",
+        "dtype": "float16",
+        "quantization": null,
+        "mps_fallback": null
+      },
+      "seconds": 1.407460375019582
+    },
+    {
+      "sample_id": "validation-56256",
+      "question_type": "comp",
+      "question": "Are there more grass areas than buildings?",
+      "expected": "no",
+      "image": "562.tif",
+      "kaggle_prediction": "no",
+      "kaggle_correct": true,
+      "prediction": "no",
+      "agrees": true,
+      "correct": true,
+      "answer_source": "b13_adapter",
+      "model_provenance": {
+        "name": "B13",
+        "base_revision": "66285546d2b821cf421d4f5eb2576359d3770cd3",
+        "files_sha256": {
+          "adapter_config.json": "716251f9cfbb73ed5fb408e41f2eb2b30281b8f98fb7c6a92a1dd0b9204e3644",
+          "adapter_model.safetensors": "7f0b1ebc84106b485784e9a45a96e624dc31a1f7698b76efac174f1db86e393a"
+        },
+        "device": "mps",
+        "dtype": "float16",
+        "quantization": null,
+        "mps_fallback": null
+      },
+      "seconds": 1.4250924999942072
+    },
+    {
+      "sample_id": "validation-52072",
+      "question_type": "comp",
+      "question": "Is the number of residential buildings equal to the number of water areas?",
+      "expected": "no",
+      "image": "520.tif",
+      "kaggle_prediction": "no",
+      "kaggle_correct": true,
+      "prediction": "no",
+      "agrees": true,
+      "correct": true,
+      "answer_source": "b13_adapter",
+      "model_provenance": {
+        "name": "B13",
+        "base_revision": "66285546d2b821cf421d4f5eb2576359d3770cd3",
+        "files_sha256": {
+          "adapter_config.json": "716251f9cfbb73ed5fb408e41f2eb2b30281b8f98fb7c6a92a1dd0b9204e3644",
+          "adapter_model.safetensors": "7f0b1ebc84106b485784e9a45a96e624dc31a1f7698b76efac174f1db86e393a"
+        },
+        "device": "mps",
+        "dtype": "float16",
+        "quantization": null,
+        "mps_fallback": null
+      },
+      "seconds": 1.2057796250155661
+    },
+    {
+      "sample_id": "validation-51445",
+      "question_type": "comp",
+      "question": "Are there less roads than water areas?",
+      "expected": "no",
+      "image": "514.tif",
+      "kaggle_prediction": "no",
+      "kaggle_correct": true,
+      "prediction": "no",
+      "agrees": true,
+      "correct": true,
+      "answer_source": "b13_adapter",
+      "model_provenance": {
+        "name": "B13",
+        "base_revision": "66285546d2b821cf421d4f5eb2576359d3770cd3",
+        "files_sha256": {
+          "adapter_config.json": "716251f9cfbb73ed5fb408e41f2eb2b30281b8f98fb7c6a92a1dd0b9204e3644",
+          "adapter_model.safetensors": "7f0b1ebc84106b485784e9a45a96e624dc31a1f7698b76efac174f1db86e393a"
+        },
+        "device": "mps",
+        "dtype": "float16",
+        "quantization": null,
+        "mps_fallback": null
+      },
+      "seconds": 1.1958979580085725
+    },
+    {
+      "sample_id": "validation-53732",
+      "question_type": "count",
+      "question": "What is the number of buildings?",
+      "expected": "185",
+      "image": "537.tif",
+      "kaggle_prediction": "102",
+      "kaggle_correct": false,
+      "error": "ProviderNotReady: A CUDA GPU is required for Grounding DINO.",
+      "seconds": 0.0012350000033620745
+    },
+    {
+      "sample_id": "validation-47573",
+      "question_type": "count",
+      "question": "How many square buildings are there?",
+      "expected": "0",
+      "image": "475.tif",
+      "kaggle_prediction": "1",
+      "kaggle_correct": false,
+      "error": "ProviderNotReady: A CUDA GPU is required for Grounding DINO.",
+      "seconds": 0.00011037499643862247
+    },
+    {
+      "sample_id": "validation-53235",
+      "question_type": "count",
+      "question": "What is the number of grass areas?",
+      "expected": "135",
+      "image": "532.tif",
+      "kaggle_prediction": "105",
+      "kaggle_correct": false,
+      "error": "ProviderNotReady: A CUDA GPU is required for Grounding DINO.",
+      "seconds": 5.549998604692519e-05
+    },
+    {
+      "sample_id": "validation-54459",
+      "question_type": "count",
+      "question": "What is the number of residential buildings on the right of a  small farmland?",
+      "expected": "0",
+      "image": "544.tif",
+      "kaggle_prediction": "102",
+      "kaggle_correct": false,
+      "error": "ProviderNotReady: A CUDA GPU is required for Grounding DINO.",
+      "seconds": 5.729100666940212e-05
+    },
+    {
+      "sample_id": "validation-55527",
+      "question_type": "count",
+      "question": "What is the amount of roads in the image?",
+      "expected": "89",
+      "image": "555.tif",
+      "kaggle_prediction": "102",
+      "kaggle_correct": false,
+      "error": "ProviderNotReady: A CUDA GPU is required for Grounding DINO.",
+      "seconds": 5.908298771828413e-05
+    },
+    {
+      "sample_id": "validation-52427",
+      "question_type": "count",
+      "question": "How many grass areas are there?",
+      "expected": "312",
+      "image": "524.tif",
+      "kaggle_prediction": "105",
+      "kaggle_correct": false,
+      "error": "ProviderNotReady: A CUDA GPU is required for Grounding DINO.",
+      "seconds": 4.9458001740276814e-05
+    },
+    {
+      "sample_id": "validation-53946",
+      "question_type": "count",
+      "question": "How many small commercial buildings are there?",
+      "expected": "145",
+      "image": "539.tif",
+      "kaggle_prediction": "1",
+      "kaggle_correct": false,
+      "error": "ProviderNotReady: A CUDA GPU is required for Grounding DINO.",
+      "seconds": 4.045802052132785e-05
+    },
+    {
+      "sample_id": "validation-49237",
+      "question_type": "count",
+      "question": "What is the amount of small buildings?",
+      "expected": "147",
+      "image": "492.tif",
+      "kaggle_prediction": "102",
+      "kaggle_correct": false,
+      "error": "ProviderNotReady: A CUDA GPU is required for Grounding DINO.",
+      "seconds": 4.812501720152795e-05
+    },
+    {
+      "sample_id": "validation-48317",
+      "question_type": "count",
+      "question": "How many medium commercial buildings are there?",
+      "expected": "3",
+      "image": "482.tif",
+      "kaggle_prediction": "0",
+      "kaggle_correct": false,
+      "error": "ProviderNotReady: A CUDA GPU is required for Grounding DINO.",
+      "seconds": 4.2791012674570084e-05
+    },
+    {
+      "sample_id": "validation-56215",
+      "question_type": "count",
+      "question": "What is the number of small residential buildings in the image?",
+      "expected": "29",
+      "image": "561.tif",
+      "kaggle_prediction": "10",
+      "kaggle_correct": false,
+      "error": "ProviderNotReady: A CUDA GPU is required for Grounding DINO.",
+      "seconds": 4.966699634678662e-05
+    },
+    {
+      "sample_id": "validation-53589",
+      "question_type": "presence",
+      "question": "Is there a rectangular commercial building in the image?",
+      "expected": "yes",
+      "image": "535.tif",
+      "kaggle_prediction": "yes",
+      "kaggle_correct": true,
+      "prediction": "yes",
+      "agrees": true,
+      "correct": true,
+      "answer_source": "b13_adapter",
+      "model_provenance": {
+        "name": "B13",
+        "base_revision": "66285546d2b821cf421d4f5eb2576359d3770cd3",
+        "files_sha256": {
+          "adapter_config.json": "716251f9cfbb73ed5fb408e41f2eb2b30281b8f98fb7c6a92a1dd0b9204e3644",
+          "adapter_model.safetensors": "7f0b1ebc84106b485784e9a45a96e624dc31a1f7698b76efac174f1db86e393a"
+        },
+        "device": "mps",
+        "dtype": "float16",
+        "quantization": null,
+        "mps_fallback": null
+      },
+      "seconds": 1.2359773330099415
+    },
+    {
+      "sample_id": "validation-56733",
+      "question_type": "presence",
+      "question": "Is a residential building present in the image?",
+      "expected": "yes",
+      "image": "567.tif",
+      "kaggle_prediction": "yes",
+      "kaggle_correct": true,
+      "prediction": "yes",
+      "agrees": true,
+      "correct": true,
+      "answer_source": "b13_adapter",
+      "model_provenance": {
+        "name": "B13",
+        "base_revision": "66285546d2b821cf421d4f5eb2576359d3770cd3",
+        "files_sha256": {
+          "adapter_config.json": "716251f9cfbb73ed5fb408e41f2eb2b30281b8f98fb7c6a92a1dd0b9204e3644",
+          "adapter_model.safetensors": "7f0b1ebc84106b485784e9a45a96e624dc31a1f7698b76efac174f1db86e393a"
+        },
+        "device": "mps",
+        "dtype": "float16",
+        "quantization": null,
+        "mps_fallback": null
+      },
+      "seconds": 1.206721499998821
+    },
+    {
+      "sample_id": "validation-47804",
+      "question_type": "presence",
+      "question": "Is a circular forest present?",
+      "expected": "no",
+      "image": "477.tif",
+      "kaggle_prediction": "no",
+      "kaggle_correct": true,
+      "prediction": "yes",
+      "agrees": false,
+      "correct": false,
+      "answer_source": "b13_adapter",
+      "model_provenance": {
+        "name": "B13",
+        "base_revision": "66285546d2b821cf421d4f5eb2576359d3770cd3",
+        "files_sha256": {
+          "adapter_config.json": "716251f9cfbb73ed5fb408e41f2eb2b30281b8f98fb7c6a92a1dd0b9204e3644",
+          "adapter_model.safetensors": "7f0b1ebc84106b485784e9a45a96e624dc31a1f7698b76efac174f1db86e393a"
+        },
+        "device": "mps",
+        "dtype": "float16",
+        "quantization": null,
+        "mps_fallback": null
+      },
+      "seconds": 1.2713208330096677
+    },
+    {
+      "sample_id": "validation-49721",
+      "question_type": "presence",
+      "question": "Is a grass area present?",
+      "expected": "yes",
+      "image": "497.tif",
+      "kaggle_prediction": "yes",
+      "kaggle_correct": true,
+      "prediction": "yes",
+      "agrees": true,
+      "correct": true,
+      "answer_source": "b13_adapter",
+      "model_provenance": {
+        "name": "B13",
+        "base_revision": "66285546d2b821cf421d4f5eb2576359d3770cd3",
+        "files_sha256": {
+          "adapter_config.json": "716251f9cfbb73ed5fb408e41f2eb2b30281b8f98fb7c6a92a1dd0b9204e3644",
+          "adapter_model.safetensors": "7f0b1ebc84106b485784e9a45a96e624dc31a1f7698b76efac174f1db86e393a"
+        },
+        "device": "mps",
+        "dtype": "float16",
+        "quantization": null,
+        "mps_fallback": null
+      },
+      "seconds": 1.2083363750134595
+    },
+    {
+      "sample_id": "validation-48590",
+      "question_type": "presence",
+      "question": "Is there a square residential building?",
+      "expected": "yes",
+      "image": "485.tif",
+      "kaggle_prediction": "yes",
+      "kaggle_correct": true,
+      "prediction": "yes",
+      "agrees": true,
+      "correct": true,
+      "answer_source": "b13_adapter",
+      "model_provenance": {
+        "name": "B13",
+        "base_revision": "66285546d2b821cf421d4f5eb2576359d3770cd3",
+        "files_sha256": {
+          "adapter_config.json": "716251f9cfbb73ed5fb408e41f2eb2b30281b8f98fb7c6a92a1dd0b9204e3644",
+          "adapter_model.safetensors": "7f0b1ebc84106b485784e9a45a96e624dc31a1f7698b76efac174f1db86e393a"
+        },
+        "device": "mps",
+        "dtype": "float16",
+        "quantization": null,
+        "mps_fallback": null
+      },
+      "seconds": 1.087557332997676
+    },
+    {
+      "sample_id": "validation-55369",
+      "question_type": "presence",
+      "question": "Is a square grass area present?",
+      "expected": "yes",
+      "image": "553.tif",
+      "kaggle_prediction": "no",
+      "kaggle_correct": false,
+      "prediction": "yes",
+      "agrees": false,
+      "correct": true,
+      "answer_source": "b13_adapter",
+      "model_provenance": {
+        "name": "B13",
+        "base_revision": "66285546d2b821cf421d4f5eb2576359d3770cd3",
+        "files_sha256": {
+          "adapter_config.json": "716251f9cfbb73ed5fb408e41f2eb2b30281b8f98fb7c6a92a1dd0b9204e3644",
+          "adapter_model.safetensors": "7f0b1ebc84106b485784e9a45a96e624dc31a1f7698b76efac174f1db86e393a"
+        },
+        "device": "mps",
+        "dtype": "float16",
+        "quantization": null,
+        "mps_fallback": null
+      },
+      "seconds": 1.0779654580110218
+    },
+    {
+      "sample_id": "validation-56867",
+      "question_type": "presence",
+      "question": "Is a circular commercial building present?",
+      "expected": "yes",
+      "image": "568.tif",
+      "kaggle_prediction": "no",
+      "kaggle_correct": false,
+      "prediction": "no",
+      "agrees": true,
+      "correct": false,
+      "answer_source": "b13_adapter",
+      "model_provenance": {
+        "name": "B13",
+        "base_revision": "66285546d2b821cf421d4f5eb2576359d3770cd3",
+        "files_sha256": {
+          "adapter_config.json": "716251f9cfbb73ed5fb408e41f2eb2b30281b8f98fb7c6a92a1dd0b9204e3644",
+          "adapter_model.safetensors": "7f0b1ebc84106b485784e9a45a96e624dc31a1f7698b76efac174f1db86e393a"
+        },
+        "device": "mps",
+        "dtype": "float16",
+        "quantization": null,
+        "mps_fallback": null
+      },
+      "seconds": 1.1343749579973519
+    },
+    {
+      "sample_id": "validation-52597",
+      "question_type": "presence",
+      "question": "Is there a forest on the right of a  water area in the image?",
+      "expected": "yes",
+      "image": "525.tif",
+      "kaggle_prediction": "yes",
+      "kaggle_correct": true,
+      "prediction": "yes",
+      "agrees": true,
+      "correct": true,
+      "answer_source": "b13_adapter",
+      "model_provenance": {
+        "name": "B13",
+        "base_revision": "66285546d2b821cf421d4f5eb2576359d3770cd3",
+        "files_sha256": {
+          "adapter_config.json": "716251f9cfbb73ed5fb408e41f2eb2b30281b8f98fb7c6a92a1dd0b9204e3644",
+          "adapter_model.safetensors": "7f0b1ebc84106b485784e9a45a96e624dc31a1f7698b76efac174f1db86e393a"
+        },
+        "device": "mps",
+        "dtype": "float16",
+        "quantization": null,
+        "mps_fallback": null
+      },
+      "seconds": 1.3545467910007574
+    },
+    {
+      "sample_id": "validation-50440",
+      "question_type": "presence",
+      "question": "Is there a meadow?",
+      "expected": "yes",
+      "image": "504.tif",
+      "kaggle_prediction": "yes",
+      "kaggle_correct": true,
+      "prediction": "yes",
+      "agrees": true,
+      "correct": true,
+      "answer_source": "b13_adapter",
+      "model_provenance": {
+        "name": "B13",
+        "base_revision": "66285546d2b821cf421d4f5eb2576359d3770cd3",
+        "files_sha256": {
+          "adapter_config.json": "716251f9cfbb73ed5fb408e41f2eb2b30281b8f98fb7c6a92a1dd0b9204e3644",
+          "adapter_model.safetensors": "7f0b1ebc84106b485784e9a45a96e624dc31a1f7698b76efac174f1db86e393a"
+        },
+        "device": "mps",
+        "dtype": "float16",
+        "quantization": null,
+        "mps_fallback": null
+      },
+      "seconds": 1.0881141670106445
+    },
+    {
+      "sample_id": "validation-52142",
+      "question_type": "presence",
+      "question": "Is a forest present?",
+      "expected": "yes",
+      "image": "521.tif",
+      "kaggle_prediction": "yes",
+      "kaggle_correct": true,
+      "prediction": "yes",
+      "agrees": true,
+      "correct": true,
+      "answer_source": "b13_adapter",
+      "model_provenance": {
+        "name": "B13",
+        "base_revision": "66285546d2b821cf421d4f5eb2576359d3770cd3",
+        "files_sha256": {
+          "adapter_config.json": "716251f9cfbb73ed5fb408e41f2eb2b30281b8f98fb7c6a92a1dd0b9204e3644",
+          "adapter_model.safetensors": "7f0b1ebc84106b485784e9a45a96e624dc31a1f7698b76efac174f1db86e393a"
+        },
+        "device": "mps",
+        "dtype": "float16",
+        "quantization": null,
+        "mps_fallback": null
+      },
+      "seconds": 1.1334412500145845
+    },
+    {
+      "sample_id": "validation-50820",
+      "question_type": "rural_urban",
+      "question": "Is it a rural or an urban area",
+      "expected": "rural",
+      "image": "508.tif",
+      "kaggle_prediction": "rural",
+      "kaggle_correct": true,
+      "prediction": "rural",
+      "agrees": true,
+      "correct": true,
+      "answer_source": "b13_adapter",
+      "model_provenance": {
+        "name": "B13",
+        "base_revision": "66285546d2b821cf421d4f5eb2576359d3770cd3",
+        "files_sha256": {
+          "adapter_config.json": "716251f9cfbb73ed5fb408e41f2eb2b30281b8f98fb7c6a92a1dd0b9204e3644",
+          "adapter_model.safetensors": "7f0b1ebc84106b485784e9a45a96e624dc31a1f7698b76efac174f1db86e393a"
+        },
+        "device": "mps",
+        "dtype": "float16",
+        "quantization": null,
+        "mps_fallback": null
+      },
+      "seconds": 1.2306684159848373
+    },
+    {
+      "sample_id": "validation-49519",
+      "question_type": "rural_urban",
+      "question": "Is it a rural or an urban area",
+      "expected": "rural",
+      "image": "495.tif",
+      "kaggle_prediction": "rural",
+      "kaggle_correct": true,
+      "prediction": "rural",
+      "agrees": true,
+      "correct": true,
+      "answer_source": "b13_adapter",
+      "model_provenance": {
+        "name": "B13",
+        "base_revision": "66285546d2b821cf421d4f5eb2576359d3770cd3",
+        "files_sha256": {
+          "adapter_config.json": "716251f9cfbb73ed5fb408e41f2eb2b30281b8f98fb7c6a92a1dd0b9204e3644",
+          "adapter_model.safetensors": "7f0b1ebc84106b485784e9a45a96e624dc31a1f7698b76efac174f1db86e393a"
+        },
+        "device": "mps",
+        "dtype": "float16",
+        "quantization": null,
+        "mps_fallback": null
+      },
+      "seconds": 1.180782499985071
+    },
+    {
+      "sample_id": "validation-55323",
+      "question_type": "rural_urban",
+      "question": "Is it a rural or an urban area",
+      "expected": "urban",
+      "image": "553.tif",
+      "kaggle_prediction": "rural",
+      "kaggle_correct": false,
+      "prediction": "rural",
+      "agrees": true,
+      "correct": false,
+      "answer_source": "b13_adapter",
+      "model_provenance": {
+        "name": "B13",
+        "base_revision": "66285546d2b821cf421d4f5eb2576359d3770cd3",
+        "files_sha256": {
+          "adapter_config.json": "716251f9cfbb73ed5fb408e41f2eb2b30281b8f98fb7c6a92a1dd0b9204e3644",
+          "adapter_model.safetensors": "7f0b1ebc84106b485784e9a45a96e624dc31a1f7698b76efac174f1db86e393a"
+        },
+        "device": "mps",
+        "dtype": "float16",
+        "quantization": null,
+        "mps_fallback": null
+      },
+      "seconds": 1.1979925830091815
+    },
+    {
+      "sample_id": "validation-52521",
+      "question_type": "rural_urban",
+      "question": "Is it a rural or an urban area",
+      "expected": "rural",
+      "image": "525.tif",
+      "kaggle_prediction": "rural",
+      "kaggle_correct": true,
+      "prediction": "rural",
+      "agrees": true,
+      "correct": true,
+      "answer_source": "b13_adapter",
+      "model_provenance": {
+        "name": "B13",
+        "base_revision": "66285546d2b821cf421d4f5eb2576359d3770cd3",
+        "files_sha256": {
+          "adapter_config.json": "716251f9cfbb73ed5fb408e41f2eb2b30281b8f98fb7c6a92a1dd0b9204e3644",
+          "adapter_model.safetensors": "7f0b1ebc84106b485784e9a45a96e624dc31a1f7698b76efac174f1db86e393a"
+        },
+        "device": "mps",
+        "dtype": "float16",
+        "quantization": null,
+        "mps_fallback": null
+      },
+      "seconds": 1.1897673750063404
+    },
+    {
+      "sample_id": "validation-49119",
+      "question_type": "rural_urban",
+      "question": "Is it a rural or an urban area",
+      "expected": "urban",
+      "image": "491.tif",
+      "kaggle_prediction": "urban",
+      "kaggle_correct": true,
+      "prediction": "rural",
+      "agrees": false,
+      "correct": false,
+      "answer_source": "b13_adapter",
+      "model_provenance": {
+        "name": "B13",
+        "base_revision": "66285546d2b821cf421d4f5eb2576359d3770cd3",
+        "files_sha256": {
+          "adapter_config.json": "716251f9cfbb73ed5fb408e41f2eb2b30281b8f98fb7c6a92a1dd0b9204e3644",
+          "adapter_model.safetensors": "7f0b1ebc84106b485784e9a45a96e624dc31a1f7698b76efac174f1db86e393a"
+        },
+        "device": "mps",
+        "dtype": "float16",
+        "quantization": null,
+        "mps_fallback": null
+      },
+      "seconds": 1.1890588339883834
+    },
+    {
+      "sample_id": "validation-56123",
+      "question_type": "rural_urban",
+      "question": "Is it a rural or an urban area",
+      "expected": "rural",
+      "image": "561.tif",
+      "kaggle_prediction": "rural",
+      "kaggle_correct": true,
+      "prediction": "rural",
+      "agrees": true,
+      "correct": true,
+      "answer_source": "b13_adapter",
+      "model_provenance": {
+        "name": "B13",
+        "base_revision": "66285546d2b821cf421d4f5eb2576359d3770cd3",
+        "files_sha256": {
+          "adapter_config.json": "716251f9cfbb73ed5fb408e41f2eb2b30281b8f98fb7c6a92a1dd0b9204e3644",
+          "adapter_model.safetensors": "7f0b1ebc84106b485784e9a45a96e624dc31a1f7698b76efac174f1db86e393a"
+        },
+        "device": "mps",
+        "dtype": "float16",
+        "quantization": null,
+        "mps_fallback": null
+      },
+      "seconds": 1.1793944590026513
+    },
+    {
+      "sample_id": "validation-47818",
+      "question_type": "rural_urban",
+      "question": "Is it a rural or an urban area",
+      "expected": "rural",
+      "image": "478.tif",
+      "kaggle_prediction": "rural",
+      "kaggle_correct": true,
+      "prediction": "rural",
+      "agrees": true,
+      "correct": true,
+      "answer_source": "b13_adapter",
+      "model_provenance": {
+        "name": "B13",
+        "base_revision": "66285546d2b821cf421d4f5eb2576359d3770cd3",
+        "files_sha256": {
+          "adapter_config.json": "716251f9cfbb73ed5fb408e41f2eb2b30281b8f98fb7c6a92a1dd0b9204e3644",
+          "adapter_model.safetensors": "7f0b1ebc84106b485784e9a45a96e624dc31a1f7698b76efac174f1db86e393a"
+        },
+        "device": "mps",
+        "dtype": "float16",
+        "quantization": null,
+        "mps_fallback": null
+      },
+      "seconds": 1.166878749994794
+    },
+    {
+      "sample_id": "validation-55223",
+      "question_type": "rural_urban",
+      "question": "Is it a rural or an urban area",
+      "expected": "rural",
+      "image": "552.tif",
+      "kaggle_prediction": "rural",
+      "kaggle_correct": true,
+      "prediction": "rural",
+      "agrees": true,
+      "correct": true,
+      "answer_source": "b13_adapter",
+      "model_provenance": {
+        "name": "B13",
+        "base_revision": "66285546d2b821cf421d4f5eb2576359d3770cd3",
+        "files_sha256": {
+          "adapter_config.json": "716251f9cfbb73ed5fb408e41f2eb2b30281b8f98fb7c6a92a1dd0b9204e3644",
+          "adapter_model.safetensors": "7f0b1ebc84106b485784e9a45a96e624dc31a1f7698b76efac174f1db86e393a"
+        },
+        "device": "mps",
+        "dtype": "float16",
+        "quantization": null,
+        "mps_fallback": null
+      },
+      "seconds": 1.1785737090103794
+    },
+    {
+      "sample_id": "validation-54923",
+      "question_type": "rural_urban",
+      "question": "Is it a rural or an urban area",
+      "expected": "rural",
+      "image": "549.tif",
+      "kaggle_prediction": "rural",
+      "kaggle_correct": true,
+      "prediction": "rural",
+      "agrees": true,
+      "correct": true,
+      "answer_source": "b13_adapter",
+      "model_provenance": {
+        "name": "B13",
+        "base_revision": "66285546d2b821cf421d4f5eb2576359d3770cd3",
+        "files_sha256": {
+          "adapter_config.json": "716251f9cfbb73ed5fb408e41f2eb2b30281b8f98fb7c6a92a1dd0b9204e3644",
+          "adapter_model.safetensors": "7f0b1ebc84106b485784e9a45a96e624dc31a1f7698b76efac174f1db86e393a"
+        },
+        "device": "mps",
+        "dtype": "float16",
+        "quantization": null,
+        "mps_fallback": null
+      },
+      "seconds": 1.176713708002353
+    },
+    {
+      "sample_id": "validation-51721",
+      "question_type": "rural_urban",
+      "question": "Is it a rural or an urban area",
+      "expected": "urban",
+      "image": "517.tif",
+      "kaggle_prediction": "urban",
+      "kaggle_correct": true,
+      "prediction": "rural",
+      "agrees": false,
+      "correct": false,
+      "answer_source": "b13_adapter",
+      "model_provenance": {
+        "name": "B13",
+        "base_revision": "66285546d2b821cf421d4f5eb2576359d3770cd3",
+        "files_sha256": {
+          "adapter_config.json": "716251f9cfbb73ed5fb408e41f2eb2b30281b8f98fb7c6a92a1dd0b9204e3644",
+          "adapter_model.safetensors": "7f0b1ebc84106b485784e9a45a96e624dc31a1f7698b76efac174f1db86e393a"
+        },
+        "device": "mps",
+        "dtype": "float16",
+        "quantization": null,
+        "mps_fallback": null
+      },
+      "seconds": 1.1824714999820571
+    }
+  ]
+}

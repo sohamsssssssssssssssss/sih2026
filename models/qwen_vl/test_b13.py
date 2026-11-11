@@ -121,9 +121,10 @@ def test_identity_survives_worker_trace_and_response(enabled, monkeypatch, ready
 
 
 @pytest.mark.parametrize("count", [0, 2])
-def test_counts_use_detector_boxes(enabled, monkeypatch, ready_providers, count):
+@pytest.mark.parametrize("question", ["How many square buildings are there?",
+                                      "What is the amount of square buildings?"])
+def test_counts_use_detector_boxes(enabled, monkeypatch, ready_providers, count, question):
     from orchestrator.planner import plan_request, PlanRequest
-    question = "How many square buildings are there?"
     plan = plan_request(PlanRequest(question, ("scene",)))
     assert plan.selected_capability == "grounding"
     assert plan.rule_id == "b13_detection_count"

@@ -47,8 +47,7 @@ export SATQUERY_VQA_ADAPTER="$HOME/models/satquery-b13-adapter"
 export SATQUERY_ALLOW_MPS=1
 export HF_HUB_OFFLINE=1
 export TRANSFORMERS_OFFLINE=1
-# REQUIRED: provision the pinned checkpoint separately; this is a placeholder.
-export SATQUERY_QWEN_MODEL_DIR=/absolute/path/to/verified/qwen2.5-vl-3b-instruct
+export SATQUERY_QWEN_MODEL_DIR=/Users/soham/models/qwen2.5-vl-3b-pinned
 .venv/bin/python -m uvicorn backend.main:app --port 8000
 ```
 
@@ -79,9 +78,9 @@ Add `--cpu` and choose a different fresh output file for CPU. The runner verifie
 
 The runner reports load time separately, warm seconds/question, peak process RSS, and sampled MPS driver memory. The MPS sample is not a true kernel allocation peak. Exit code 2 means incomplete prerequisites/execution. Count answers are detector outputs, so their agreement with Kaggle adapter counts is a routing comparison, not numerical adapter parity.
 
-## Local parity result and limitations
+## Initial preflight result and limitations (before base provisioning)
 
-No local base was found: the manifest default is Kaggle-only, `SATQUERY_QWEN_MODEL_DIR` was unset, no Qwen snapshot exists in the local Hugging Face cache, and a home-directory search found no Qwen weight shards/index. No base download was performed.
+During the initial preflight no local base was found: the manifest default is Kaggle-only, `SATQUERY_QWEN_MODEL_DIR` was unset, no Qwen snapshot exists in the local Hugging Face cache, and a home-directory search found no Qwen weight shards/index. No base download was performed.
 
 The reference contains all 389 per-question predictions. The frozen 40-question selection is 10 each of comp, count, presence, rural_urban. Local completed predictions: **0/40**. Load time, inference peak memory, seconds/question, local accuracy, agreement, and numerical drift are **not measured**. Process RSS from a failed preflight is not model memory.
 
@@ -117,3 +116,27 @@ The adapter files and isolated virtual environment are outside the commit. No ch
 - `git diff --check` passed. Frontend tests/build were not run; frontend files were not changed.
 
 The local isolated environment uses torch 2.10.0, transformers 4.49.0, PEFT 0.15.2, and qwen-vl-utils 0.0.8. Compared with the reference, PyTorch and CPU/MPS kernels differ; actual numerical drift must still be measured.
+
+## Pinned-base MPS measurement, 2026-11-12
+
+Both local weight shards at `/Users/soham/models/qwen2.5-vl-3b-pinned` match the **measured and expected** hashes in the B13 reference's `base_verification`; local Hugging Face metadata also matches the pinned revision. Full independent hashes and aggregate measurements are saved in `results/b13-app-mac-pinned-mps-measurements.json`.
+
+The same first-ten-per-type frozen selection was rerun with `SATQUERY_QWEN_MODEL_DIR` pointing there. The first real run exposed two `What is the amount of …?` count questions falling through to B13. The shared count parser now recognizes that template; regression tests cover the detector path, and all 100 frozen count questions match the parser. The final report is `results/b13-app-mac-pinned-mps-final-parity.json`; no question was replaced or reselected.
+
+| Type | Selected | Answered | Correct | Agreement with Kaggle | Seconds/answer |
+|---|---:|---:|---:|---:|---:|
+| comp | 10 | 10 | 10/10 (100%) | 10/10 (100%) | 1.50 |
+| count | 10 | 0 | unavailable | unavailable | unavailable |
+| presence | 10 | 10 | 8/10 (80%) | 8/10 (80%) | 1.18 |
+| rural_urban | 10 | 10 | 7/10 (70%) | 8/10 (80%) | 1.19 |
+| Answered subset | 40 | 30 | 25/30 (83.3%) | 26/30 (86.7%) | 1.29 |
+
+Grounding DINO requires CUDA, so 10 count questions were attempted but unavailable. Answer coverage is 30/40 (75%); this is **not a complete 40-question adapter accuracy result**. Kaggle got 27/30 (90%) correct on the same answered subset; local accuracy drift is -6.7 percentage points. Four answers differ: one presence answer regressed, one presence answer improved, and two urban answers became rural. All completed predictions were fp16 MPS, unquantized, with no CPU fallback.
+
+- Fresh-process base+adapter load including hash validation and processor: **39.48 s**. The OS file/kernel caches were warm from the diagnostic run.
+- Post-load mean: **1.29 s/answered question**, including the first question's kernel warmup (3.84 s). Total process wall time: **79.70 s**.
+- macOS peak memory footprint from `/usr/bin/time -l`: **11,223,471,264 bytes (10.45 GiB)**.
+- Peak process RSS: **3,654,647,808 bytes (3.40 GiB)**.
+- Highest MPS driver memory sampled after questions: **9,470,803,968 bytes (8.82 GiB)**; not a true kernel allocation peak. These are overlapping unified-memory metrics and must not be summed.
+
+The core suite after the routing fix: **677 passed**, 12 subtests passed. No full-suite or frontend rerun was needed for this parser-only fix; the previously reported generated-fixture blockers remain. The real model path ran in process through the app router, not through HTTP/worker IPC.
