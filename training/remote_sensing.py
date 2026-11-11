@@ -24,6 +24,8 @@ class TrainingExample:
     source: str
     split: str
     sample_id: str
+    # Two-image (bi-temporal) samples: image_path is the "before" image; None keeps single-image.
+    after_image_path: Path | None = None
 
 
 @dataclass(frozen=True)
@@ -177,15 +179,20 @@ def select_examples(
 
 
 def messages(example: TrainingExample, image_size: int, include_target: bool) -> list[dict]:
+    # Prompt order for pairs: [before, after, question]; both resized to the same image_size.
+    image_paths = [example.image_path]
+    if example.after_image_path is not None:
+        image_paths.append(example.after_image_path)
     content = [
         {
             "type": "image",
-            "image": example.image_path.as_uri(),
+            "image": path.as_uri(),
             "resized_height": image_size,
             "resized_width": image_size,
-        },
-        {"type": "text", "text": f"{example.instruction} {ANSWER_INSTRUCTION}"},
+        }
+        for path in image_paths
     ]
+    content.append({"type": "text", "text": f"{example.instruction} {ANSWER_INSTRUCTION}"})
     result = [{"role": "user", "content": content}]
     if include_target:
         result.append(
