@@ -8,7 +8,6 @@ import shutil
 from pathlib import Path
 
 import pytest
-import torch
 from PIL import Image
 
 from eval.test_cdvqa_pilot import FakeProcessor, fake_process_vision_info
@@ -100,3 +99,128 @@ def test_revision_proof_from_restored_hf_metadata(tmp_path):
     assert proof["revision_source"] == "hf_download_metadata"
     assert proof["revision_matches"] is True
     assert proof["passed"] is False  # weight files are absent here, so the full proof must still fail
+
+
+class StubTokenizer:
+    pad_token_id = 0
+    padding_side = "right"
+
+
+class BatchEncoding(dict):
+    """Minimal stand-in for the processor's batch output: attribute access plus .to(device)."""
+
+    def __getattr__(self, name):
+        return self[name]
+
+    def to(self, device):
+        return self
+
+
+class StubProcessor:
+    """Records every chat-template text so train and eval prompts can be compared exactly."""
+
+    tokenizer = StubTokenizer()
+    chat_template = "stub"
+
+    def __init__(self):
+        self.prompts = []
+
+    def apply_chat_template(self, conversation, tokenize=False, add_generation_prompt=False, **kwargs):
+        content = conversation[0]["content"]
+        text = " | ".join(item.get("image", "") if item["type"] == "image" else item["text"] for item in content)
+        text = f"{'prompt' if add_generation_prompt else 'full'}::{text}"
+        self.prompts.append(text)
+        return text
+
+    def __call__(self, text=None, images=None, videos=None, return_tensors=None, **kwargs):
+        import torch
+        return BatchEncoding(input_ids=torch.tensor([[1, 2, 3]] * len(text)))
+
+    def batch_decode(self, tokens, **kwargs):
+        return [" Yes \n"] * len(tokens)  # raw decode with whitespace: normalisation must strip it
+
+
+class StubModel:
+    device = "cpu"
+    generation_config = None
+
+    def __init__(self):
+        self.generate_calls = 0
+
+    def eval(self):
+        return self
+
+    def parameters(self):
+        return []
+
+    def generate(self, input_ids=None, do_sample=None, max_new_tokens=None, **kwargs):
+        import torch
+        self.generate_calls += 1
+        assert do_sample is False and max_new_tokens == 32  # B13 decoding settings
+        return torch.tensor([[1, 2, 3, 7, 8]])  # prompt tokens followed by the new tokens
+
+
+def stub_vision_info(conversation):
+    return [item["image"] for item in conversation[0]["content"] if item["type"] == "image"], None
+
+
+def pair_fixture(tmp_path):
+    """A package root with the shipped configs, real provenance, and a tiny two-image eval manifest."""
+    root = shipped_root(tmp_path)
+    (root / "data/manifests/cdvqa").mkdir(parents=True)
+    for name in ("provenance.json", "train-8k.v2.jsonl", "eval-test1-400.v1.jsonl"):
+        shutil.copyfile(REPO / "data/manifests/cdvqa" / name, root / "data/manifests/cdvqa" / name)
+    (root / "package-manifest.json").write_text(json.dumps({"payload_sha256": {}}))
+    images = tmp_path / "images"
+    rows = []
+    for i in range(2):
+        for side in ("im1", "im2"):
+            (images / side).mkdir(parents=True, exist_ok=True)
+            Image.new("RGB", (512, 512), (i * 40, 0, 0)).save(images / side / f"{i}.png")
+        rows.append({"id": f"cdvqa-test1-{i}", "split": "test1", "question_type": "change_or_not",
+                     "question": f"Did area {i} change?", "answer": "yes", "before_image": f"im1/{i}.png",
+                     "after_image": f"im2/{i}.png", "pair_id": str(i), "question_id": i})
+    (root / pilot.EVAL_MANIFESTS["test1"]).write_text("".join(json.dumps(r) + "\n" for r in rows))
+    return root, images, rows
+
+
+def test_evaluate_gpu_base_only_runs_end_to_end_on_stubs(tmp_path, monkeypatch):
+    """Regression: the real evaluate_gpu must run every question. Before the fix this raised
+    NameError: name 'answer_pair' is not defined. Only model, processor, vision info and the base
+    verification are stubbed."""
+    import qwen_vl_utils
+    import transformers
+    root, images, rows = pair_fixture(tmp_path)
+    processor, model = StubProcessor(), StubModel()
+    # Patch the loaders on the real classes: evaluate_gpu imports them inside the function.
+    monkeypatch.setattr(transformers.AutoProcessor, "from_pretrained", staticmethod(lambda *a, **k: processor))
+    monkeypatch.setattr(transformers.Qwen2_5_VLForConditionalGeneration, "from_pretrained",
+                        staticmethod(lambda *a, **k: model))
+    monkeypatch.setattr(qwen_vl_utils, "process_vision_info", stub_vision_info)
+    monkeypatch.setattr(pilot, "verify_base", lambda root, weights: {
+        "revision_source": "hf_download_metadata", "measured_revision": PINNED_REVISION, "passed": True})
+    output = tmp_path / "out"
+    result = pilot.evaluate_gpu(root, tmp_path / "weights", None, images, "test1", output)
+    assert model.generate_calls == len(rows)
+    records = result["conditions"]["base_real"]["records"]
+    assert [r["prediction"] for r in records] == ["Yes"] * len(rows)  # decoded, stripped, not normalised away
+    assert all(r["correct"] for r in records) and all(not r["malformed"] for r in records)
+    assert result["mode"] == "base_only" and result["paired_differences"] is None
+    assert (output / "result.json").is_file()
+
+
+def test_eval_prompt_equals_training_collator_prompt(tmp_path):
+    """Train/eval parity: for the same pair example, the eval answerer and the training collator must
+    produce the same chat-template prompt text (same messages, same order, same wording)."""
+    from training.remote_sensing import QwenVQACollator
+    root, images, rows = pair_fixture(tmp_path)
+    examples = pilot.pair_examples(root / pilot.EVAL_MANIFESTS["test1"], images, root)
+    eval_processor = StubProcessor()
+    pilot.answer_pair(StubModel(), eval_processor, stub_vision_info, examples[0], 392)
+    train_processor = StubProcessor()
+    collator = QwenVQACollator(train_processor, 392, process_vision_info=stub_vision_info, max_sequence_length=32768)
+    collator._encode([examples[0]], include_target=False)
+    assert eval_processor.prompts == train_processor.prompts
+    text = eval_processor.prompts[0]
+    assert "first image is the earlier image" in text and "Allowed answers: no, yes." in text
+    assert text.index(str(images / "im1" / "0.png")) < text.index(str(images / "im2" / "0.png")) < text.index("Did area 0")

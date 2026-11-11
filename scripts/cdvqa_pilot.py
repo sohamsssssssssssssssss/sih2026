@@ -21,7 +21,7 @@ if str(ROOT) not in sys.path:
 
 from eval.cdvqa_pairs import (  # noqa: E402
     SCORING_VERSION, assert_no_pair_leak,
-    digest, evaluate_conditions, load_choices, load_pair_manifest, load_vocabulary,
+    digest, evaluate_conditions, load_pair_manifest, load_vocabulary,
     majority_accuracy, paired_differences, summarise)
 from training.remote_sensing import (  # noqa: E402
     ANSWER_INSTRUCTION, BASE_MODEL_ID, PAIR_ORDER_INSTRUCTION, QwenVQACollator, TrainingConfig,
@@ -288,6 +288,24 @@ def token_preflight(root, weights, image_root):
     report["base_revision"] = proof["measured_revision"]
     report["revision_source"] = proof["revision_source"]
     return report
+
+
+def answer_pair(model, processor, process_vision_info, example, image_size):
+    """Greedy answer for one pair example, using the same messages() as the training collator.
+
+    Prompt: [before image, after image, question] with the pair wording and allowed answers, at one resize.
+    Decoding matches B13 evaluate (do_sample=False, max_new_tokens=32). Only the new tokens are decoded;
+    the raw string is returned, and normalisation happens in eval/cdvqa_pairs.score.
+    """
+    import torch
+    conversation = messages(example, image_size, include_target=False)
+    prompt = processor.apply_chat_template(conversation, tokenize=False, add_generation_prompt=True)
+    images, videos = process_vision_info(conversation)
+    inputs = processor(text=[prompt], images=images, videos=videos, return_tensors="pt").to(model.device)
+    with torch.inference_mode():
+        generated = model.generate(**inputs, do_sample=False, max_new_tokens=32)
+    trimmed = generated[:, inputs.input_ids.shape[1]:]
+    return processor.batch_decode(trimmed, skip_special_tokens=True, clean_up_tokenization_spaces=False)[0].strip()
 
 
 def evaluate_gpu(root, weights, adapter, image_root, eval_name, output, *, bootstrap=BOOTSTRAP):

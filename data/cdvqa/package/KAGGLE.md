@@ -1,4 +1,4 @@
-# Kaggle run book: CDVQA two-image pilot (cdvqa-g0d)
+# Kaggle run book: CDVQA two-image pilot (CDVQA pilot)
 
 Placeholders: `TIMESTAMP` in the package folder name is filled in when the package is built. Slugs marked
 **GUESS** are placeholders for the uploads you make. The weights dataset slug is the one B13 already used.
@@ -10,7 +10,7 @@ dataset, so the package path includes the inner folder:
 
 | what | Kaggle path | status |
 |---|---|---|
-| this package | `/kaggle/input/datasets/sohamssssss/cdvqa-g0d-package/cdvqa-g0d-TIMESTAMP/` | slug **GUESS** `cdvqa-g0d-package` |
+| this package | `/kaggle/input/datasets/sohamssssss/cdvqa-pilot-package/cdvqa-g0d-TIMESTAMP/` | slug **GUESS** `cdvqa-pilot-package` |
 | `cdvqa-images.zip`, unzipped | `/kaggle/input/datasets/sohamssssss/cdvqa-images/` (contains `im1/`, `im2/`) | slug **GUESS** `cdvqa-images` |
 | pinned base weights (flat folder of files) | `/kaggle/input/datasets/sohamssssss/satquery-qwen-pinned/` | known (B13) |
 
@@ -35,7 +35,7 @@ qwen-vl-utils 0.0.8, bitsandbytes 0.45.3). bitsandbytes 0.45.3 is listed as unve
 Export the variables once:
 
 ```sh
-export PKG=/kaggle/input/datasets/sohamssssss/cdvqa-g0d-package/cdvqa-g0d-TIMESTAMP
+export PKG=/kaggle/input/datasets/sohamssssss/cdvqa-pilot-package/cdvqa-g0d-TIMESTAMP
 export SRC_W=/kaggle/input/datasets/sohamssssss/satquery-qwen-pinned
 export W=/kaggle/working/qwen-pinned
 export IMAGES=/kaggle/input/datasets/sohamssssss/cdvqa-images

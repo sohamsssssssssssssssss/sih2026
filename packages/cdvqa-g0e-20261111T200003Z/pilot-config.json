@@ -1,0 +1,74 @@
+{
+  "base_model_id": "Qwen/Qwen2.5-VL-3B-Instruct",
+  "base_revision": "66285546d2b821cf421d4f5eb2576359d3770cd3",
+  "base_weight_sha256": {
+    "model-00001-of-00002.safetensors": "41a8895c164b4d32bae6b302f4603fcbc1797f32dafa45c7e9bcda23c6755df8",
+    "model-00002-of-00002.safetensors": "365531ff8752420e89dee707b79d021fb2d6e25abafe486f080555a4fe6972e4"
+  },
+  "budget": {
+    "ledger_total_seconds": {
+      "evaluate": 7200,
+      "train": 25200
+    },
+    "note": "Shared-ledger caps. Training: 7 invocations x 3600 s = 25200 s. Evaluation uses a separate ledger file. B13 default is 7200 when this block is absent."
+  },
+  "dependency_pins": {
+    "Pillow": "11.2.1",
+    "accelerate": "1.5.2",
+    "bitsandbytes": "0.45.3",
+    "numpy": "2.2.6",
+    "peft": "0.15.2",
+    "qwen-vl-utils": "0.0.8",
+    "safetensors": "0.5.3",
+    "torch": "2.6.0",
+    "torchvision": "0.21.0",
+    "transformers": "4.49.0"
+  },
+  "evaluation": {
+    "bootstrap_repetitions": 2000,
+    "bootstrap_seed": 17,
+    "conditions": [
+      "base_real",
+      "adapter_real",
+      "adapter_identical",
+      "adapter_swapped"
+    ],
+    "do_sample": false,
+    "eval_manifests": {
+      "test1": "data/manifests/cdvqa/eval-test1-400.v1.jsonl",
+      "test2": "data/manifests/cdvqa/eval-test2-400.v1.jsonl"
+    },
+    "image_size": 392,
+    "max_new_tokens": 32
+  },
+  "images": {
+    "archive": "cdvqa-images.zip (only the 3572 images referenced by train-8k.v2 and both eval manifests)",
+    "layout": "image_root/im1/<file>.png and image_root/im2/<file>.png, 512x512 RGB, from SECOND_train_set"
+  },
+  "package": "cdvqa-g0e-20261111T200003Z",
+  "schema_version": 1,
+  "train_manifest": "data/manifests/cdvqa/train-8k.v2.jsonl",
+  "training": {
+    "batch_size": 1,
+    "epochs": 1.0,
+    "gradient_accumulation_steps": 8,
+    "image_size": 392,
+    "learning_rate": 0.0002,
+    "lora_alpha": 32,
+    "lora_dropout": 0.05,
+    "lora_rank": 16,
+    "lora_target_modules": [
+      "q_proj",
+      "k_proj",
+      "v_proj",
+      "o_proj"
+    ],
+    "max_samples": 8000,
+    "max_sequence_length": 32768,
+    "max_steps": 1000,
+    "precision": "fp16",
+    "quantization": "4bit",
+    "seed": 17,
+    "split": "train"
+  }
+}

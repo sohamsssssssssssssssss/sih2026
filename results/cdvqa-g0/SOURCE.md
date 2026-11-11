@@ -321,3 +321,25 @@ verify_base against them. The old config fails the token test with KeyError 'max
 - Zip sha256: `b101b0b957325221c7b83be469258e05fdd7ccde671d1370465b509480604cce`.
 - run_identity (package preflight): `a755bffebc4f0fb481735e3b12913cff7efb75c088269d19cb6efac4c2dfbdef`.
 - Preflight with real images: payload, manifests, leakage PASS; 8000 train pairs resolved.
+
+
+---
+
+# CDVQA G0e: first G1 crash (answer_pair undefined) fixed
+
+- Crash: `NameError: name 'answer_pair' is not defined` in `evaluate_gpu`.
+- Cause: `answer_pair` was defined just above `evaluate_gpu` in 010362e. The G0d change that split out
+  `token_check` replaced everything between `token_preflight` and `evaluate_gpu`, which included `answer_pair`,
+  so the function was deleted in c219587. No other copy existed (checked with `git log -S` and grep).
+- Fix: `answer_pair` is restored in `scripts/cdvqa_pilot.py`. It builds the prompt with `training.remote_sensing.messages`,
+  the same function the pair collator uses, so eval and training prompts match. It calls `process_vision_info`,
+  decodes with the B13 settings (do_sample=False, max_new_tokens=32), decodes only the new tokens, and returns the
+  stripped raw string. Normalisation and scoring stay in `eval/cdvqa_pairs.py`. The single-image B13 `_answer`
+  was not reused: it cannot build the two-image prompt.
+- Regression tests (`eval/test_shipped_config.py`):
+  - `test_evaluate_gpu_base_only_runs_end_to_end_on_stubs` runs the real `evaluate_gpu` end to end with stub
+    model/processor/vision info. Before the fix it failed with the NameError above; after the fix it passes.
+  - `test_eval_prompt_equals_training_collator_prompt` checks eval and training prompts are identical for the same example.
+- Pyflakes (4.1.0) on all 10 `.py` files in the G0e package: no findings. On the repo CDVQA files it reported an unused
+  import (`load_choices`) and an unused `torch` in a test, both fixed; no undefined names anywhere.
+- Package: `packages/cdvqa-g0e-20261111T200003Z/`, zip sha256 `90b586356b75a39bae856db19e78d3321a2f371e813c3a43d6edbe1a1a83109f`, run_identity `057f7d52d09e8497f11edc226916a828b84b6f712d778cf3e25e69e12591879a`.

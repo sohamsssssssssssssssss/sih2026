@@ -1,7 +1,7 @@
 """Assemble the CDVQA pilot package from repo sources (no images, no weights).
 
-Run: python3.11 data/cdvqa/build_package.py <UTC-timestamp>
-Writes packages/cdvqa-g0d-<ts>/ with package-manifest.json. The zip is made separately (see main()).
+Run: python3.11 data/cdvqa/build_package.py <UTC-timestamp> [prefix]
+Writes packages/<prefix>-<ts>/ with package-manifest.json (default prefix: cdvqa-g0d). The zip is made separately.
 """
 import hashlib
 import json
@@ -27,8 +27,8 @@ TEMPLATE_FILES = ["pilot-config.json", "configs/model_artifacts.json", "requirem
                   "requirements-cpu-preflight.txt", "pilot.py", "KAGGLE.md", "README.md"]
 
 
-def build(timestamp, note):
-    out = REPO / "packages" / f"cdvqa-g0d-{timestamp}"
+def build(timestamp, note, prefix="cdvqa-g0d"):
+    out = REPO / "packages" / f"{prefix}-{timestamp}"
     if out.exists():
         raise FileExistsError(out)
     for dst, src in SOURCES.items():
@@ -41,7 +41,7 @@ def build(timestamp, note):
         (out / "data/manifests/cdvqa").mkdir(parents=True, exist_ok=True)
         shutil.copyfile(REPO / "data/manifests/cdvqa" / name, out / "data/manifests/cdvqa" / name)
     for name in ("KAGGLE.md", "README.md"):
-        text = (out / name).read_text().replace("cdvqa-g0d-TIMESTAMP", out.name)
+        text = (out / name).read_text().replace("cdvqa-g0d-TIMESTAMP", out.name)  # placeholder in templates
         (out / name).write_text(text)
     config = json.loads((out / "pilot-config.json").read_text())
     config["package"] = out.name
@@ -56,4 +56,5 @@ def build(timestamp, note):
 
 
 if __name__ == "__main__":
-    print(build(sys.argv[1], "CDVQA two-image pilot package; no images, no weights"))
+    prefix = sys.argv[2] if len(sys.argv) > 2 else "cdvqa-g0d"
+    print(build(sys.argv[1], "CDVQA two-image pilot package; no images, no weights", prefix))
