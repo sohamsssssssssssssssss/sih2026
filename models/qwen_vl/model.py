@@ -8,6 +8,7 @@ from typing import Any
 
 from models.artifacts import validate_artifact
 from models.base import Model, ModelReadiness
+from models.qwen_vl import b13
 
 # Opt-in only. Apple MPS lets this model run on a developer Mac, which is the
 # difference between iterating locally and not being able to execute the live path
@@ -32,6 +33,8 @@ class QwenVLModel(Model):
     isolated = True
 
     def __init__(self, model_id: str = version, max_new_tokens: int = 50) -> None:
+        self.adapter_path = b13.adapter_path()
+        self.provenance: dict | None = None
         self.model_id = model_id
         self.max_new_tokens = max_new_tokens
         self._model: Any | None = None
@@ -65,6 +68,13 @@ class QwenVLModel(Model):
         raise RuntimeError(NO_ACCELERATOR_ERROR)
 
     def readiness(self) -> ModelReadiness:
+        if self.adapter_path is not None:
+            try:
+                b13.adapter_identity(self.adapter_path)
+            except (OSError, ValueError) as exc:
+                return ModelReadiness(False, "ADAPTER_INVALID", str(exc))
+            if find_spec("peft") is None:
+                return ModelReadiness(False, "DEPENDENCY_UNAVAILABLE", "B13 requires peft.")
         for dependency in (
             "torch",
             "transformers",
@@ -81,13 +91,52 @@ class QwenVLModel(Model):
         import torch
 
         try:
-            self._resolve_device(torch)
+            self._adapter_device(torch) if self.adapter_path else self._resolve_device(torch)
         except RuntimeError as exc:
             return ModelReadiness(False, "CUDA_UNAVAILABLE", str(exc))
         artifact = validate_artifact(self.name, model_id=self.model_id)
         if not artifact.available:
             return ModelReadiness(False, artifact.reason_code, artifact.detail)
         return ModelReadiness(True)
+
+    def _adapter_device(self, torch: Any) -> str:
+        if torch.cuda.is_available():
+            return "cuda"
+        if os.environ.get(ALLOW_MPS_ENV) == "1" and torch.backends.mps.is_available():
+            return "mps"
+        return "cpu"
+
+    def _load_adapter(self, torch, model_class, model_path):
+        from peft import PeftModel
+        from models.artifacts import load_manifest
+        from scripts.stage1_runtime import verify_checkpoint
+
+        identity = b13.adapter_identity(self.adapter_path)
+        spec = load_manifest()["providers"][self.name]
+        proof = verify_checkpoint(model_path, b13.BASE_REVISION, spec["weight_sha256"])
+        if not proof["passed"]:
+            raise ValueError("B13 requires verified pinned base revision and weight hashes")
+        device = self._adapter_device(torch)
+        model = model_class.from_pretrained(
+            model_path, torch_dtype=torch.float16, local_files_only=True,
+        )
+        model = PeftModel.from_pretrained(
+            model, str(self.adapter_path), local_files_only=True,
+            is_trainable=False, autocast_adapter_dtype=False,
+        )
+        fallback = None
+        try:
+            model.to(device)
+        except RuntimeError as exc:
+            if device != "mps":
+                raise
+            fallback = str(exc)
+            device = "cpu"
+            model.to(device)
+            torch.mps.empty_cache()
+        self._model, self.device = model, device
+        self.provenance = {**identity, "device": device, "dtype": "float16",
+                           "quantization": None, "mps_fallback": fallback}
 
     def _load(self) -> None:
         """Load weights only on the first real inference call."""
@@ -101,12 +150,17 @@ class QwenVLModel(Model):
             raise RuntimeError(
                 "Qwen inference requires transformers>=4.49, qwen-vl-utils, accelerate, and torch"
             ) from exc
-        device = self._resolve_device(torch)
+        if self.adapter_path is not None:
+            b13.adapter_identity(self.adapter_path)
+        device = self._adapter_device(torch) if self.adapter_path else self._resolve_device(torch)
         artifact = validate_artifact(self.name, model_id=self.model_id)
         if not artifact.available or artifact.path is None:
             raise RuntimeError(artifact.detail or "Qwen artifact unavailable")
         model_path = str(artifact.path)
-        if device == "cuda":
+        if self.adapter_path is not None:
+            self._load_adapter(torch, Qwen2_5_VLForConditionalGeneration, model_path)
+            device = self.device
+        elif device == "cuda":
             self._model = Qwen2_5_VLForConditionalGeneration.from_pretrained(
                 model_path,
                 torch_dtype=torch.float16,
@@ -145,6 +199,8 @@ class QwenVLModel(Model):
         ]
         content.append({"type": "text", "text": question})
         messages = [{"role": "user", "content": content}]
+        if self.adapter_path is not None:
+            messages = b13.messages(image_paths[0], question)
         prompt = self._processor.apply_chat_template(
             messages,
             tokenize=False,
@@ -155,14 +211,14 @@ class QwenVLModel(Model):
             text=[prompt],
             images=image_inputs,
             videos=video_inputs,
-            padding=True,
+            **({} if self.adapter_path else {"padding": True}),
             return_tensors="pt",
         ).to(self._model.device)
         with torch.inference_mode():
             generated_ids = self._model.generate(
                 **inputs,
                 do_sample=False,
-                max_new_tokens=self.max_new_tokens,
+                max_new_tokens=32 if self.adapter_path else self.max_new_tokens,
             )
         trimmed_ids = [
             output_ids[len(input_ids) :]
@@ -180,10 +236,28 @@ class QwenVLModel(Model):
         missing = [path for path in image_paths if not Path(path).is_file()]
         if missing:
             raise FileNotFoundError(f"Image paths do not exist: {missing}")
-        question = question + " Answer with a single word or number only. No explanation."
-        answer = self._generate_answer(image_paths, question).strip()
+        if self.adapter_path is not None:
+            if len(image_paths) != 1:
+                raise ValueError("B13 supports exactly one image")
+            if b13.count_target(question):
+                raise ValueError("Count questions require Grounding DINO; B13 counting is disabled")
+        else:
+            question = question + " Answer with a single word or number only. No explanation."
+        try:
+            answer = self._generate_answer(image_paths, question).strip()
+        except RuntimeError as exc:
+            if self.adapter_path is None or self.device != "mps":
+                raise
+            self._model.to("cpu")
+            self.device = "cpu"
+            self.provenance.update(device="cpu", mps_fallback=str(exc))
+            import torch
+            torch.mps.empty_cache()
+            answer = self._generate_answer(image_paths, question).strip()
         return {
             "answer": answer,
             "confidence": None,
             "evidence": [],
+            **({"model_provenance": self.provenance, "answer_source": "b13_adapter"}
+               if self.adapter_path else {}),
         }

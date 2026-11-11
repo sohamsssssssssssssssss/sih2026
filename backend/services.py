@@ -691,6 +691,9 @@ def _live_response(result: Any) -> dict[str, Any]:
             else f"Live {model_name} inference completed."
         ),
     }
+    for key in ("model_provenance", "answer_source", "count"):
+        if key in result:
+            response[key] = result[key]
     if "evidence" in result:
         response["evidence"] = result["evidence"]
     return response

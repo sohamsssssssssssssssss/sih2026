@@ -70,6 +70,9 @@ class AnalyzeResponse(BaseModel):
     answer: str
     evidence: list[dict[str, Any]] | None = None
     execution_mode: Literal["live", "cached_result"]
+    model_provenance: dict[str, Any] | None = None
+    answer_source: str | None = None
+    count: int | None = None
     results_artifact: str | None = None
     model: ModelInfo
     trace: dict[str, Any]

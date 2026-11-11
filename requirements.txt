@@ -20,6 +20,7 @@ groundingdino
 # separately downloaded/provisioned via Hugging Face and environment vars.
 torchvision
 accelerate
+peft>=0.15.2
 asf_search
 hyp3_sdk
 pyarrow>=17,<23

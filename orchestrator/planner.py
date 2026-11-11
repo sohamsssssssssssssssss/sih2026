@@ -18,6 +18,8 @@ already localize, so one change_vqa step answers it.
 
 from dataclasses import dataclass
 
+from models.qwen_vl.b13 import adapter_path, count_target
+
 from orchestrator.capabilities import (
     CHANGE_VQA,
     GROUNDING,
@@ -134,6 +136,8 @@ def _selection(request: PlanRequest, tokens: tuple[str, ...]) -> Selection:
     )
     if requested == "":
         raise UnknownCapability("Unknown capability: ")
+    if adapter_path() and count_target(request.question) and requested in (None, SINGLE_IMAGE_VQA):
+        return GROUNDING, "b13_detection_count", "Count objects using Grounding DINO boxes.", requested
     if requested is not None:
         if requested not in KNOWN_CAPABILITIES:
             raise UnknownCapability(f"Unknown capability: {requested}")
