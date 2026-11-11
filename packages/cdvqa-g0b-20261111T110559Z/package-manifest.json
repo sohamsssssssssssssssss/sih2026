@@ -1,0 +1,29 @@
+{
+  "notes": "CDVQA two-image pilot package; no images, no weights",
+  "package": "cdvqa-g0b-20261111T110559Z",
+  "payload_bytes": 4742794,
+  "payload_file_count": 21,
+  "payload_sha256": {
+    "KAGGLE.md": "4100aa86eb3b643aaee02268c8941d45f726de4e6e4b41b4000ff0133f3e7c06",
+    "README.md": "697f2fb93f9d5799bda035fd6a063c4bf1372d8a9a88cff1b8ba8d0d8b362e3f",
+    "configs/model_artifacts.json": "72527fa9bb644cac71513b40a1a7e836a2044aae71ca6fb7095d4df643753e41",
+    "data/manifests/cdvqa/eval-test1-400.v1.jsonl": "4689eb8a45fecb6e0ca42f3c209d64425f3b9068091337469ece8da588e16993",
+    "data/manifests/cdvqa/eval-test2-400.v1.jsonl": "f79da8027377422e15af62edf4797c412c1ed61241d10b2ee55a685362314425",
+    "data/manifests/cdvqa/provenance.json": "e0f47b04c3979a22e7abd65f9f1cf871cb100c6167a66e21514d3b37708edba4",
+    "data/manifests/cdvqa/train-8k.v1.jsonl": "8de63c0bb890db7317a665d23c76d0b6fdedd047914f97e50b13cff536fd7e86",
+    "data/manifests/cdvqa/train-8k.v2.jsonl": "c238281802afe3b18b450b40f19e65c95c7f153d124eca64a910b36e81828d82",
+    "eval/__init__.py": "c8b2f3a6bc7eb59168a7917245ae2bf7e3e071a03f26051190d9a9b964b5aa33",
+    "eval/cdvqa_pairs.py": "aa23941281466f7317f9c895ece49cf38b6564b9e546cd062036812f0a4e6e89",
+    "eval/test_cdvqa_pairs.py": "0047a62dbd9bee70cae16ab3fa76654f110949a57b112844466515b4e72d1bf3",
+    "eval/test_cdvqa_pilot.py": "98533c57291da1067d9963ee6167b832a99826f029bd0c716db1761026be6635",
+    "pilot-config.json": "5c38fb777997488c019c0e0caa5c6b427d7222025798f3564f22cadf674c6464",
+    "pilot.py": "db56f8a1e198c92d6f097a939dd20c5e2260cd6f9aec3c4f31b7b58a8efd9ad7",
+    "requirements-cpu-preflight.txt": "5c2e5f8ac93f65d0328cf7774e381f97ab2ab0bfefc433da9c2f333c725d40a9",
+    "requirements-target.txt": "d056603ec8053712a7146b4da84ba6500ca093a9edbccddddefb38b256b64af2",
+    "scripts/cdvqa_pilot.py": "6bbc730e80cdbf8aa5267a78ffe2e83a8bd63e7c2b22367d907c086341b30e37",
+    "scripts/stage1_runtime.py": "0fdc80c338eb9be8179807f9498a31c2e036a21e3030c3994d644592cfb416c2",
+    "scripts/train_remote_sensing_adapter.py": "4681787998c31509ba69afe9035bcd80aaf06d08b2c9db2ba272be0a103bc243",
+    "training/__init__.py": "396ffbcec629637a8a81a9a7e9c5caecd752c1af741d28c8d8e1f51e65dea269",
+    "training/remote_sensing.py": "eacfd3f0460d8773e7123f2d28f24548923508823e3e6fdf302ea6c512182581"
+  }
+}

@@ -86,13 +86,14 @@ def run(
     component_loader=None,
     collator_factory=None,
     trainer_factory=None,
+    example_loader=None,
 ) -> dict:
     os.environ["HF_HUB_OFFLINE"] = "1"
     os.environ["TRANSFORMERS_OFFLINE"] = "1"
     config.validate()
     if config.split != "train":
         raise ValueError("Training entry point only permits the train split")
-    all_examples = load_manifest(config.dataset_manifest, config.image_root)
+    all_examples = (example_loader or (lambda c: load_manifest(c.dataset_manifest, c.image_root)))(config)
     examples = select_examples(all_examples, config.split, config.max_samples, config.seed)
     model, processor = (component_loader or load_training_components)(config)
     collator = (collator_factory or QwenVQACollator)(

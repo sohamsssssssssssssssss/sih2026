@@ -79,6 +79,50 @@ def select_eval(rows, label):
     return chosen
 
 
+def select_train_v2(rows, cap=5):
+    """1,000 QA per type spread over all train pairs, with at most `cap` QA per pair in total.
+
+    Types are filled scarcest-first. For each type, the next QA comes from the pair with the fewest
+    selected QA so far (ties by seed-17 hash) that still has an unused question of that type.
+    """
+    import heapq
+    by_type_pair = {}
+    for row in sorted(rows, key=lambda r: key("train-v2", r["question_id"])):
+        by_type_pair.setdefault((row["question_type"], row["pair_id"]), []).append(row)
+    availability = Counter(r["question_type"] for r in rows)
+    pairs = sorted({r["pair_id"] for r in rows})
+    count = Counter()
+    chosen = []
+    for t in sorted(TYPES, key=lambda t: (availability[t], t)):
+        heap = [(count[p], key("train-v2", "pair", p), p) for p in pairs
+                if by_type_pair.get((t, p))]
+        heapq.heapify(heap)
+        taken = 0
+        while taken < TRAIN_PER_TYPE:
+            if not heap:
+                raise AssertionError(f"type {t}: only {taken} selectable QA under cap {cap}")
+            c, k, p = heapq.heappop(heap)
+            if c >= cap:
+                continue
+            pick = by_type_pair[(t, p)].pop(0)
+            chosen.append(pick)
+            count[p] += 1
+            taken += 1
+            if by_type_pair[(t, p)] and count[p] < cap:
+                heapq.heappush(heap, (count[p], k, p))
+    assert len(chosen) == TRAIN_PER_TYPE * len(TYPES)
+    assert len({r["question_id"] for r in chosen}) == len(chosen)
+    return chosen
+
+
+def majority_answer(rows):
+    """Most frequent casefolded answer per type over the given rows; ties go to the smaller string."""
+    counts = {t: Counter() for t in TYPES}
+    for r in rows:
+        counts[r["question_type"]][r["answer"].strip().casefold()] += 1
+    return {t: min(counts[t], key=lambda a: (-counts[t][a], a)) for t in TYPES}
+
+
 def write_jsonl(path, rows):
     text = "".join(json.dumps(r, sort_keys=True, ensure_ascii=False) + "\n"
                    for r in sorted(rows, key=lambda r: r["id"]))
@@ -105,6 +149,7 @@ def main():
         assert not unseen, f"{name} answers outside Train vocabulary: {sorted(unseen)[:5]}"
 
     train = select_train(train_rows)
+    train_v2 = select_train_v2(train_rows)
     test1 = select_eval(test_rows, "eval-test1")
     test2 = select_eval(test2_rows, "eval-test2")
     train_pairs = {r["pair_id"] for r in train}
@@ -114,10 +159,16 @@ def main():
     assert not (train_pairs & eval_pairs), "train/eval pair leakage"
     assert eval_pairs <= test_pairs and train_pairs <= train_universe
     assert not (train_universe & test_pairs), "Train and Test share image pairs"
+    v2_pairs = {r["pair_id"] for r in train_v2}
+    assert len(train_v2) == TRAIN_PER_TYPE * len(TYPES) and len({r["question_id"] for r in train_v2}) == len(train_v2)
+    assert not (v2_pairs & eval_pairs), "train-v2/eval image-pair leakage"
+    assert v2_pairs <= train_universe
+    v2_per_pair = Counter(r["pair_id"] for r in train_v2)
 
     OUT.mkdir(parents=True, exist_ok=True)
     manifests = {}
     manifests["train-8k.v1.jsonl"] = write_jsonl(OUT / "train-8k.v1.jsonl", [pair_row("train", r) for r in train])
+    manifests["train-8k.v2.jsonl"] = write_jsonl(OUT / "train-8k.v2.jsonl", [pair_row("train", r) for r in train_v2])
     manifests["eval-test1-400.v1.jsonl"] = write_jsonl(OUT / "eval-test1-400.v1.jsonl", [pair_row("test1", r) for r in test1])
     manifests["eval-test2-400.v1.jsonl"] = write_jsonl(OUT / "eval-test2-400.v1.jsonl", [pair_row("test2", r) for r in test2])
     provenance = {
@@ -140,9 +191,15 @@ def main():
             "eval-test1-400.v1": f"first {EVAL_PAIRS} pairs by sha256(seed|eval-test1|pair); {EVAL_PER_TYPE} QA per type by sha256(seed|eval-test1|question_id)",
             "eval-test2-400.v1": f"first {EVAL_PAIRS} pairs by sha256(seed|eval-test2|pair); {EVAL_PER_TYPE} QA per type by sha256(seed|eval-test2|question_id)",
         },
-        "counts": {"train-8k.v1": counts([pair_row("train", r) for r in train]),
+        "counts": {"train-8k.v2": counts([pair_row("train", r) for r in train_v2]),
+                   "train-8k.v1": counts([pair_row("train", r) for r in train]),
                    "eval-test1-400.v1": counts([pair_row("test1", r) for r in test1]),
                    "eval-test2-400.v1": counts([pair_row("test2", r) for r in test2])},
+        "train_v2": {"pairs_available": len(train_universe), "pairs_used": len(v2_pairs),
+                     "max_qa_per_pair": max(v2_per_pair.values()), "min_qa_per_pair": min(v2_per_pair.values()),
+                     "cap_per_pair": 5, "algorithm": "types filled scarcest-first; each QA taken from the pair with fewest selected QA (ties by sha256(seed|train-v2|pair)) that has an unused question of that type; per-pair cap 5; QA order by sha256(seed|train-v2|question_id)"},
+        "majority_answer": majority_answer(train_rows),
+        "answer_choices": {t: sorted({r["answer"] for r in train_rows if r["question_type"] == t}) for t in TYPES},
         "leakage_check": {"train_pairs_in_eval": 0, "train_pairs_in_test_universe": 0,
                           "note": "Test and Test2 share the same 968 image pairs; they are separate eval manifests"},
         "manifest_sha256": manifests,
@@ -151,7 +208,7 @@ def main():
     (OUT / "provenance.json").write_text(json.dumps(provenance, indent=2, sort_keys=True) + "\n")
     for name, digest in manifests.items():
         print(f"{name} sha256={digest}")
-    for name in ("train-8k.v1", "eval-test1-400.v1", "eval-test2-400.v1"):
+    for name in ("train-8k.v2", "train-8k.v1", "eval-test1-400.v1", "eval-test2-400.v1"):
         print(name, provenance["counts"][name])
 
 

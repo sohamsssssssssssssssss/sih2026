@@ -13,6 +13,9 @@ from PIL import Image, UnidentifiedImageError
 BASE_MODEL_ID = "Qwen/Qwen2.5-VL-3B-Instruct"
 SPLITS = frozenset({"train", "validation", "test"})
 ANSWER_INSTRUCTION = "Answer with a single word or number only. No explanation."
+PAIR_ORDER_INSTRUCTION = (
+    "The first image is the earlier image and the second image is the later image."
+)
 
 
 @dataclass(frozen=True)
@@ -26,6 +29,8 @@ class TrainingExample:
     sample_id: str
     # Two-image (bi-temporal) samples: image_path is the "before" image; None keeps single-image.
     after_image_path: Path | None = None
+    # Allowed answers for the question type (pair prompts only; shown verbatim to the model).
+    choices: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -192,7 +197,14 @@ def messages(example: TrainingExample, image_size: int, include_target: bool) ->
         }
         for path in image_paths
     ]
-    content.append({"type": "text", "text": f"{example.instruction} {ANSWER_INSTRUCTION}"})
+    if example.after_image_path is None:
+        text = f"{example.instruction} {ANSWER_INSTRUCTION}"
+    else:
+        if not example.choices:
+            raise ValueError("Pair prompts require the allowed answers for the question type")
+        text = (f"{PAIR_ORDER_INSTRUCTION} {example.instruction} "
+                f"Allowed answers: {', '.join(example.choices)}. {ANSWER_INSTRUCTION}")
+    content.append({"type": "text", "text": text})
     result = [{"role": "user", "content": content}]
     if include_target:
         result.append(

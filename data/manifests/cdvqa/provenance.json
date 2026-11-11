@@ -1,4 +1,66 @@
 {
+  "answer_choices": {
+    "change_or_not": [
+      "no",
+      "yes"
+    ],
+    "change_ratio": [
+      "0",
+      "0_to_10",
+      "10_to_20",
+      "20_to_30",
+      "30_to_40",
+      "40_to_50",
+      "50_to_60",
+      "60_to_70",
+      "70_to_80",
+      "80_to_90",
+      "90_to_100"
+    ],
+    "change_ratio_types": [
+      "0",
+      "0_to_10",
+      "10_to_20",
+      "20_to_30",
+      "30_to_40",
+      "40_to_50",
+      "50_to_60",
+      "60_to_70",
+      "70_to_80"
+    ],
+    "change_to_what": [
+      "NVG_surface",
+      "buildings",
+      "low_vegetation",
+      "playgrounds",
+      "trees",
+      "water"
+    ],
+    "decrease_or_not": [
+      "no",
+      "yes"
+    ],
+    "increase_or_not": [
+      "no",
+      "yes"
+    ],
+    "largest_change": [
+      "NVG_surface",
+      "buildings",
+      "low_vegetation",
+      "playgrounds",
+      "trees",
+      "water"
+    ],
+    "smallest_change": [
+      "NVG_surface",
+      "buildings",
+      "low_vegetation",
+      "playgrounds",
+      "trees",
+      "water"
+    ]
+  },
   "answer_vocabulary": {
     "change_or_not": [
       "no",
@@ -105,6 +167,20 @@
         "smallest_change": 1000
       },
       "qa": 8000
+    },
+    "train-8k.v2": {
+      "pairs": 1600,
+      "per_type": {
+        "change_or_not": 1000,
+        "change_ratio": 1000,
+        "change_ratio_types": 1000,
+        "change_to_what": 1000,
+        "decrease_or_not": 1000,
+        "increase_or_not": 1000,
+        "largest_change": 1000,
+        "smallest_change": 1000
+      },
+      "qa": 8000
     }
   },
   "dataset": "CDVQA (Change Detection VQA), QA from YZHJessica/CDVQA (Apache-2.0)",
@@ -119,10 +195,21 @@
     "train_pairs_in_eval": 0,
     "train_pairs_in_test_universe": 0
   },
+  "majority_answer": {
+    "change_or_not": "yes",
+    "change_ratio": "10_to_20",
+    "change_ratio_types": "0",
+    "change_to_what": "nvg_surface",
+    "decrease_or_not": "no",
+    "increase_or_not": "no",
+    "largest_change": "nvg_surface",
+    "smallest_change": "buildings"
+  },
   "manifest_sha256": {
     "eval-test1-400.v1.jsonl": "4689eb8a45fecb6e0ca42f3c209d64425f3b9068091337469ece8da588e16993",
     "eval-test2-400.v1.jsonl": "f79da8027377422e15af62edf4797c412c1ed61241d10b2ee55a685362314425",
-    "train-8k.v1.jsonl": "8de63c0bb890db7317a665d23c76d0b6fdedd047914f97e50b13cff536fd7e86"
+    "train-8k.v1.jsonl": "8de63c0bb890db7317a665d23c76d0b6fdedd047914f97e50b13cff536fd7e86",
+    "train-8k.v2.jsonl": "c238281802afe3b18b450b40f19e65c95c7f153d124eca64a910b36e81828d82"
   },
   "pair_definition": "pair_id = file_name stem; one bi-temporal image pair per file_name",
   "qa_download_dir": "~/data/cdvqa/qa (not in git)",
@@ -165,5 +252,13 @@
     "Test2": 15488,
     "Train": 25600,
     "Val": 6400
+  },
+  "train_v2": {
+    "algorithm": "types filled scarcest-first; each QA taken from the pair with fewest selected QA (ties by sha256(seed|train-v2|pair)) that has an unused question of that type; per-pair cap 5; QA order by sha256(seed|train-v2|question_id)",
+    "cap_per_pair": 5,
+    "max_qa_per_pair": 5,
+    "min_qa_per_pair": 5,
+    "pairs_available": 1600,
+    "pairs_used": 1600
   }
 }

@@ -119,3 +119,64 @@ Macro = equal mean over 8 types. No malformed answers are possible for a constan
 - `packages/cdvqa-g0-20261111T104959Z/` (folder committed; zip not committed)
 - `packages/cdvqa-g0-20261111T104959Z.zip` sha256: `508789b93eed26b2383e411f2d8768dd31057ec4facdc295102cba176bd3c40f`
 - No images, no weights, no tokenizer files.
+
+
+---
+
+# CDVQA G0b evidence
+
+## Images: NOT available on this machine (blocking)
+
+- Expected: `~/Downloads/second_dataset.zip` and extracted files under `~/data/cdvqa/images/`.
+- Found: no `second_dataset.zip` in `~/Downloads`, no `*second*` archive or folder anywhere on the disk, and
+  `~/data/cdvqa/images/` is empty. The only `.crdownload` in Downloads is an unrelated February file.
+- Consequently NOT done: the archive sha256, the image layout check, the 100% pair resolve check (512x512 RGB),
+  and `cdvqa-images.zip`. Once the archive exists, run the steps in the G0b report again.
+- The before/after folder convention (`im1`/`im2`) is still UNVERIFIED. Evidence gathered so far:
+  - SECOND project page (captain-whu.github.io/SCD): gives no folder layout and no time order.
+  - SECOND paper (arXiv 2010.05687, "Semantic Change Detection with Asymmetric Siamese Networks"): defines
+    two multi-temporal images `I1`, `I2`, with `I1` the "first image" and `I2` the "second image", and
+    `t = 1, 2` for the two inputs. It never says which of the two is captured earlier.
+  - CDVQA questions (train QA JSON): they refer to the earlier image as "pre-change image" / "pre-event image"
+    and to the later one as "post-change image" (4,421 questions) and to "first image" / "second image"
+    (8,573 / 6,833). Consistent with `I1` = earlier, but this does not say which folder holds it.
+  - Conclusion: time order (first = earlier) is supported by the CDVQA wording; the folder-to-time mapping is
+    not documented anywhere reachable. Verify it from the extracted archive (for example, the release README if
+    it is in the archive) before the first GPU run.
+
+## Train v2 (`train-8k.v2.jsonl`)
+
+- 8,000 QA, 1,000 per type (8 types), every type filled scarcest-first.
+- Pairs used: 1600 of 1600 train pairs.
+- QA per pair: min 5, max 5 (cap 5).
+- Leakage: 0 image pairs shared between train-8k.v2 and either eval manifest (asserted in the builder and in the
+  package preflight).
+- v1 (`train-8k.v1.jsonl`, 500 pairs) is kept; its hash is unchanged.
+- Eval manifests (`eval-test1-400.v1`, `eval-test2-400.v1`) are unchanged (byte-identical to G0).
+
+## Majority answers (for the result.json baseline)
+
+`majority_answer` (Train, casefolded) is stored in `provenance.json`; the stage computes per-type accuracy on each
+eval manifest from it.
+
+## Package
+
+- `packages/cdvqa-g0b-20261111T110559Z/` (folder committed, zip not committed)
+- `packages/cdvqa-g0b-20261111T110559Z.zip` sha256: `878704207d2710bd6de036a30ab5b42e35d07b985724721fd552e61c1cf518b5`
+- Contents: pilot.py, scripts/ (cdvqa_pilot.py, train_remote_sensing_adapter.py, stage1_runtime.py),
+  training/remote_sensing.py, eval/ (cdvqa_pairs.py, two test files), configs/model_artifacts.json (copied from
+  the B13 package), data/manifests/cdvqa/ (v1, v2, eval, provenance), pilot-config.json, requirements-target.txt
+  and requirements-cpu-preflight.txt (same pins as B13), README.md, KAGGLE.md, package-manifest.json.
+- No images, no weights, no tokenizer files.
+
+## Tests (CPU doubles, python3.11)
+
+- `eval/test_cdvqa_pilot.py` (7): two-step pair train on a fake Qwen-shaped model with the real Trainer; resume
+  from a verified checkpoint; resume rejects a tampered file, a wrong identity and a wrong schedule; wrong
+  selection size rejected; all pair prompt conditions; evaluate stage over four conditions on a tiny manifest with
+  malformed counts and the bootstrap result shape.
+- `eval/test_cdvqa_pairs.py` (9) and the root `training/test_remote_sensing.py` (19): all pass.
+- Existing B13 package runner tests (`scripts/test_rgb_pilot_package.py`, `scripts/test_smoke_rgb_pilot_train.py`):
+  35 pass. The B13 package preflight still passes.
+- Not run: any stage that needs weights, CUDA, 4-bit loading or the real processor (`token-preflight`, `evaluate`,
+  `train` on GPU).

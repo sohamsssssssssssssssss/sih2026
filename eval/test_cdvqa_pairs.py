@@ -46,7 +46,7 @@ def example(tmp_path, with_after=True):
     before = tmp_path / "im1" / "1.png"
     after = tmp_path / "im2" / "1.png"
     return TrainingExample(before, "Are there more buildings?", "yes", "CDVQA", "1", "train", "s1",
-                           after_image_path=after if with_after else None)
+                           after_image_path=after if with_after else None, choices=("yes", "no"))
 
 
 def test_collator_masks_answer_and_feeds_both_images_in_order(tmp_path):
@@ -63,7 +63,9 @@ def test_pair_messages_order_and_size(tmp_path):
     assert [c["image"] for c in images] == [
         (tmp_path / "im1" / "1.png").as_uri(), (tmp_path / "im2" / "1.png").as_uri()]
     assert all(c["resized_height"] == c["resized_width"] == 392 for c in images)
-    assert content[-1]["type"] == "text" and content[-1]["text"].startswith("Are there more buildings?")
+    text = content[-1]["text"]
+    assert content[-1]["type"] == "text" and "first image is the earlier" in text
+    assert "Are there more buildings? Allowed answers: yes, no." in text
 
 
 def test_single_image_messages_unchanged(tmp_path):
@@ -114,7 +116,8 @@ def write_fixture(tmp_path, rows, vocab=None):
             (images / name).parent.mkdir(parents=True, exist_ok=True)
             (images / name).write_bytes(b"x")
     provenance = tmp_path / "provenance.json"
-    provenance.write_text(json.dumps({"answer_vocabulary": vocab or {t: ["yes", "no"] for t in QUESTION_TYPES}}))
+    types = vocab or {t: ["yes", "no"] for t in QUESTION_TYPES}
+    provenance.write_text(json.dumps({"answer_vocabulary": types, "answer_choices": types}))
     manifest = tmp_path / "pairs.jsonl"
     manifest.write_text("".join(json.dumps(r) + "\n" for r in rows))
     return manifest, images, provenance
