@@ -4,10 +4,12 @@ from collections.abc import Mapping
 from datetime import datetime, timezone
 from threading import Thread
 from typing import Any
+from types import SimpleNamespace
 
 from models.paths import public_path
 from models.qwen_vl.b13 import adapter_path, count_target
 from models.grounding_dino.count import count_objects, load_thresholds
+from models.grounding_dino.resolution import resolution_gate, refusal
 from orchestrator import worker as inference_worker
 from orchestrator.capabilities import ProviderNotReady, ResolvedProvider, require_provider_ready
 from orchestrator.registry import get
@@ -110,28 +112,40 @@ def route(
     remain otherwise unchanged.
     """
     count_query = count_target(question) if adapter_path() and len(image_paths) == 1 and capability in ("single_image_vqa", "grounding") else None
+    gate = resolution_gate(count_query, (params or {}).get("gsd_m"), (params or {}).get("gsd_source", "unknown")) if count_query else None
     unverified_count = False
-    if count_query:
-        try:
-            resolved = require_provider_ready("grounding")
-        except ProviderNotReady:
-            resolved = require_provider_ready("single_image_vqa")
-            unverified_count = True
+    if gate and gate["count_status"] == "not_resolvable":
+        resolved = ResolvedProvider(capability, "count-resolution-gate", "count-resolution-gate", "1")
+        model = SimpleNamespace(version="1")
+        result = refusal(gate)
     else:
-        resolved = require_provider_ready(capability)
-    model = get(resolved.model_name)
+        if count_query:
+            try:
+                resolved = require_provider_ready("grounding")
+            except ProviderNotReady:
+                resolved = require_provider_ready("single_image_vqa")
+                unverified_count = True
+        else:
+            resolved = require_provider_ready(capability)
+        model = get(resolved.model_name)
 
-    def infer(paths, prompt):
-        if timeout_seconds is None:
-            return model.infer(image_paths=paths, question=prompt)
-        if getattr(model, "isolated", False) is True:
-            return inference_worker.run(resolved.model_name, paths, prompt, timeout_seconds)
-        return _infer_in_thread(model, paths, prompt, timeout_seconds)
+        def infer(paths, prompt):
+            if timeout_seconds is None:
+                return model.infer(image_paths=paths, question=prompt)
+            if getattr(model, "isolated", False) is True:
+                return inference_worker.run(resolved.model_name, paths, prompt, timeout_seconds)
+            return _infer_in_thread(model, paths, prompt, timeout_seconds)
 
-    if count_query and not unverified_count:
-        result = count_objects(image_paths, count_query, infer, load_thresholds())
-    else:
-        result = infer(image_paths, question)
+        if count_query and not unverified_count:
+            result = count_objects(image_paths, count_query, infer, load_thresholds())
+        else:
+            result = infer(image_paths, question)
+        if gate:
+            result.update(gate)
+            result["count_status"] = "detector_unavailable" if unverified_count else "gsd_unknown" if gate["gsd_m"] is None else "detected"
+            for item in result.get("evidence", []):
+                if item.get("type") == "detection_count":
+                    item["resolution"] = {**gate, "count_status": result["count_status"]}
     validated = _validate_result(result)
     if unverified_count:
         validated.update(unverified_count="detector_unavailable", answer_source="vlm_unverified_count")
@@ -179,7 +193,7 @@ def route(
     traced_params = {
         key: value for key, value in validated_params.items() if key not in reserved
     }
-    for key in ("model_provenance", "answer_source", "count_thresholds", "unverified_count"):
+    for key in ("model_provenance", "answer_source", "count_thresholds", "unverified_count", "count_status", "gsd_m", "gsd_source", "object_class", "required_gsd_m", "object_size_m", "min_pixels", "unverified_gsd"):
         traced_params.pop(key, None)
         if key in validated:
             traced_params[key] = validated[key]

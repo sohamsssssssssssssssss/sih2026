@@ -32,10 +32,11 @@ def _safe_extract(archive: Path, destination: Path) -> None:
         bundle.extractall(destination)
 
 
-def _find_dataset_root(root: Path) -> Path | None:
-    for candidate in [root, *(path.parent for path in root.rglob("test.txt"))]:
+def _find_dataset_root(root: Path, split_dir: str = ".") -> Path | None:
+    depth = len(Path(split_dir).parts)
+    for candidate in [root, *(path.parents[depth] for path in root.rglob("test.txt") if len(path.parents) > depth)]:
         if (
-            (candidate / "test.txt").is_file()
+            (candidate / split_dir / "test.txt").is_file()
             and (candidate / "Annotations").is_dir()
             and (candidate / "JPEGImages").is_dir()
         ):

@@ -18,6 +18,7 @@ from uuid import uuid4
 import numpy as np
 from PIL import Image, UnidentifiedImageError
 from rasterio import Affine
+from rasterio.crs import CRS
 from rasterio.enums import ColorInterp, Resampling
 from rasterio.errors import NotGeoreferencedWarning, RasterioIOError
 from rasterio.io import MemoryFile
@@ -32,6 +33,8 @@ from data.dataset import SCENE_MANIFEST_VERSION, SceneManifest, validate_scene_m
 from data.pairing import evaluate_compatibility
 from models.base import ModelReadiness
 from models.paths import public_path
+from models.qwen_vl.b13 import adapter_path, count_target
+from models.grounding_dino.resolution import filename_gsd, metadata_gsd, resolution_gate
 
 # Keep model resolution offline before importing the model registry.
 os.environ["HF_HUB_OFFLINE"] = "1"
@@ -240,6 +243,47 @@ def _preview_channel(channel: np.ma.MaskedArray) -> np.ndarray:
     return scaled.astype(np.uint8)
 
 
+def _projected_gsd(transform, crs, status):
+    if (status == "affine" and crs is not None and crs.is_projected
+            and crs.linear_units.lower() in {"metre", "metres", "meter", "meters"}):
+        return metadata_gsd(abs(transform.a))
+    return None
+
+
+def scene_gsd(scene_id):
+    """Prefer metre CRS pixels; metadata is a declared fallback, never degrees-as-metres."""
+    value = None
+    if INGESTED_SCENE_ID.fullmatch(scene_id):
+        path = SCENE_MANIFEST_DIR / f"{scene_id}.json"
+        try:
+            value = json.loads(path.read_text())
+        except (OSError, ValueError):
+            pass
+    if isinstance(value, dict):
+        raster = value.get("raster") or {}
+        try:
+            crs = CRS.from_wkt(raster["crs_wkt"]) if raster.get("crs_wkt") else None
+            gsd = _projected_gsd(Affine(*raster["transform"]), crs, raster.get("georeferencing_status"))
+        except (KeyError, TypeError, ValueError):
+            gsd = None
+        if gsd is not None:
+            preview = value["preview"]
+            scale = max(1, raster["width"] / preview["width"], raster["height"] / preview["height"])
+            return gsd * scale, "projected_crs" if scale == 1 else "projected_crs_preview"
+        gsd = metadata_gsd(value.get("gsd")) or filename_gsd(value.get("source", {}).get("filename", ""))
+        if gsd is not None:
+            return gsd, "scene_metadata"
+    try:
+        entry = next((e for e in scene_pack_manifest()["scenes"] if e["id"] == scene_id), None)
+        gsd = metadata_gsd(entry.get("source", {}).get("gsd")) if entry else None
+        if gsd is not None:
+            return gsd, "scene_metadata"
+    except ScenePackError:
+        pass
+    gsd = filename_gsd(scene_id)
+    return gsd, "scene_id" if gsd is not None else "unknown"
+
+
 def _tiff_preview_and_metadata(data: bytes) -> tuple[Image.Image, dict[str, Any]]:
     try:
         with warnings.catch_warnings():
@@ -298,6 +342,7 @@ def _tiff_preview_and_metadata(data: bytes) -> tuple[Image.Image, dict[str, Any]
                     georeferencing_status = "affine"
                 metadata = {
                     "driver": source.driver,
+                    "gsd_m": _projected_gsd(transform, crs, georeferencing_status),
                     "width": source.width,
                     "height": source.height,
                     "band_count": source.count,
@@ -488,6 +533,7 @@ def ingest_scene(
         # without changing it.
         stored: dict[str, Any] = {
             **manifest,
+            "gsd": (raster or {}).get("gsd_m") or filename_gsd(safe_filename),
             "uploaded_at": datetime.now(timezone.utc).isoformat(),
             **({"process_evidence": process_evidence} if process_evidence is not None else {}),
             **({"optical_check": optical_check} if optical_check is not None else {}),
@@ -523,7 +569,7 @@ def ingest_scene(
         "width": width,
         "height": height,
         "sensor": declared.get("sensor"),
-        "gsd": None,
+        "gsd": (f"{stored['gsd']:g} m/px" if stored.get("gsd") is not None else None),
         "location": None,
         "acquisition_date": declared.get("acquisition_timestamp"),
     }
@@ -691,13 +737,17 @@ def _live_response(result: Any) -> dict[str, Any]:
             else f"Live {model_name} inference completed."
         ),
     }
-    for key in ("model_provenance", "answer_source", "count", "count_thresholds", "unverified_count"):
+    for key in ("model_provenance", "answer_source", "count", "count_thresholds", "unverified_count", "count_status", "gsd_m", "gsd_source", "object_class", "required_gsd_m", "object_size_m", "min_pixels", "unverified_gsd"):
         if key in result:
             response[key] = result[key]
     if "evidence" in result:
         response["evidence"] = result["evidence"]
     if result.get("unverified_count") == "detector_unavailable":
         response["notice"] += " unverified_count: detector_unavailable. This count is a VLM estimate without detection evidence."
+    if result.get("unverified_gsd"):
+        response["notice"] += " unverified_gsd: scene resolution is unknown."
+    if result.get("count_status") == "not_resolvable":
+        response["notice"] = "Count refused by resolution policy; no model inference ran."
     return response
 
 
@@ -857,6 +907,19 @@ def analyze_scene(
         and local_scene_image(scene_id) is None
     ):
         raise SceneNotFound("Local scene pixels are unavailable.")
+    count_context = {}
+    if execution_mode == "live" and scene_id_2 is None and capability in (None, SINGLE_IMAGE_VQA, "grounding") and adapter_path() and count_target(question):
+        gsd, source = scene_gsd(scene_id)
+        count_context = {"gsd_m": gsd, "gsd_source": source}
+        gate = resolution_gate(count_target(question), gsd, source)
+        if gate["count_status"] == "not_resolvable":
+            image = local_scene_image(scene_id)
+            if image is None:
+                raise SceneNotFound("Local scene pixels are unavailable.")
+            return _live_response(route("single_image_vqa", [str(image)], question,
+                params={"scene_id": scene_id, "execution_mode": "live", **count_context},
+                planner_version=plan.planner_version, planner_rule="count_resolution_gate",
+                requested_capability=capability))
     if not execution.executable and execution_mode == "live":
         readiness = capability_readiness(plan.selected_capability)
         if not readiness["available"]:
@@ -927,6 +990,7 @@ def analyze_scene(
             base_params={
                 "scene_id": normalize_scene_id(scene_id),
                 **pair_params,
+                **count_context,
                 "sensor": sensor,
                 "execution_mode": "live",
             },

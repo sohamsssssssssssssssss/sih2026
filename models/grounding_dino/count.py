@@ -23,7 +23,8 @@ class CountThresholds:
 
 
 def load_thresholds(path: Path = CONFIG) -> CountThresholds:
-    return CountThresholds(**json.loads(path.read_text()))
+    settings = json.loads(path.read_text())
+    return CountThresholds(**{key: settings[key] for key in CountThresholds.__dataclass_fields__})
 
 
 def iou(left, right):

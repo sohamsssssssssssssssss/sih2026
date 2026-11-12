@@ -75,6 +75,14 @@ class AnalyzeResponse(BaseModel):
     count: int | None = None
     count_thresholds: dict[str, float] | None = None
     unverified_count: str | None = None
+    count_status: Literal["detected", "not_resolvable", "gsd_unknown", "detector_unavailable"] | None = None
+    gsd_m: float | None = None
+    gsd_source: str | None = None
+    object_class: str | None = None
+    required_gsd_m: float | None = None
+    object_size_m: float | None = None
+    min_pixels: float | None = None
+    unverified_gsd: bool | None = None
     results_artifact: str | None = None
     model: ModelInfo
     trace: dict[str, Any]

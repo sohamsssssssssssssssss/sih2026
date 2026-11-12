@@ -1,117 +1,180 @@
-# Detection counts with explicit VLM fallback
+# Honest count resolution and original-DIOR detector evaluation
 
-Branch `feature/count-grounding`, based on `app/b13-adapter` at `bcd0e23`. Implementation lives only in `/Users/soham/sih2026-count`. No files under `training/`, `packages/`, `results/`, or `data/manifests/` were changed. The app worktree was used only for the explicitly requested baseline test run, with bytecode/cache writes disabled. Nothing is pushed or merged.
+Branch `feature/count-grounding`, continuing `f28b862`. No changes to `training/`, `packages/`, `results/` or `data/manifests/`. No model evaluation, training, dataset download or large extraction was run on the Mac. Only CPU tests and read-only label/source inspection were performed.
 
-## Existing and updated app path
+## App count path and GSD
 
-`backend/services.py` builds a plan and executes it through `orchestrator/executor.py` and `orchestrator/router.py`. General question intents live in `orchestrator/question.py`; the existing B13-specific count target parser is `models/qwen_vl/b13.py::count_target`. The B13 count route remains enabled by setting `SATQUERY_VQA_ADAPTER` before starting the API. Non-count VQA still uses its original adapter loading, prompt and inference path.
+The B13-specific count path remains opt-in through `SATQUERY_VQA_ADAPTER`. `models/qwen_vl/b13.py::count_target` extracts the existing count noun phrase. The backend supplies GSD to `orchestrator/router.py`; `models/grounding_dino/resolution.py` applies the resolution policy before detector/VLM inference. Non-count model prompts, adapter loading and routing are unchanged.
 
-The parser recognizes `How many …`, `What is the number of …`, `What is the amount of …`, bare `number of …` / `amount of …`, and `Count [the] …`. It preserves plural/adjectival object phrases and strips generic `are/is …` and `in the image/scene/picture/photo` suffixes. It does not add lemmatization, a language model parser or a new dependency.
+GSD source precedence in `backend/services.py::scene_gsd`:
 
-For a single-image count request, the planner selects Grounding DINO when ready; otherwise it selects single-image VQA with rule `b13_unverified_count_fallback`. This availability decision is required before execution because the existing backend refuses unavailable plans. The router checks detector readiness again, invokes the actual selected provider using the existing killable-worker seam, and traces its actual provider/source.
+1. TIFF affine transform: `abs(transform.a)` **only for projected CRS units declared as metres** and affine georeferencing. Geographic degrees, feet, identity/missing transforms and GCP/RPC-only georeferencing do not become metre GSD. The raster metadata stores native `gsd_m`; the existing upload response's formerly-null `gsd` is populated, e.g. `10 m/px`.
+2. Stored scene/catalog GSD or a source filename carrying an explicit token such as `_gsd0.3`. For uploaded TIFF previews, the gate multiplies native metre GSD by the maximum native-to-preview downsampling factor, so it does not pretend the detector receives the full native resolution.
+3. Scene-ID token such as `tile_gsd0.3`.
+4. Otherwise unknown. Sensor name, image dimensions or a dataset name alone are not used to guess an uploaded scene's GSD.
 
-`models/grounding_dino/count.py::count_objects` accepts a **detector callable**, `(image_paths, object_prompt) -> {evidence: [...]}`. The production callable invokes `GroundingDINOModel.infer`; CPU tests supply deterministic callables instead. No mock detector is shipped as a production fallback.
+The response/trace records `gsd_m` and `gsd_source`. Scene-ID/metadata GSD is declared metadata, not independent verification. The horizontal affine-spacing rule assumes the usual north-up, approximately square-pixel imagery; unusual rotation/anisotropy and inaccurate metadata remain limitations.
 
-The counting policy:
+## Resolution policy: assumptions, not facts
 
-1. Require normalized `xyxy` boxes and finite scores/coordinates; malformed detector evidence fails instead of inventing a count.
-2. Discard zero-area boxes and scores **less than or equal to** the configured box threshold. This matches the detector's strict score-cutoff semantics.
-3. Sort by confidence, highest first, with stable ordering for ties. Apply greedy, class-agnostic NMS for the single object prompt. Suppress a box when IoU is **greater than** the configured NMS threshold; equality is retained.
-4. Answer with the number of retained boxes. Zero detections is a detector-backed zero, not an unavailable-detector fallback.
+`configs/count_grounding.json` contains score thresholds and a `resolution` section. The rule is:
 
-## Threshold configuration
+`assumed object_size_m / effective_gsd_m >= min_pixels`
 
-`configs/count_grounding.json` is the configuration source, without runtime hard-coded score/NMS cutoffs:
+`min_pixels` defaults to **8**. The configured class dimensions are:
 
-```json
-{"box_threshold": 0.35, "text_threshold": 0.25, "nms_iou": 0.5}
+| Class | Assumed size (m) | Maximum allowed GSD at 8 pixels (m/px) |
+|---|---:|---:|
+| building | 8 | 1 |
+| vehicle | 2 | 0.25 |
+| ship | 10 | 1.25 |
+| airplane | 12 | 1.5 |
+| storage tank | 8 | 1 |
+| tree | 3 | 0.375 |
+| default / unknown class | 3 | 0.375 |
+
+**Source: project engineering assumptions in the configuration, as requested for this gate.** These dimensions and the eight-pixel cutoff are not measurements, literature-derived class minima or guarantees of detection. They need calibration. Lexical plurals are recognized, with aliases such as car/truck → vehicle and plane → airplane. The gate is deliberately simple and does not infer actual object size from the image.
+
+Payload statuses:
+
+- `not_resolvable`: refuse before either model runs, even if both providers are unavailable. The answer explains current and required GSD, e.g. “The building count cannot be determined at 10 m/px. Imagery at 1 m/px or finer is required by the resolution policy.” There is **no numeric count field or count estimate**. The policy decision has evidence and a hash-chained trace with provider `count-resolution-gate`.
+- `detected`: known GSD passes the policy and a ready detector returns the post-NMS count.
+- `gsd_unknown`: a ready detector runs, but the payload, evidence and notice carry `unverified_gsd`. No claim of physical resolvability is made.
+- `detector_unavailable`: when the gate did not refuse, preserve the existing VLM fallback labelled `unverified_count: detector_unavailable`. Unknown GSD remains an additional `unverified_gsd` label. If the VLM is also unavailable, the normal unavailable-provider error remains.
+
+Common gate fields include `gsd_m`, `gsd_source`, `object_class`, `object_size_m`, `required_gsd_m` and `min_pixels`. The API notice distinguishes a policy refusal from model inference. The backend handles refusals before its normal unavailable-plan rejection, so missing hardware cannot cause an unresolvable count to fall through to a VLM.
+
+Examples for buildings: **10 m/px → not_resolvable; 0.3 m/px → detector path; no GSD → detector path labelled unverified_gsd**, subject to detector availability. A gate pass is permission to attempt detection, not evidence that the count is correct.
+
+## Detector policy and evidence
+
+The existing lazy CUDA-only Grounding DINO provider receives the object prompt. `models/grounding_dino/count.py::count_objects` accepts an injectable detector callable for CPU tests. Its settings remain box score `0.35`, text score `0.25`, NMS IoU `0.5`, all configured in the JSON file. Restart the API/worker after config changes.
+
+Boxes must be finite normalized xyxy with scores. Discard zero-area boxes and scores at or below the box threshold. Stable greedy NMS suppresses IoU greater than its configured threshold. Return the number of retained boxes, existing UI-compatible `bounding_box` evidence, a `detection_count` summary with thresholds/resolution evidence, and `count_thresholds`. No evidence is fabricated for VLM fallback. Malformed detector evidence is an error rather than silent fallback.
+
+## Why RSVQA-LR is a negative control, not this detector's count benchmark
+
+The specified RSVQA-LR inputs are 256-pixel Sentinel-2 imagery at 10 m/px. The configured gate rejects the frozen count questions at that resolution rather than trying to count subpixel/small instances. The frozen 389-question manifest has **100 count questions; 24 ground-truth answers are exactly `"0"`**, verified from its bytes. This is a label-prior fact, not a detector result or evidence that the adapter always predicts zero. The existing cohort includes building targets as high as **7,116**, not an upper bound of 312. A real-versus-blank tie and the zero-label prior do not establish image-grounded counting.
+
+The frozen LR manifest SHA256 remains `b55842a801b76e680e5aee3cded8bc47dad72498a10629b5648db2c07831973c`. It is accepted only under the explicit `--mode lr_negative_control`. That mode checks that all count questions receive `not_resolvable` at the dataset-declared 10 m/px, records the zero-label count, and reports **no detector accuracy**. The evaluator CLI remains CUDA-guarded even though this mode only checks the policy. Its gate logic was tested only with synthetic CPU examples, not run on the real cohort.
+
+## Original DIOR protocol
+
+Use original DIOR detection annotations, **not DIOR-RSVG referring-expression indices**. [Li et al., 2020](https://arxiv.org/abs/1909.00133) describes DIOR's 23,463 images and 20 classes. The supplied source is the [Zenodo 11213149 third-party mirror](https://zenodo.org/records/11213149), file [DIOR-VOC.zip](https://zenodo.org/records/11213149/files/DIOR-VOC.zip), approximately 7.4 GB. The record identifies it as an Open-access re-upload after the original host became inaccessible; it is not the original publisher's host. No ZIP was downloaded or SHA256 invented here: notebook and evaluator compute its actual SHA256 at runtime and record mirror provenance in the frozen sample and output.
+
+Layout is checked at runtime: `ImageSets/Main/{train,val,test}.txt`, `Annotations/<image_id>.xml`, and `JPEGImages/`. The existing DIOR-RSVG safe extractor/root-finder is reused, with an explicit `ImageSets/Main` option. The new evaluator does **not** reuse the RSVG expression split loader. Bad/missing layout or train/val annotations fails with the found tree; no alternative split is guessed. Missing **test annotations are allowed**, since test images are not evaluated.
+
+Protocol:
+
+- Official **val image IDs** for evaluation, official **train image IDs** for majority baselines. All train/val/test ID sets must be unique and mutually disjoint.
+- Ground truth per `(image, class)` is the number of VOC boxes of that class, including difficult/truncated annotations. Validate class names, bounding boxes and the original 800×800 dimensions.
+- **Assumption:** original DIOR VOC annotations exhaustively label instances within its 20 classes, making absent-class zero targets valid. This is not assumed for DIOR-RSVG.
+- All 20 classes by default, or an explicit `--classes` subset using the repository's DIOR category names. DIOR does **not** have building/tree categories, so its results would not validate those app classes.
+- Default **1,000 unique image/class pairs**, seed **17**, with **500 positive and 500 zero-target pairs**, balanced 1:1 within each class (25+25 per class with all 20 classes). Sampling does not change in response to detector outcomes. An insufficient class pool fails rather than silently shrinking the sample. This balanced benchmark does not represent natural class prevalence.
+- The sample manifest includes pair identities, targets, prompts, XML/image hashes, train-annotation identity, split-file hashes, train-only modes, configuration and mirror ZIP hash. It is written and fsynced **before detector construction/inference**. An existing manifest can be reused only when the recomputed selection/provenance/config matches exactly.
+- Infer proposals once per pair at the lowest score threshold. Reuse the production score/NMS policy for the `0.25/0.30/0.35/0.40` sweep. Report per-class and overall exact-match accuracy, MAE, within-±1 and n, plus per-pair evidence.
+- Output both **always-0** and **per-class train-majority-count** baselines on the identical frozen val pairs. Train modes include zero counts for every train image/class pair; ties choose the smaller count. No val/test label is used to fit a baseline.
+
+DIOR's dataset-level GSD varies roughly **0.5–30 m/px** and per-image GSD is not present in these VOC annotations. **This evaluator measures detector counting only, not the app's resolution gate.** It intentionally invokes the shared detector-count postprocessor without pretending that DIOR resolution is known.
+
+## Kaggle cells — supplied, NOT executed
+
+Prerequisites: upload/check out this branch's code at `/kaggle/working/sih2026`, select a CUDA accelerator, enable notebook internet for provisioning, and provide scratch disk for both the ZIP and extracted images. No training assets or adapters are needed.
+
+### Cell 1: provision dependencies, DIOR mirror and model/cache inputs
+
+```python
+import os, sys, json, hashlib, shutil, urllib.request, subprocess
+from pathlib import Path
+
+scratch = Path('/kaggle/tmp/count-grounding')
+scratch.mkdir(parents=True, exist_ok=True)
+os.environ['HF_HOME'] = str(scratch / 'hf')
+os.environ['HF_HUB_CACHE'] = str(scratch / 'hf/hub')
+os.environ.pop('HF_HUB_OFFLINE', None)
+os.environ.pop('TRANSFORMERS_OFFLINE', None)
+subprocess.run([sys.executable, '-m', 'pip', 'install', '-q',
+                'groundingdino-py==0.4.0', 'transformers==4.49.0',
+                'huggingface-hub', 'pillow'], check=True)
+
+url = 'https://zenodo.org/records/11213149/files/DIOR-VOC.zip'
+archive = scratch / 'DIOR-VOC.zip'
+if not archive.exists():
+    partial = scratch / 'DIOR-VOC.zip.part'
+    with urllib.request.urlopen(url) as response, partial.open('wb') as output:
+        shutil.copyfileobj(response, output, length=1024 * 1024)
+    partial.replace(archive)
+with archive.open('rb') as handle:
+    zip_sha256 = hashlib.file_digest(handle, 'sha256').hexdigest()
+provenance = {'kind': 'third_party_mirror', 'url': url,
+              'zip_sha256': zip_sha256, 'zip_bytes': archive.stat().st_size}
+print(provenance)
+Path('/kaggle/working/dior-download.json').write_text(json.dumps(provenance, indent=2))
+
+from huggingface_hub import hf_hub_download, snapshot_download
+checkpoint = hf_hub_download('ShilongLiu/GroundingDINO',
+    'groundingdino_swint_ogc.pth', local_dir=str(scratch / 'grounding'))
+snapshot_download('bert-base-uncased', cache_dir=os.environ['HF_HUB_CACHE'],
+    allow_patterns=['config.json', 'tokenizer_config.json', 'tokenizer.json',
+                    'vocab.txt', 'special_tokens_map.json', 'model.safetensors'])
+os.environ['SATQUERY_GROUNDING_CHECKPOINT'] = checkpoint
+# The installed package supplies GroundingDINO_SwinT_OGC.py. For a separate
+# provisioned config, set SATQUERY_GROUNDING_CONFIG to its local path.
 ```
 
-The box/text defaults of `GroundingDINOModel` now read that file; explicit constructor overrides remain available for the evaluator. The existing CUDA-only lazy loader is unchanged. The count postprocessor uses the same settings, and both scores and NMS boundaries are tested on CPU. Restart the API/worker after changing this file so the loaded detector and router use consistent settings. These defaults are **not calibrated counting settings**; detector counting has not been measured.
+### Cell 2: safe extraction and exact evaluation command
 
-## Answer evidence and fallback
+```python
+sys.path.insert(0, '/kaggle/working/sih2026')
+from kaggle.run_grounding_dior_rsvg import _safe_extract, _find_dataset_root
 
-Successful detection-count responses preserve the existing UI box contract (`bounding_box`, `normalized_xyxy`, score and coordinates), add an evidence summary, and expose `count` / `count_thresholds`:
-
-```json
-{
-  "answer": "1",
-  "count": 1,
-  "answer_source": "grounding_dino_count",
-  "count_thresholds": {"box_threshold": 0.35, "text_threshold": 0.25, "nms_iou": 0.5},
-  "evidence": [
-    {"type": "bounding_box", "coordinates": [0.1, 0.1, 0.3, 0.3],
-     "coordinate_space": "normalized_xyxy", "confidence": 0.9},
-    {"type": "detection_count", "object": "buildings", "count": 1,
-     "thresholds": {"box_threshold": 0.35, "text_threshold": 0.25, "nms_iou": 0.5}}
-  ]
-}
+data_root = scratch / 'dior'
+data_root.mkdir(exist_ok=True)
+if _find_dataset_root(data_root, 'ImageSets/Main') is None:
+    _safe_extract(archive, data_root)
+os.environ['HF_HUB_OFFLINE'] = '1'
+os.environ['TRANSFORMERS_OFFLINE'] = '1'
+command = [sys.executable, 'kaggle/eval_count_detection.py',
+    '--archive', str(archive), '--data-root', str(data_root),
+    '--sample-manifest', '/kaggle/working/dior-count-val-seed17-1000.json',
+    '--sample-size', '1000', '--config', 'configs/count_grounding.json',
+    '--thresholds', '0.25', '0.30', '0.35', '0.40',
+    '--output', '/kaggle/working/dior-count-val-evaluation.json']
+print(' '.join(command))
+subprocess.run(command, cwd='/kaggle/working/sih2026', check=True)
 ```
 
-This is an illustrative payload, not a measured output. Existing UI overlay code already reads box evidence. The thresholds and answer source are also recorded in the hash-chained trace.
+The evaluator also safely extracts the supplied ZIP if no valid root is found. Its own layout check prints the found tree if extraction did not produce the expected detection layout. Keep the frozen sample manifest with the report. Reports include the mirror ZIP hash and detector checkpoint SHA256; a fresh output path is required. Provisioning cells rely on runtime package compatibility and internet availability; neither was tested here.
 
-If Grounding DINO readiness reports unavailable (including absent CUDA, dependencies, checkpoint or text encoder), the router invokes the current VLM with the **original** question. It preserves the VLM's answer, sets `answer_source: vlm_unverified_count`, and adds:
-
-```json
-{"unverified_count": "detector_unavailable"}
-```
-
-The response notice contains the literal marker `unverified_count: detector_unavailable` and explains that no detection evidence backs the estimate; the marker is traced. Direct B13 VLM count generations carry the same unverified label. No numeric detector count or boxes are fabricated for fallback. The VLM must itself be ready; otherwise the normal unavailable-provider error is returned. Detector execution/validation errors are not silently reclassified as readiness failures. Non-count VLM behavior is unchanged.
-
-## Frozen validation and CUDA evaluation
-
-The manifest was located read-only at:
-
-`/Users/soham/sih2026/packages/rgb-vqa-pilot-b13-v1.1-20261017T144127Z/data/manifests/rsvqa/pilot.v1/validation.jsonl`
-
-Its SHA256 is `b55842a801b76e680e5aee3cded8bc47dad72498a10629b5648db2c07831973c`. It has 389 validation questions, of which 100 are count questions. `kaggle/eval_count_detection.py` rejects a different manifest digest, row count, duplicate count IDs, unparseable count prompt or noncanonical integer target. It never selects training or official test questions.
-
-Provision the count branch code, B13 V1.1 dataset, Grounding DINO checkpoint/config and cached `bert-base-uncased` text encoder separately. The B13 dataset metadata identifies `sohamssssss/satquery-rgb-vqa-b13-v11`; mount it with its `data/manifests/...` and `images/` tree intact. Dependencies must be installed before enabling offline mode. The script does not install/download models, run training or fall back to a VLM.
-
-Exact command on a Kaggle CUDA runtime, assuming these mounts:
+LR policy-control command, using the preserved B13 dataset mount:
 
 ```bash
-cd /kaggle/working/sih2026
-export HF_HUB_OFFLINE=1
-export TRANSFORMERS_OFFLINE=1
-export SATQUERY_GROUNDING_CHECKPOINT=/kaggle/input/satquery-models/groundingdino_swint_ogc.pth
-python kaggle/eval_count_detection.py \
+python kaggle/eval_count_detection.py --mode lr_negative_control \
   --manifest /kaggle/input/satquery-rgb-vqa-b13-v11/data/manifests/rsvqa/pilot.v1/validation.jsonl \
-  --image-root /kaggle/input/satquery-rgb-vqa-b13-v11/images \
   --config configs/count_grounding.json \
-  --thresholds 0.25 0.30 0.35 0.40 \
-  --output /kaggle/working/count-detection-validation.json
+  --output /kaggle/working/lr-count-gate-negative-control.json
 ```
 
-The packaged Grounding DINO config is discovered automatically, or set `SATQUERY_GROUNDING_CONFIG` to its provisioned local `GroundingDINO_SwinT_OGC.py`. Use a Python 3.11-or-newer runtime with the detector dependencies installed. Output must be fresh. The command was **not executed** in this task.
+## Unmeasured and open risks
 
-The evaluator runs detection at the lowest requested box threshold once per question, then applies the exact shared count policy for each requested threshold. It reports `n`, exact integer count accuracy and mean absolute error at the configured app threshold plus all four sweep thresholds, with per-question expected/predicted counts, prompts, boxes and threshold evidence. It records the checkpoint and actual input-image hashes for provenance. The original supplied images are required; recording their hashes does not independently prove that they match an earlier evaluation's image bytes.
+No detector-count accuracy, threshold optimum, GPU latency/memory, DIOR mirror byte equivalence to the unavailable original host, or real-image resolution-gate performance is claimed. No CUDA evaluation or 7.4 GB download ran. A hash records exactly which mirror bytes were used; it is not an independent endorsement of their provenance. Exhaustiveness is an explicit annotation assumption. Class physical sizes, unknown/default classes, metadata quality, spatial qualifiers, dense objects and NMS behavior need further measurement. The DIOR class set and variable unknown per-image GSD limit transfer claims to other app counts.
 
-## What is not yet measured
+## Test evidence
 
-**No detector count accuracy claim is made.** The CUDA evaluation, threshold calibration, real detector NMS/count behavior, latency/memory and comparison with the existing VLM have not been run. CPU tests validate policy/shape/routing only. The detector is still unavailable on the Mac's MPS/CPU path, so a ready VLM returns labelled estimates there.
-
-Dense small buildings, roads/area counting, overlapping objects and caption-driven detections may not correspond to RSVQA's annotated instance counts. The parser retains some descriptive/relational wording but does not enforce spatial relationships or separate multiple categories. No general language/object ontology or spatial-relation solver was added. Validation threshold sweeps are exploratory; selecting a setting from this validation set is not independent held-out evidence.
-
-## Tests: before and after
-
-Baseline was run **on `app/b13-adapter` before edits**, at `bcd0e23`, with:
+Baseline `f28b862`: **1,047 passed, 5 failed, 40 setup errors**, 28 subtests passed. Same interpreter and command in the same worktree:
 
 ```bash
 PYTHONDONTWRITEBYTECODE=1 /Users/soham/sih2026-app-b13/.venv/bin/python \
   -m pytest -p no:cacheprovider -q
 ```
 
-The same interpreter/flags and full suite were then run from `/Users/soham/sih2026-count`.
+Synthetic CPU tests cover 10 m refusal, 0.3 m detector routing, unknown-GSD labels, metadata-only tokens, projected metre versus geographic/feet CRS, preview downsampling, DIOR disjoint image splits, exhaustive counts, train-only modes, balanced deterministic selection, immutable sample manifests, missing-layout/annotation errors, and LR policy control. Actual evaluator entry points were not run.
 
-| Run | Passed | Failed | Setup errors | Subtests passed |
-|---|---:|---:|---:|---:|
-| Base app/b13-adapter | 1,016 | 5 | 40 | 28 |
-| feature/count-grounding | 1,047 | 5 | 40 | 28 |
+The first full run after this change additionally hit the unchanged timing-sensitive `scripts/test_stage1_full.py::test_sharded_smoke_produces_full_accepted_throughput` (1 step completed vs 2). It passed in isolation immediately afterward. The final run and any recurrence are recorded below; no training infrastructure was edited to hide it.
 
-The ordered failure/error node lists are **identical**. Every failure below existed on the base before this change. They reference absent `packages/stage1-t4-smoke` configs, archive, package manifest or packaged source; that protected directory was not generated or modified. Core suite (`backend orchestrator models kaggle/test_eval_count_detection.py`) passes **707 tests**, 12 subtests. There are 31 new CPU tests; the existing count tests were updated for the explicitly requested fallback and richer evidence contract. Pure evaluator scoring/hash tests import helper functions only; neither its CUDA entry point nor detector inference was invoked.
+### Persistent pre-existing fixture failures/errors
 
-### All pre-existing failures and setup errors
+The five fixture failures and 40 setup-error node IDs from the earlier count work remain:
 
 ```text
 FAILED scripts/test_stage1_full.py::test_config_full_yaml_has_no_placeholder_steps — PRE-EXISTING on app/b13-adapter
@@ -161,4 +224,6 @@ ERROR scripts/test_stage1_t4_package.py::test_resume_only_runs_exact_variant_and
 ERROR scripts/test_stage1_t4_package.py::test_resume_execution_failure_is_preserved — PRE-EXISTING on app/b13-adapter
 ```
 
-No frontend files were changed or frontend suite rerun. No full GPU evaluation was run. Existing worker isolation, timeouts, local-only model resolution, input checks and hash-chain validation remain in place.
+### Final comparison
+
+Final full suite: **1,074 passed, 5 failed, 40 setup errors**, 28 subtests passed. All 45 persistent failure/error node IDs match the `f28b862` baseline exactly. The isolated timing-sensitive stage1 test passed, and did not fail in the final full run. No protected fixture or training code was altered. `git diff --check` passed. No CUDA evaluator or notebook provisioning cell was executed.

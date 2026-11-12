@@ -29,6 +29,7 @@ def test_count_api_evidence_or_explicit_fallback(monkeypatch, ready_providers, a
     body = response.json()
     if available:
         assert body["answer"] == "1" and body["count"] == 1
+        assert body["count_status"] == "detected"
         assert body["count_thresholds"]["nms_iou"] == 0.5
         assert body["evidence"][0]["type"] == "bounding_box"
         assert body["evidence"][-1]["thresholds"] == body["count_thresholds"]
@@ -36,6 +37,7 @@ def test_count_api_evidence_or_explicit_fallback(monkeypatch, ready_providers, a
     else:
         assert body["answer"] == "8"
         assert body["unverified_count"] == "detector_unavailable"
+        assert body["count_status"] == "detector_unavailable"
         assert "unverified_count: detector_unavailable" in body["notice"]
         assert body["model"]["name"] == "qwen2.5vl-3b"
         assert body["trace"]["params"]["unverified_count"] == "detector_unavailable"
