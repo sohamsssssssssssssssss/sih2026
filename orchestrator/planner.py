@@ -136,8 +136,11 @@ def _selection(request: PlanRequest, tokens: tuple[str, ...]) -> Selection:
     )
     if requested == "":
         raise UnknownCapability("Unknown capability: ")
-    if adapter_path() and count_target(request.question) and requested in (None, SINGLE_IMAGE_VQA):
-        return GROUNDING, "b13_detection_count", "Count objects using Grounding DINO boxes.", requested
+    if adapter_path() and len(request.scene_ids) == 1 and count_target(request.question) and requested in (None, SINGLE_IMAGE_VQA, GROUNDING):
+        from orchestrator.capabilities import capability_readiness
+        if capability_readiness(GROUNDING)["available"]:
+            return GROUNDING, "b13_detection_count", "Count objects using Grounding DINO boxes.", requested
+        return SINGLE_IMAGE_VQA, "b13_unverified_count_fallback", "Detector unavailable; VLM count will be explicitly unverified.", requested
     if requested is not None:
         if requested not in KNOWN_CAPABILITIES:
             raise UnknownCapability(f"Unknown capability: {requested}")

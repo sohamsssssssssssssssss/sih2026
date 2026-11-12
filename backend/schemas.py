@@ -73,6 +73,8 @@ class AnalyzeResponse(BaseModel):
     model_provenance: dict[str, Any] | None = None
     answer_source: str | None = None
     count: int | None = None
+    count_thresholds: dict[str, float] | None = None
+    unverified_count: str | None = None
     results_artifact: str | None = None
     model: ModelInfo
     trace: dict[str, Any]

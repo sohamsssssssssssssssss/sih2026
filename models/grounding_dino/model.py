@@ -8,6 +8,7 @@ from typing import Any, Callable
 
 from models.base import Model, ModelReadiness
 from models.artifacts import validate_artifact
+from models.grounding_dino.count import load_thresholds
 
 # The packaged SwinT OGC config loads this text encoder with from_pretrained,
 # so under HF_HUB_OFFLINE it must already be in the local Hugging Face cache.
@@ -41,12 +42,13 @@ class GroundingDINOModel(Model):
 
     def __init__(
         self,
-        box_threshold: float = 0.35,
-        text_threshold: float = 0.25,
+        box_threshold: float | None = None,
+        text_threshold: float | None = None,
         config_path: str | Path | None = None,
     ) -> None:
-        self.box_threshold = box_threshold
-        self.text_threshold = text_threshold
+        thresholds = load_thresholds()
+        self.box_threshold = thresholds.box_threshold if box_threshold is None else box_threshold
+        self.text_threshold = thresholds.text_threshold if text_threshold is None else text_threshold
         self._model: Any | None = None
         self._load_image: Callable[..., Any] | None = None
         self._predict_fn: Callable[..., Any] | None = None

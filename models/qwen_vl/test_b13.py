@@ -128,7 +128,8 @@ def test_counts_use_detector_boxes(enabled, monkeypatch, ready_providers, count,
     plan = plan_request(PlanRequest(question, ("scene",)))
     assert plan.selected_capability == "grounding"
     assert plan.rule_id == "b13_detection_count"
-    boxes = [{"type": "bounding_box", "coordinates": [0, 0, 1, 1]} for _ in range(count)]
+    boxes = [{"type": "bounding_box", "coordinates": [i * 0.5, 0, i * 0.5 + 0.2, 0.2],
+              "coordinate_space": "normalized_xyxy", "confidence": 0.9} for i in range(count)]
     def detect(self, image_paths, question):
         assert question == "square buildings"
         return {"answer": "Found objects", "evidence": boxes}
@@ -137,19 +138,26 @@ def test_counts_use_detector_boxes(enabled, monkeypatch, ready_providers, count,
     result = router.route("single_image_vqa", ["scene"], question, params={"execution_mode": "live"})
     assert result["answer"] == str(count)
     assert result["count"] == count
-    assert result["evidence"] == boxes
+    assert result["evidence"][:-1] == boxes
+    assert result["evidence"][-1]["count"] == count
     assert result["trace"]["model_name"] == "grounding-dino-swint"
     assert result["trace"]["params"]["answer_source"] == "grounding_dino_count"
 
 
-def test_unavailable_detector_never_falls_back_to_adapter(enabled, monkeypatch):
+def test_unavailable_detector_uses_labelled_adapter_fallback(enabled, monkeypatch):
     from models.base import ModelReadiness
+    from orchestrator.planner import PlanRequest, plan_request
     monkeypatch.setattr(GroundingDINOModel, "readiness", lambda self: ModelReadiness(False, "CUDA_UNAVAILABLE", "No CUDA"))
-    monkeypatch.setattr(QwenVLModel, "infer", lambda self, **kw: pytest.fail("used adapter"))
-    with pytest.raises(ProviderNotReady, match="No CUDA"):
-        router.route("single_image_vqa", ["scene"], "What is the number of buildings?",
-                     params={"execution_mode": "live"})
-    assert trace.records() == []
+    monkeypatch.setattr(QwenVLModel, "readiness", lambda self: ModelReadiness(True))
+    monkeypatch.setattr(QwenVLModel, "infer", lambda self, **kw: {"answer": "7", "evidence": []})
+    plan = plan_request(PlanRequest("What is the number of buildings?", ("scene",)))
+    assert plan.executable and plan.selected_capability == "single_image_vqa"
+    result = router.route("grounding", ["scene"], "What is the number of buildings?",
+                          params={"execution_mode": "live"})
+    assert result["answer"] == "7"
+    assert result["unverified_count"] == "detector_unavailable"
+    assert result["trace"]["params"]["answer_source"] == "vlm_unverified_count"
+    assert result["trace"]["model_name"] == "qwen2.5vl-3b"
 
 
 @pytest.mark.parametrize("question", ["Are there more buildings than roads?", "Is it rural?"])

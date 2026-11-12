@@ -7,8 +7,9 @@ from typing import Any
 
 from models.paths import public_path
 from models.qwen_vl.b13 import adapter_path, count_target
+from models.grounding_dino.count import count_objects, load_thresholds
 from orchestrator import worker as inference_worker
-from orchestrator.capabilities import ResolvedProvider, require_provider_ready
+from orchestrator.capabilities import ProviderNotReady, ResolvedProvider, require_provider_ready
 from orchestrator.registry import get
 from orchestrator.trace import TraceIntegrityError, append_record
 from orchestrator.worker import (  # noqa: F401 - re-exported for callers
@@ -108,30 +109,32 @@ def route(
     execution trace and cannot be forged by caller params; caller params
     remain otherwise unchanged.
     """
-    count_query = count_target(question) if adapter_path() and len(image_paths) == 1 else None
-    if count_query and capability in ("single_image_vqa", "grounding"):
-        capability = "grounding"
-    else:
-        count_query = None
-    resolved = require_provider_ready(capability)
-    model = get(resolved.model_name)
-    inference_question = count_query or question
-    if timeout_seconds is None:
-        result = model.infer(image_paths=image_paths, question=inference_question)
-    elif getattr(model, "isolated", False) is True:
-        # Killable worker process; the in-process instance above still supplies
-        # the truthful version metadata (a class attribute, no weights loaded).
-        result = inference_worker.run(
-            resolved.model_name, image_paths, inference_question, timeout_seconds
-        )
-    else:
-        result = _infer_in_thread(model, image_paths, inference_question, timeout_seconds)
-    validated = _validate_result(result)
+    count_query = count_target(question) if adapter_path() and len(image_paths) == 1 and capability in ("single_image_vqa", "grounding") else None
+    unverified_count = False
     if count_query:
-        evidence = validated.get("evidence")
-        if not isinstance(evidence, list) or any(item.get("type") != "bounding_box" for item in evidence):
-            raise InvalidModelOutput
-        validated.update(answer=str(len(evidence)), count=len(evidence), answer_source="grounding_dino_count")
+        try:
+            resolved = require_provider_ready("grounding")
+        except ProviderNotReady:
+            resolved = require_provider_ready("single_image_vqa")
+            unverified_count = True
+    else:
+        resolved = require_provider_ready(capability)
+    model = get(resolved.model_name)
+
+    def infer(paths, prompt):
+        if timeout_seconds is None:
+            return model.infer(image_paths=paths, question=prompt)
+        if getattr(model, "isolated", False) is True:
+            return inference_worker.run(resolved.model_name, paths, prompt, timeout_seconds)
+        return _infer_in_thread(model, paths, prompt, timeout_seconds)
+
+    if count_query and not unverified_count:
+        result = count_objects(image_paths, count_query, infer, load_thresholds())
+    else:
+        result = infer(image_paths, question)
+    validated = _validate_result(result)
+    if unverified_count:
+        validated.update(unverified_count="detector_unavailable", answer_source="vlm_unverified_count")
     validated_params = _validate_execution_mode(validated, params)
     model_version = _model_version(resolved, model)
     if (planner_version is None) != (planner_rule is None):
@@ -176,7 +179,7 @@ def route(
     traced_params = {
         key: value for key, value in validated_params.items() if key not in reserved
     }
-    for key in ("model_provenance", "answer_source"):
+    for key in ("model_provenance", "answer_source", "count_thresholds", "unverified_count"):
         traced_params.pop(key, None)
         if key in validated:
             traced_params[key] = validated[key]

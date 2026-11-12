@@ -41,7 +41,9 @@ def messages(image_path, question):
 def count_target(question):
     # shortcut: English count templates only; extend with labeled routing examples.
     query = question.strip().rstrip("?.!")
-    match = re.match(r"^(?:how many |what is the (?:number|amount) of |count (?:the )?)(.+)$", query, re.I)
+    match = re.match(r"^(?:how many |(?:what is the )?(?:number|amount) of |count (?:the )?)(.+)$", query, re.I)
     if match is None:
         return None
-    return re.sub(r"\s+(?:are|is)\s+.*$", "", match[1], flags=re.I).strip()
+    noun = re.sub(r"\s+(?:are|is)\s+.*$", "", match[1], flags=re.I)
+    noun = re.sub(r"\s+(?:in|on)\s+(?:the|this)\s+(?:image|scene|picture|photo)\b.*$", "", noun, flags=re.I)
+    return noun.strip() or None

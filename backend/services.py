@@ -691,11 +691,13 @@ def _live_response(result: Any) -> dict[str, Any]:
             else f"Live {model_name} inference completed."
         ),
     }
-    for key in ("model_provenance", "answer_source", "count"):
+    for key in ("model_provenance", "answer_source", "count", "count_thresholds", "unverified_count"):
         if key in result:
             response[key] = result[key]
     if "evidence" in result:
         response["evidence"] = result["evidence"]
+    if result.get("unverified_count") == "detector_unavailable":
+        response["notice"] += " unverified_count: detector_unavailable. This count is a VLM estimate without detection evidence."
     return response
 
 

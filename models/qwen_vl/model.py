@@ -239,8 +239,6 @@ class QwenVLModel(Model):
         if self.adapter_path is not None:
             if len(image_paths) != 1:
                 raise ValueError("B13 supports exactly one image")
-            if b13.count_target(question):
-                raise ValueError("Count questions require Grounding DINO; B13 counting is disabled")
         else:
             question = question + " Answer with a single word or number only. No explanation."
         try:
@@ -260,4 +258,6 @@ class QwenVLModel(Model):
             "evidence": [],
             **({"model_provenance": self.provenance, "answer_source": "b13_adapter"}
                if self.adapter_path else {}),
+            **({"unverified_count": "detector_unavailable", "answer_source": "vlm_unverified_count"}
+               if self.adapter_path and b13.count_target(question) else {}),
         }
