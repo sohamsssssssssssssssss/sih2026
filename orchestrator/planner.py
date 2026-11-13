@@ -18,6 +18,7 @@ already localize, so one change_vqa step answers it.
 
 from dataclasses import dataclass
 
+from models.qwen_vl import cdvqa
 from models.qwen_vl.b13 import adapter_path, count_target
 
 from orchestrator.capabilities import (
@@ -141,6 +142,13 @@ def _selection(request: PlanRequest, tokens: tuple[str, ...]) -> Selection:
         if capability_readiness(GROUNDING)["available"]:
             return GROUNDING, "b13_detection_count", "Count objects using Grounding DINO boxes.", requested
         return SINGLE_IMAGE_VQA, "b13_unverified_count_fallback", "Detector unavailable; VLM count will be explicitly unverified.", requested
+    sar_pair = len(request.scene_ids) >= 2 and _sensor_key(request.sensor) in SAR_SENSORS
+    if requested is None and len(request.scene_ids) == 2 and not sar_pair and cdvqa.enabled():
+        # Flag-gated; CDVQA templates often parse as describe/unknown, so the template match also selects.
+        if cdvqa.question_type(request.question):
+            return CHANGE_VQA, cdvqa.RULE, "CDVQA-style change question on an optical pair (experimental adapter).", None
+        if has_change_intent(tokens):
+            return CHANGE_VQA, cdvqa.UNSUPPORTED_RULE, "Change question outside the CDVQA templates.", None
     if requested is not None:
         if requested not in KNOWN_CAPABILITIES:
             raise UnknownCapability(f"Unknown capability: {requested}")
@@ -150,7 +158,6 @@ def _selection(request: PlanRequest, tokens: tuple[str, ...]) -> Selection:
             "The request explicitly selects this capability.",
             requested,
         )
-    sar_pair = len(request.scene_ids) >= 2 and _sensor_key(request.sensor) in SAR_SENSORS
     return _parsed_selection(parse_question(request.question), _keyword_selection(tokens), sar_pair)
 
 
@@ -246,6 +253,15 @@ def plan_request(request: PlanRequest) -> Plan:
         provider_available = bool(readiness["available"])
         provider = resolved.provider_name
         unavailable_reason = None if provider_available else str(readiness["detail"])
+
+    if rule_id == cdvqa.UNSUPPORTED_RULE:
+        provider_available, provider, unavailable_reason = True, cdvqa.GATE, None
+    elif rule_id == cdvqa.RULE:
+        from orchestrator.registry import get
+
+        readiness = get(cdvqa.CdvqaChangeModel.name).readiness()
+        provider_available, provider = readiness.available, cdvqa.CdvqaChangeModel.name
+        unavailable_reason = None if readiness.available else readiness.detail
 
     if rule_id == TEMPORAL_LOCALIZATION_RULE_ID:
         unavailable_reason = "Multi-step change-to-grounding execution is not implemented."

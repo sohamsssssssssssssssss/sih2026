@@ -7,6 +7,7 @@ from typing import Any
 from types import SimpleNamespace
 
 from models.paths import public_path
+from models.qwen_vl import cdvqa
 from models.qwen_vl.b13 import adapter_path, count_target
 from models.grounding_dino.count import count_objects, load_thresholds
 from models.grounding_dino.resolution import resolution_gate, refusal
@@ -88,6 +89,28 @@ def _model_version(provider: ResolvedProvider, model: Any) -> str:
     return version
 
 
+def _change_vqa(capability, image_paths, question, params, timeout_seconds, planner_rule):
+    """CDVQA adapter path. Refusals (unsupported question, bad pair) never call the model."""
+    if planner_rule == cdvqa.UNSUPPORTED_RULE:
+        code, reason = "unsupported_change_question", cdvqa.UNSUPPORTED_MESSAGE
+    else:
+        code = "pair_refused"
+        reason = cdvqa.pair_refusal(image_paths, tuple((params or {}).get("pair_gsd_m") or (None, None)))
+    if reason:
+        result = {"answer": f"Refused: {reason}", "answer_source": cdvqa.GATE, "evidence": [],
+                  "change_vqa": {"refusal": code, "reason": reason}}
+        return ResolvedProvider(capability, cdvqa.GATE, cdvqa.GATE, "1"), SimpleNamespace(version="1"), result
+    name = cdvqa.CdvqaChangeModel.name
+    model = get(name)
+    readiness = model.readiness()
+    if not readiness.available:
+        raise ProviderNotReady(capability, name, readiness)
+    resolved = ResolvedProvider(capability, name, name, model.version)
+    if timeout_seconds is None:
+        return resolved, model, model.infer(image_paths=image_paths, question=question)
+    return resolved, model, inference_worker.run(name, image_paths, question, timeout_seconds)
+
+
 def route(
     capability: str,
     image_paths: list[str],
@@ -114,7 +137,9 @@ def route(
     count_query = count_target(question) if adapter_path() and len(image_paths) == 1 and capability in ("single_image_vqa", "grounding") else None
     gate = resolution_gate(count_query, (params or {}).get("gsd_m"), (params or {}).get("gsd_source", "unknown")) if count_query else None
     unverified_count = False
-    if gate and gate["count_status"] == "not_resolvable":
+    if planner_rule in (cdvqa.RULE, cdvqa.UNSUPPORTED_RULE):
+        resolved, model, result = _change_vqa(capability, image_paths, question, params, timeout_seconds, planner_rule)
+    elif gate and gate["count_status"] == "not_resolvable":
         resolved = ResolvedProvider(capability, "count-resolution-gate", "count-resolution-gate", "1")
         model = SimpleNamespace(version="1")
         result = refusal(gate)
@@ -193,7 +218,7 @@ def route(
     traced_params = {
         key: value for key, value in validated_params.items() if key not in reserved
     }
-    for key in ("model_provenance", "answer_source", "count_thresholds", "unverified_count", "count_status", "gsd_m", "gsd_source", "object_class", "required_gsd_m", "object_size_m", "min_pixels", "unverified_gsd"):
+    for key in ("model_provenance", "answer_source", "count_thresholds", "unverified_count", "count_status", "gsd_m", "gsd_source", "object_class", "required_gsd_m", "object_size_m", "min_pixels", "unverified_gsd", "change_vqa"):
         traced_params.pop(key, None)
         if key in validated:
             traced_params[key] = validated[key]

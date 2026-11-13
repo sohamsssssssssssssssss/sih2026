@@ -6,6 +6,7 @@ from models.grounding_dino import GroundingDINOModel
 from models.mock import MockModel
 from models.optical_sar import OpticalSARModel
 from models.qwen_vl import QwenVLModel
+from models.qwen_vl.cdvqa import CdvqaChangeModel
 
 _MODELS: dict[str, Model] = {}
 
@@ -33,3 +34,4 @@ register("qwen2.5vl-3b", QwenVLModel())
 register("grounding-dino-swint", GroundingDINOModel())
 register("optical-sar-deterministic", OpticalSARModel())
 register("change-deterministic", ChangeModel())
+register("qwen2.5vl-3b-cdvqa", CdvqaChangeModel())

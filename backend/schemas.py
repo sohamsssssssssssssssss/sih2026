@@ -83,6 +83,7 @@ class AnalyzeResponse(BaseModel):
     object_size_m: float | None = None
     min_pixels: float | None = None
     unverified_gsd: bool | None = None
+    change_vqa: dict[str, Any] | None = None
     results_artifact: str | None = None
     model: ModelInfo
     trace: dict[str, Any]

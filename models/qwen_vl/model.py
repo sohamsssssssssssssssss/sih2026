@@ -2,6 +2,7 @@
 
 import os
 import warnings
+from contextlib import nullcontext
 from importlib.util import find_spec
 from pathlib import Path
 from typing import Any
@@ -214,7 +215,9 @@ class QwenVLModel(Model):
             **({} if self.adapter_path else {"padding": True}),
             return_tensors="pt",
         ).to(self._model.device)
-        with torch.inference_mode():
+        # Base-only runs must not pick up a CDVQA adapter wrapped onto the shared base.
+        base_only = self.adapter_path is None and hasattr(self._model, "peft_config")
+        with torch.inference_mode(), (self._model.disable_adapter() if base_only else nullcontext()):
             generated_ids = self._model.generate(
                 **inputs,
                 do_sample=False,
@@ -229,6 +232,44 @@ class QwenVLModel(Model):
             skip_special_tokens=True,
             clean_up_tokenization_spaces=False,
         )[0]
+
+    def infer_pair(self, before: str, after: str, question: str, question_type: str) -> str:
+        """CDVQA adapter on the same base (no second base copy); B13 is re-activated afterwards."""
+        from models.qwen_vl import cdvqa
+
+        self._load()
+        import torch
+
+        path = cdvqa.adapter_path()
+        if path is None:
+            raise RuntimeError(f"CDVQA adapter path is not configured ({cdvqa.ADAPTER_ENV}).")
+        if not hasattr(self._model, "peft_config"):
+            from peft import PeftModel
+            self._model = PeftModel.from_pretrained(
+                self._model, str(path), adapter_name="cdvqa", local_files_only=True,
+                is_trainable=False, autocast_adapter_dtype=False,
+            ).eval()
+        elif "cdvqa" not in self._model.peft_config:
+            self._model.load_adapter(str(path), adapter_name="cdvqa", is_trainable=False,
+                                     autocast_adapter_dtype=False)
+        self._model.to(self.device)
+        previous = self._model.active_adapter
+        self._model.set_adapter("cdvqa")
+        try:
+            # Same steps as the package's cdvqa_pilot.answer_pair (greedy, 32 tokens, no padding).
+            conversation = cdvqa.messages(before, after, question, question_type)
+            prompt = self._processor.apply_chat_template(conversation, tokenize=False, add_generation_prompt=True)
+            images, videos = self._process_vision_info(conversation)
+            inputs = self._processor(text=[prompt], images=images, videos=videos,
+                                     return_tensors="pt").to(self._model.device)
+            with torch.inference_mode():
+                generated = self._model.generate(**inputs, do_sample=False, max_new_tokens=32)
+            trimmed = generated[:, inputs.input_ids.shape[1]:]
+            return self._processor.batch_decode(
+                trimmed, skip_special_tokens=True, clean_up_tokenization_spaces=False)[0].strip()
+        finally:
+            if previous != "cdvqa":
+                self._model.set_adapter(previous)
 
     def infer(self, image_paths: list[str], question: str) -> dict:
         if not image_paths:

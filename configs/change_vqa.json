@@ -1,0 +1,8 @@
+{
+  "enabled": false,
+  "adapter_path": null,
+  "adapter_id": "cdvqa-g2-checkpoint-1000",
+  "cdvqa_validated": false,
+  "package": "packages/cdvqa-g0f-20261113T115304Z",
+  "max_ratio": 2.0
+}

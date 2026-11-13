@@ -33,6 +33,7 @@ from data.dataset import SCENE_MANIFEST_VERSION, SceneManifest, validate_scene_m
 from data.pairing import evaluate_compatibility
 from models.base import ModelReadiness
 from models.paths import public_path
+from models.qwen_vl import cdvqa
 from models.qwen_vl.b13 import adapter_path, count_target
 from models.grounding_dino.resolution import filename_gsd, metadata_gsd, resolution_gate
 
@@ -737,13 +738,15 @@ def _live_response(result: Any) -> dict[str, Any]:
             else f"Live {model_name} inference completed."
         ),
     }
-    for key in ("model_provenance", "answer_source", "count", "count_thresholds", "unverified_count", "count_status", "gsd_m", "gsd_source", "object_class", "required_gsd_m", "object_size_m", "min_pixels", "unverified_gsd"):
+    for key in ("model_provenance", "answer_source", "count", "count_thresholds", "unverified_count", "count_status", "gsd_m", "gsd_source", "object_class", "required_gsd_m", "object_size_m", "min_pixels", "unverified_gsd", "change_vqa"):
         if key in result:
             response[key] = result[key]
     if "evidence" in result:
         response["evidence"] = result["evidence"]
     if result.get("unverified_count") == "detector_unavailable":
         response["notice"] += " unverified_count: detector_unavailable. This count is a VLM estimate without detection evidence."
+    if (result.get("change_vqa") or {}).get("validation_status") == "experimental_unvalidated":
+        response["notice"] += " experimental_unvalidated: " + result["change_vqa"]["caveat"]
     if result.get("unverified_gsd"):
         response["notice"] += " unverified_gsd: scene resolution is unknown."
     if result.get("count_status") == "not_resolvable":
@@ -815,6 +818,22 @@ def _optical_sar_paths(scene_ids: tuple[str, str]) -> list[str]:
     if set(ordered) != {"optical", "sar"}:
         raise AnalysisUnavailable("Exactly one optical and one SAR raster are required.")
     return [ordered["optical"], ordered["sar"]]
+
+
+def _cdvqa_inputs(scene_id: str, scene_id_2: str) -> tuple[list[str], dict[str, Any]]:
+    """Two uploaded, non-SAR images in request order (first = before). GSDs feed the pair-refusal check."""
+    paths, gsds = [], []
+    for scene in (scene_id, scene_id_2):
+        manifest, _ = _manifest_for_scene(scene)
+        image = local_scene_image(scene)
+        if manifest is None or image is None:
+            raise AnalysisUnavailable("Change questions need two uploaded optical images.")
+        if manifest["identity"].get("modality") == "sar":
+            raise AnalysisUnavailable("Change questions need optical images; a SAR upload was given.")
+        paths.append(str(image))
+        gsds.append(scene_gsd(scene)[0])
+    return paths, {"scene_id_2": normalize_scene_id(scene_id_2), "temporal_order": ["before", "after"],
+                   "pair_gsd_m": gsds}
 
 
 def _change_inputs(scene_ids: tuple[str, str]) -> tuple[list[str], list[str]]:
@@ -894,7 +913,11 @@ def analyze_scene(
         if "second_scene" in plan.missing_inputs:
             raise AnalysisUnavailable("This request requires two scenes.")
         raise AnalysisUnavailable("This request requires a scene.")
-    if plan.selected_capability in {OPTICAL_SAR, CHANGE_VQA}:
+    cdvqa_plan = plan.rule_id in (cdvqa.RULE, cdvqa.UNSUPPORTED_RULE)
+    if cdvqa_plan:
+        assert scene_id_2 is not None
+        cdvqa_paths, cdvqa_params = _cdvqa_inputs(scene_id, scene_id_2)
+    elif plan.selected_capability in {OPTICAL_SAR, CHANGE_VQA}:
         assert scene_id_2 is not None
         compatibility = scene_compatibility(
             scene_id, scene_id_2, plan.selected_capability
@@ -959,7 +982,9 @@ def analyze_scene(
             )
         return _cached_response(cached, sensor, plan)
 
-    if plan.selected_capability == OPTICAL_SAR:
+    if cdvqa_plan:
+        image_paths, pair_params = cdvqa_paths, cdvqa_params
+    elif plan.selected_capability == OPTICAL_SAR:
         assert scene_id_2 is not None
         image_paths = _optical_sar_paths((scene_id, scene_id_2))
         pair_params = {

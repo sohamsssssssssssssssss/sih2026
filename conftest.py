@@ -9,6 +9,9 @@ from models.optical_sar import OpticalSARModel
 from models.qwen_vl import QwenVLModel
 from orchestrator import trace
 
+# Frozen Kaggle bundles carry their own tests and sys.path root; run them from inside the package.
+collect_ignore_glob = ["packages/*"]
+
 
 @pytest.fixture(autouse=True)
 def isolated_execution_trace(tmp_path, monkeypatch):
