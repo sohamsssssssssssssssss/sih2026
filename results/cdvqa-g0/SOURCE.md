@@ -343,3 +343,38 @@ verify_base against them. The old config fails the token test with KeyError 'max
 - Pyflakes (4.1.0) on all 10 `.py` files in the G0e package: no findings. On the repo CDVQA files it reported an unused
   import (`load_choices`) and an unused `torch` in a test, both fixed; no undefined names anywhere.
 - Package: `packages/cdvqa-g0e-20261111T200003Z/`, zip sha256 `90b586356b75a39bae856db19e78d3321a2f371e813c3a43d6edbe1a1a83109f`, run_identity `057f7d52d09e8497f11edc226916a828b84b6f712d778cf3e25e69e12591879a`.
+
+
+## G0f evaluation-cap-only package
+
+- Base source commit: `bc84b4c`; package built with `data/cdvqa/build_package.py::build` (prefix `cdvqa-g0f`),
+  ZIP made with `shutil.make_archive` using the package folder as archive root, as in G0e.
+- Source change: `scripts/cdvqa_pilot.py` LIMITS.evaluate 2400 → 7200 seconds.
+- Shipped config: budget.ledger_total_seconds.evaluate 7200 → 21600 seconds. The inherited fallback for
+  plans without a budget block remains 7200. Training invocation/ledger caps remain 3600/25200.
+- Root shipped-config assertions updated; actual CLI reservation/supervisor tests accept 7200 and reject 7201
+  before preflight. Generic ledger tests with an explicit synthetic 7200 budget remain valid and unchanged.
+- Eval-cap change only vs g0e; adapter trained with g0e run_identity 057f7d52d09e8497f11edc226916a828b84b6f712d778cf3e25e69e12591879a.
+- G0f evaluation-package run_identity: `47deaabb735210e86fc708d97dfb94ced4bfa81ed841f4dab2d29d320f9304cc`. This differs by design from training provenance; evaluation
+  loads the supplied G0e adapter unchanged. Do not resume a G0e training checkpoint using G0f.
+- Package: `packages/cdvqa-g0f-20261113T115304Z/` (folder committed; ZIP untracked, as with G0e).
+- ZIP: `packages/cdvqa-g0f-20261113T115304Z.zip`, 356384 bytes, SHA256 `4d9df4f534a1093ec47ea6070846795056c73c5503c3b6b1ecf1b372336a7f1c`.
+- Exact differing package files: `scripts/cdvqa_pilot.py`, `pilot-config.json`, `package-manifest.json`, `KAGGLE.md`.
+  Same file inventory (22 files). The whole runner differs by only the LIMITS literal. The whole config differs
+  by only the package name and eval ledger cap. All training code/config, prompts, scoring, manifests, image sizes,
+  decoding, conditions, bootstrap and bundled tests are byte-identical to G0e.
+- Both G0e/G0f package preflights: payload/manifests/leakage PASS; run identities printed and independently checked.
+  ZIP CRC and extracted payload bytes verified against the new package tree.
+- Focused `eval/test_shipped_config.py eval/test_cdvqa_pilot.py`: 20 passed. Includes the existing
+  `test_eval_prompt_equals_training_collator_prompt`, unchanged, and the two new CLI boundary cases.
+- Branch baseline before edits, Python 3.11, `pytest -p no:cacheprovider --ignore=packages -q`:
+  1218 passed, 2 failed, 0 setup errors, 28 subtests passed.
+  After: 1221 passed, 1 failed, 0 setup errors, 28 subtests passed.
+  Persistent failure: `scripts/test_stage1_t4_package.py::test_updated_package_runner_matches_source` (local
+  untracked historical fixture has stale source). Baseline also hit the unchanged wall-clock-sensitive
+  `scripts/test_stage1_full.py::test_sharded_smoke_produces_full_accepted_throughput`; it passed afterward.
+- Unqualified `pytest -p no:cacheprovider -q` aborts collection: 41 errors before / 43 after, because archived
+  package tests duplicate importable module names. Exactly two new errors are the copied G0f
+  `eval/test_cdvqa_pairs.py` and `eval/test_cdvqa_pilot.py`. Excluding packages runs the complete repository source
+  suite rather than collecting duplicate frozen snapshot tests; no source tests were otherwise excluded.
+- No real GPU evaluation, model loading, training, push or merge was performed for this cap change.

@@ -38,7 +38,7 @@ def test_shipped_plan_has_every_key_the_stages_read():
     assert plan["training"]["max_sequence_length"] == 32768
     assert plan["base_revision"] == PINNED_REVISION
     assert set(plan["dependency_pins"]) >= {"torch", "transformers", "peft", "qwen-vl-utils"}
-    assert plan["budget"]["ledger_total_seconds"] == {"train": 25200, "evaluate": 7200}
+    assert plan["budget"]["ledger_total_seconds"] == {"train": 25200, "evaluate": 21600}
     assert plan["training"]["max_steps"] == 1000 and plan["training"]["max_samples"] == 8000
     assert plan["training"]["gradient_accumulation_steps"] == 8 and plan["training"]["batch_size"] == 1
 
@@ -224,3 +224,33 @@ def test_eval_prompt_equals_training_collator_prompt(tmp_path):
     text = eval_processor.prompts[0]
     assert "first image is the earlier image" in text and "Allowed answers: no, yes." in text
     assert text.index(str(images / "im1" / "0.png")) < text.index(str(images / "im2" / "0.png")) < text.index("Did area 0")
+
+
+@pytest.mark.parametrize("seconds,exit_code", [(7200, 0), (7201, 2)])
+def test_evaluate_wall_clock_cap(seconds, exit_code, tmp_path, monkeypatch):
+    """Exercise the actual CLI reservation/supervisor boundary, without a GPU worker."""
+    root = shipped_root(tmp_path)
+    ledger = tmp_path / "eval-ledger.json"
+    output = tmp_path / "eval-output"
+    calls = []
+    monkeypatch.setattr(pilot, "ROOT", root)
+    monkeypatch.setattr(pilot, "preflight", lambda *args: calls.append("preflight"))
+    monkeypatch.setattr(pilot, "binding", lambda *args: "synthetic-eval-cap")
+    def supervise(directory, argv, max_seconds, **kwargs):
+        assert max_seconds == 7200
+        assert json.loads(ledger.read_text())[0]["charged_seconds"] == 7200
+        calls.append("supervise")
+        return {"exit_code": 0, "status": "synthetic CPU check"}
+    monkeypatch.setattr(pilot, "supervise", supervise)
+    with pytest.raises(SystemExit) as stopped:
+        pilot.main(["evaluate", "--weights", str(tmp_path / "unloaded-weights"),
+                    "--image-root", str(tmp_path / "unloaded-images"), "--output", str(output),
+                    "--budget-ledger", str(ledger), "--max-seconds", str(seconds)])
+    assert stopped.value.code == exit_code
+    assert pilot.LIMITS["train"] == 3600
+    assert pilot.ledger_total(pilot.load_plan(root), "train") == 25200
+    if exit_code == 0:
+        assert calls == ["preflight", "supervise"]
+        assert json.loads((output / "session.json").read_text())["budget_seconds"] == 7200
+    else:
+        assert calls == [] and not output.exists() and not ledger.exists()

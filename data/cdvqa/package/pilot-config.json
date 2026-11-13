@@ -7,7 +7,7 @@
   },
   "budget": {
     "ledger_total_seconds": {
-      "evaluate": 7200,
+      "evaluate": 21600,
       "train": 25200
     },
     "note": "Shared-ledger caps. Training: 7 invocations x 3600 s = 25200 s. Evaluation uses a separate ledger file. B13 default is 7200 when this block is absent."

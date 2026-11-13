@@ -40,7 +40,7 @@ export SRC_W=/kaggle/input/datasets/sohamssssss/satquery-qwen-pinned
 export W=/kaggle/working/qwen-pinned
 export IMAGES=/kaggle/input/datasets/sohamssssss/cdvqa-images
 export TRAIN_LEDGER=/kaggle/working/ledger/cdvqa-train-budget.json   # cap 25200 s (pilot-config)
-export EVAL_LEDGER=/kaggle/working/ledger/cdvqa-eval-budget.json     # cap 7200 s (pilot-config)
+export EVAL_LEDGER=/kaggle/working/ledger/cdvqa-eval-budget.json     # cap 21600 s (pilot-config)
 mkdir -p /kaggle/working/ledger
 ```
 
@@ -114,7 +114,7 @@ refused unless the checkpoint's identity, file hashes, scaler state and schedule
 ```sh
 python pilot.py evaluate --weights $W --image-root $IMAGES --eval test1 \
   --adapter /kaggle/working/cdvqa-run-b/adapter \
-  --output /kaggle/working/cdvqa-eval-test1 --budget-ledger $EVAL_LEDGER --max-seconds 2400
+  --output /kaggle/working/cdvqa-eval-test1 --budget-ledger $EVAL_LEDGER --max-seconds 7200
 ```
 
 Result fields: `conditions` (base_real, adapter_real, adapter_identical, adapter_swapped), `paired_differences`
@@ -123,7 +123,13 @@ Result fields: `conditions` (base_real, adapter_real, adapter_identical, adapter
 ## Budget
 
 - Training ledger cap: 25200 s = 7 invocations of 3600 s. Each invocation is charged its `--max-seconds` up front.
-- Evaluation ledger cap: 7200 s, separate from training.
-- Per-invocation cap for train: 3600 s. Per-invocation cap for evaluate: 2400 s (inherited from B13).
+- Evaluation ledger cap: 21600 s, separate from training (test1 + test2 G3 plus headroom).
+- Per-invocation cap for train: 3600 s. Per-invocation cap for evaluate: 7200 s.
 - B13's step rate is not measured for this run. 1000 steps inside 3600 s per invocation is unverified.
-- A 4-condition adapter evaluation of 400 QA is 1600 generations. Whether it fits in 2400 s is unmeasured.
+- A 4-condition adapter evaluation of 400 QA is 1600 generations. Use the 7200 s evaluation allowance; runtime remains hardware-dependent.
+
+## G0f evaluation-cap provenance
+
+Eval-cap change only vs g0e; adapter trained with g0e run_identity 057f7d52d09e8497f11edc226916a828b84b6f712d778cf3e25e69e12591879a.
+
+Only evaluation wall-clock allowances changed: evaluate invocation 2400 → 7200 s, evaluation ledger 7200 → 21600 s. All training allowances, prompts, decoding, scoring, image sizes, conditions, bootstrap settings and manifests are unchanged. Use the adapter trained with g0e for evaluation. The g0f binding identifies this evaluation package; it is not the adapter training identity. Do not use g0f to resume a g0e training checkpoint.
