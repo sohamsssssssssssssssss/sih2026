@@ -17,12 +17,16 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from eval.suites.grounding_dior_rsvg import DIOR_CATEGORIES
-from kaggle.run_grounding_dior_rsvg import _find_dataset_root, _safe_extract
+from kaggle.run_grounding_dior_rsvg import _safe_extract
 from models.grounding_dino.count import CONFIG, count_objects, load_thresholds
 from models.grounding_dino.resolution import resolution_gate
 from models.qwen_vl.b13 import count_target
 
 MIRROR_URL = "https://zenodo.org/records/11213149/files/DIOR-VOC.zip"
+# Verified on Kaggle CPU, 13 Nov 2026. Any other bytes are a hard stop.
+MIRROR_SHA256 = "7a386a56ba815333627d89d3b8b372d1af2a07b78955c017530ec62b7f1e0540"
+MIRROR_BYTES = 7_423_852_627
+DATASET_SUBDIR = Path("DIOR-VOC/VOC2007")
 SEED = 17
 VALIDATION_SHA256 = "b55842a801b76e680e5aee3cded8bc47dad72498a10629b5648db2c07831973c"
 PROMPTS = {"baseballfield": "baseball field", "basketballcourt": "basketball court",
@@ -38,6 +42,31 @@ def sha256(path):
 def layout_error(root, message):
     tree = sorted((str(p.relative_to(root)) for p in root.rglob("*")), key=lambda p: (p.count("/"), p))[:60]
     raise ValueError(f"{message}. Found tree under {root}:\n" + "\n".join(tree))
+
+
+def verify_archive(path, expected_sha256=MIRROR_SHA256, expected_bytes=MIRROR_BYTES):
+    size = path.stat().st_size
+    if size != expected_bytes:
+        raise ValueError(f"DIOR mirror size {size} != pinned {expected_bytes}; refusing to evaluate")
+    digest = sha256(path)
+    if digest != expected_sha256:
+        raise ValueError(f"DIOR mirror sha256 {digest} != pinned {expected_sha256}; refusing to evaluate")
+    return digest
+
+
+def dataset_root(data_root, archive=None):
+    """The verified mirror's DIOR-VOC/VOC2007 root; extract into an empty data_root, else fail with the tree."""
+    root = data_root / DATASET_SUBDIR
+
+    def complete():
+        return all((root / sub).is_dir() for sub in ("ImageSets/Main", "Annotations", "JPEGImages"))
+    if not complete() and archive is not None and not (data_root.exists() and any(data_root.iterdir())):
+        data_root.mkdir(parents=True, exist_ok=True)
+        _safe_extract(archive, data_root)
+    if not complete():
+        layout_error(data_root if data_root.exists() else data_root.parent,
+                     f"Expected {DATASET_SUBDIR}/{{ImageSets/Main,Annotations,JPEGImages}}")
+    return root
 
 
 def read_splits(root):
@@ -56,13 +85,16 @@ def read_splits(root):
     return splits
 
 
-def annotations(root, ids):
+def annotations(root, ids, require_image=True):
+    """Parse VOC counts. Ids whose XML (or, when required, JPEG) is missing are dropped and returned;
+    a present but malformed annotation still stops the run."""
     known = {re.sub(r"[^a-z0-9]", "", c): c for c in DIOR_CATEGORIES}
-    records = {}
+    records, dropped = {}, {"missing_xml": [], "missing_image": []}
     for image_id in ids:
         xml = root / "Annotations" / f"{image_id}.xml"
         if not xml.is_file():
-            layout_error(root, f"Missing exhaustive train/val annotation {xml}")
+            dropped["missing_xml"].append(image_id)
+            continue
         try:
             annotation = ET.parse(xml).getroot()
             name = annotation.findtext("filename")
@@ -81,13 +113,17 @@ def annotations(root, ids):
                 if not all(math.isfinite(v) and 0 <= v <= 800 for v in box) or box[2] <= box[0] or box[3] <= box[1]:
                     raise ValueError("Missing or malformed VOC bounding box")
                 counts[category] += 1  # Include difficult/truncated objects; no annotation filtering.
-            image = root / "JPEGImages" / name
-            if not image.is_file():
-                raise ValueError(f"Missing image {image}")
+            if require_image and not (root / "JPEGImages" / name).is_file():
+                dropped["missing_image"].append(image_id)
+                continue
             records[image_id] = {"filename": name, "counts": dict(counts), "xml_sha256": sha256(xml)}
         except (ET.ParseError, ValueError) as exc:
             layout_error(root, f"Invalid VOC annotation {xml}: {exc}")
-    return records
+    return records, dropped
+
+
+def dropped_summary(dropped, requested):
+    return {**dropped, "n_dropped": sum(map(len, dropped.values())), "n_requested": requested}
 
 
 def majority_counts(train, classes):
@@ -183,19 +219,15 @@ def evaluate_dior(args):
     classes = tuple(c for c in DIOR_CATEGORIES if c in args.classes)
     if len(classes) != len(args.classes) or not classes:
         raise ValueError("Select unique known DIOR classes")
-    archive_hash = sha256(args.archive)
-    source = {"kind": "third_party_mirror", "url": MIRROR_URL,
-              "zip_sha256": archive_hash, "zip_bytes": args.archive.stat().st_size}
-    root = _find_dataset_root(args.data_root, "ImageSets/Main")
-    if root is None:
-        args.data_root.mkdir(parents=True, exist_ok=True)
-        _safe_extract(args.archive, args.data_root)
-        root = _find_dataset_root(args.data_root, "ImageSets/Main")
-    if root is None:
-        layout_error(args.data_root, "Expected ImageSets/Main/{train,val,test}.txt, Annotations/*.xml and JPEGImages")
+    archive_hash = verify_archive(args.archive)
+    source = {"kind": "third_party_mirror", "url": MIRROR_URL, "zip_sha256": archive_hash,
+              "zip_sha256_pinned": True, "zip_bytes": args.archive.stat().st_size}
+    root = dataset_root(args.data_root, args.archive)
     splits = read_splits(root)
-    train = annotations(root, splits["train"])
-    val = annotations(root, splits["val"])
+    train, train_dropped = annotations(root, splits["train"], require_image=False)  # baseline needs XML only
+    val, val_dropped = annotations(root, splits["val"])
+    dropped = {"train": dropped_summary(train_dropped, len(splits["train"])),
+               "val": dropped_summary(val_dropped, len(splits["val"]))}
     modes = majority_counts(train, classes)
     rows = sample_pairs(val, classes, args.sample_size)
     image_hashes = {}
@@ -208,7 +240,7 @@ def evaluate_dior(args):
             image_hashes[row["image"]] = sha256(image)
         row["image_sha256"] = image_hashes[row["image"]]
     frozen = {"dataset": "original DIOR VOC mirror", "source": source, "eval_split": "val", "baseline_split": "train",
-              "seed": SEED, "sample_size": args.sample_size, "positive_zero_ratio": "1:1 per class",
+              "dropped_before_sampling": dropped, "seed": SEED, "sample_size": args.sample_size, "positive_zero_ratio": "1:1 per class",
               "classes": list(classes), "train_majority_counts": modes,
               "split_sha256": {name: sha256(root / "ImageSets/Main" / f"{name}.txt") for name in splits},
               "train_annotations_identity": hashlib.sha256(json.dumps(train, sort_keys=True).encode()).hexdigest(),
@@ -233,7 +265,8 @@ def evaluate_dior(args):
     baselines = {"always_zero": summary([{**row, "prediction": 0} for row in rows], classes),
                  "train_majority_count": summary([{**row, "prediction": modes[row["class"]]} for row in rows], classes)}
     return {"mode": "dior", "source": source, "sample_manifest_sha256": manifest_hash, "sample_size": len(rows),
-            "split_sizes": {name: len(ids) for name, ids in splits.items()}, "count_config": asdict(settings),
+            "split_sizes": {name: len(ids) for name, ids in splits.items()},
+            "dropped_before_sampling": dropped, "count_config": asdict(settings),
             "detector": {"name": model.name, "version": model.version, "checkpoint_sha256": checkpoint_hash},
             "metrics": summary(conditions[settings.box_threshold], classes), "baselines": baselines,
             "threshold_sweep": {str(key): {**summary(records, classes), "records": records} for key, records in conditions.items()},

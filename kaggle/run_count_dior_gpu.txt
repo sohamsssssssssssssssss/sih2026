@@ -1,0 +1,77 @@
+%%bash
+# Kaggle GPU cell: DIOR val counting with Grounding DINO Swin-T (kaggle/eval_count_detection.py).
+# Notebook settings: Accelerator GPU T4 x1 (or P100), Internet ON. Run as a committed version (Save & Run All).
+# Inputs:
+#   - This branch's code as a Kaggle dataset, mounted at $REPO_INPUT (default below; edit to your dataset name).
+#   - Internet: https://zenodo.org/records/11213149/files/DIOR-VOC.zip (third-party mirror, pinned sha256 below),
+#               https://huggingface.co/ShilongLiu/GroundingDINO (groundingdino_swint_ogc.pth; hash recorded, not pinned),
+#               https://huggingface.co/bert-base-uncased (text encoder; snapshot revision recorded, not pinned),
+#               PyPI groundingdino-py==0.4.0, transformers==4.49.0.
+# Large data lives in /kaggle/tmp (not saved). Only JSON goes to /kaggle/working.
+set -euo pipefail
+trap 'echo "FAILED at line $LINENO: $BASH_COMMAND"' ERR
+
+REPO_INPUT=/kaggle/input/satquery-count-grounding/sih2026
+T=/kaggle/tmp/count-dior
+W=/kaggle/working
+EXPECTED_SHA256=7a386a56ba815333627d89d3b8b372d1af2a07b78955c017530ec62b7f1e0540
+EXPECTED_BYTES=7423852627
+URL=https://zenodo.org/records/11213149/files/DIOR-VOC.zip
+mkdir -p "$T" "$W"
+for f in "$W/dior-count-val-seed17-1000.json" "$W/dior-count-val-evaluation.json"; do
+  if [ -e "$f" ]; then echo "HARD STOP: $f exists; the evaluator needs fresh outputs"; exit 1; fi
+done
+
+# 1. Code: copy out of the read-only input so __pycache__ writes cannot fail.
+[ -f "$REPO_INPUT/kaggle/eval_count_detection.py" ] || { echo "HARD STOP: code not found at $REPO_INPUT"; ls -R /kaggle/input | head -40; exit 1; }
+rm -rf "$T/sih2026" && cp -r "$REPO_INPUT" "$T/sih2026"
+nvidia-smi --query-gpu=name,memory.total --format=csv
+
+# 2. Dependencies (Kaggle image supplies torch/torchvision with CUDA).
+pip install -q groundingdino-py==0.4.0 transformers==4.49.0 huggingface-hub pillow
+
+# 3. DIOR mirror -> /kaggle/tmp, pinned bytes or hard stop. Extraction happens inside the evaluator.
+if [ ! -f "$T/DIOR-VOC.zip" ]; then
+  curl -L --fail --retry 3 -o "$T/DIOR-VOC.zip.part" "$URL"
+  mv "$T/DIOR-VOC.zip.part" "$T/DIOR-VOC.zip"
+fi
+ACTUAL=$(sha256sum "$T/DIOR-VOC.zip" | cut -d' ' -f1)
+SIZE=$(stat -c %s "$T/DIOR-VOC.zip")
+if [ "$ACTUAL" != "$EXPECTED_SHA256" ] || [ "$SIZE" != "$EXPECTED_BYTES" ]; then
+  echo "HARD STOP: mirror $ACTUAL/$SIZE != pinned $EXPECTED_SHA256/$EXPECTED_BYTES"; exit 1
+fi
+
+# 4. Detector checkpoint + BERT text encoder into /kaggle/tmp; hashes/revisions recorded to working.
+export HF_HOME="$T/hf" HF_HUB_CACHE="$T/hf/hub"
+unset HF_HUB_OFFLINE TRANSFORMERS_OFFLINE || true
+python - "$T" "$W/count-dior-provisioning.json" <<'EOF'
+import hashlib, json, sys
+from pathlib import Path
+from huggingface_hub import hf_hub_download, snapshot_download
+scratch, out = Path(sys.argv[1]), Path(sys.argv[2])
+checkpoint = hf_hub_download("ShilongLiu/GroundingDINO", "groundingdino_swint_ogc.pth",
+                             local_dir=str(scratch / "grounding"))
+bert = snapshot_download("bert-base-uncased", allow_patterns=[
+    "config.json", "tokenizer_config.json", "tokenizer.json", "vocab.txt", "model.safetensors"])
+with open(checkpoint, "rb") as handle:
+    digest = hashlib.file_digest(handle, "sha256").hexdigest()
+record = {"grounding_checkpoint": checkpoint, "grounding_checkpoint_sha256": digest,
+          "bert_snapshot": bert, "bert_revision": Path(bert).name}
+out.write_text(json.dumps(record, indent=2) + "\n")
+print(json.dumps(record, indent=2))
+(scratch / "checkpoint_path").write_text(checkpoint)
+EOF
+export SATQUERY_GROUNDING_CHECKPOINT="$(cat "$T/checkpoint_path")"
+
+# 5. Evaluate offline. The evaluator re-verifies the pin, requires DIOR-VOC/VOC2007, drops val ids with
+#    missing JPEG/XML before sampling, and freezes + fsyncs the sample before loading the detector.
+export HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1
+cd "$T/sih2026"
+python kaggle/eval_count_detection.py \
+  --archive "$T/DIOR-VOC.zip" --data-root "$T/dior" \
+  --sample-manifest "$W/dior-count-val-seed17-1000.json" --sample-size 1000 \
+  --config configs/count_grounding.json --thresholds 0.25 0.30 0.35 0.40 \
+  --output "$W/dior-count-val-evaluation.json"
+
+ls -la "$W"
+echo "CELL DONE"

@@ -60,9 +60,21 @@ The frozen LR manifest SHA256 remains `b55842a801b76e680e5aee3cded8bc47dad72498a
 
 ## Original DIOR protocol
 
-Use original DIOR detection annotations, **not DIOR-RSVG referring-expression indices**. [Li et al., 2020](https://arxiv.org/abs/1909.00133) describes DIOR's 23,463 images and 20 classes. The supplied source is the [Zenodo 11213149 third-party mirror](https://zenodo.org/records/11213149), file [DIOR-VOC.zip](https://zenodo.org/records/11213149/files/DIOR-VOC.zip), approximately 7.4 GB. The record identifies it as an Open-access re-upload after the original host became inaccessible; it is not the original publisher's host. No ZIP was downloaded or SHA256 invented here: notebook and evaluator compute its actual SHA256 at runtime and record mirror provenance in the frozen sample and output.
+Use original DIOR detection annotations, **not DIOR-RSVG referring-expression indices**. [Li et al., 2020](https://arxiv.org/abs/1909.00133) describes DIOR's 23,463 images and 20 classes. The supplied source is the [Zenodo 11213149 third-party mirror](https://zenodo.org/records/11213149), file [DIOR-VOC.zip](https://zenodo.org/records/11213149/files/DIOR-VOC.zip). The record identifies it as an Open-access re-upload after the original host became inaccessible; it is not the original publisher's host.
 
-Layout is checked at runtime: `ImageSets/Main/{train,val,test}.txt`, `Annotations/<image_id>.xml`, and `JPEGImages/`. The existing DIOR-RSVG safe extractor/root-finder is reused, with an explicit `ImageSets/Main` option. The new evaluator does **not** reuse the RSVG expression split loader. Bad/missing layout or train/val annotations fails with the found tree; no alternative split is guessed. Missing **test annotations are allowed**, since test images are not evaluated.
+**Mirror verified on Kaggle (CPU run, 13 Nov 2026), now pinned:** 7,423,852,627 bytes, sha256 `7a386a56ba815333627d89d3b8b372d1af2a07b78955c017530ec62b7f1e0540`. `kaggle/eval_count_detection.py` (`verify_archive`), `kaggle/fetch_dior_cpu.sh` and `kaggle/run_count_dior_gpu.txt` all check this size and hash. Any mismatch is a hard stop.
+
+| | Paper (Li et al. 2020) | This mirror (13 Nov 2026) |
+|---|---|---|
+| Images | 23,463 | 23,454 JPEG |
+| Annotations | n/a | 23,455 XML (1 image missing) |
+| train / val / test split lines (`wc -l`) | 5,862 / 5,863 / 11,738 | 5,861 / 5,860 / 11,734 |
+
+The `wc -l` figures can undercount by one when a file lacks a final newline. Paper split sizes are as commonly cited; the evaluator records the exact parsed sizes in `split_sizes`.
+
+**Layout** is required to be `<data-root>/DIOR-VOC/VOC2007/{ImageSets/Main,Annotations,JPEGImages}` (`dataset_root`). If that layout is absent, the evaluator extracts the ZIP into an empty data root. Otherwise it fails with the found tree; it does not search for or guess another root. Split files are parsed robustly: whitespace is stripped, blank and CRLF lines are skipped, and a missing final newline is fine. IDs must be unique, and train/val/test must be disjoint.
+
+**Missing files.** Before sampling, val ids whose XML or JPEG is missing are dropped. Train ids are dropped only for a missing XML, because the majority baseline needs no pixels. The dropped ids and counts (`missing_xml`, `missing_image`, `n_dropped`, `n_requested` per split) are written to both the frozen sample manifest and the output JSON under `dropped_before_sampling`. An XML that is present but malformed is still a hard stop. Which split the single missing image belongs to is not yet known; the first GPU run records it.
 
 Protocol:
 
@@ -77,74 +89,26 @@ Protocol:
 
 DIOR's dataset-level GSD varies roughly **0.5–30 m/px** and per-image GSD is not present in these VOC annotations. **This evaluator measures detector counting only, not the app's resolution gate.** It intentionally invokes the shared detector-count postprocessor without pretending that DIOR resolution is known.
 
-## Kaggle cells — supplied, NOT executed
+## Kaggle GPU cell (supplied, NOT executed)
 
-Prerequisites: upload/check out this branch's code at `/kaggle/working/sih2026`, select a CUDA accelerator, enable notebook internet for provisioning, and provide scratch disk for both the ZIP and extracted images. No training assets or adapters are needed.
+The cell is in `kaggle/run_count_dior_gpu.txt`; paste it into one cell and run it as a committed version. It uses `set -euo pipefail` with an ERR trap that prints the failing line, and it ends with `CELL DONE`.
 
-### Cell 1: provision dependencies, DIOR mirror and model/cache inputs
+Required:
+- **Accelerator:** GPU (T4).
+- **Internet:** on.
+- **Code:** this branch's code as a Kaggle dataset at `/kaggle/input/satquery-count-grounding/sih2026`. Edit `REPO_INPUT` if your dataset is named differently.
+- **Downloads:**
+  - the DIOR mirror (pinned above);
+  - `ShilongLiu/GroundingDINO/groundingdino_swint_ogc.pth` from Hugging Face. Its sha256 is **recorded, not pinned**, because no verified value exists yet. `configs/model_artifacts.json` has `sha256: null`.
+  - `bert-base-uncased` from Hugging Face. The snapshot revision is **recorded, not pinned**.
+  - PyPI `groundingdino-py==0.4.0` and `transformers==4.49.0`.
 
-```python
-import os, sys, json, hashlib, shutil, urllib.request, subprocess
-from pathlib import Path
+The ZIP, the extracted images (~15 GB together), the code copy and the HF cache all live in `/kaggle/tmp/count-dior`, which is not saved. Only JSON is written to `/kaggle/working`:
+- `count-dior-provisioning.json`: checkpoint sha256 and BERT revision;
+- `dior-count-val-seed17-1000.json`: the frozen sample;
+- `dior-count-val-evaluation.json`: the results.
 
-scratch = Path('/kaggle/tmp/count-grounding')
-scratch.mkdir(parents=True, exist_ok=True)
-os.environ['HF_HOME'] = str(scratch / 'hf')
-os.environ['HF_HUB_CACHE'] = str(scratch / 'hf/hub')
-os.environ.pop('HF_HUB_OFFLINE', None)
-os.environ.pop('TRANSFORMERS_OFFLINE', None)
-subprocess.run([sys.executable, '-m', 'pip', 'install', '-q',
-                'groundingdino-py==0.4.0', 'transformers==4.49.0',
-                'huggingface-hub', 'pillow'], check=True)
-
-url = 'https://zenodo.org/records/11213149/files/DIOR-VOC.zip'
-archive = scratch / 'DIOR-VOC.zip'
-if not archive.exists():
-    partial = scratch / 'DIOR-VOC.zip.part'
-    with urllib.request.urlopen(url) as response, partial.open('wb') as output:
-        shutil.copyfileobj(response, output, length=1024 * 1024)
-    partial.replace(archive)
-with archive.open('rb') as handle:
-    zip_sha256 = hashlib.file_digest(handle, 'sha256').hexdigest()
-provenance = {'kind': 'third_party_mirror', 'url': url,
-              'zip_sha256': zip_sha256, 'zip_bytes': archive.stat().st_size}
-print(provenance)
-Path('/kaggle/working/dior-download.json').write_text(json.dumps(provenance, indent=2))
-
-from huggingface_hub import hf_hub_download, snapshot_download
-checkpoint = hf_hub_download('ShilongLiu/GroundingDINO',
-    'groundingdino_swint_ogc.pth', local_dir=str(scratch / 'grounding'))
-snapshot_download('bert-base-uncased', cache_dir=os.environ['HF_HUB_CACHE'],
-    allow_patterns=['config.json', 'tokenizer_config.json', 'tokenizer.json',
-                    'vocab.txt', 'special_tokens_map.json', 'model.safetensors'])
-os.environ['SATQUERY_GROUNDING_CHECKPOINT'] = checkpoint
-# The installed package supplies GroundingDINO_SwinT_OGC.py. For a separate
-# provisioned config, set SATQUERY_GROUNDING_CONFIG to its local path.
-```
-
-### Cell 2: safe extraction and exact evaluation command
-
-```python
-sys.path.insert(0, '/kaggle/working/sih2026')
-from kaggle.run_grounding_dior_rsvg import _safe_extract, _find_dataset_root
-
-data_root = scratch / 'dior'
-data_root.mkdir(exist_ok=True)
-if _find_dataset_root(data_root, 'ImageSets/Main') is None:
-    _safe_extract(archive, data_root)
-os.environ['HF_HUB_OFFLINE'] = '1'
-os.environ['TRANSFORMERS_OFFLINE'] = '1'
-command = [sys.executable, 'kaggle/eval_count_detection.py',
-    '--archive', str(archive), '--data-root', str(data_root),
-    '--sample-manifest', '/kaggle/working/dior-count-val-seed17-1000.json',
-    '--sample-size', '1000', '--config', 'configs/count_grounding.json',
-    '--thresholds', '0.25', '0.30', '0.35', '0.40',
-    '--output', '/kaggle/working/dior-count-val-evaluation.json']
-print(' '.join(command))
-subprocess.run(command, cwd='/kaggle/working/sih2026', check=True)
-```
-
-The evaluator also safely extracts the supplied ZIP if no valid root is found. Its own layout check prints the found tree if extraction did not produce the expected detection layout. Keep the frozen sample manifest with the report. Reports include the mirror ZIP hash and detector checkpoint SHA256; a fresh output path is required. Provisioning cells rely on runtime package compatibility and internet availability; neither was tested here.
+After the first run, copy the recorded checkpoint sha256 into `configs/model_artifacts.json` to pin it.
 
 LR policy-control command, using the preserved B13 dataset mount:
 
@@ -157,7 +121,7 @@ python kaggle/eval_count_detection.py --mode lr_negative_control \
 
 ## Unmeasured and open risks
 
-No detector-count accuracy, threshold optimum, GPU latency/memory, DIOR mirror byte equivalence to the unavailable original host, or real-image resolution-gate performance is claimed. No CUDA evaluation or 7.4 GB download ran. A hash records exactly which mirror bytes were used; it is not an independent endorsement of their provenance. Exhaustiveness is an explicit annotation assumption. Class physical sizes, unknown/default classes, metadata quality, spatial qualifiers, dense objects and NMS behavior need further measurement. The DIOR class set and variable unknown per-image GSD limit transfer claims to other app counts.
+No detector-count accuracy, threshold optimum, GPU latency/memory, DIOR mirror byte equivalence to the unavailable original host, or real-image resolution-gate performance is claimed. The mirror download and hash were verified on Kaggle CPU (13 Nov 2026). No CUDA evaluation has run, and the GPU cell is unexecuted. The mirror is 9 images short of the paper. The Grounding DINO checkpoint hash and BERT revision are not pinned yet. Whether `groundingdino-py` builds its CUDA ops on the Kaggle image is untested; without them it falls back to slow CPU ops. A hash records exactly which mirror bytes were used; it is not an independent endorsement of their provenance. Exhaustiveness is an explicit annotation assumption. Class physical sizes, unknown/default classes, metadata quality, spatial qualifiers, dense objects and NMS behavior need further measurement. The DIOR class set and variable unknown per-image GSD limit transfer claims to other app counts.
 
 ## Test evidence
 
