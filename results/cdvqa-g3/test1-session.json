@@ -1,0 +1,7 @@
+{
+  "stage": "evaluate",
+  "run_identity": "47deaabb735210e86fc708d97dfb94ced4bfa81ed841f4dab2d29d320f9304cc",
+  "budget_seconds": 7200,
+  "budget_ledger": "/kaggle/working/ledger/cdvqa-eval-budget.json",
+  "resume_from": null
+}

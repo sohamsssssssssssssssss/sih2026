@@ -1,0 +1,12 @@
+[
+  {
+    "output": "/kaggle/working/g3-adapter-test1",
+    "stage": "evaluate",
+    "charged_seconds": 1818
+  },
+  {
+    "output": "/kaggle/working/g3-adapter-test2",
+    "stage": "evaluate",
+    "charged_seconds": 1807
+  }
+]
