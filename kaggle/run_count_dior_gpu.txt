@@ -2,7 +2,7 @@
 # Kaggle GPU cell: DIOR val counting with Grounding DINO Swin-T (kaggle/eval_count_detection.py).
 # Notebook settings: Accelerator GPU T4 x1 (or P100), Internet ON. Run as a committed version (Save & Run All).
 # Inputs:
-#   - This branch's code as a Kaggle dataset, mounted at $REPO_INPUT (default below; edit to your dataset name).
+#   - This branch's code as a Kaggle dataset, found by searching /kaggle/input for sih2026/kaggle/eval_count_detection.py.
 #   - Internet: https://zenodo.org/records/11213149/files/DIOR-VOC.zip (third-party mirror, pinned sha256 below),
 #               https://huggingface.co/ShilongLiu/GroundingDINO (groundingdino_swint_ogc.pth; hash recorded, not pinned),
 #               https://huggingface.co/bert-base-uncased (text encoder; snapshot revision recorded, not pinned),
@@ -11,7 +11,6 @@
 set -euo pipefail
 trap 'echo "FAILED at line $LINENO: $BASH_COMMAND"' ERR
 
-REPO_INPUT=/kaggle/input/satquery-count-grounding/sih2026
 T=/kaggle/tmp/count-dior
 W=/kaggle/working
 EXPECTED_SHA256=7a386a56ba815333627d89d3b8b372d1af2a07b78955c017530ec62b7f1e0540
@@ -22,8 +21,15 @@ for f in "$W/dior-count-val-seed17-1000.json" "$W/dior-count-val-evaluation.json
   if [ -e "$f" ]; then echo "HARD STOP: $f exists; the evaluator needs fresh outputs"; exit 1; fi
 done
 
-# 1. Code: copy out of the read-only input so __pycache__ writes cannot fail.
-[ -f "$REPO_INPUT/kaggle/eval_count_detection.py" ] || { echo "HARD STOP: code not found at $REPO_INPUT"; ls -R /kaggle/input | head -40; exit 1; }
+# 1. Code: Kaggle mounts datasets at /kaggle/input/datasets/<owner>/<slug>/..., so search instead of hardcoding.
+mapfile -t MATCHES < <(find /kaggle/input -type f -path "*/sih2026/kaggle/eval_count_detection.py")
+if [ "${#MATCHES[@]}" -ne 1 ]; then
+  echo "HARD STOP: expected exactly 1 sih2026/kaggle/eval_count_detection.py under /kaggle/input, found ${#MATCHES[@]}:"
+  printf '  %s\n' "${MATCHES[@]}"; exit 1
+fi
+REPO_INPUT=$(dirname "$(dirname "${MATCHES[0]}")")
+echo "REPO_INPUT=$REPO_INPUT"
+# Copy out of the read-only input so __pycache__ writes cannot fail.
 rm -rf "$T/sih2026" && cp -r "$REPO_INPUT" "$T/sih2026"
 nvidia-smi --query-gpu=name,memory.total --format=csv
 

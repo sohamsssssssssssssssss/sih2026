@@ -142,3 +142,9 @@ def test_archive_hash_and_size_are_pinned(tmp_path):
     for cell in ("fetch_dior_cpu.sh", "run_count_dior_gpu.txt"):
         text = (Path(evaluation.__file__).parent / cell).read_text()
         assert evaluation.MIRROR_SHA256 in text and str(evaluation.MIRROR_BYTES) in text
+
+
+def test_gpu_cell_searches_for_repo_input_instead_of_hardcoding():
+    text = (Path(evaluation.__file__).parent / "run_count_dior_gpu.txt").read_text()
+    assert "/kaggle/input/satquery-count-grounding" not in text
+    assert 'find /kaggle/input -type f -path "*/sih2026/kaggle/eval_count_detection.py"' in text
