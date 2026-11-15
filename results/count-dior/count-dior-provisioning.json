@@ -1,0 +1,6 @@
+{
+  "grounding_checkpoint": "/kaggle/tmp/count-dior/grounding/groundingdino_swint_ogc.pth",
+  "grounding_checkpoint_sha256": "3b3ca2563c77c69f651d7bd133e97139c186df06231157a64c507099c52bc799",
+  "bert_snapshot": "/kaggle/tmp/count-dior/hf/hub/models--bert-base-uncased/snapshots/86b5e0934494bd15c9632b12f734a8a67f723594",
+  "bert_revision": "86b5e0934494bd15c9632b12f734a8a67f723594"
+}

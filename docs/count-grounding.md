@@ -89,14 +89,14 @@ Protocol:
 
 DIOR's dataset-level GSD varies roughly **0.5–30 m/px** and per-image GSD is not present in these VOC annotations. **This evaluator measures detector counting only, not the app's resolution gate.** It intentionally invokes the shared detector-count postprocessor without pretending that DIOR resolution is known.
 
-## Kaggle GPU cell (supplied, NOT executed)
+## Kaggle GPU cell (executed once, 15 Nov 2026)
 
 The cell is in `kaggle/run_count_dior_gpu.txt`; paste it into one cell and run it as a committed version. It uses `set -euo pipefail` with an ERR trap that prints the failing line, and it ends with `CELL DONE`.
 
 Required:
 - **Accelerator:** GPU (T4).
 - **Internet:** on.
-- **Code:** this branch's code as a Kaggle dataset at `/kaggle/input/satquery-count-grounding/sih2026`. Edit `REPO_INPUT` if your dataset is named differently.
+- **Code:** this branch's code as a Kaggle dataset under any name. The cell finds it by searching `/kaggle/input` for exactly one `sih2026/kaggle/eval_count_detection.py`; it stops if there are zero or several matches.
 - **Downloads:**
   - the DIOR mirror (pinned above);
   - `ShilongLiu/GroundingDINO/groundingdino_swint_ogc.pth` from Hugging Face. Its sha256 is **recorded, not pinned**, because no verified value exists yet. `configs/model_artifacts.json` has `sha256: null`.
@@ -119,9 +119,13 @@ python kaggle/eval_count_detection.py --mode lr_negative_control \
   --output /kaggle/working/lr-count-gate-negative-control.json
 ```
 
+## Measured (15 Nov 2026)
+
+See [`results/count-dior/ANALYSIS.md`](../results/count-dior/ANALYSIS.md) for the full analysis and [`SOURCE.md`](../results/count-dior/SOURCE.md) for the evidence hashes. **At every box threshold (0.25 to 0.40), the detector does not beat the always-0 baseline on exact match (best 0.364 vs 0.500), and its MAE at best ties it (1.488 vs 1.484).** On absent-class pairs Grounding DINO returns at least one box 75 to 96% of the time (84% at 0.35). On present-class pairs it is informative (exact 49.2% at 0.35, where always-0 scores 0), but it under-counts more than it over-counts at 0.35 and above. No resolution-gate performance was measured, because DIOR GSD is not in the VOC annotations.
+
 ## Unmeasured and open risks
 
-No detector-count accuracy, threshold optimum, GPU latency/memory, DIOR mirror byte equivalence to the unavailable original host, or real-image resolution-gate performance is claimed. The mirror download and hash were verified on Kaggle CPU (13 Nov 2026). No CUDA evaluation has run, and the GPU cell is unexecuted. The mirror is 9 images short of the paper. The Grounding DINO checkpoint hash and BERT revision are not pinned yet. Whether `groundingdino-py` builds its CUDA ops on the Kaggle image is untested; without them it falls back to slow CPU ops. A hash records exactly which mirror bytes were used; it is not an independent endorsement of their provenance. Exhaustiveness is an explicit annotation assumption. Class physical sizes, unknown/default classes, metadata quality, spatial qualifiers, dense objects and NMS behavior need further measurement. The DIOR class set and variable unknown per-image GSD limit transfer claims to other app counts.
+Beyond the single DIOR val measurement below, no detector-count accuracy, threshold optimum, GPU latency/memory, DIOR mirror byte equivalence to the unavailable original host, or real-image resolution-gate performance is claimed. The mirror download and hash were verified on Kaggle CPU (13 Nov 2026). One CUDA evaluation has run (single seed, val only; see Measured). The mirror is 9 images short of the paper. The Grounding DINO checkpoint sha256 and BERT revision used in that run are recorded in `results/count-dior/SOURCE.md` but not enforced by `configs/model_artifacts.json`. Whether `groundingdino-py` builds its CUDA ops on the Kaggle image is untested; without them it falls back to slow CPU ops. A hash records exactly which mirror bytes were used; it is not an independent endorsement of their provenance. Exhaustiveness is an explicit annotation assumption. Class physical sizes, unknown/default classes, metadata quality, spatial qualifiers, dense objects and NMS behavior need further measurement. The DIOR class set and variable unknown per-image GSD limit transfer claims to other app counts.
 
 ## Test evidence
 
