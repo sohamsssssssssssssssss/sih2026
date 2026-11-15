@@ -1,6 +1,7 @@
 """Synthetic data/scoring tests only; never call the CUDA evaluator entry point."""
 from collections import Counter
 import json
+import re
 from pathlib import Path
 import xml.etree.ElementTree as ET
 
@@ -209,3 +210,11 @@ def test_structural_layout_errors_still_raise(tmp_path):
     with pytest.raises(ValueError, match="Found tree"):
         evaluation.dataset_root(tmp_path / "empty")
 
+
+def test_gpu_cell_is_shadow_proof_against_pip_kaggle():
+    text = (Path(evaluation.__file__).parent / "run_count_dior_gpu.txt").read_text()
+    assert 'touch "$T/sih2026/kaggle/__init__.py"' in text
+    assert 'export PYTHONPATH="$T/sih2026"' in text
+    assert text.index('touch "$T/sih2026/kaggle/__init__.py"') < text.index('export PYTHONPATH="$T/sih2026"')
+    code = "\n".join(line for line in text.splitlines() if not line.lstrip().startswith("#"))
+    assert not re.search(r"/kaggle/input/[A-Za-z0-9]", code)

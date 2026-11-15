@@ -31,6 +31,8 @@ REPO_INPUT=$(dirname "$(dirname "${MATCHES[0]}")")
 echo "REPO_INPUT=$REPO_INPUT"
 # Copy out of the read-only input so __pycache__ writes cannot fail.
 rm -rf "$T/sih2026" && cp -r "$REPO_INPUT" "$T/sih2026"
+# Kaggle's pip package "kaggle" shadows the repo folder; make ours a real package.
+touch "$T/sih2026/kaggle/__init__.py"
 nvidia-smi --query-gpu=name,memory.total --format=csv
 
 # 2. Dependencies (Kaggle image supplies torch/torchvision with CUDA).
@@ -72,6 +74,7 @@ export SATQUERY_GROUNDING_CHECKPOINT="$(cat "$T/checkpoint_path")"
 # 5. Evaluate offline. The evaluator re-verifies the pin, requires DIOR-VOC/VOC2007, drops val ids with
 #    missing JPEG/XML before sampling, and freezes + fsyncs the sample before loading the detector.
 export HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1
+export PYTHONPATH="$T/sih2026"
 cd "$T/sih2026"
 python kaggle/eval_count_detection.py \
   --archive "$T/DIOR-VOC.zip" --data-root "$T/dior" \
