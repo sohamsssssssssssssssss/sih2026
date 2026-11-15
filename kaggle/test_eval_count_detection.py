@@ -142,3 +142,47 @@ def test_archive_hash_and_size_are_pinned(tmp_path):
     for cell in ("fetch_dior_cpu.sh", "run_count_dior_gpu.txt"):
         text = (Path(evaluation.__file__).parent / cell).read_text()
         assert evaluation.MIRROR_SHA256 in text and str(evaluation.MIRROR_BYTES) in text
+
+
+def test_gpu_cell_has_no_hardcoded_dataset_slug_and_finds_repo_by_search():
+    cell = (Path(evaluation.__file__).parent / "run_count_dior_gpu.txt").read_text()
+    fetch = (Path(evaluation.__file__).parent / "fetch_dior_cpu.sh").read_text()
+    assert "/kaggle/input/satquery-count-grounding" not in cell
+    assert "/kaggle/input/satquery" not in fetch and "/kaggle/input" not in fetch
+    assert 'find /kaggle/input -type f -path "*/sih2026/kaggle/eval_count_detection.py"' in cell
+    assert 'echo "CELL DONE"' in cell and "set -euo pipefail" in cell and "trap 'echo" in cell
+
+
+def _run_search_block(root: Path):
+    import os
+    import subprocess
+    text = (Path(evaluation.__file__).parent / "run_count_dior_gpu.txt").read_text()
+    block = text.split("# --- repo search (begin) ---", 1)[1].split("# --- repo search (end) ---", 1)[0]
+    block = block.replace("/kaggle/input", str(root))
+    script = "set -euo pipefail\n" + block + '\necho "REPO=$REPO_INPUT"\n'
+    return subprocess.run(["bash", "-c", script], capture_output=True, text=True, env=os.environ.copy())
+
+
+def test_repo_search_block_requires_exactly_one_match(tmp_path):
+    import shutil
+    import subprocess
+    major = int(subprocess.run(["bash", "-c", "echo ${BASH_VERSINFO[0]}"], capture_output=True, text=True).stdout)
+    if major < 4:  # the cell uses mapfile (bash >= 4); Kaggle runs bash 5. macOS /bin/bash is 3.2.
+        pytest.skip(f"needs bash >= 4 (found {major}); the cell targets Kaggle bash 5")
+    assert shutil.which("bash")
+    one = tmp_path / "datasets" / "owner" / "any-slug" / "versions" / "1" / "sih2026" / "kaggle"
+    one.mkdir(parents=True)
+    (one / "eval_count_detection.py").write_text("")
+    ok = _run_search_block(tmp_path)
+    assert ok.returncode == 0, ok.stderr
+    assert ok.stdout.strip() == f"REPO={tmp_path}/datasets/owner/any-slug/versions/1/sih2026"
+
+    empty = tmp_path / "empty"
+    empty.mkdir()
+    assert _run_search_block(empty).returncode == 1
+
+    two = tmp_path / "datasets" / "owner" / "other" / "sih2026" / "kaggle"
+    two.mkdir(parents=True)
+    (two / "eval_count_detection.py").write_text("")
+    bad = _run_search_block(tmp_path)
+    assert bad.returncode == 1 and "found 2" in bad.stdout
