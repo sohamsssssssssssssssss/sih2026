@@ -33,21 +33,24 @@ def dataset(base):
         (tmp_path / "ImageSets/Main" / f"{split}.txt").write_text("\n".join(ids))
     for image_id, classes in {"tr1": ["ship", "ship"], "tr2": ["ship", "ship"], "tr3": [],
                               "v1": ["ship"], "v2": ["vehicle"], "v3": ["ship"], "v4": ["vehicle"]}.items():
-        xml = ET.Element("annotation")
-        ET.SubElement(xml, "filename").text = f"{image_id}.jpg"
-        size = ET.SubElement(xml, "size")
-        ET.SubElement(size, "width").text = "800"
-        ET.SubElement(size, "height").text = "800"
-        for cls in classes:
-            obj = ET.SubElement(xml, "object")
-            ET.SubElement(obj, "name").text = cls
-            ET.SubElement(obj, "difficult").text = "1"  # Count every annotated instance.
-            box = ET.SubElement(obj, "bndbox")
-            for name, value in zip(("xmin", "ymin", "xmax", "ymax"), (1, 1, 20, 20)):
-                ET.SubElement(box, name).text = str(value)
-        ET.ElementTree(xml).write(tmp_path / "Annotations" / f"{image_id}.xml")
-        (tmp_path / "JPEGImages" / f"{image_id}.jpg").touch()
+        write_voc(tmp_path, image_id, classes)
     return tmp_path
+
+
+def write_voc(root, image_id, classes, size=("800", "800"), box=(1, 1, 20, 20)):
+    xml = ET.Element("annotation")
+    ET.SubElement(xml, "filename").text = f"{image_id}.jpg"
+    size_node = ET.SubElement(xml, "size")
+    ET.SubElement(size_node, "width").text, ET.SubElement(size_node, "height").text = size
+    for cls in classes:
+        obj = ET.SubElement(xml, "object")
+        ET.SubElement(obj, "name").text = cls
+        ET.SubElement(obj, "difficult").text = "1"  # Count every annotated instance.
+        node = ET.SubElement(obj, "bndbox")
+        for name, value in zip(("xmin", "ymin", "xmax", "ymax"), box):
+            ET.SubElement(node, name).text = str(value)
+    ET.ElementTree(xml).write(root / "Annotations" / f"{image_id}.xml")
+    (root / "JPEGImages" / f"{image_id}.jpg").touch()
 
 
 def test_dior_layout_disjoint_splits_counts_baselines_and_frozen_balancing(tmp_path):
@@ -111,11 +114,13 @@ def test_missing_jpeg_or_xml_val_ids_are_dropped_before_sampling_and_recorded(tm
     (root / "JPEGImages/tr3.jpg").unlink()
     val, dropped = evaluation.annotations(root, ["v1", "v2", "v3", "v4"])
     assert sorted(val) == ["v3", "v4"]
-    assert dropped == {"missing_xml": ["v2"], "missing_image": ["v1"]}
-    assert evaluation.dropped_summary(dropped, 4) == {"missing_xml": ["v2"], "missing_image": ["v1"],
-                                                       "n_dropped": 2, "n_requested": 4}
+    assert dropped == {"missing_xml": ["v2"], "missing_image": ["v1"], "invalid_annotation": []}
+    assert evaluation.dropped_summary(dropped, 4, len(val)) == {
+        "missing_xml": ["v2"], "missing_image": ["v1"], "invalid_annotation": [], "n_dropped": 2,
+        "n_requested": 4, "n_kept": 2, "n_dropped_by_reason": {"missing_image": 1, "missing_xml": 1}}
     train, train_dropped = evaluation.annotations(root, ["tr1", "tr2", "tr3"], require_image=False)
-    assert sorted(train) == ["tr1", "tr2", "tr3"] and train_dropped == {"missing_xml": [], "missing_image": []}
+    assert sorted(train) == ["tr1", "tr2", "tr3"]
+    assert train_dropped == {"missing_xml": [], "missing_image": [], "invalid_annotation": []}
     rows = evaluation.sample_pairs(val, ["ship", "vehicle"], 4)
     assert {r["image_id"] for r in rows} <= {"v3", "v4"}
 
@@ -148,3 +153,59 @@ def test_gpu_cell_searches_for_repo_input_instead_of_hardcoding():
     text = (Path(evaluation.__file__).parent / "run_count_dior_gpu.txt").read_text()
     assert "/kaggle/input/satquery-count-grounding" not in text
     assert 'find /kaggle/input -type f -path "*/sih2026/kaggle/eval_count_detection.py"' in text
+
+
+def clean_ids(root, n):
+    ids = [f"c{i:03d}" for i in range(n)]
+    for image_id in ids:
+        write_voc(root, image_id, ["ship"])
+    return ids
+
+
+def test_nonstandard_size_is_dropped_and_run_continues(tmp_path):
+    root = dataset(tmp_path)
+    ids = clean_ids(root, 99)
+    write_voc(root, "00131", ["ship"], size=("800", "802"))  # real DIOR case
+    records, dropped = evaluation.annotations(root, sorted(ids + ["00131"]))
+    assert len(records) == 99 and "00131" not in records
+    assert dropped["invalid_annotation"] == [
+        {"id": "00131", "reason": "nonstandard_size", "detail": {"width": "800", "height": "802"}}]
+    summary = evaluation.dropped_summary(dropped, 100, len(records))
+    assert summary["n_kept"] == 99 and summary["n_dropped_by_reason"]["nonstandard_size"] == 1
+
+
+def test_unknown_class_and_bad_bbox_are_dropped_with_reasons(tmp_path):
+    root = dataset(tmp_path)
+    ids = clean_ids(root, 198)
+    write_voc(root, "zz_class", ["spaceship"])
+    write_voc(root, "zz_box", ["ship"], box=(30, 1, 20, 20))
+    records, dropped = evaluation.annotations(root, ids + ["zz_class", "zz_box"])
+    assert len(records) == 198
+    assert [(d["id"], d["reason"]) for d in dropped["invalid_annotation"]] == [
+        ("zz_box", "bad_bbox"), ("zz_class", "unknown_class")]
+
+
+def test_invalid_annotations_over_one_percent_raise_with_reasons(tmp_path):
+    root = dataset(tmp_path)
+    ids = clean_ids(root, 98)
+    write_voc(root, "zz1", ["ship"], size=("800", "802"))
+    write_voc(root, "zz2", ["spaceship"])
+    with pytest.raises(ValueError, match=r"cap.*2/100.*nonstandard_size.*unknown_class.*zz1"):
+        evaluation.annotations(root, ids + ["zz1", "zz2"])
+
+
+def test_clean_tree_has_no_drops(tmp_path):
+    root = dataset(tmp_path)
+    val, dropped = evaluation.annotations(root, ["v1", "v2", "v3", "v4"])
+    assert sorted(val) == ["v1", "v2", "v3", "v4"] and val["v1"]["counts"] == {"ship": 1}
+    assert evaluation.dropped_summary(dropped, 4, 4)["n_dropped"] == 0
+
+
+def test_structural_layout_errors_still_raise(tmp_path):
+    root = dataset(tmp_path)
+    (root / "ImageSets/Main/val.txt").unlink()
+    with pytest.raises(ValueError, match="Missing official image-ID split.*Found tree"):
+        evaluation.read_splits(root)
+    with pytest.raises(ValueError, match="Found tree"):
+        evaluation.dataset_root(tmp_path / "empty")
+

@@ -85,45 +85,82 @@ def read_splits(root):
     return splits
 
 
+INVALID_ANNOTATION_CAP = 0.01  # More invalid XML than this per split means a wrong/corrupt mirror: hard stop.
+
+
+class InvalidAnnotation(ValueError):
+    def __init__(self, reason, detail):
+        super().__init__(reason)
+        self.reason, self.detail = reason, detail
+
+
+def voc_counts(xml, image_id, known):
+    """(filename, per-class counts) of one VOC XML, or InvalidAnnotation(reason, detail)."""
+    try:
+        annotation = ET.parse(xml).getroot()
+    except ET.ParseError as exc:
+        raise InvalidAnnotation("parse_error", str(exc)) from exc
+    name = annotation.findtext("filename")
+    if not name or Path(name).name != name or Path(name).stem != image_id:
+        raise InvalidAnnotation("bad_filename", {"filename": name})
+    width, height = annotation.findtext("size/width"), annotation.findtext("size/height")
+    try:
+        size = (int(width), int(height))
+    except (TypeError, ValueError):
+        size = None
+    if size != (800, 800):
+        raise InvalidAnnotation("nonstandard_size", {"width": width, "height": height})
+    counts = Counter()
+    for obj in annotation.findall("object"):
+        label = obj.findtext("name")
+        category = known.get(re.sub(r"[^a-z0-9]", "", (label or "").lower()))
+        if category is None:
+            raise InvalidAnnotation("unknown_class", {"name": label})
+        raw = [obj.findtext(f"bndbox/{key}") for key in ("xmin", "ymin", "xmax", "ymax")]
+        try:
+            box = [float(v) for v in raw]
+        except (TypeError, ValueError):
+            box = [math.nan] * 4
+        if not all(math.isfinite(v) and 0 <= v <= 800 for v in box) or box[2] <= box[0] or box[3] <= box[1]:
+            raise InvalidAnnotation("bad_bbox", {"bndbox": raw})
+        counts[category] += 1  # Include difficult/truncated objects; no annotation filtering.
+    return name, counts
+
+
 def annotations(root, ids, require_image=True):
-    """Parse VOC counts. Ids whose XML (or, when required, JPEG) is missing are dropped and returned;
-    a present but malformed annotation still stops the run."""
+    """Parse VOC counts. Ids whose XML (or, when required, JPEG) is missing, or whose XML is invalid, are
+    dropped and returned; invalid XML above INVALID_ANNOTATION_CAP of the requested ids stops the run."""
     known = {re.sub(r"[^a-z0-9]", "", c): c for c in DIOR_CATEGORIES}
-    records, dropped = {}, {"missing_xml": [], "missing_image": []}
+    records, dropped = {}, {"missing_xml": [], "missing_image": [], "invalid_annotation": []}
     for image_id in ids:
         xml = root / "Annotations" / f"{image_id}.xml"
         if not xml.is_file():
             dropped["missing_xml"].append(image_id)
             continue
         try:
-            annotation = ET.parse(xml).getroot()
-            name = annotation.findtext("filename")
-            if not name:
-                raise ValueError("Missing VOC filename")
-            if Path(name).name != name or Path(name).stem != image_id:
-                raise ValueError("XML filename does not match image ID")
-            if (int(annotation.findtext("size/width", "0")), int(annotation.findtext("size/height", "0"))) != (800, 800):
-                raise ValueError("Expected original DIOR 800x800 annotations")
-            counts = Counter()
-            for obj in annotation.findall("object"):
-                category = known.get(re.sub(r"[^a-z0-9]", "", (obj.findtext("name") or "").lower()))
-                if category is None:
-                    raise ValueError("Unknown DIOR class")
-                box = [float(obj.findtext(f"bndbox/{key}", "nan")) for key in ("xmin", "ymin", "xmax", "ymax")]
-                if not all(math.isfinite(v) and 0 <= v <= 800 for v in box) or box[2] <= box[0] or box[3] <= box[1]:
-                    raise ValueError("Missing or malformed VOC bounding box")
-                counts[category] += 1  # Include difficult/truncated objects; no annotation filtering.
-            if require_image and not (root / "JPEGImages" / name).is_file():
-                dropped["missing_image"].append(image_id)
-                continue
-            records[image_id] = {"filename": name, "counts": dict(counts), "xml_sha256": sha256(xml)}
-        except (ET.ParseError, ValueError) as exc:
-            layout_error(root, f"Invalid VOC annotation {xml}: {exc}")
+            name, counts = voc_counts(xml, image_id, known)
+        except InvalidAnnotation as exc:
+            dropped["invalid_annotation"].append({"id": image_id, "reason": exc.reason, "detail": exc.detail})
+            continue
+        if require_image and not (root / "JPEGImages" / name).is_file():
+            dropped["missing_image"].append(image_id)
+            continue
+        records[image_id] = {"filename": name, "counts": dict(counts), "xml_sha256": sha256(xml)}
+    dropped = {"missing_xml": sorted(dropped["missing_xml"]), "missing_image": sorted(dropped["missing_image"]),
+               "invalid_annotation": sorted(dropped["invalid_annotation"], key=lambda d: d["id"])}
+    invalid = dropped["invalid_annotation"]
+    if len(invalid) > INVALID_ANNOTATION_CAP * len(ids):
+        reasons = dict(sorted(Counter(d["reason"] for d in invalid).items()))
+        raise ValueError(f"Invalid VOC annotations exceed the {INVALID_ANNOTATION_CAP:.0%} cap under {root}: "
+                         f"{len(invalid)}/{len(ids)} ids, reasons {reasons}, first ids {[d['id'] for d in invalid[:20]]}")
     return records, dropped
 
 
-def dropped_summary(dropped, requested):
-    return {**dropped, "n_dropped": sum(map(len, dropped.values())), "n_requested": requested}
+def dropped_summary(dropped, requested, kept):
+    by_reason = {"missing_xml": len(dropped["missing_xml"]), "missing_image": len(dropped["missing_image"]),
+                 **Counter(d["reason"] for d in dropped["invalid_annotation"])}
+    return {**dropped, "n_dropped": sum(map(len, dropped.values())), "n_requested": requested, "n_kept": kept,
+            "n_dropped_by_reason": dict(sorted(by_reason.items()))}
 
 
 def majority_counts(train, classes):
@@ -226,8 +263,8 @@ def evaluate_dior(args):
     splits = read_splits(root)
     train, train_dropped = annotations(root, splits["train"], require_image=False)  # baseline needs XML only
     val, val_dropped = annotations(root, splits["val"])
-    dropped = {"train": dropped_summary(train_dropped, len(splits["train"])),
-               "val": dropped_summary(val_dropped, len(splits["val"]))}
+    dropped = {"train": dropped_summary(train_dropped, len(splits["train"]), len(train)),
+               "val": dropped_summary(val_dropped, len(splits["val"]), len(val))}
     modes = majority_counts(train, classes)
     rows = sample_pairs(val, classes, args.sample_size)
     image_hashes = {}
