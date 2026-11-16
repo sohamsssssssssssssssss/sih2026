@@ -53,3 +53,22 @@ this chip, preserves all values and records the header per chip in the manifest.
 This conflicts with the README's no-water meaning for 0; no reinterpretation or
 relabeling is made. Five other chips have no valid label pixels, and their water
 percentage is unknown/null. See REPORT.md for measured counts and all flagged IDs.
+
+## 2026-11-16 — T15 approved prediction coverage and sensitivity masks
+
+Primary loss/metric mask is exactly target label != -1, including zero-valued
+labels in Ghana_24858 despite its source header. This explicit T15 contract takes
+precedence over the T14 source-header quality-mask summary; pack bytes are unchanged.
+Missing shipped Otsu predictions (-1) are predicted dry, with coverage reported.
+Recomputed per-chip VH Otsu fits only finite target-valid VH; non-finite VH is
+predicted dry. Model S1 non-finite values and S2 encoded nodata (0) or non-finite
+values become zero AFTER train-stat normalization (mean imputation).
+
+Also report every baseline/model IoU on a common strict sensitivity mask:
+target-valid AND all S1/S2 input bands finite/nonmissing before imputation AND
+shipped Otsu valid. S2 encoded nodata is treated as missing before imputation.
+The same strict mask applies to S1, S1+S2 and all baselines, so comparisons do not
+change pixels by model mode. Show both masks side by side; flag if any H1–H3
+verdict changes. Report per-split target-valid counts and affected counts/percent
+for missing Otsu, non-finite VH, and any S2 nodata band (overlaps allowed).
+No label-valid pixel is removed from the primary result because of input quality.
