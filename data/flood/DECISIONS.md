@@ -43,3 +43,13 @@ band names establish the canonical B01..B12 order, including B8A. S1 is Float32
 VV/VH, documented as dB, with no unit conversion. Source angular resolution and
 per-chip local-UTM approximate ground pixel dimensions are both recorded; the
 README's nominal 10 m is not asserted to be uniform ground spacing.
+
+## 2026-11-16 — full-pack observation after build
+
+The initial sampled LabelHand header was unset. The full audit found one exception:
+Ghana_24858 declares header nodata 0 and contains values 0 and 1. The builder's
+existing source-mask rule honors that header (in addition to explicit -1), flags
+this chip, preserves all values and records the header per chip in the manifest.
+This conflicts with the README's no-water meaning for 0; no reinterpretation or
+relabeling is made. Five other chips have no valid label pixels, and their water
+percentage is unknown/null. See REPORT.md for measured counts and all flagged IDs.
