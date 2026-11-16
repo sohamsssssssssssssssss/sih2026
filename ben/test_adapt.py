@@ -229,7 +229,7 @@ def test_shuffle_fixed_keeps_final_epoch_without_validation_choice():
     result=adapt.fit(model,arrays,lc.train_stats(arrays,train),labels,train,val,members,'shuffle-fixed',3,16,torch.device('cpu'),select_by_val=False)
     assert result['best_epoch']==3 and len(result['history'])==3
     assert result['best_val_map']==result['history'][-1]['val_map']
-    assert adapt.ARMS[-1]=='shuffle-fixed' and 'shuffle-fixed' in adapt.ARMS
+    assert 'shuffle-fixed' in adapt.ARMS and 'bn-only' in adapt.ARMS
 
 
 def test_seed_repeat_cell_contract():
@@ -239,3 +239,16 @@ def test_seed_repeat_cell_contract():
         assert needle in text, needle
     code='\n'.join(l for l in text.splitlines() if not l.lstrip().startswith('#'))
     assert not re.search(r'/kaggle/input/[A-Za-z0-9]',code)
+
+
+def test_bn_only_changes_only_batchnorm_statistics():
+    arrays,y,meta=fixture_data(); train,_,_=adapt.fold_indices(meta,'A')
+    model=Tiny(); before=copy.deepcopy(model.state_dict())
+    stats=lc.train_stats(arrays,train)
+    result=adapt.bn_recalibrate(model,arrays,stats,train,2,16,torch.device('cpu'))
+    after=model.state_dict()
+    assert torch.equal(before['conv.weight'],after['conv.weight']) and torch.equal(before['fc.weight'],after['fc.weight'])
+    assert torch.equal(before['fc.bias'],after['fc.bias'])
+    assert not torch.equal(before['bn.running_mean'],after['bn.running_mean'])
+    assert all(not p.requires_grad for p in model.parameters())
+    assert result['best_epoch']==2 and not model.training

@@ -23,7 +23,7 @@ from ben import landcover as lc, transfer as tr  # noqa: E402
 COMMON = ['trees', 'shrub_grass', 'cropland', 'built', 'water']
 FOLDS = {'A': (('punjab', 'kerala', 'assam'), ('delhi', 'sundarbans', 'rajasthan')),
          'B': (('delhi', 'sundarbans', 'rajasthan'), ('punjab', 'kerala', 'assam'))}
-ARMS = ('none', 'renorm', 'head', 'full', 'shuffle', 'shuffle-fixed')  # shuffle-fixed: diagnostic, see docs/hypotheses/T13b.md (d)
+ARMS = ('none', 'renorm', 'head', 'full', 'shuffle', 'shuffle-fixed', 'bn-only')  # diagnostics: docs/hypotheses/T13b.md (d), (e)
 
 
 def seed_everything(seed):
@@ -165,6 +165,27 @@ def fit(model, arrays, stats, labels, train, val, members, arm, epochs, batch_si
             'loss_classes':list(active),'inactive_classifier_rows':unused,'validation_classes':val_classes}
 
 
+def bn_recalibrate(model, arrays, stats, train, epochs, batch_size, device, seed=lc.SEED):
+    """bn-only diagnostic (docs/hypotheses/T13b.md (e)): refresh BatchNorm running stats on adaptation-train
+    images in train mode, same epochs and batches as the other trained arms. No labels, no weight updates."""
+    seed_everything(seed)
+    rng, gen = np.random.default_rng(seed), torch.Generator().manual_seed(seed)
+    for p in model.parameters():
+        p.requires_grad_(False)
+    model.train()
+    with torch.no_grad():
+        for _ in range(epochs):
+            order = rng.permutation(train)
+            for start in range(0,len(order),batch_size):
+                idx = np.sort(order[start:start+batch_size])
+                x = lc.augment(lc.make_batch(arrays,stats,idx,device),gen)
+                with torch.autocast(device.type, enabled=device.type == 'cuda'):
+                    model(x)
+    model.eval()
+    return {'best_epoch':epochs,'best_val_map':None,'history':[],'lr':None,'loss_classes':None,
+            'inactive_classifier_rows':[],'validation_classes':None}
+
+
 def scored(y, scores):
     m, _ = tr.group_metrics(y,scores)
     m['class_names_used'] = [COMMON[i] for i in m['classes_used']]
@@ -180,8 +201,16 @@ def table(out):
             for arm,a in f['arms'].items():
                 for group,g in a['groups'].items():
                     lines.append(f'| {mode} | {fold} | {arm} | {group} | {g["n"]} | {g["macro_map"]} | {g["macro_map_ci95"]} | {g["prevalence_macro_map"]} | {g["shuffled_macro_map"]} | {f["arms"]["none"]["groups"][group]["macro_map"]} |')
+            # Both comparisons per fold, pooled test set (point differences; T13b (f)).
+            pf = {a: f['arms'][a]['groups']['pooled']['macro_map'] for a in f['arms']}
+            lines.append(f'| {mode} | {fold} | full minus none (registered) | pooled | | {pf["full"]-pf["none"]} | - | | | |')
+            lines.append(f'| {mode} | {fold} | full minus renorm (matched normalisation) | pooled | | {pf["full"]-pf["renorm"]} | - | | | |')
         for arm,g in m['out_of_fold'].items():
             lines.append(f'| {mode} | OOF | {arm} | india | {g["n"]} | {g["macro_map"]} | {g["macro_map_ci95"]} | {g["prevalence_macro_map"]} | {g["shuffled_macro_map"]} | {m["out_of_fold"]["none"]["macro_map"]} |')
+        if 'matched' in m:  # both comparisons side by side (T13b (f)); none is the registered reference
+            gain = m['hypotheses']['H1']['per_arm']['full']
+            lines.append(f'| {mode} | OOF | full minus none (registered) | india | | {gain["gain"]} | {gain["gain_ci95"]} | | | |')
+            lines.append(f'| {mode} | OOF | full minus renorm (matched normalisation) | india | | {m["matched"]["full_minus_renorm"]} | {m["matched"]["ci95"]} | | | |')
     lines += ['', 'Bootstrap unit: patch (existing transfer bootstrap), not new regions. Classes require >=10 positives per group.',
               'H1/H2/H3 decisions and exact configuration are in JSON. Null results are reported as-is.']
     return '\n'.join(lines)+'\n'
@@ -262,6 +291,8 @@ def run(args):
                 if arm in ('head','full','shuffle','shuffle-fixed'):
                     training = fit(model,arrays,norm,labels,train,val,members,arm,args.epochs,args.batch_size,device,seed=args.train_seed,
                                    select_by_val=arm != 'shuffle-fixed')
+                elif arm == 'bn-only':
+                    training = bn_recalibrate(model,arrays,stats,train,args.epochs,args.batch_size,device,seed=args.train_seed)
                 # None is exactly the original stored checkpoint predictions, not a rerun.
                 logits = baseline_logits[test] if arm == 'none' else lc.predict(model,arrays,norm,test,device,args.batch_size)
                 scores = tr.to_coarse(logits,members)[:,common_idx]
@@ -300,6 +331,9 @@ def run(args):
             'H3':{'control_minus_prevalence':oof['shuffle']['macro_map']-oof['shuffle']['prevalence_macro_map'],
                   'difference_ci95':lc.ci95(boot['shuffle']-chance_boot),
                   'pass':abs(oof['shuffle']['macro_map']-oof['shuffle']['prevalence_macro_map']) <= .05 if not out['smoke_only'] else None}}
+        # Matched normalisation comparison, reported beside the registered full-none (T13b (f)); not a gate.
+        res['matched'] = {'full_minus_renorm':oof['full']['macro_map']-oof['renorm']['macro_map'],
+                          'ci95':lc.ci95(boot['full']-boot['renorm'])}
     out['runtime_s'] = time.time()-start
     out = tr._finite(out)
     dest.mkdir(parents=True,exist_ok=True)
