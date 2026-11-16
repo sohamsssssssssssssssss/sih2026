@@ -1,4 +1,37 @@
 {
+  "$defs": {
+    "JsonValue": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "integer"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "items": {
+            "$ref": "#/$defs/JsonValue"
+          },
+          "type": "array"
+        },
+        {
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          },
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  },
   "additionalProperties": false,
   "properties": {
     "band_order": {
@@ -44,7 +77,9 @@
       "type": "integer"
     },
     "norm_stats": {
-      "additionalProperties": true,
+      "additionalProperties": {
+        "$ref": "#/$defs/JsonValue"
+      },
       "title": "Norm Stats",
       "type": "object"
     },
@@ -115,5 +150,5 @@
   ],
   "title": "PackManifest",
   "type": "object",
-  "x-schema-version": "1.0.0"
+  "x-schema-version": "1.1.0"
 }

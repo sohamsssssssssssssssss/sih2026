@@ -15,7 +15,9 @@
           "type": "string"
         },
         "summary": {
-          "additionalProperties": true,
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          },
           "default": {},
           "title": "Summary",
           "type": "object"
@@ -38,6 +40,37 @@
       ],
       "title": "Evidence",
       "type": "object"
+    },
+    "JsonValue": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "integer"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "items": {
+            "$ref": "#/$defs/JsonValue"
+          },
+          "type": "array"
+        },
+        {
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          },
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ]
     },
     "ToolResult": {
       "additionalProperties": false,
@@ -93,7 +126,7 @@
           "type": "string"
         },
         "value": {
-          "title": "Value"
+          "$ref": "#/$defs/JsonValue"
         }
       },
       "required": [
@@ -200,5 +233,5 @@
   ],
   "title": "Answer",
   "type": "object",
-  "x-schema-version": "1.0.0"
+  "x-schema-version": "1.1.0"
 }
