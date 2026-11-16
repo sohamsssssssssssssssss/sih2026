@@ -1,0 +1,48 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "evidence_refs": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Evidence Refs",
+      "type": "array"
+    },
+    "measured": {
+      "additionalProperties": {
+        "type": "number"
+      },
+      "default": {},
+      "title": "Measured",
+      "type": "object"
+    },
+    "name": {
+      "minLength": 1,
+      "title": "Name",
+      "type": "string"
+    },
+    "status": {
+      "default": "experimental_unvalidated",
+      "enum": [
+        "validated",
+        "experimental_unvalidated",
+        "disabled"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "version": {
+      "minLength": 1,
+      "title": "Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "name",
+    "version"
+  ],
+  "title": "ToolStatus",
+  "type": "object",
+  "x-schema-version": "1.0.0"
+}

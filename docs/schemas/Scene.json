@@ -1,0 +1,132 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "acquired": {
+      "anyOf": [
+        {
+          "format": "date",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Acquired"
+    },
+    "bands": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Bands",
+      "type": "array"
+    },
+    "bounds": {
+      "maxItems": 4,
+      "minItems": 4,
+      "prefixItems": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        }
+      ],
+      "title": "Bounds",
+      "type": "array"
+    },
+    "cloud_pct": {
+      "anyOf": [
+        {
+          "maximum": 100,
+          "minimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Cloud Pct"
+    },
+    "crs": {
+      "minLength": 1,
+      "title": "Crs",
+      "type": "string"
+    },
+    "gsd_m": {
+      "exclusiveMinimum": 0,
+      "title": "Gsd M",
+      "type": "number"
+    },
+    "nodata_pct": {
+      "maximum": 100,
+      "minimum": 0,
+      "title": "Nodata Pct",
+      "type": "number"
+    },
+    "region": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Region"
+    },
+    "scene_id": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Scene Id",
+      "type": "string"
+    },
+    "sensor": {
+      "enum": [
+        "S2",
+        "S1",
+        "RGB_HR",
+        "S1S2",
+        "UNKNOWN"
+      ],
+      "title": "Sensor",
+      "type": "string"
+    },
+    "source": {
+      "minLength": 1,
+      "title": "Source",
+      "type": "string"
+    },
+    "units": {
+      "enum": [
+        "reflectance_x1e4",
+        "dB",
+        "uint8",
+        "unknown"
+      ],
+      "title": "Units",
+      "type": "string"
+    }
+  },
+  "required": [
+    "scene_id",
+    "sensor",
+    "bands",
+    "units",
+    "gsd_m",
+    "crs",
+    "bounds",
+    "nodata_pct",
+    "source"
+  ],
+  "title": "Scene",
+  "type": "object",
+  "x-schema-version": "1.0.0"
+}

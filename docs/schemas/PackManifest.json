@@ -1,0 +1,119 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "band_order": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Band Order",
+      "type": "array"
+    },
+    "builder_commit": {
+      "pattern": "^[0-9a-f]{40}$",
+      "title": "Builder Commit",
+      "type": "string"
+    },
+    "checks": {
+      "additionalProperties": {
+        "type": "boolean"
+      },
+      "title": "Checks",
+      "type": "object"
+    },
+    "created": {
+      "format": "date-time",
+      "title": "Created",
+      "type": "string"
+    },
+    "files": {
+      "additionalProperties": {
+        "pattern": "^[0-9a-f]{64}$",
+        "type": "string"
+      },
+      "title": "Files",
+      "type": "object"
+    },
+    "licence": {
+      "minLength": 1,
+      "title": "Licence",
+      "type": "string"
+    },
+    "n_patches": {
+      "minimum": 0,
+      "title": "N Patches",
+      "type": "integer"
+    },
+    "norm_stats": {
+      "additionalProperties": true,
+      "title": "Norm Stats",
+      "type": "object"
+    },
+    "pack_id": {
+      "minLength": 1,
+      "title": "Pack Id",
+      "type": "string"
+    },
+    "redistribution": {
+      "enum": [
+        "allowed",
+        "not_allowed",
+        "unknown"
+      ],
+      "title": "Redistribution",
+      "type": "string"
+    },
+    "regions": {
+      "additionalProperties": {
+        "minimum": 0,
+        "type": "integer"
+      },
+      "title": "Regions",
+      "type": "object"
+    },
+    "sources": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Sources",
+      "type": "array"
+    },
+    "splits": {
+      "additionalProperties": {
+        "minimum": 0,
+        "type": "integer"
+      },
+      "title": "Splits",
+      "type": "object"
+    },
+    "units": {
+      "minLength": 1,
+      "title": "Units",
+      "type": "string"
+    },
+    "version": {
+      "minLength": 1,
+      "title": "Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "pack_id",
+    "version",
+    "created",
+    "builder_commit",
+    "files",
+    "n_patches",
+    "splits",
+    "regions",
+    "band_order",
+    "units",
+    "norm_stats",
+    "checks",
+    "sources",
+    "licence",
+    "redistribution"
+  ],
+  "title": "PackManifest",
+  "type": "object",
+  "x-schema-version": "1.0.0"
+}

@@ -1,0 +1,105 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "checkpoint_sha": {
+      "anyOf": [
+        {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Checkpoint Sha"
+    },
+    "ci95": {
+      "anyOf": [
+        {
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Ci95"
+    },
+    "commit": {
+      "pattern": "^[0-9a-f]{40}$",
+      "title": "Commit",
+      "type": "string"
+    },
+    "control": {
+      "anyOf": [
+        {
+          "enum": [
+            "blank",
+            "shuffled",
+            "swapped",
+            "identical",
+            "degraded"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Control"
+    },
+    "eval_id": {
+      "minLength": 1,
+      "title": "Eval Id",
+      "type": "string"
+    },
+    "hypothesis_ref": {
+      "minLength": 1,
+      "title": "Hypothesis Ref",
+      "type": "string"
+    },
+    "metric": {
+      "minLength": 1,
+      "title": "Metric",
+      "type": "string"
+    },
+    "n": {
+      "exclusiveMinimum": 0,
+      "title": "N",
+      "type": "integer"
+    },
+    "pack_id": {
+      "minLength": 1,
+      "title": "Pack Id",
+      "type": "string"
+    },
+    "value": {
+      "title": "Value",
+      "type": "number"
+    }
+  },
+  "required": [
+    "eval_id",
+    "commit",
+    "pack_id",
+    "metric",
+    "value",
+    "n",
+    "hypothesis_ref"
+  ],
+  "title": "EvalRecord",
+  "type": "object",
+  "x-schema-version": "1.0.0"
+}
