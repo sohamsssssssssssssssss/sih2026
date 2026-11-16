@@ -1,0 +1,427 @@
+{
+  "mode": "s2",
+  "seed": 17,
+  "config": {
+    "epochs": 30,
+    "batch_size": 128,
+    "lr": 0.001,
+    "weight_decay": 0.0001,
+    "optimizer": "AdamW",
+    "schedule": "cosine",
+    "loss": "BCEWithLogits",
+    "model": "resnet18 weights=None",
+    "in_channels": 4,
+    "augmentation": "per-sample flips + 90-degree rotations",
+    "amp": true,
+    "channels": {
+      "s1": [
+        "VV",
+        "VH"
+      ],
+      "s2": [
+        "B02",
+        "B03",
+        "B04",
+        "B08"
+      ]
+    },
+    "inputs": [
+      "s2"
+    ]
+  },
+  "preprocess_stats": {
+    "s2": {
+      "scale": 0.0001,
+      "mean": [
+        0.04399032940217052,
+        0.061455937268636844,
+        0.05895216714392619,
+        0.21979147300374074
+      ],
+      "std": [
+        0.06305892643928936,
+        0.062312943825739694,
+        0.07017542914231235,
+        0.13767720623699417
+      ]
+    }
+  },
+  "epochs_run": 30,
+  "best_epoch": 28,
+  "best_val_macro_map": 0.6789188639967085,
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 0.280425305445989,
+      "val_macro_map": 0.42775474253922796
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.24596348945299784,
+      "val_macro_map": 0.4918561985324947
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.23320205982526143,
+      "val_macro_map": 0.4978047672020744
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.22608016622066499,
+      "val_macro_map": 0.5299382847522371
+    },
+    {
+      "epoch": 5,
+      "train_loss": 0.21747221072514852,
+      "val_macro_map": 0.5308398858085523
+    },
+    {
+      "epoch": 6,
+      "train_loss": 0.2133244057893753,
+      "val_macro_map": 0.5342643906147171
+    },
+    {
+      "epoch": 7,
+      "train_loss": 0.20836216576894123,
+      "val_macro_map": 0.554046705419301
+    },
+    {
+      "epoch": 8,
+      "train_loss": 0.20322537966569265,
+      "val_macro_map": 0.5567904472236554
+    },
+    {
+      "epoch": 9,
+      "train_loss": 0.1994089254140854,
+      "val_macro_map": 0.5847867513071071
+    },
+    {
+      "epoch": 10,
+      "train_loss": 0.19691625356674194,
+      "val_macro_map": 0.5986846648550268
+    },
+    {
+      "epoch": 11,
+      "train_loss": 0.19150241577625274,
+      "val_macro_map": 0.6001126223102381
+    },
+    {
+      "epoch": 12,
+      "train_loss": 0.19006570847829182,
+      "val_macro_map": 0.6106567426664654
+    },
+    {
+      "epoch": 13,
+      "train_loss": 0.18657715713977813,
+      "val_macro_map": 0.5989264002443327
+    },
+    {
+      "epoch": 14,
+      "train_loss": 0.18398201310634613,
+      "val_macro_map": 0.6102995509339986
+    },
+    {
+      "epoch": 15,
+      "train_loss": 0.18015864042441052,
+      "val_macro_map": 0.6148905701114079
+    },
+    {
+      "epoch": 16,
+      "train_loss": 0.17871963727474213,
+      "val_macro_map": 0.6178399413520682
+    },
+    {
+      "epoch": 17,
+      "train_loss": 0.17687661254405976,
+      "val_macro_map": 0.6340217832227907
+    },
+    {
+      "epoch": 18,
+      "train_loss": 0.17330063951015473,
+      "val_macro_map": 0.6292300621030812
+    },
+    {
+      "epoch": 19,
+      "train_loss": 0.17007548813025156,
+      "val_macro_map": 0.6351864888501464
+    },
+    {
+      "epoch": 20,
+      "train_loss": 0.16723339660962422,
+      "val_macro_map": 0.6510227607305115
+    },
+    {
+      "epoch": 21,
+      "train_loss": 0.1642723388671875,
+      "val_macro_map": 0.6407642937668483
+    },
+    {
+      "epoch": 22,
+      "train_loss": 0.16135531318187712,
+      "val_macro_map": 0.6551475894869928
+    },
+    {
+      "epoch": 23,
+      "train_loss": 0.1590673508644104,
+      "val_macro_map": 0.6665919827873609
+    },
+    {
+      "epoch": 24,
+      "train_loss": 0.15609304134051005,
+      "val_macro_map": 0.6667983831469083
+    },
+    {
+      "epoch": 25,
+      "train_loss": 0.1528655811548233,
+      "val_macro_map": 0.6695077856792649
+    },
+    {
+      "epoch": 26,
+      "train_loss": 0.15109631713231406,
+      "val_macro_map": 0.6737020339197833
+    },
+    {
+      "epoch": 27,
+      "train_loss": 0.1493808577855428,
+      "val_macro_map": 0.6749993921641554
+    },
+    {
+      "epoch": 28,
+      "train_loss": 0.14805855600039164,
+      "val_macro_map": 0.6789188639967085
+    },
+    {
+      "epoch": 29,
+      "train_loss": 0.14679523996512095,
+      "val_macro_map": 0.6748984184554797
+    },
+    {
+      "epoch": 30,
+      "train_loss": 0.14657812082767488,
+      "val_macro_map": 0.677091697427404
+    }
+  ],
+  "n": {
+    "train": 12000,
+    "validation": 2000,
+    "test": 6000
+  },
+  "test_evaluations": 1,
+  "classes": [
+    "Agro-forestry areas",
+    "Arable land",
+    "Beaches, dunes, sands",
+    "Broad-leaved forest",
+    "Coastal wetlands",
+    "Complex cultivation patterns",
+    "Coniferous forest",
+    "Industrial or commercial units",
+    "Inland waters",
+    "Inland wetlands",
+    "Land principally occupied by agriculture, with significant areas of natural vegetation",
+    "Marine waters",
+    "Mixed forest",
+    "Moors, heathland and sclerophyllous vegetation",
+    "Natural grassland and sparsely vegetated areas",
+    "Pastures",
+    "Permanent crops",
+    "Transitional woodland, shrub",
+    "Urban fabric"
+  ],
+  "macro_map": 0.6254070059640161,
+  "classes_skipped_no_test_positive": 0,
+  "micro_f1": 0.7303779452849085,
+  "macro_f1": 0.5987211972530437,
+  "thresholds_from": "validation, per class, max F1",
+  "per_class": [
+    {
+      "class": "Agro-forestry areas",
+      "ap": 0.7973214804417275,
+      "prior_ap": 0.08733333333333333,
+      "threshold": 0.32124704122543335,
+      "test_positives": 524,
+      "train_prevalence": 0.06875000149011612
+    },
+    {
+      "class": "Arable land",
+      "ap": 0.9032041438305812,
+      "prior_ap": 0.4071666666666667,
+      "threshold": 0.4569246768951416,
+      "test_positives": 2443,
+      "train_prevalence": 0.36908334493637085
+    },
+    {
+      "class": "Beaches, dunes, sands",
+      "ap": 0.19184832348362735,
+      "prior_ap": 0.002,
+      "threshold": 0.18742996454238892,
+      "test_positives": 12,
+      "train_prevalence": 0.0026666666381061077
+    },
+    {
+      "class": "Broad-leaved forest",
+      "ap": 0.825842553145821,
+      "prior_ap": 0.30883333333333335,
+      "threshold": 0.4263215959072113,
+      "test_positives": 1853,
+      "train_prevalence": 0.2720000147819519
+    },
+    {
+      "class": "Coastal wetlands",
+      "ap": 0.13092004811389443,
+      "prior_ap": 0.0013333333333333333,
+      "threshold": 0.1544397622346878,
+      "test_positives": 8,
+      "train_prevalence": 0.0022499999031424522
+    },
+    {
+      "class": "Complex cultivation patterns",
+      "ap": 0.6151685194547558,
+      "prior_ap": 0.182,
+      "threshold": 0.295738160610199,
+      "test_positives": 1092,
+      "train_prevalence": 0.21283333003520966
+    },
+    {
+      "class": "Coniferous forest",
+      "ap": 0.9177403942582707,
+      "prior_ap": 0.3215,
+      "threshold": 0.43308210372924805,
+      "test_positives": 1929,
+      "train_prevalence": 0.3232499957084656
+    },
+    {
+      "class": "Industrial or commercial units",
+      "ap": 0.2845283474632918,
+      "prior_ap": 0.013833333333333333,
+      "threshold": 0.5676370859146118,
+      "test_positives": 83,
+      "train_prevalence": 0.02358333393931389
+    },
+    {
+      "class": "Inland waters",
+      "ap": 0.8803496821851855,
+      "prior_ap": 0.14516666666666667,
+      "threshold": 0.30311259627342224,
+      "test_positives": 871,
+      "train_prevalence": 0.1264999955892563
+    },
+    {
+      "class": "Inland wetlands",
+      "ap": 0.4929402283669263,
+      "prior_ap": 0.041,
+      "threshold": 0.42441198229789734,
+      "test_positives": 246,
+      "train_prevalence": 0.04508333280682564
+    },
+    {
+      "class": "Land principally occupied by agriculture, with significant areas of natural vegetation",
+      "ap": 0.6701930265768696,
+      "prior_ap": 0.244,
+      "threshold": 0.3677242696285248,
+      "test_positives": 1464,
+      "train_prevalence": 0.25949999690055847
+    },
+    {
+      "class": "Marine waters",
+      "ap": 0.9887577724123816,
+      "prior_ap": 0.0985,
+      "threshold": 0.5947277545928955,
+      "test_positives": 591,
+      "train_prevalence": 0.14941667020320892
+    },
+    {
+      "class": "Mixed forest",
+      "ap": 0.850533023516018,
+      "prior_ap": 0.37233333333333335,
+      "threshold": 0.33079540729522705,
+      "test_positives": 2234,
+      "train_prevalence": 0.33258333802223206
+    },
+    {
+      "class": "Moors, heathland and sclerophyllous vegetation",
+      "ap": 0.39751636776187893,
+      "prior_ap": 0.031,
+      "threshold": 0.10447732359170914,
+      "test_positives": 186,
+      "train_prevalence": 0.02591666579246521
+    },
+    {
+      "class": "Natural grassland and sparsely vegetated areas",
+      "ap": 0.20104495590912294,
+      "prior_ap": 0.015,
+      "threshold": 0.28269100189208984,
+      "test_positives": 90,
+      "train_prevalence": 0.027416666969656944
+    },
+    {
+      "class": "Pastures",
+      "ap": 0.8146386419316971,
+      "prior_ap": 0.22433333333333333,
+      "threshold": 0.32263270020484924,
+      "test_positives": 1346,
+      "train_prevalence": 0.17808333039283752
+    },
+    {
+      "class": "Permanent crops",
+      "ap": 0.4560432842053768,
+      "prior_ap": 0.04666666666666667,
+      "threshold": 0.3217795789241791,
+      "test_positives": 280,
+      "train_prevalence": 0.06825000047683716
+    },
+    {
+      "class": "Transitional woodland, shrub",
+      "ap": 0.7098012732714206,
+      "prior_ap": 0.3375,
+      "threshold": 0.317743718624115,
+      "test_positives": 2025,
+      "train_prevalence": 0.2757500112056732
+    },
+    {
+      "class": "Urban fabric",
+      "ap": 0.75434104698746,
+      "prior_ap": 0.10033333333333333,
+      "threshold": 0.3579040765762329,
+      "test_positives": 602,
+      "train_prevalence": 0.13191667199134827
+    }
+  ],
+  "prior_baseline": {
+    "score": "train prevalence per class",
+    "macro_map": 0.15683333333333335,
+    "classes_skipped": 0
+  },
+  "bootstrap": {
+    "reps": 1000,
+    "seed": 17,
+    "unit": "test patch",
+    "macro_map_ci95": [
+      0.61210917988486,
+      0.6483162298828042
+    ]
+  },
+  "control": {
+    "kind": "shuffle test images vs labels (same trained model)",
+    "seed": 17,
+    "macro_map": 0.15847587886358533,
+    "prior_baseline_macro_map": 0.15683333333333335,
+    "model_macro_map": 0.6254070059640161
+  },
+  "manifest_sha256": "dc9c43adf76103811a579060fae0688ef9b281d610e1d2e27e5e8ee81c1ae876",
+  "pack": "/kaggle/input/datasets/sohamssssss/ben-pilot-20k",
+  "code": {
+    "git_sha": null,
+    "landcover_py_sha256": "faa4977aaed59fd66f5a60bb5e7cb8fb11d53ba9626f9b0f0bf6d57a03e149f6"
+  },
+  "files": {
+    "test_logits": "ben-landcover-s2-test-logits.npy",
+    "test_idx": "ben-landcover-s2-test-idx.npy",
+    "test_labels": "ben-landcover-s2-test-labels.npy"
+  },
+  "runtime_s": 273.9500608444214,
+  "torch_version": "2.11.0+cu130",
+  "torchvision_version": "0.26.0+cu130",
+  "device": "cuda (Tesla T4)",
+  "python": "3.13.16"
+}

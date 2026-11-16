@@ -1,0 +1,308 @@
+{
+  "macro_map": {
+    "s1": 0.5598462725291227,
+    "s2": 0.6254070059640161,
+    "s1s2": 0.6283449529806145
+  },
+  "prior_macro_map": 0.15683333333333335,
+  "shuffled_macro_map": {
+    "s1": 0.15940131337335464,
+    "s2": 0.15847587886358533,
+    "s1s2": 0.15864205168900336
+  },
+  "macro_map_ci95": {
+    "s1": [
+      0.551209915016374,
+      0.5784643864565969
+    ],
+    "s2": [
+      0.61210917988486,
+      0.6483162298828042
+    ],
+    "s1s2": [
+      0.6192758240654671,
+      0.6491983371306118
+    ]
+  },
+  "compare": {
+    "s2-s1": {
+      "diff": 0.06556073343489344,
+      "ci95": [
+        0.05040033826726223,
+        0.08355640795922215
+      ],
+      "ci95_recorded": [
+        0.05040033826726223,
+        0.08355640795922215
+      ],
+      "ci_spans_zero": false,
+      "share_resamples_diff_le_0": 0.0
+    },
+    "s1s2-s2": {
+      "diff": 0.002937947016598441,
+      "ci95": [
+        -0.008329371613260913,
+        0.01338210423788366
+      ],
+      "ci95_recorded": [
+        -0.008329371613260913,
+        0.01338210423788366
+      ],
+      "ci_spans_zero": true,
+      "share_resamples_diff_le_0": 0.26
+    }
+  },
+  "classes_skipped_no_test_positive": 0,
+  "n_test": 6000,
+  "per_class": [
+    {
+      "class": "Permanent crops",
+      "test_positives": 280,
+      "s1": 0.23688589077827546,
+      "s2": 0.4560432842053768,
+      "s1s2": 0.4687178043022763,
+      "s2_minus_s1": 0.21915739342710136,
+      "s1s2_minus_s2": 0.012674520096899455,
+      "unreliable_lt30_pos": false
+    },
+    {
+      "class": "Beaches, dunes, sands",
+      "test_positives": 12,
+      "s1": 0.009180312458098076,
+      "s2": 0.19184832348362735,
+      "s1s2": 0.0786767149929454,
+      "s2_minus_s1": 0.18266801102552926,
+      "s1s2_minus_s2": -0.11317160849068195,
+      "unreliable_lt30_pos": true
+    },
+    {
+      "class": "Coniferous forest",
+      "test_positives": 1929,
+      "s1": 0.8306042610399748,
+      "s2": 0.9177403942582707,
+      "s1s2": 0.9153920758708226,
+      "s2_minus_s1": 0.08713613321829594,
+      "s1s2_minus_s2": -0.0023483183874480895,
+      "unreliable_lt30_pos": false
+    },
+    {
+      "class": "Broad-leaved forest",
+      "test_positives": 1853,
+      "s1": 0.740278305807367,
+      "s2": 0.825842553145821,
+      "s1s2": 0.8321709297168325,
+      "s2_minus_s1": 0.08556424733845402,
+      "s1s2_minus_s2": 0.006328376571011485,
+      "unreliable_lt30_pos": false
+    },
+    {
+      "class": "Agro-forestry areas",
+      "test_positives": 524,
+      "s1": 0.7136595547294984,
+      "s2": 0.7973214804417275,
+      "s1s2": 0.7980096097095579,
+      "s2_minus_s1": 0.08366192571222908,
+      "s1s2_minus_s2": 0.0006881292678304618,
+      "unreliable_lt30_pos": false
+    },
+    {
+      "class": "Land principally occupied by agriculture, with significant areas of natural vegetation",
+      "test_positives": 1464,
+      "s1": 0.5872185377838328,
+      "s2": 0.6701930265768696,
+      "s1s2": 0.6751446022385335,
+      "s2_minus_s1": 0.08297448879303682,
+      "s1s2_minus_s2": 0.004951575661663821,
+      "unreliable_lt30_pos": false
+    },
+    {
+      "class": "Complex cultivation patterns",
+      "test_positives": 1092,
+      "s1": 0.5426598550899641,
+      "s2": 0.6151685194547558,
+      "s1s2": 0.625158092178957,
+      "s2_minus_s1": 0.07250866436479175,
+      "s1s2_minus_s2": 0.009989572724201201,
+      "unreliable_lt30_pos": false
+    },
+    {
+      "class": "Mixed forest",
+      "test_positives": 2234,
+      "s1": 0.7836512857628781,
+      "s2": 0.850533023516018,
+      "s1s2": 0.8585292992232307,
+      "s2_minus_s1": 0.06688173775313988,
+      "s1s2_minus_s2": 0.00799627570721273,
+      "unreliable_lt30_pos": false
+    },
+    {
+      "class": "Inland wetlands",
+      "test_positives": 246,
+      "s1": 0.42675146827443683,
+      "s2": 0.4929402283669263,
+      "s1s2": 0.5299471990028349,
+      "s2_minus_s1": 0.06618876009248947,
+      "s1s2_minus_s2": 0.03700697063590863,
+      "unreliable_lt30_pos": false
+    },
+    {
+      "class": "Transitional woodland, shrub",
+      "test_positives": 2025,
+      "s1": 0.6488601540969571,
+      "s2": 0.7098012732714206,
+      "s1s2": 0.7215177823554035,
+      "s2_minus_s1": 0.06094111917446354,
+      "s1s2_minus_s2": 0.011716509083982918,
+      "unreliable_lt30_pos": false
+    },
+    {
+      "class": "Moors, heathland and sclerophyllous vegetation",
+      "test_positives": 186,
+      "s1": 0.3385458141004627,
+      "s2": 0.39751636776187893,
+      "s1s2": 0.4105625467366699,
+      "s2_minus_s1": 0.058970553661416236,
+      "s1s2_minus_s2": 0.01304617897479099,
+      "unreliable_lt30_pos": false
+    },
+    {
+      "class": "Pastures",
+      "test_positives": 1346,
+      "s1": 0.7717531761963959,
+      "s2": 0.8146386419316971,
+      "s1s2": 0.8279653165525543,
+      "s2_minus_s1": 0.042885465735301165,
+      "s1s2_minus_s2": 0.013326674620857237,
+      "unreliable_lt30_pos": false
+    },
+    {
+      "class": "Natural grassland and sparsely vegetated areas",
+      "test_positives": 90,
+      "s1": 0.15882550243973892,
+      "s2": 0.20104495590912294,
+      "s1s2": 0.2558116764473332,
+      "s2_minus_s1": 0.04221945346938402,
+      "s1s2_minus_s2": 0.05476672053821027,
+      "unreliable_lt30_pos": false
+    },
+    {
+      "class": "Arable land",
+      "test_positives": 2443,
+      "s1": 0.861796417790511,
+      "s2": 0.9032041438305812,
+      "s1s2": 0.9022656196270694,
+      "s2_minus_s1": 0.04140772604007026,
+      "s1s2_minus_s2": -0.0009385242035118146,
+      "unreliable_lt30_pos": false
+    },
+    {
+      "class": "Coastal wetlands",
+      "test_positives": 8,
+      "s1": 0.10808635204014846,
+      "s2": 0.13092004811389443,
+      "s1s2": 0.09315844299577072,
+      "s2_minus_s1": 0.022833696073745968,
+      "s1s2_minus_s2": -0.03776160511812371,
+      "unreliable_lt30_pos": true
+    },
+    {
+      "class": "Inland waters",
+      "test_positives": 871,
+      "s1": 0.8618794768082341,
+      "s2": 0.8803496821851855,
+      "s1s2": 0.88551312226121,
+      "s2_minus_s1": 0.018470205376951432,
+      "s1s2_minus_s2": 0.005163440076024539,
+      "unreliable_lt30_pos": false
+    },
+    {
+      "class": "Marine waters",
+      "test_positives": 591,
+      "s1": 0.9748685840779155,
+      "s2": 0.9887577724123816,
+      "s1s2": 0.9854012397242539,
+      "s2_minus_s1": 0.013889188334466063,
+      "s1s2_minus_s2": -0.0033565326881277446,
+      "unreliable_lt30_pos": false
+    },
+    {
+      "class": "Urban fabric",
+      "test_positives": 602,
+      "s1": 0.7500385498365493,
+      "s2": 0.75434104698746,
+      "s1s2": 0.7706188538996973,
+      "s2_minus_s1": 0.004302497150910689,
+      "s1s2_minus_s2": 0.016277806912237347,
+      "unreliable_lt30_pos": false
+    },
+    {
+      "class": "Industrial or commercial units",
+      "test_positives": 83,
+      "s1": 0.29153567894209137,
+      "s2": 0.2845283474632918,
+      "s1s2": 0.30399317879572285,
+      "s2_minus_s1": -0.007007331478799561,
+      "s1s2_minus_s2": 0.019464831332431043,
+      "unreliable_lt30_pos": false
+    }
+  ],
+  "s1_ge_s2": [
+    "Industrial or commercial units"
+  ],
+  "unreliable_classes": [
+    "Beaches, dunes, sands",
+    "Coastal wetlands"
+  ],
+  "training": {
+    "s1": {
+      "epochs_run": 30,
+      "best_epoch": 30,
+      "best_val_macro_map": 0.6156386811854214,
+      "val_last5": [
+        0.6049929307985892,
+        0.6111559566970216,
+        0.6133460960389726,
+        0.6148269110733477,
+        0.6156386811854214
+      ],
+      "val_last5_slope_per_epoch": 0.0024962455149990705,
+      "val_rising_last5": true,
+      "runtime_s": 342.45509338378906
+    },
+    "s2": {
+      "epochs_run": 30,
+      "best_epoch": 28,
+      "best_val_macro_map": 0.6789188639967085,
+      "val_last5": [
+        0.6737020339197833,
+        0.6749993921641554,
+        0.6789188639967085,
+        0.6748984184554797,
+        0.677091697427404
+      ],
+      "val_last5_slope_per_epoch": 0.0006678353306565631,
+      "val_rising_last5": true,
+      "runtime_s": 273.9500608444214
+    },
+    "s1s2": {
+      "epochs_run": 30,
+      "best_epoch": 27,
+      "best_val_macro_map": 0.6841450182673195,
+      "val_last5": [
+        0.6808666311973436,
+        0.6841450182673195,
+        0.6806272885525753,
+        0.6795120442984127,
+        0.6815090939886457
+      ],
+      "val_last5_slope_per_epoch": -0.00033480483863025743,
+      "val_rising_last5": false,
+      "runtime_s": 334.72157764434814
+    }
+  },
+  "cross_check": {
+    "n_checks": 78,
+    "failures": [],
+    "tolerance": 0.001
+  }
+}

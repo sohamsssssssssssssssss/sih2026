@@ -1,6 +1,6 @@
 # BigEarthNet land-cover baseline: radar vs optical vs both
 
-**Status: not yet run.** No results exist yet. Every number below is to be filled in from the output JSONs after the Kaggle run.
+**Status: measured once (16 Nov 2026), one seed.** See the Measured section below and `results/ben-landcover/`.
 
 ## What it measures
 
@@ -66,6 +66,12 @@ python ben/landcover.py --compare OUT/ben-landcover-s1s2.json OUT/ben-landcover-
 - **Purpose:** it is a single-seed baseline on a 20k pilot subset, not a deployed tool and not a tuned model. A gap between modes shows what this recipe achieves, not what each sensor can achieve at best.
 - **Labels:** CLC labels are inherited from reBEN and their accuracy is not verified here.
 
-## Results
+## Measured (16 Nov 2026)
 
-Not yet run.
+This is one run on Kaggle T4 of code `af4b4c4` on pack MANIFEST `dc9c43ad…`. The full analysis is in [`results/ben-landcover/ANALYSIS.md`](../results/ben-landcover/ANALYSIS.md) and provenance is in [`SOURCE.md`](../results/ben-landcover/SOURCE.md).
+
+On 6,000 BigEarthNet v2 test patches (Europe, 10 m, official split), a ResNet-18 trained from scratch on 12,000 patches reaches land-cover macro mAP 0.560 from Sentinel-1 radar alone, 0.625 from Sentinel-2 optical (4 bands) and 0.628 from both. The label prior scores 0.157 and shuffled images about 0.159. One seed.
+
+- **Optical vs radar:** optical beats radar by +0.066 (paired 95% CI +0.050 to +0.084).
+- **Adding radar to optical:** no measurable gain, +0.003 (95% CI −0.008 to +0.013).
+- **Training length:** radar was still improving at epoch 30. Optical and the combined model had levelled off.

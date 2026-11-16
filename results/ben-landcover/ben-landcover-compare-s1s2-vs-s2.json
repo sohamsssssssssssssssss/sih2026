@@ -1,0 +1,17 @@
+{
+  "a": "s1s2",
+  "b": "s2",
+  "metric": "test macro mAP",
+  "a_macro_map": 0.6283449529806145,
+  "b_macro_map": 0.6254070059640161,
+  "diff": 0.002937947016598441,
+  "diff_ci95": [
+    -0.008329371613260913,
+    0.01338210423788366
+  ],
+  "share_resamples_diff_le_0": 0.26,
+  "reps": 1000,
+  "seed": 17,
+  "unit": "test patch (paired)",
+  "manifest_sha256": "dc9c43adf76103811a579060fae0688ef9b281d610e1d2e27e5e8ee81c1ae876"
+}
