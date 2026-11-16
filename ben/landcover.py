@@ -229,6 +229,12 @@ def run(args):
     stem = f"ben-landcover-{args.mode}"
     files = {"test_logits": f"{stem}-test-logits.npy", "test_idx": f"{stem}-test-idx.npy", "test_labels": f"{stem}-test-labels.npy"}
     np.save(out_dir / files["test_logits"], test_logits); np.save(out_dir / files["test_idx"], te); np.save(out_dir / files["test_labels"], y_te.astype(np.uint8))
+    checkpoint = None
+    if args.save_checkpoint:  # kept out of `files`: --compare np.loads every entry there
+        checkpoint = f"{stem}-checkpoint.pt"
+        torch.save({"state_dict": best["state"], "mode": args.mode, "inputs": list(arrays), "in_channels": in_ch,
+                    "classes": classes, "preprocess_stats": stats, "best_epoch": best["epoch"], "manifest_sha256": manifest_sha},
+                   out_dir / checkpoint)
     # Metrics below are computed from the saved files, not the in-memory arrays.
     test_logits, te_saved, y_te = (np.load(out_dir / files[k]) for k in ("test_logits", "test_idx", "test_labels"))
     y_te = y_te.astype(np.float32)
@@ -250,7 +256,7 @@ def run(args):
               "preprocess_stats": stats, "epochs_run": len(history), "best_epoch": best["epoch"], "best_val_macro_map": best["map"],
               "history": history, "n": {"train": len(tr), "validation": len(va), "test": len(te)}, "test_evaluations": test_evaluations,
               "classes": classes, **report, "manifest_sha256": manifest_sha, "pack": str(pack),
-              "code": {"git_sha": git_sha(), "landcover_py_sha256": sha256(Path(__file__))}, "files": files,
+              "code": {"git_sha": git_sha(), "landcover_py_sha256": sha256(Path(__file__))}, "files": files, "checkpoint": checkpoint,
               "runtime_s": time.time() - t0, "torch_version": torch.__version__, "torchvision_version": torchvision.__version__,
               "device": str(device) + (f" ({torch.cuda.get_device_name(0)})" if device.type == "cuda" else ""),
               "python": platform.python_version()}
@@ -309,6 +315,7 @@ def main(argv=None):
     p.add_argument("--epochs", type=int, default=30); p.add_argument("--batch-size", type=int, default=128)
     p.add_argument("--lr", type=float, default=1e-3); p.add_argument("--weight-decay", type=float, default=1e-4)
     p.add_argument("--out-dir", default="."); p.add_argument("--progress")
+    p.add_argument("--save-checkpoint", action="store_true", help="save the best-epoch weights + train stats")
     p.add_argument("--compare", nargs=2, metavar=("A_JSON", "B_JSON")); p.add_argument("--output")
     args = p.parse_args(argv)
     if args.compare:
