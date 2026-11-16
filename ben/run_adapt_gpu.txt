@@ -1,0 +1,48 @@
+%%bash
+# T13: attach code, WorldCover pack, and checkpoint dataset ben-transfer-run-1.
+# No BEN retraining, no downloads. All writes stay under /kaggle/working.
+set -euo pipefail
+trap 'echo "FAILED at line $LINENO: $BASH_COMMAND"' ERR
+W=/kaggle/working
+T="$W/t13-code"
+export PYTHONDONTWRITEBYTECODE=1
+export MPLCONFIGDIR="$W/.matplotlib"
+export XDG_CACHE_HOME="$W/.cache"
+export TMPDIR="$W/tmp"
+mkdir -p "$TMPDIR"
+for f in "$W/ben-adapt.json" "$W/ben-adapt.md" "$T"; do
+  if [ -e "$f" ]; then echo "HARD STOP: output exists: $f"; exit 1; fi
+done
+mapfile -t CODE < <(find /kaggle/input -type f -path '*/ben/adapt.py')
+mapfile -t WCF < <(find /kaggle/input -type f -name fractions.npy)
+mapfile -t RUNF < <(find /kaggle/input -type f -name ben-transfer.json)
+for pair in "ben/adapt.py:${#CODE[@]}" "fractions.npy:${#WCF[@]}" "ben-transfer.json:${#RUNF[@]}"; do
+  if [ "${pair##*:}" -ne 1 ]; then echo "HARD STOP: expected exactly one ${pair%:*}, found ${pair##*:}"; exit 1; fi
+done
+WC=$(dirname "${WCF[0]}")
+RUNS=$(dirname "${RUNF[0]}")
+CODE_ROOT=$(dirname "$(dirname "${CODE[0]}")")
+if [[ "$RUNS/" != *"/ben-transfer-run-1/"* ]]; then
+  echo "HARD STOP: checkpoints must come from dataset ben-transfer-run-1: $RUNS"; exit 1
+fi
+if [ ! -f "$WC/MANIFEST.json" ]; then echo "HARD STOP: missing WC manifest"; exit 1; fi
+for MODE in s1 s2 s1s2; do
+  for NAME in "ben-landcover-$MODE-checkpoint.pt" "wc-$MODE-logits.npy"; do
+    mapfile -t MATCHES < <(find /kaggle/input -type f -name "$NAME")
+    if [ "${#MATCHES[@]}" -ne 1 ]; then echo "HARD STOP: expected exactly one $NAME, found ${#MATCHES[@]}"; exit 1; fi
+    if [ "${MATCHES[0]}" != "$RUNS/$NAME" ]; then echo "HARD STOP: $NAME not beside ben-transfer.json"; exit 1; fi
+  done
+done
+mkdir -p "$T"
+cp -R "$CODE_ROOT/ben" "$T/ben"
+# adapt.py records this packaged revision when the uploaded dataset has no .git.
+# Before packaging the code dataset, put `git rev-parse HEAD` in its root
+# as T13_CODE_COMMIT.txt (beside ben/); do not include checkpoints in code.
+if [ ! -f "$CODE_ROOT/T13_CODE_COMMIT.txt" ]; then echo "HARD STOP: missing T13_CODE_COMMIT.txt in code dataset"; exit 1; fi
+export T13_CODE_COMMIT=$(cat "$CODE_ROOT/T13_CODE_COMMIT.txt")
+if [[ ! "$T13_CODE_COMMIT" =~ ^[0-9a-f]{40}$ ]]; then echo "HARD STOP: invalid code commit"; exit 1; fi
+export PYTHONPATH="$T"
+cd "$T"
+nvidia-smi --query-gpu=name,memory.total --format=csv
+python ben/adapt.py --wc-pack "$WC" --runs "$RUNS" --modes s1 s2 s1s2 --epochs 15 --device cuda --out-dir "$W" | tee "$W/ben-adapt-progress.txt"
+echo "CELL DONE"
