@@ -1,5 +1,7 @@
 # SATQUERY AI — MASTER IMPLEMENTATION PLAN v5.0
 
+> **Superseded by [MASTER_PLAN.md](MASTER_PLAN.md) (16 Nov 2026).** Kept for history.
+
 **Supersedes v4.0.** Baseline re-verified against the repo on **Sun 13 Sep 2026**.
 Finale window 8–15 Dec 2026. One finish line.
 
