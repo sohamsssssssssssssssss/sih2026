@@ -1,7 +1,26 @@
 # DECISIONS: dated log (newest first)
 
 ## 16 Nov 2026
-- **Master Plan v1.0 replaces v5.** Why: v5 (13 Sep) describes the repo as it stood in September. Kept: v5 and annexes A–E stay in `docs/plan/` for history, with a "superseded" line at the top of v5. Rejected: deleting v5, or putting v1.0 in a subfolder.
-- **Pushing allowed for the 8 work branches (T01), with no merges.** Soham approved this on 16 Nov. All 8 turned out to be on GitHub already at the same commits; only local upstream tracking was missing, and it is set now. A pre-push scan found no secrets. It did find committed evidence files: 9 BEN logits/labels `.npy` files (1.9 MB in total) and one 5.35 MB DIOR evaluation JSON. They were already public, so nothing was rewritten. Every push of a new branch still needs Soham's approval (rule 7 + standing instruction).
-- **India transfer pack (T02 input).** Whole WorldCover tiles were downloaded under a 26 GB cap (25.05 GB used), one region at a time, and tiles were deleted after each region was verified. Remote windowed reads were rejected: they ran at 0.63 patch/s and stalled. Facts that differ from the brief: WorldCover S1 is already dB (DN×0.001−45), S2 band order is B04,B03,B02,B08, and map tiles are 3°. Macro mAP uses a fixed class set per group (≥10 positives), and the group differences use one common class set (trees, shrub_grass, cropland, built, water). Rejected: per-resample class sets, which made the CIs unstable. Known bias: the Alps had only 998/1,504 valid cells. WorldCover bare (60) is unlabelled.
-- **Detector counting is not shipped as a validated tool.** DIOR val exact match at 0.35 is 0.324, against 0.500 for always-0 (R10). The count route stays `experimental_unvalidated` until T17 beats the baseline.
+- **(a) T13 uses its own worktree** (`~/sih2026-adapt`), because `feature/ben-landcover` is checked out in `~/sih2026-ben`.
+- **(b) T13 keeps the 19-output BEN classifier.** Each coarse logit is the max of its member logits, the same as `ben/transfer.py`.
+- **(c) T13 metric rules.**
+  - Any-positive val mAP is used only to choose the epoch.
+  - Every reported metric uses classes with ≥10 positives.
+  - No arm is chosen as the winner; all arms are reported.
+- **(d) T14 raster alignment.** Raster transforms are accepted if they agree within 1e-6 pixel. No resampling.
+- **(e) Sen1Floods11 licence is unclear.** STAC says "proprietary", so the pack may not be redistributed until the licence is confirmed.
+- **(f) Agent split.** Claude Code takes judgement-heavy tasks and Codex takes tightly specified build tasks. One task per branch and worktree, and each agent reviews the other's gate.
+- **(g) Tool status.** T06 `core/schema.py` `ToolStatus` is the source of truth. The backend `CapabilityStatus` will be derived from it in T07:
+  - validated / experimental_unvalidated → AVAILABLE, with the status shown as a label;
+  - disabled → UNAVAILABLE;
+  - unregistered → NOT_IMPLEMENTED.
+- **(h) Public canonical JSON.** T07 will expose `orchestrator/trace.py`'s canonical JSON (`_canonical`, now used by `core.schema.scene_id_for`) under a public name.
+- **(i) Test environment.** The python3.11 env is missing `peft`, `streamlit` and `pyarrow`. The 7 failures and 12 import errors that existed before T06 are to be fixed in T05.
+- **Master Plan v1.0 replaces v5.** v5 and annexes A–E stay in `docs/plan/` for history, and v5 carries a "superseded" line.
+- **T04 continues on `task/T04-plan-files`.** No new `task/T04-plan-docs` branch. The worktree was moved from `~/sih2026-plan` to `~/sih2026-docs`.
+- **Branch pushes (T01).** Soham approved pushing the 8 work branches, with no merges. All were already on origin at the same sha. Every new branch push still needs approval.
+- **India transfer pack.**
+  - Whole WorldCover tiles were downloaded under a 26 GB cap (25.05 GB used).
+  - Facts that differ from the brief: S1 is already dB, and the S2 band order is B04,B03,B02,B08.
+  - Macro mAP uses a fixed class set per group (≥10 positives), and group differences use one common class set.
+- **Detector counting is not validated.** DIOR val exact match at 0.35 is 0.324, against 0.500 for always-0 (1837259).
