@@ -6,6 +6,7 @@ A complete saved-logit baseline reproduction is mandatory, even for CPU smoke.
 import argparse
 import json
 import os
+import random
 from pathlib import Path
 import sys
 import time
@@ -22,7 +23,13 @@ from ben import landcover as lc, transfer as tr  # noqa: E402
 COMMON = ['trees', 'shrub_grass', 'cropland', 'built', 'water']
 FOLDS = {'A': (('punjab', 'kerala', 'assam'), ('delhi', 'sundarbans', 'rajasthan')),
          'B': (('delhi', 'sundarbans', 'rajasthan'), ('punjab', 'kerala', 'assam'))}
-ARMS = ('none', 'renorm', 'head', 'full', 'shuffle')
+ARMS = ('none', 'renorm', 'head', 'full', 'shuffle', 'shuffle-fixed')  # shuffle-fixed: diagnostic, see docs/hypotheses/T13b.md (d)
+
+
+def seed_everything(seed):
+    """Training randomness only. Fold splits always use lc.SEED (fold_indices)."""
+    random.seed(seed); np.random.seed(seed); torch.manual_seed(seed)
+    torch.backends.cudnn.benchmark = False
 
 
 def fold_indices(meta, fold, limit=None):
@@ -83,9 +90,9 @@ def check_baseline(y, meta, info, logits, members, reference):
     return checks
 
 
-def shuffled_labels(labels, train, val):
+def shuffled_labels(labels, train, val, seed=lc.SEED):
     shuffled = labels.copy()
-    rng = np.random.default_rng(lc.SEED)
+    rng = np.random.default_rng(seed)
     permutations = {}
     for name, idx in (('train',train),('val',val)):
         source = rng.permutation(idx)
@@ -102,9 +109,9 @@ def validation_eligibility(labels, val, members):
     return cols, keep, [c for c, eligible in zip(COMMON,keep) if eligible]
 
 
-def fit(model, arrays, stats, labels, train, val, members, arm, epochs, batch_size, device):
+def fit(model, arrays, stats, labels, train, val, members, arm, epochs, batch_size, device, seed=lc.SEED, select_by_val=True):
     """Never accepts held-out indices. Freeze the backbone including BN buffers for head."""
-    lc.seed_all()
+    seed_everything(seed)
     vc, val_keep, val_classes = validation_eligibility(labels,val,members)
     used = labels[train].sum(0) > 0
     if not used.any():
@@ -121,7 +128,7 @@ def fit(model, arrays, stats, labels, train, val, members, arm, epochs, batch_si
     sched = torch.optim.lr_scheduler.CosineAnnealingLR(opt, T_max=epochs)
     scaler = torch.amp.GradScaler('cuda', enabled=device.type == 'cuda')
     loss_fn = nn.BCEWithLogitsLoss()
-    rng, gen = np.random.default_rng(lc.SEED), torch.Generator().manual_seed(lc.SEED)
+    rng, gen = np.random.default_rng(seed), torch.Generator().manual_seed(seed)
     best_map, best_state, best_epoch = -1., None, None
     history = []
     for epoch in range(1,epochs+1):
@@ -146,10 +153,13 @@ def fit(model, arrays, stats, labels, train, val, members, arm, epochs, batch_si
         val_scores = tr.to_coarse(lc.predict(model,arrays,stats,val,device,batch_size),members)
         value = lc.macro_map(labels[val][:,vc][:,val_keep],val_scores[:,vc][:,val_keep])[0]
         history.append({'epoch':epoch,'loss':total/len(train),'val_map':value})
-        if value > best_map:
+        if select_by_val and value > best_map:
             best_map, best_epoch = value, epoch
             best_state = {k:v.detach().cpu().clone() for k,v in model.state_dict().items()}
         print(f'{arm} epoch {epoch}/{epochs} val={value:.6f}',flush=True)
+    if not select_by_val:  # shuffle-fixed diagnostic: keep the final epoch, no validation choice
+        best_epoch, best_map = epochs, history[-1]['val_map']
+        best_state = {k:v.detach().cpu().clone() for k,v in model.state_dict().items()}
     model.load_state_dict(best_state)
     return {'best_epoch':best_epoch,'best_val_map':best_map,'history':history,'lr':lr,
             'loss_classes':list(active),'inactive_classifier_rows':unused,'validation_classes':val_classes}
@@ -199,7 +209,7 @@ def run(args):
     if reference['wc_manifest_sha256'] != manifest_hash:
         raise ValueError('STOP: reference uses a different WC pack')
     device = torch.device(args.device or ('cuda' if torch.cuda.is_available() else 'cpu'))
-    out = {'schema_version':1,'seed':lc.SEED,'config':{**vars(args),'optimizer':'AdamW','loss':'BCEWithLogits on max-member coarse logits',
+    out = {'schema_version':1,'seed':args.train_seed,'split_seed':lc.SEED,'config':{**vars(args),'optimizer':'AdamW','loss':'BCEWithLogits on max-member coarse logits',
            'schedule':'cosine','head_lr':1e-3,'full_lr':1e-4,'weight_decay':1e-4,
            'bootstrap_reps':tr.BOOT,'bootstrap_unit':'patch','heldout_min_positives':tr.MIN_POSITIVES,
            'validation_min_positives':1,'arm_selection':False,'torch_version':str(torch.__version__)},'common_classes':COMMON,
@@ -239,18 +249,19 @@ def run(args):
                  'renorm_stats':stats,'arms':{}}
             res['folds'][fold] = f
             for arm in ARMS:
-                lc.seed_all()
+                seed_everything(args.train_seed)
                 model = lc.build_model(ckpt['in_channels'],len(ckpt['classes'])).to(device)
                 model.load_state_dict(ckpt['state_dict'])
                 norm = ckpt['preprocess_stats'] if arm == 'none' else stats
-                labels, permutations = (shuffled_labels(y,train,val) if arm == 'shuffle' else (y,None))
+                labels, permutations = (shuffled_labels(y,train,val,seed=args.train_seed) if arm in ('shuffle','shuffle-fixed') else (y,None))
                 try:
                     _, _, val_classes = validation_eligibility(labels,val,members)
                 except ValueError as exc:
                     raise ValueError(f'{exc} (fold={fold}, mode={mode}, arm={arm})') from exc
                 training = None
-                if arm in ('head','full','shuffle'):
-                    training = fit(model,arrays,norm,labels,train,val,members,arm,args.epochs,args.batch_size,device)
+                if arm in ('head','full','shuffle','shuffle-fixed'):
+                    training = fit(model,arrays,norm,labels,train,val,members,arm,args.epochs,args.batch_size,device,seed=args.train_seed,
+                                   select_by_val=arm != 'shuffle-fixed')
                 # None is exactly the original stored checkpoint predictions, not a rerun.
                 logits = baseline_logits[test] if arm == 'none' else lc.predict(model,arrays,norm,test,device,args.batch_size)
                 scores = tr.to_coarse(logits,members)[:,common_idx]
@@ -304,6 +315,7 @@ def main(argv=None):
     p.add_argument('--modes',nargs='+',choices=list(lc.MODES),default=list(lc.MODES))
     p.add_argument('--epochs',type=int,default=15); p.add_argument('--batch-size',type=int,default=128)
     p.add_argument('--limit-per-region',type=int); p.add_argument('--device',choices=['cpu','cuda'])
+    p.add_argument('--train-seed',type=int,default=lc.SEED,help='training randomness only; folds stay on lc.SEED')
     return run(p.parse_args(argv))
 
 

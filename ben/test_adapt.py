@@ -3,6 +3,7 @@ import copy
 import json
 import os
 from pathlib import Path
+import re
 import subprocess
 
 import numpy as np
@@ -133,12 +134,12 @@ def test_output_schema_and_shuffled_control_wiring(tmp_path,monkeypatch):
     monkeypatch.setattr(tr,'BOOT',10)
     observed=[]
     original=adapt.fit
-    def recording(model,arrays,stats,labels,train,val,members,arm,*rest):
+    def recording(model,arrays,stats,labels,train,val,members,arm,*rest,**kw):
         if arm=='shuffle':
             shuffled,_=adapt.shuffled_labels(y,train,val)
             assert np.array_equal(labels,shuffled)
             observed.append(arm)
-        return original(model,arrays,stats,labels,train,val,members,arm,*rest)
+        return original(model,arrays,stats,labels,train,val,members,arm,*rest,**kw)
     monkeypatch.setattr(adapt,'fit',recording)
     out=adapt.main(['--wc-pack',str(pack),'--runs',str(runs),'--out-dir',str(tmp_path/'out'),
                     '--modes','s1','--epochs','2','--limit-per-region','20','--device','cpu','--batch-size','16'])
@@ -185,3 +186,56 @@ def test_validation_any_positive_and_empty_hard_stop():
     # The reporting rule remains >=10 even when epoch selection can use one positive.
     metric = adapt.scored(y[val,:5],np.ones((len(val),5)))
     assert metric['classes_used'] == []
+
+
+def test_default_train_seed_is_t13_seed_and_reproduces_its_shuffle():
+    _,y,meta=fixture_data(); train,val,_=adapt.fold_indices(meta,'A')
+    default,dperm=adapt.shuffled_labels(y,train,val)
+    explicit,eperm=adapt.shuffled_labels(y,train,val,seed=lc.SEED)
+    assert dperm==eperm and np.array_equal(default,explicit)
+    assert adapt.lc.SEED == 17
+
+
+def test_train_seed_changes_shuffle_only_within_splits():
+    _,y,meta=fixture_data(); train,val,test=adapt.fold_indices(meta,'A')
+    s1,p1=adapt.shuffled_labels(y,train,val,seed=1)
+    s2,p2=adapt.shuffled_labels(y,train,val,seed=2)
+    assert p1!=p2 and not np.array_equal(s1,s2)
+    for shuffled,perms in ((s1,p1),(s2,p2)):
+        assert np.array_equal(shuffled[test],y[test])
+        assert set(perms['train'])==set(train) and set(perms['val'])==set(val)
+
+
+def test_seed_everything_is_reproducible_and_seed_sensitive():
+    adapt.seed_everything(1); a=torch.rand(4)
+    adapt.seed_everything(1); b=torch.rand(4)
+    adapt.seed_everything(2); c=torch.rand(4)
+    assert torch.equal(a,b) and not torch.equal(a,c)
+
+
+def test_fold_split_does_not_depend_on_train_seed():
+    _,_,meta=fixture_data()
+    before=[x.tolist() for x in adapt.fold_indices(meta,'A')]
+    adapt.seed_everything(99); torch.rand(1)
+    after=[x.tolist() for x in adapt.fold_indices(meta,'A')]
+    assert before==after
+
+
+def test_shuffle_fixed_keeps_final_epoch_without_validation_choice():
+    arrays,y,meta=fixture_data(); train,val,_=adapt.fold_indices(meta,'A')
+    members,_=tr.coarse_members(BEN19)
+    labels,_=adapt.shuffled_labels(y,train,val)
+    model=Tiny()
+    result=adapt.fit(model,arrays,lc.train_stats(arrays,train),labels,train,val,members,'shuffle-fixed',3,16,torch.device('cpu'),select_by_val=False)
+    assert result['best_epoch']==3 and len(result['history'])==3
+    assert result['best_val_map']==result['history'][-1]['val_map']
+    assert adapt.ARMS[-1]=='shuffle-fixed' and 'shuffle-fixed' in adapt.ARMS
+
+
+def test_seed_repeat_cell_contract():
+    text=(Path(adapt.__file__).parent/'run_adapt_seeds_gpu.txt').read_text()
+    assert text.splitlines()[0]=='%%bash' and text.rstrip().endswith('echo "CELL DONE"')
+    for needle in ('set -euo pipefail', 'trap ', 'for S in 1 2 3', '--train-seed "$S"', 'seed-$S'):
+        assert needle in text, needle
+    code='\n'.join(l for l in text.splitlines() if not l.lstrip().startswith('#'))
+    assert not re.search(r'/kaggle/input/[A-Za-z0-9]',code)
