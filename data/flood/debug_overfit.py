@@ -58,7 +58,7 @@ def inspect(pack,original,dest):
          'loss_weights':{'BCE':1.,'Dice':1.,'pos_weight':r['config']['pos_weight']},
          'per_chip':result,'pooled_pixelwise_optimal_iou':pixelwise_bound(np.concatenate(all_positive),np.concatenate(all_negative)),
          'ceiling_scope':'Exact pointwise-input collision limit; not a CNN context ceiling. A value above .9 demonstrates these collisions alone do not force failure.',
-         'true_unet_ceiling_below_gate':False,'worst_chip':min(finite,key=lambda x:x['best_epoch_iou'])['chip_id']}
+         'true_unet_ceiling_below_gate':None,'worst_chip':min(finite,key=lambda x:x['best_epoch_iou'])['chip_id']}
     (dest/'inspection.json').write_text(json.dumps(out,indent=2)+'\n')
     return out
 
@@ -131,8 +131,7 @@ def main():
     if args.action=='inspect':
         pack=Pack(args.pack);out=inspect(pack,args.original,args.out)
         if out['pooled_pixelwise_optimal_iou']<.9:
-            print('Pixelwise bound below .9: inspect spatial-context evidence before further training.',flush=True)
-            return
+            print('Pixelwise bound below .9; this alone does not prove a spatial U-Net ceiling.',flush=True)
         overlays(pack,out,args.out)
         b2_check(Path('outputs/t15-baselines.json'),args.out)
         print('Inspection done. Pointwise collision bound',out['pooled_pixelwise_optimal_iou'],flush=True)
