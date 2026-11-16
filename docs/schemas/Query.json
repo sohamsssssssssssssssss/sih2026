@@ -1,0 +1,52 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "needs_gsd_m": {
+      "anyOf": [
+        {
+          "exclusiveMinimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Needs Gsd M"
+    },
+    "needs_sensor": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Needs Sensor",
+      "type": "array"
+    },
+    "qtype": {
+      "enum": [
+        "landcover",
+        "presence",
+        "flood",
+        "change",
+        "count",
+        "locate",
+        "open",
+        "context"
+      ],
+      "title": "Qtype",
+      "type": "string"
+    },
+    "text": {
+      "minLength": 1,
+      "title": "Text",
+      "type": "string"
+    }
+  },
+  "required": [
+    "text",
+    "qtype"
+  ],
+  "title": "Query",
+  "type": "object",
+  "x-schema-version": "1.0.0"
+}

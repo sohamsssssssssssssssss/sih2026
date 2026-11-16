@@ -1,0 +1,40 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "kind": {
+      "enum": [
+        "mask",
+        "boxes",
+        "fractions",
+        "diff",
+        "text"
+      ],
+      "title": "Kind",
+      "type": "string"
+    },
+    "summary": {
+      "additionalProperties": true,
+      "default": {},
+      "title": "Summary",
+      "type": "object"
+    },
+    "uri": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Uri"
+    }
+  },
+  "required": [
+    "kind"
+  ],
+  "title": "Evidence",
+  "type": "object",
+  "x-schema-version": "1.0.0"
+}

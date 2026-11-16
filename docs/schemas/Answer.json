@@ -1,0 +1,204 @@
+{
+  "$defs": {
+    "Evidence": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "mask",
+            "boxes",
+            "fractions",
+            "diff",
+            "text"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "summary": {
+          "additionalProperties": true,
+          "default": {},
+          "title": "Summary",
+          "type": "object"
+        },
+        "uri": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Uri"
+        }
+      },
+      "required": [
+        "kind"
+      ],
+      "title": "Evidence",
+      "type": "object"
+    },
+    "ToolResult": {
+      "additionalProperties": false,
+      "properties": {
+        "checkpoint_sha": {
+          "anyOf": [
+            {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Checkpoint Sha"
+        },
+        "evidence": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/Evidence"
+          },
+          "title": "Evidence",
+          "type": "array"
+        },
+        "latency_ms": {
+          "minimum": 0,
+          "title": "Latency Ms",
+          "type": "integer"
+        },
+        "raw_confidence": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Raw Confidence"
+        },
+        "tool": {
+          "minLength": 1,
+          "title": "Tool",
+          "type": "string"
+        },
+        "tool_version": {
+          "minLength": 1,
+          "title": "Tool Version",
+          "type": "string"
+        },
+        "value": {
+          "title": "Value"
+        }
+      },
+      "required": [
+        "tool",
+        "tool_version",
+        "value",
+        "latency_ms"
+      ],
+      "title": "ToolResult",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "confidence": {
+      "anyOf": [
+        {
+          "maximum": 1,
+          "minimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Confidence"
+    },
+    "primary": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ToolResult"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "refusal_reason": {
+      "anyOf": [
+        {
+          "enum": [
+            "gsd_too_coarse",
+            "cloud",
+            "sensor_missing",
+            "tool_unvalidated",
+            "checks_disagree",
+            "out_of_distribution"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Refusal Reason"
+    },
+    "sensors_used": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Sensors Used",
+      "type": "array"
+    },
+    "status": {
+      "enum": [
+        "answered",
+        "refused",
+        "low_confidence"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "text": {
+      "title": "Text",
+      "type": "string"
+    },
+    "trace_id": {
+      "minLength": 1,
+      "title": "Trace Id",
+      "type": "string"
+    },
+    "verification": {
+      "additionalProperties": {
+        "enum": [
+          "agree",
+          "disagree",
+          "skipped"
+        ],
+        "type": "string"
+      },
+      "default": {},
+      "title": "Verification",
+      "type": "object"
+    }
+  },
+  "required": [
+    "status",
+    "text",
+    "trace_id"
+  ],
+  "title": "Answer",
+  "type": "object",
+  "x-schema-version": "1.0.0"
+}

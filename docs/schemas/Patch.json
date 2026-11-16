@@ -1,0 +1,66 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "labels": {
+      "additionalProperties": true,
+      "title": "Labels",
+      "type": "object"
+    },
+    "patch_id": {
+      "minLength": 1,
+      "title": "Patch Id",
+      "type": "string"
+    },
+    "region": {
+      "minLength": 1,
+      "title": "Region",
+      "type": "string"
+    },
+    "scene_id": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Scene Id",
+      "type": "string"
+    },
+    "split": {
+      "enum": [
+        "train",
+        "val",
+        "test",
+        "holdout_india"
+      ],
+      "title": "Split",
+      "type": "string"
+    },
+    "window": {
+      "maxItems": 4,
+      "minItems": 4,
+      "prefixItems": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "integer"
+        },
+        {
+          "type": "integer"
+        },
+        {
+          "type": "integer"
+        }
+      ],
+      "title": "Window",
+      "type": "array"
+    }
+  },
+  "required": [
+    "patch_id",
+    "scene_id",
+    "window",
+    "split",
+    "region",
+    "labels"
+  ],
+  "title": "Patch",
+  "type": "object",
+  "x-schema-version": "1.0.0"
+}
