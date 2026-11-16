@@ -123,3 +123,25 @@ def test_timing_keeps_all_weights_unchanged(pack,tmp_path,monkeypatch):
     cfg={'mode':'s1','control':'none','epochs':30,'batch_size':2,'lr':.001,'pos_weight':1.,'augmentation':True}
     result=t.benchmark(pp,cfg,tmp_path/'timing',torch.device('cpu'))
     assert all(v['weights_unchanged'] and v['optimizer_steps']==0 for v in result['modes'].values())
+
+
+def test_exact_pixelwise_collision_bound():
+    from itertools import product
+    from data.flood.debug_overfit import pixelwise_bound
+    pos=np.array([5,2,0,3]);neg=np.array([0,7,4,1])
+    brute=max(sum(p*s for p,s in zip(pos,selection))/(sum(pos)+sum(n*s for n,s in zip(neg,selection)))
+              for selection in product((0,1),repeat=len(pos)))
+    assert pixelwise_bound(pos,neg)==pytest.approx(brute)
+    assert pixelwise_bound(np.array([0]),np.array([5])) is None
+
+
+def test_explicit_single_train_chip_and_fixed_epoch_budget(pack,tmp_path,monkeypatch):
+    root,_=pack;pp=l.Pack(root,expected_sha=None)
+    monkeypatch.setattr(t,'UNet',lambda inc:nn.Conv2d(inc,1,1))
+    cfg={'mode':'s1','control':'none','epochs':3,'batch_size':1,'lr':.001,'weight_decay':0.,
+         'pos_weight':1.,'threshold':.5,'augmentation':False,'schedule':'cosine','seed':17,
+         'tiny_indices':[0],'tiny_early_stop':False}
+    out=t.fit(pp,cfg,tmp_path/'single','tiny',torch.device('cpu'))
+    assert out['train_indices']==[0] and len(out['history'])==3
+    assert out['selection_split']=='train (overfit gate only)'
+    assert list(out['metrics']['primary'])==['train','train/event/India']

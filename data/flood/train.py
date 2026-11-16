@@ -120,7 +120,9 @@ def fit(pack,config,out_dir,action,dev):
     dest.mkdir(parents=True,exist_ok=True)
     indices=np.arange(len(pack.rows('train')))
     if action=='tiny':
-        indices=np.random.default_rng(SEED).choice(indices,size=8,replace=False)
+        indices=np.asarray(config['tiny_indices'],dtype=int) if 'tiny_indices' in config else np.random.default_rng(SEED).choice(indices,size=8,replace=False)
+        if not 1<=len(indices)<=8 or len(set(indices))!=len(indices) or np.any(indices<0) or np.any(indices>=len(pack.rows('train'))):
+            raise ValueError('STOP: tiny indices must be 1..8 unique train rows')
     model=UNet(2 if config['mode']=='s1' else 15).to(dev)
     labels=labels_for_training(pack,indices,config['control'])
     opt=torch.optim.AdamW(model.parameters(),lr=config['lr'],weight_decay=config['weight_decay'])
@@ -142,7 +144,7 @@ def fit(pack,config,out_dir,action,dev):
             if action=='tiny':
                 if train_iou is not None and (best is None or train_iou>best['water_iou']):
                     best={'epoch':epoch,'water_iou':train_iou,'state':state}
-                if train_iou is not None and train_iou>.9:break
+                if config.get('tiny_early_stop',True) and train_iou is not None and train_iou>config.get('tiny_stop_iou',.9):break
             else:
                 yield epoch,state
     if action=='tiny':
