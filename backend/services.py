@@ -1045,10 +1045,21 @@ def plan_analysis(
 
 
 def capabilities_overview() -> dict[str, Any]:
-    """Truthful availability snapshot backed by the provider registry."""
+    """Truthful snapshot: provider readiness plus the tool-maturity mapping."""
+    from core.registry import capability_state
     from orchestrator.capabilities import capabilities_status
 
-    return {"capabilities": capabilities_status()}
+    entries = []
+    for entry in capabilities_status():
+        maturity = capability_state(str(entry["name"]))
+        entries.append(
+            {
+                **entry,
+                "state": maturity["state"],
+                "available": bool(entry["available"]) and bool(maturity["available"]),
+            }
+        )
+    return {"capabilities": entries}
 
 
 def resolution_report() -> dict[str, Any]:

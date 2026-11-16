@@ -35,8 +35,8 @@ from pydantic import (
 )
 from typing_extensions import TypeAliasType
 
+from core.canonical import canonical_json
 from core.schema_version import SCHEMA_VERSION
-from orchestrator.trace import _canonical  # the trace's canonical JSON; one hashing scheme repo-wide
 
 Sha256 = Annotated[str, StringConstraints(pattern=r"^[0-9a-f]{64}$")]
 GitSha = Annotated[str, StringConstraints(pattern=r"^[0-9a-f]{40}$")]
@@ -95,7 +95,7 @@ class _Contract(BaseModel):
 
 def scene_id_for(pixels: bytes, metadata: dict[str, Any]) -> str:
     """sha256 hex of pixel bytes + canonical metadata JSON (same canonical form as orchestrator.trace)."""
-    return hashlib.sha256(pixels + _canonical(metadata).encode("utf-8")).hexdigest()
+    return hashlib.sha256(pixels + canonical_json(metadata).encode("utf-8")).hexdigest()
 
 
 class Scene(_Contract):

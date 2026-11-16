@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "tools": {
+    "qwen2.5vl-3b": {
+      "status": "experimental_unvalidated",
+      "evidence_refs": [
+        {
+          "commit": "2e421efa935d7f80c050cfefa49f5ce3abafdffa",
+          "results": "results/qwen2.5vl-3b__ladder__rescored__20260904.json"
+        }
+      ]
+    },
+    "grounding-dino-swint": {
+      "status": "experimental_unvalidated",
+      "evidence_refs": []
+    },
+    "optical-sar-deterministic": {
+      "status": "experimental_unvalidated",
+      "evidence_refs": []
+    },
+    "change-deterministic": {
+      "status": "experimental_unvalidated",
+      "evidence_refs": []
+    }
+  }
+}
