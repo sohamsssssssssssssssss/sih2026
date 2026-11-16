@@ -145,3 +145,24 @@ def test_explicit_single_train_chip_and_fixed_epoch_budget(pack,tmp_path,monkeyp
     assert out['train_indices']==[0] and len(out['history'])==3
     assert out['selection_split']=='train (overfit gate only)'
     assert list(out['metrics']['primary'])==['train','train/event/India']
+
+
+def test_bce_only_option_and_full_resolution_architecture():
+    from data.flood.model import FullResolutionCNN
+    z=torch.randn(1,1,8,8,requires_grad=True);y=torch.zeros_like(z);y[0,0,0,0]=-1
+    expected=torch.nn.functional.binary_cross_entropy_with_logits(z[y!=-1],y[y!=-1])
+    assert loss(z,y,kind='bce').item()==pytest.approx(expected.item())
+    loss(z,y,kind='bce').backward();assert z.grad[0,0,0,0]==0
+    model=FullResolutionCNN(2)
+    assert model(torch.zeros(1,2,16,16)).shape==(1,1,16,16)
+    assert not any(isinstance(m,torch.nn.MaxPool2d) for m in model.modules())
+    assert all(m.stride==(1,1) for m in model.modules() if isinstance(m,torch.nn.Conv2d))
+
+
+def test_object_component_size_accounting():
+    from data.flood.debug_worst_chip import component_sizes
+    water=np.zeros((20,20),dtype=bool);water[1,1]=1;water[5:10,5:10]=1
+    c=component_sizes(water)
+    assert c['components']==2 and c['water_pixels']==26
+    assert c['water_pixels_components_under_16']==1
+    assert c['water_pixels_components_width_under_4']==1

@@ -29,7 +29,9 @@ class UNet(nn.Module):
         return self.head(x)
 
 
-def loss(logits,target,pos_weight=1.):
+def loss(logits,target,pos_weight=1.,kind="bce_dice"):
+    if kind not in ('bce','bce_dice'):
+        raise ValueError(f'Unknown loss {kind}')
     valid=target!=-1
     if not valid.any():
         return logits[valid].sum()
@@ -37,4 +39,18 @@ def loss(logits,target,pos_weight=1.):
     bce=F.binary_cross_entropy_with_logits(z,y,pos_weight=z.new_tensor(pos_weight))
     prob=torch.sigmoid(z)
     dice=1-(2*(prob*y).sum()+1)/(prob.sum()+y.sum()+1)
-    return bce+dice
+    return bce if kind=="bce" else bce+dice
+
+
+class FullResolutionCNN(nn.Module):
+    """Six 3x3 conv layers at native resolution, GroupNorm/ReLU, then a 1x1 head."""
+    def __init__(self,in_channels):
+        super().__init__()
+        layers=[]
+        for a in [in_channels]+[64]*5:
+            layers.extend([nn.Conv2d(a,64,3,padding=1),nn.GroupNorm(8,64),nn.ReLU()])
+        self.features=nn.Sequential(*layers)
+        self.head=nn.Conv2d(64,1,1)
+
+    def forward(self,x):
+        return self.head(self.features(x))

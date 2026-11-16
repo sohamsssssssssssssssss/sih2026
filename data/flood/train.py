@@ -19,7 +19,7 @@ import yaml
 
 from data.flood.learning import Pack,SEED,MASKS,masks,counts,iou,grouped,code_info,coverage,compare_hypotheses,metric_table
 from data.flood.build_pack import sha256
-from data.flood.model import UNet,loss
+from data.flood.model import UNet,FullResolutionCNN,loss
 
 
 def seed_all():
@@ -99,7 +99,9 @@ def train_epoch(model,pack,indices,labels,config,dev,opt,rng,update=True):
         if config['augmentation']:
             x,y=augment(x,y,rng)
         opt.zero_grad(set_to_none=True)
-        value=loss(model(x),y,config['pos_weight'])
+        value=loss(model(x),y,config['pos_weight'],config.get('loss_kind','bce_dice'))
+        if not torch.isfinite(value):
+            raise ValueError('STOP: non-finite training loss')
         value.backward()
         if update:opt.step()
         total+=float(value.detach())*len(ids);n+=len(ids)
@@ -123,14 +125,18 @@ def fit(pack,config,out_dir,action,dev):
         indices=np.asarray(config['tiny_indices'],dtype=int) if 'tiny_indices' in config else np.random.default_rng(SEED).choice(indices,size=8,replace=False)
         if not 1<=len(indices)<=8 or len(set(indices))!=len(indices) or np.any(indices<0) or np.any(indices>=len(pack.rows('train'))):
             raise ValueError('STOP: tiny indices must be 1..8 unique train rows')
-    model=UNet(2 if config['mode']=='s1' else 15).to(dev)
+    architecture=config.get('architecture','unet')
+    if architecture not in ('unet','full_resolution'):
+        raise ValueError('STOP: unknown architecture')
+    model_class=FullResolutionCNN if architecture=='full_resolution' else UNet
+    model=model_class(2 if config['mode']=='s1' else 15).to(dev)
     labels=labels_for_training(pack,indices,config['control'])
     opt=torch.optim.AdamW(model.parameters(),lr=config['lr'],weight_decay=config['weight_decay'])
     scheduler=torch.optim.lr_scheduler.CosineAnnealingLR(opt,T_max=config['epochs']) if config['schedule']=='cosine' else None
     rng=np.random.default_rng(SEED)
-    history=[];best=None;start=time.perf_counter()
+    history=[];best=None;start=time.perf_counter();stop_reason='epoch_budget'
     def epochs():
-        nonlocal best
+        nonlocal best,stop_reason
         for epoch in range(1,config['epochs']+1):
             loss_value=train_epoch(model,pack,indices,labels,config,dev,opt,rng)
             if scheduler:scheduler.step()
@@ -144,7 +150,10 @@ def fit(pack,config,out_dir,action,dev):
             if action=='tiny':
                 if train_iou is not None and (best is None or train_iou>best['water_iou']):
                     best={'epoch':epoch,'water_iou':train_iou,'state':state}
-                if config.get('tiny_early_stop',True) and train_iou is not None and train_iou>config.get('tiny_stop_iou',.9):break
+                if config.get('tiny_early_stop',True) and train_iou is not None and train_iou>config.get('tiny_stop_iou',.9):
+                    stop_reason='target_reached';break
+                if time.perf_counter()-start>=config.get('tiny_max_runtime_s',float('inf')):
+                    stop_reason='time_limit';break
             else:
                 yield epoch,state
     if action=='tiny':
@@ -177,7 +186,7 @@ def fit(pack,config,out_dir,action,dev):
                 'shuffle_label_rows':labels,'checkpoint_sha256':sha256(checkpoint),'checkpoint':checkpoint.name,
                 'per_chip':records,'metrics':{mask:grouped(rr) for mask,rr in records.items()},
                 'coverage':{s:coverage(pack.split(s)) for s in splits},
-                'runtime_s':time.perf_counter()-start,'tiny_gate_pass':best['water_iou']>.9 if action=='tiny' else None})
+                'runtime_s':time.perf_counter()-start,'stop_reason':stop_reason,'tiny_gate_pass':best['water_iou']>.9 if action=='tiny' else None})
     if action!='tiny':
         b=json.loads(Path(config['baselines']).read_text())
         if b['pack_manifest_sha256']!=pack.sha:raise ValueError('STOP: baseline pack mismatch')
@@ -203,7 +212,7 @@ def benchmark(pack,config,out_dir,dev):
         before=copy.deepcopy({k:v.cpu().clone() for k,v in model.state_dict().items()})
         # Warm up one batch; gradients only, with no optimizer step or buffer updates.
         x,y=batch(pack,'train',indices[:cfg['batch_size']],mode,dev)
-        loss(model(x),y).backward();model.zero_grad(set_to_none=True)
+        loss(model(x),y,cfg['pos_weight'],cfg.get('loss_kind','bce_dice')).backward();model.zero_grad(set_to_none=True)
         synchronize(dev);start=time.perf_counter()
         train_epoch(model,pack,indices,labels,cfg,dev,opt,np.random.default_rng(SEED),update=False)
         synchronize(dev);seconds=time.perf_counter()-start
