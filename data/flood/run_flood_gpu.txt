@@ -1,0 +1,34 @@
+%%bash
+# Prepared only: do not upload/attach this proprietary pack until licence permits.
+# Inputs: committed code archive; a lawfully accessible private Sen1Floods11 pack.
+set -euo pipefail
+trap 'echo "FAILED at line $LINENO: $BASH_COMMAND"' ERR
+W=/kaggle/working
+export PYTHONDONTWRITEBYTECODE=1
+export TMPDIR="$W/tmp"
+export XDG_CACHE_HOME="$W/.cache"
+mkdir -p "$TMPDIR"
+mapfile -t CODE < <(find /kaggle/input -type f -path '*/data/flood/train.py')
+mapfile -t INDEX < <(find /kaggle/input -type f -name index.parquet)
+for pair in "data/flood/train.py:${#CODE[@]}" "index.parquet:${#INDEX[@]}"; do
+  if [ "${pair##*:}" -ne 1 ]; then echo "HARD STOP: expected exactly one ${pair%:*}, found ${pair##*:}"; exit 1; fi
+done
+ROOT=$(dirname "$(dirname "$(dirname "${CODE[0]}")")")
+PACK=$(dirname "${INDEX[0]}")
+if [ ! -f "$PACK/MANIFEST.json" ]; then echo "HARD STOP: no pack manifest"; exit 1; fi
+if [ -e "$W/t15" ]; then echo "HARD STOP: outputs already exist"; exit 1; fi
+mkdir -p "$W/t15/code"
+cp -R "$ROOT/data" "$ROOT/models" "$ROOT/training" "$W/t15/code/"
+export PYTHONPATH="$W/t15/code"
+cd "$W/t15/code"
+# Revision may be supplied by packaging; exact source-file hashes are always recorded.
+export T15_CODE_COMMIT="${T15_CODE_COMMIT:-unknown}"
+nvidia-smi --query-gpu=name,memory.total --format=csv
+python data/flood/baselines.py --pack "$PACK" --out-dir "$W/t15/baselines"
+for MODE in s1 s1s2; do
+  for CONTROL in none blank shuffle; do
+    python data/flood/train.py --action train --pack "$PACK" --config "training/configs/flood-$MODE.yaml" --control "$CONTROL" --baselines "$W/t15/baselines/t15-baselines.json" --out-dir "$W/t15/$MODE-$CONTROL" | tee "$W/t15/$MODE-$CONTROL.log"
+  done
+done
+python data/flood/train.py --action compare --out-dir "$W/t15" --s1-run "$W/t15/s1-none/flood-run.json" --s1s2-run "$W/t15/s1s2-none/flood-run.json" --baselines "$W/t15/baselines/t15-baselines.json"
+echo "CELL DONE"

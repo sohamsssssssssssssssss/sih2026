@@ -247,6 +247,14 @@ def finish_stats(state):
     return result
 
 
+def load_split(pack, split):
+    """Shared read-only NCHW pack loader for verification, baselines and training."""
+    import numpy as np
+    if split not in SPLITS:
+        raise ValueError(f'STOP: unknown split {split}')
+    return {name:np.load(Path(pack)/split/(name+'.npy'),mmap_mode='r') for name in OUTPUTS.values()}
+
+
 def verify_pairing(pack, chips, sample_ids):
     """Re-open every sampled chip in all five arrays; hashes are keyed to chip ID."""
     import numpy as np
@@ -256,9 +264,9 @@ def verify_pairing(pack, chips, sample_ids):
         record = chips[chip]
         for layer,name in OUTPUTS.items():
             file = record['split']+'/'+name+'.npy'
-            if file not in arrays:
-                arrays[file] = np.load(pack/file,mmap_mode='r')
-            actual = array_hash(arrays[file][record['row']])
+            if record['split'] not in arrays:
+                arrays[record['split']] = load_split(pack,record['split'])
+            actual = array_hash(arrays[record['split']][name][record['row']])
             if actual != record['array_sha256'][layer]:
                 raise ValueError(f'STOP: chip pairing/hash mismatch: {chip} {layer}')
     return True
@@ -290,8 +298,9 @@ def verify_pack(pack):
     for split,n in manifest['counts']['per_split'].items():
         if int((index.split == split).sum()) != n:
             raise ValueError('STOP: split count mismatch')
+        loaded = load_split(pack,split)
         for layer,name in OUTPUTS.items():
-            a = np.load(pack/split/(name+'.npy'),mmap_mode='r')
+            a = loaded[name]
             bands = len(BANDS.get(layer,[None]))
             if list(a.shape) != [n,bands,*manifest['chip_size']] or str(a.dtype) != manifest['dtypes'][name]:
                 raise ValueError(f'STOP: packed shape/dtype mismatch in {split}/{name}')
