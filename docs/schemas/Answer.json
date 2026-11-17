@@ -197,7 +197,9 @@
             "nodata",
             "bands_missing",
             "tool_missing",
-            "tool_disabled"
+            "tool_disabled",
+            "tool_error",
+            "timeout"
           ],
           "type": "string"
         },
@@ -255,5 +257,5 @@
   ],
   "title": "Answer",
   "type": "object",
-  "x-schema-version": "1.2.0"
+  "x-schema-version": "1.3.0"
 }

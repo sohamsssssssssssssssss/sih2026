@@ -187,7 +187,7 @@ class ToolResult(_Contract):
 RefusalReason = Literal[
     "gsd_too_coarse", "cloud", "sensor_missing", "tool_unvalidated", "checks_disagree",
     "out_of_distribution", "not_answerable", "second_scene_missing", "nodata",
-    "bands_missing", "tool_missing", "tool_disabled",
+    "bands_missing", "tool_missing", "tool_disabled", "tool_error", "timeout",
 ]
 
 

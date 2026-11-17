@@ -3,6 +3,8 @@ from dataclasses import dataclass
 import math
 from typing import Mapping
 
+from pydantic import BaseModel, ConfigDict, Field, field_validator
+
 from core.registry import ToolRegistry, UnknownTool
 from core.router import NON_IMAGERY, Route
 from core.schema import Evidence, Query, RefusalReason, Scene
@@ -13,6 +15,21 @@ NODATA_PCT = 50.0
 OOD_STD = 2.0
 INDIA_BOUNDS = (68.0, 6.0, 98.0, 38.0)
 DETERMINISTIC = {"flood-otsu", "change-deterministic", "optical-sar-deterministic"}
+
+
+class Thresholds(BaseModel):
+    model_config = ConfigDict(frozen=True, extra="forbid", allow_inf_nan=False)
+    cloud_pct: float = Field(default=CLOUD_PCT, ge=0, le=100)
+    nodata_pct: float = Field(default=NODATA_PCT, ge=0, le=100)
+    ood_std: float = Field(default=OOD_STD, gt=0)
+    india_bounds: tuple[float, float, float, float] = INDIA_BOUNDS
+
+    @field_validator("india_bounds")
+    @classmethod
+    def ordered_bounds(cls, value):
+        if not (-180 <= value[0] < value[2] <= 180 and -90 <= value[1] < value[3] <= 90):
+            raise ValueError("Invalid geographic bounds")
+        return value
 
 
 @dataclass(frozen=True)
@@ -38,7 +55,8 @@ def sensors(scene: Scene) -> tuple[str, ...]:
 def evaluate(query: Query, scene: Scene, choice: Route, registry: ToolRegistry, *,
              second_scene: Scene | None = None,
              band_means: tuple[Mapping[str, float], ...] = (),
-             training_stats: Mapping[str, tuple[float, float]] | None = None) -> GateDecision:
+             training_stats: Mapping[str, tuple[float, float]] | None = None,
+             thresholds: Thresholds = Thresholds()) -> GateDecision:
     """Inspect metadata only. Observed/training means must share units and band order."""
     events: list[Evidence] = []
     selected = choice.tools[0] if choice.tools else None
@@ -64,31 +82,31 @@ def evaluate(query: Query, scene: Scene, choice: Route, registry: ToolRegistry, 
         return refuse("checks_disagree", detail="Temporal scenes need identical CRS, bounds, bands and GSD")
     event("second_date", "pass" if temporal else "not_applicable")
     for index, item in enumerate(scenes):
-        event("region_threshold", "used", scene=index, threshold=list(INDIA_BOUNDS), provenance="PROVISIONAL")
+        event("region_threshold", "used", scene=index, threshold=list(thresholds.india_bounds), provenance="PROVISIONAL")
         try:
             from rasterio.warp import transform_bounds
             bounds = transform_bounds(item.crs, "EPSG:4326", *item.bounds)
             if not all(math.isfinite(v) for v in bounds):
                 raise ValueError("Non-finite transformed bounds")
-            outside = not (INDIA_BOUNDS[0] <= bounds[0] < bounds[2] <= INDIA_BOUNDS[2]
-                           and INDIA_BOUNDS[1] <= bounds[1] < bounds[3] <= INDIA_BOUNDS[3])
+            outside = not (thresholds.india_bounds[0] <= bounds[0] < bounds[2] <= thresholds.india_bounds[2]
+                           and thresholds.india_bounds[1] <= bounds[1] < bounds[3] <= thresholds.india_bounds[3])
             event("region", "out_of_region" if outside else "pass", scene=index,
                   warning="out_of_region" if outside else None)
         except (ValueError, RuntimeError):
             event("region", "unknown", scene=index, warning="region_unknown")
-        event("nodata_threshold", "used", scene=index, threshold=NODATA_PCT,
+        event("nodata_threshold", "used", scene=index, threshold=thresholds.nodata_pct,
               observed=item.nodata_pct, provenance="PROVISIONAL")
-        if item.nodata_pct > NODATA_PCT:
+        if item.nodata_pct > thresholds.nodata_pct:
             return refuse("nodata", scene=index)
     optical = scene.sensor != "S1" and selected != "flood-otsu"
     if optical:
         cloudy = False
         for index, item in enumerate(scenes):
-            event("cloud_threshold", "used", scene=index, threshold=CLOUD_PCT,
+            event("cloud_threshold", "used", scene=index, threshold=thresholds.cloud_pct,
                   observed=item.cloud_pct, provenance="PROVISIONAL")
             if item.cloud_pct is None:
                 event("cloud", "unknown", scene=index, warning="cloud_unknown")
-            elif item.cloud_pct > CLOUD_PCT:
+            elif item.cloud_pct > thresholds.cloud_pct:
                 cloudy = True
         if cloudy:
             radar = {"landcover": "landcover", "flood": "flood-otsu",
@@ -106,9 +124,9 @@ def evaluate(query: Query, scene: Scene, choice: Route, registry: ToolRegistry, 
     if selected == "flood-otsu" and not optical:
         for index, item in enumerate(scenes):
             if item.sensor == "S1S2" and item.cloud_pct is not None:
-                event("cloud_threshold", "used", scene=index, threshold=CLOUD_PCT,
+                event("cloud_threshold", "used", scene=index, threshold=thresholds.cloud_pct,
                       observed=item.cloud_pct, provenance="PROVISIONAL")
-                if item.cloud_pct > CLOUD_PCT:
+                if item.cloud_pct > thresholds.cloud_pct:
                     event("cloud", "radar_selection", scene=index, warning="monsoon_mode", tool=selected, mode="S1")
     event("cloud", "pass" if optical else "not_applicable")
     try:
@@ -154,7 +172,7 @@ def evaluate(query: Query, scene: Scene, choice: Route, registry: ToolRegistry, 
     if not training_stats and selected in DETERMINISTIC:
         event("ood", "not_applicable")
     else:
-        event("ood_threshold", "used", threshold=OOD_STD, provenance="PROVISIONAL")
+        event("ood_threshold", "used", threshold=thresholds.ood_std, provenance="PROVISIONAL")
         # Every required band/date needs a usable observation; absence is uncertainty.
         bands = required or scene.bands
         for index, item in enumerate(scenes):
@@ -171,8 +189,8 @@ def evaluate(query: Query, scene: Scene, choice: Route, registry: ToolRegistry, 
                     if not math.isfinite(shift):
                         event("ood", "unknown", band=band, scene=index, warning="ood_unknown")
                         continue
-                    event("ood", "shift" if shift > OOD_STD else "pass", band=band,
+                    event("ood", "shift" if shift > thresholds.ood_std else "pass", band=band,
                           scene=index, std_shift=shift,
-                          warning="out_of_distribution" if shift > OOD_STD else None)
+                          warning="out_of_distribution" if shift > thresholds.ood_std else None)
     event("gate", "pass", clean=not any(e.summary.get("warning") for e in events))
     return GateDecision(selected, mode, None, tuple(events))

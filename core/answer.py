@@ -67,7 +67,8 @@ def assemble(result: ToolResult | None, gate: GateDecision, status: ToolStatus |
     if reason is None and (result.tool != gate.tool or (result.tool, result.tool_version) != (status.name, status.version)):
         reason = "checks_disagree"
     if reason is None and isinstance(result.value, dict) and ("error" in result.value or "error_code" in result.value):
-        reason = "checks_disagree"
+        reason = "tool_error"
+        record_events(trace_id, "execution", [{"outcome": "error", "error_type": result.value.get("error_type", "ToolError")}])
     if reason is not None:
         record_events(trace_id, "answer", [{"rule": "status", "status": "refused", "refusal_reason": reason},
                                           {"rule": "calibration", "outcome": "not_applicable"}])
@@ -128,6 +129,6 @@ def run_query(query: Query, scene: Scene, pixels_by_sensor: dict, registry: Tool
         result = tool.run(scene, query, pixels_by_sensor[decision.mode])
     except Exception as error:
         record_events(trace_id, "execution", [{"tool": tool.name, "outcome": "error", "error_type": type(error).__name__}])
-        decision = GateDecision(decision.tool, decision.mode, "checks_disagree", decision.evidence)
+        decision = GateDecision(decision.tool, decision.mode, "tool_error", decision.evidence)
         return assemble(None, decision, tool.status, trace_id=trace_id)
     return assemble(result, decision, tool.status, trace_id=trace_id, calibration_path=calibration_path)

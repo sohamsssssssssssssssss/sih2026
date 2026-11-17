@@ -1,0 +1,6 @@
+{
+  "cloud_pct": 50.0,
+  "nodata_pct": 50.0,
+  "ood_std": 2.0,
+  "india_bounds": [68.0, 6.0, 98.0, 38.0]
+}

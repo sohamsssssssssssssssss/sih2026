@@ -308,7 +308,7 @@ def test_bad_map_error_result_and_identity_fail_closed(tmp_path):
     gate = GateDecision('fake', 'S2', None, ())
     assert assemble(result(), gate, status, trace_id='bad-map', calibration_path=path).confidence is None
     for bad in (result(tool='impostor'), result(tool_version='v2'), result(value={'error': 'failed'})):
-        assert assemble(bad, gate, status, trace_id='bad-output').refusal_reason == 'checks_disagree'
+        assert assemble(bad, gate, status, trace_id='bad-output').refusal_reason == ('tool_error' if 'error' in bad.value else 'checks_disagree')
 
 
 def test_trace_failure_prevents_execution(tmp_path, monkeypatch):
@@ -378,7 +378,7 @@ def test_tool_exception_refuses_and_is_traced(tmp_path):
     reg.get('landcover').run = fail
     answer = run_query(Query(text='land cover', qtype='open'), scene(), {'S2': b'px'}, reg,
                        trace_id='exception')
-    assert answer.refusal_reason == 'checks_disagree'
+    assert answer.refusal_reason == 'tool_error'
     assert any(e.get('error_type') == 'RuntimeError' for e in trace.records())
 
 

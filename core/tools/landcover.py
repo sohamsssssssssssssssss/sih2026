@@ -14,8 +14,8 @@ CLASSES = ('trees', 'shrub_grass', 'cropland', 'built', 'water')
 CONFIG = Path(__file__).resolve().parents[2] / 'configs/landcover.json'
 
 
-def select_mode(scene):
-    if scene.cloud_pct is not None and scene.cloud_pct > CLOUD_PCT:
+def select_mode(scene, cloud_threshold=CLOUD_PCT):
+    if scene.cloud_pct is not None and scene.cloud_pct > cloud_threshold:
         if scene.sensor not in ('S1', 'S1S2'):
             raise ValueError('Cloudy optical input requires S1')
         return 's1'
@@ -30,9 +30,10 @@ class LandcoverTool(BaseTool):
     version = 'ben19-coarse5-v1'
     needs = ToolNeeds(sensors=('S1', 'S2'), bands=(*BANDS['s1'], *BANDS['s2']))
 
-    def __init__(self, config_path=CONFIG):
+    def __init__(self, config_path=CONFIG, cloud_threshold=CLOUD_PCT):
         super().__init__()
         self.config_path = Path(config_path)
+        self.cloud_threshold = cloud_threshold
         self._loaded = {}
 
     def _load(self, mode):
@@ -74,7 +75,7 @@ class LandcoverTool(BaseTool):
         started = time.perf_counter()
         try:
             import numpy as np
-            mode = select_mode(scene)
+            mode = select_mode(scene, self.cloud_threshold)
             inputs = ('s1', 's2') if mode == 's1s2' else (mode,)
             # Joint data need per-sensor units: Scene.units cannot represent mixed dB/DN.
             payload = pixels if isinstance(pixels, dict) else {

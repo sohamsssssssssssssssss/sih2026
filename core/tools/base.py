@@ -115,6 +115,6 @@ class BaseTool:
         )
         return self._result(
             started,
-            {"error": message, "error_code": code},
-            evidence=(Evidence(kind="text", summary={"error": message, "error_code": code}),),
+            {"error": message, "error_code": code, "error_type": type(error).__name__},
+            evidence=(Evidence(kind="text", summary={"error": message, "error_code": code, "error_type": type(error).__name__}),),
         )
