@@ -26,6 +26,7 @@ _COMMIT = re.compile(r"^[0-9a-f]{40}$")
 # Capability vocabulary -> the tool that serves it. Kept here so the backend has
 # one mapping function instead of its own table.
 CAPABILITY_TOOLS: dict[str, str] = {
+    "landcover": "landcover",
     "single_image_vqa": "qwen2.5vl-3b",
     "grounding": "grounding-dino-swint",
     "change_vqa": "change-deterministic",

@@ -15,7 +15,7 @@ from orchestrator import trace
 SPEC = Path(__file__).resolve().parents[1] / 'docs/plan/ROUTER_SPEC.md'
 EXAMPLES = [tuple(part.strip() for part in line.strip('|').split('|'))
             for line in SPEC.read_text().splitlines() if line.startswith('| E')]
-NAMES = ('land-cover', 'flood-otsu', 'change-deterministic', 'grounding-dino-swint',
+NAMES = ('landcover', 'flood-otsu', 'change-deterministic', 'grounding-dino-swint',
          'qwen2.5vl-3b', 'optical-sar-deterministic')
 BANDS = ('B02', 'B03', 'B04', 'B08', 'dataMask')
 RADAR = ('VV', 'VH', 'dataMask')
@@ -34,7 +34,7 @@ class FakeTool:
 
     def __init__(self, name):
         self.name, self.calls = name, []
-        if name in ('land-cover', 'change-deterministic'):
+        if name in ('landcover', 'change-deterministic'):
             self.needs = ToolNeeds(sensors=('S1', 'S2'))
         elif name == 'flood-otsu':
             self.needs = ToolNeeds(sensors=('S1',), bands=('VH',))
@@ -87,8 +87,8 @@ def fixture(profile, tmp_path):
             a = scene(sensor='S1', bands=RADAR, units='dB', cloud_pct=None)
         second = a.model_copy(update={'scene_id': 'b' * 64})
     missing = tuple(name for marker, name in [('no_radar', 'flood-otsu'),
-                    ('no_vlm', 'qwen2.5vl-3b'), ('no_landcover', 'land-cover')] if marker in profile)
-    reg = registry(tmp_path, missing=missing, disabled=('land-cover',) if profile == 'tool_disabled' else ())
+                    ('no_vlm', 'qwen2.5vl-3b'), ('no_landcover', 'landcover')] if marker in profile)
+    reg = registry(tmp_path, missing=missing, disabled=('landcover',) if profile == 'tool_disabled' else ())
     means = {b: 100.0 for b in a.bands}
     if profile == 'ood':
         means['B04'] = 131.8
@@ -146,14 +146,14 @@ def test_unvalidated_never_answered_property(raw, clean):
        text=st.sampled_from([e[1] for e in EXAMPLES]))
 def test_pure_gate_property(cloud, nodata, text):
     reg = ToolRegistry('/nonexistent/t08-test-status')
-    reg.register(FakeTool('land-cover'))
+    reg.register(FakeTool('landcover'))
     a = scene(cloud_pct=cloud, nodata_pct=nodata)
     q = Query(text=text, qtype='open')
     choice = route(q, a)
     before = a.model_dump_json(), q.model_dump_json(), tuple(trace.records())
     assert evaluate(q, a, choice, reg) == evaluate(q, a, choice, reg)
     assert before == (a.model_dump_json(), q.model_dump_json(), tuple(trace.records()))
-    assert not reg.get('land-cover').calls
+    assert not reg.get('landcover').calls
 
 
 def test_monsoon_executes_only_radar_and_traces_every_decision(tmp_path):
@@ -331,7 +331,7 @@ def test_old_answer_wire_data_and_new_fields_round_trip():
 
 def test_optical_only_registration_is_not_a_monsoon_target(tmp_path):
     a, reg, inputs = fixture('joint_cloud', tmp_path)
-    reg.get('land-cover').needs = ToolNeeds(sensors=('S2',))
+    reg.get('landcover').needs = ToolNeeds(sensors=('S2',))
     q = Query(text='land cover', qtype='open')
     gate = evaluate(q, a, route(q, a), reg, **inputs)
     assert gate.refusal_reason == 'cloud'
@@ -365,7 +365,7 @@ def test_other_non_imagery_phrasings(text, tmp_path):
 
 def test_malformed_tool_return_refuses(tmp_path):
     reg = registry(tmp_path)
-    reg.get('land-cover').run = lambda *args: {'answer': 'not a ToolResult'}
+    reg.get('landcover').run = lambda *args: {'answer': 'not a ToolResult'}
     answer = run_query(Query(text='land cover', qtype='open'), scene(), {'S2': b'px'}, reg,
                        trace_id='malformed')
     assert answer.refusal_reason == 'checks_disagree' and answer.confidence is None
@@ -375,7 +375,7 @@ def test_tool_exception_refuses_and_is_traced(tmp_path):
     reg = registry(tmp_path)
     def fail(*args):
         raise RuntimeError('inference unavailable')
-    reg.get('land-cover').run = fail
+    reg.get('landcover').run = fail
     answer = run_query(Query(text='land cover', qtype='open'), scene(), {'S2': b'px'}, reg,
                        trace_id='exception')
     assert answer.refusal_reason == 'checks_disagree'

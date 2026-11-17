@@ -1,0 +1,67 @@
+{
+  "platform": "macOS-27.2.1-arm64-arm-64bit",
+  "machine": "arm64",
+  "patch_source": "BEN test split",
+  "pack_row": 14000,
+  "shape": [
+    120,
+    120
+  ],
+  "status": "experimental_unvalidated",
+  "modes": [
+    {
+      "mode": "s1",
+      "cpu": true,
+      "cold_ms": 1243,
+      "warm_ms": 3,
+      "checkpoint_sha256": "763c5450da2edc08a2fe2374de7cfcf810f4d5befdff330d0ca0106f3f630bb5",
+      "scores": {
+        "trees": 0.16283462941646576,
+        "shrub_grass": 0.05874774232506752,
+        "cropland": 0.9388733506202698,
+        "built": 0.04444826766848564,
+        "water": 0.0076605770736932755
+      }
+    },
+    {
+      "mode": "s2",
+      "cpu": true,
+      "cold_ms": 106,
+      "warm_ms": 3,
+      "checkpoint_sha256": "703824bb60e4d61477897f94969bf1abdbbf7621a6149a7f7b56e2c4eb6c85fa",
+      "scores": {
+        "trees": 0.752366304397583,
+        "shrub_grass": 0.26461705565452576,
+        "cropland": 0.9425771832466125,
+        "built": 0.07557299733161926,
+        "water": 0.0085557010024786
+      }
+    },
+    {
+      "mode": "s1s2",
+      "cpu": true,
+      "cold_ms": 102,
+      "warm_ms": 4,
+      "checkpoint_sha256": "415067dddab7ba61b54e51682b89ce41a4ff83f365a557d8318b3b7c9671f207",
+      "scores": {
+        "trees": 0.6442115306854248,
+        "shrub_grass": 0.1768079698085785,
+        "cropland": 0.9847678542137146,
+        "built": 0.04800090566277504,
+        "water": 0.0006790587212890387
+      }
+    }
+  ],
+  "copied_from": "feature/ben-landcover at 4707d4c",
+  "copied_files": [
+    "ben/landcover.py",
+    "ben/transfer.py"
+  ],
+  "classes": [
+    "trees",
+    "shrub_grass",
+    "cropland",
+    "built",
+    "water"
+  ]
+}

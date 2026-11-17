@@ -31,7 +31,7 @@ def route(query: Query, scene: Scene) -> Route:
     if query.qtype == "change":
         intent = "change"
     tools = {
-        "landcover": ("land-cover",),
+        "landcover": ("landcover",),
         "flood": (("flood-otsu",) if scene.sensor == "S1" else
                   ("optical-sar-deterministic", "flood-otsu")),
         "change": ("change-deterministic",),

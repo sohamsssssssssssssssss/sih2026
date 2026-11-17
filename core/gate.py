@@ -42,7 +42,7 @@ def evaluate(query: Query, scene: Scene, choice: Route, registry: ToolRegistry, 
     """Inspect metadata only. Observed/training means must share units and band order."""
     events: list[Evidence] = []
     selected = choice.tools[0] if choice.tools else None
-    mode = "S2" if scene.sensor == "S1S2" and selected in {"land-cover", "change-deterministic"} else scene.sensor
+    mode = "S2" if scene.sensor == "S1S2" and selected == "change-deterministic" else scene.sensor
 
     def event(rule, outcome, *, needs=(), **details):
         events.append(Evidence(kind="text", needs_sensor=needs,
@@ -91,7 +91,7 @@ def evaluate(query: Query, scene: Scene, choice: Route, registry: ToolRegistry, 
             elif item.cloud_pct > CLOUD_PCT:
                 cloudy = True
         if cloudy:
-            radar = {"landcover": "land-cover", "flood": "flood-otsu",
+            radar = {"landcover": "landcover", "flood": "flood-otsu",
                      "change": "change-deterministic"}.get(choice.intent)
             try:
                 radar_tool = registry.get(radar) if radar else None
@@ -111,9 +111,10 @@ def evaluate(query: Query, scene: Scene, choice: Route, registry: ToolRegistry, 
     if tool.status.status == "disabled":
         return refuse("tool_disabled", tool=selected)
     event("tool_available", "pass", tool=selected, status=tool.status.status)
-    if selected == "land-cover":
-        required = ("VV", "VH") if mode == "S1" else ("B02", "B03", "B04", "B08")
-        required_sensors = ("S1",) if mode == "S1" else ("S2",)
+    if selected == "landcover":
+        required = (("VV", "VH", "B02", "B03", "B04", "B08") if mode == "S1S2" else
+                    ("VV", "VH") if mode == "S1" else ("B02", "B03", "B04", "B08"))
+        required_sensors = ("S1", "S2") if mode == "S1S2" else ("S1",) if mode == "S1" else ("S2",)
     elif selected == "change-deterministic":
         required = (("VV", "VH", "dataMask") if mode == "S1" else
                     ("red", "green", "blue") if mode == "RGB_HR" else

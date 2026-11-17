@@ -15,7 +15,7 @@ also conservatively requires a second scene. No multilingual coverage is claimed
 
 | Intent | Ranked tool names |
 |---|---|
-| landcover | land-cover |
+| landcover | landcover |
 | flood with optical | optical-sar-deterministic, flood-otsu |
 | flood radar-only | flood-otsu |
 | change | change-deterministic |
@@ -23,7 +23,7 @@ also conservatively requires a second scene. No multilingual coverage is claimed
 | general/unknown | qwen2.5vl-3b |
 
 The selected disabled/unregistered tool refuses; no silent classifier replacement.
-T07 lacks land-cover and flood-otsu. Fake tests do not claim these exist in the
+T07 lacks landcover and flood-otsu. Fake tests do not claim these exist in the
 production registry. Joint optical-SAR is generic evidence, not a validated flood
 map, and its adapter still requires actual co-gridded optical and SAR inputs.
 
@@ -42,7 +42,7 @@ hash chain uses core.canonical. No model is loaded or called in route/gate logic
 4. Nodata >50% on either required scene -> nodata. **PROVISIONAL** majority-missing
    guard, not a scientifically validated accuracy cutoff. Equality passes.
 5. Optical cloud >50% -> reroute only if S1 exists at all required dates and an
-   appropriate registered/enabled radar tool exists: landcover -> land-cover in
+   appropriate registered/enabled radar tool exists: landcover -> landcover in
    S1 mode; flood -> flood-otsu; change -> change-deterministic in S1 mode.
    Otherwise refuse cloud, Evidence.needs_sensor=(S1,). Count/general have no
    authorized radar replacement. **PROVISIONAL** majority-cloud guard; <=50% is
@@ -50,7 +50,7 @@ hash chain uses core.canonical. No model is loaded or called in route/gate logic
 6. Required sensors absent -> sensor_missing. Missing bands -> bands_missing,
    with exact band names and needed sensors in evidence. Validate both dates after
    any reroute. Combined optical-SAR requires S1+S2. Known mode-dependent bands:
-   land-cover S1 VV/VH or S2 B02/B03/B04/B08; flood-otsu VH; change S1 VV/VH/
+   landcover S1 VV/VH or S2 B02/B03/B04/B08; flood-otsu VH; change S1 VV/VH/
    dataMask, S2 B02/B03/B04/B08/dataMask, RGB red/green/blue. These groups follow
    provider interfaces/code at 7bfb179 and TOOLS_INVENTORY.md, not accuracy
    thresholds. T07's change union list does not require radar bands on optical
@@ -100,24 +100,24 @@ experimental by default. Default S2: 10m, EPSG:4326, bounds [75,20,75.1,20.1], c
 rgb: red/green/blue. change profiles add matching second scene. Cloud=80%;
 nodata=60%; outside=[-2,45,-1,46]; ood B04 mean=131.8, training=100/std=10 (3.18std).
 Those stats are synthetic fixture values, not empirical claims. no_radar removes
-flood-otsu; no_vlm/no_landcover remove that tool; disabled marks land-cover disabled;
+flood-otsu; no_vlm/no_landcover remove that tool; disabled marks landcover disabled;
 missing_band removes B08; coarse_count sets Query.needs_gsd_m=1.
 
 | ID | Question | Profile | Expected route or refusal |
 |---|---|---|---|
-| E01 | What is the land cover? | s2 | land-cover |
-| E02 | How much cropland is visible? | s2 | land-cover |
-| E03 | Is this forest cover? | s2 | land-cover |
-| E04 | Estimate the built-up area. | s2 | land-cover |
-| E05 | What land cover does the radar show? | s1 | land-cover |
-| E06 | What fraction is cropland? | s2 | land-cover |
-| E07 | Describe the vegetation cover. | s2 | land-cover |
-| E08 | Is there forest here? | s2 | land-cover |
+| E01 | What is the land cover? | s2 | landcover |
+| E02 | How much cropland is visible? | s2 | landcover |
+| E03 | Is this forest cover? | s2 | landcover |
+| E04 | Estimate the built-up area. | s2 | landcover |
+| E05 | What land cover does the radar show? | s1 | landcover |
+| E06 | What fraction is cropland? | s2 | landcover |
+| E07 | Describe the vegetation cover. | s2 | landcover |
+| E08 | Is there forest here? | s2 | landcover |
 | E09 | Is there flood water? | joint | optical-sar-deterministic |
 | E10 | Map the water extent. | s1 | flood-otsu |
 | E11 | Which area is inundated? | s1 | flood-otsu |
 | E12 | Map flooding through the clouds. | joint_cloud | flood-otsu |
-| E13 | Describe the land cover through clouds. | joint_cloud | land-cover |
+| E13 | Describe the land cover through clouds. | joint_cloud | landcover |
 | E14 | Map flood water outside India. | s1_outside | flood-otsu |
 | E15 | What changed between these dates? | change_s2 | change-deterministic |
 | E16 | Have the buildings changed? | change_s2 | change-deterministic |
@@ -130,7 +130,7 @@ missing_band removes B08; coarse_count sets Query.needs_gsd_m=1.
 | E23 | Describe this scene. | s2 | qwen2.5vl-3b |
 | E24 | What is visible in this image? | s2 | qwen2.5vl-3b |
 | E25 | Explain this pattern. | s2 | qwen2.5vl-3b |
-| E26 | What is Rajasthan's land cover? | ood | land-cover |
+| E26 | What is Rajasthan's land cover? | ood | landcover |
 | E27 | What is the price of this land? | s2 | refuse:not_answerable |
 | E28 | Who owns these fields? | s2 | refuse:not_answerable |
 | E29 | How many people live here? | rgb | refuse:not_answerable |

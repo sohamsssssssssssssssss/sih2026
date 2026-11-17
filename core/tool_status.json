@@ -21,6 +21,10 @@
     "change-deterministic": {
       "status": "experimental_unvalidated",
       "evidence_refs": []
+    },
+    "landcover": {
+      "status": "experimental_unvalidated",
+      "evidence_refs": []
     }
   }
 }
