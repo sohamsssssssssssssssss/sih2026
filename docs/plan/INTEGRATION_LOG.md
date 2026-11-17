@@ -294,3 +294,101 @@ Raw log: /private/tmp/t05-after-t09.log. The 45 unsuccessful test identities
 match the T04 missing-package baseline exactly; both requested real CPU API
 end-to-end tests passed. CUDA-only legacy adapter tests are skipped.
 No model/data/result/training code was edited to make tests pass.
+
+## Numeric invariance check after T09
+
+Reran `.venv/bin/python3.11 docs/plan/build_results.py` using the approved external
+transfer-run inputs. RESULTS.md SHA-256 before/after: `a0d7e3508c9bf687600c8ca728ed2d8e1771e595caf2c1a1a27a1ec22e23b371`.
+The diff against both the pre-merge file and origin/main is empty. No result
+number or generated line changed; there is no numeric diff to explain.
+
+## Tracked-file size/privacy audit after T09
+
+All tracked files over 5,000,000 bytes are listed below. Every one was already
+in origin/main; no large file has been introduced by the approved integration.
+
+| Path | Bytes | Origin |
+|---|---:|---|
+| data/manifests/bigearthnet/stage1-train-rebuild-ids-loop10.v1.json | 8703700 | pre-existing main |
+| data/manifests/bigearthnet/stage1-train-shard-ids-audit.v1.json | 8700714 | pre-existing main |
+| frontend/public/videos/satquery-intro.mp4 | 11224386 | pre-existing main |
+
+Every tracked non-code path under data/ (including metadata, documentation and
+annotation templates) is listed below. All are pre-existing main paths and none
+was modified by this integration. Listing an annotation path does not modify it.
+
+| Path | Bytes |
+|---|---:|
+| data/BEN_TXT_FACTS.md | 12526 |
+| data/BIGEARTHNET_PREP.md | 25667 |
+| data/boundaries/README.md | 1831 |
+| data/boundaries/villages.v1.geojson | 370467 |
+| data/demo/grounding/07272.jpg | 70739 |
+| data/demo/manifest.json | 4311 |
+| data/demo/resolution/loveda_LoveDA_images_png_0_gsd1.0.png | 246167 |
+| data/demo/resolution/loveda_LoveDA_images_png_0_gsd10.0.png | 2661 |
+| data/demo/resolution/loveda_LoveDA_images_png_0_gsd2.0.png | 62097 |
+| data/demo/resolution/loveda_LoveDA_images_png_0_gsd5.0.png | 9871 |
+| data/eval/README.md | 6846 |
+| data/eval/questions.v1.jsonl | 33333 |
+| data/flood/DECISIONS.md | 3236 |
+| data/flood/README.md | 2394 |
+| data/flood/REPORT.md | 5881 |
+| data/ladder/0.3/loveda_Train_Rural_images_png_0_gsd0.3.png | 1845014 |
+| data/manifests/bigearthnet/annotation-audit.v1.json | 3915 |
+| data/manifests/bigearthnet/caption-geo-split.v1.csv.gz | 1308343 |
+| data/manifests/bigearthnet/caption-geo-split.v1.csv.json | 717 |
+| data/manifests/bigearthnet/norm_contract.json | 1777 |
+| data/manifests/bigearthnet/pilot-candidates.v1.json | 386786 |
+| data/manifests/bigearthnet/reference-map-audit.v1.json | 104072 |
+| data/manifests/bigearthnet/reference-map-members.v1.txt | 18000 |
+| data/manifests/bigearthnet/s1-members.v1.txt | 28972 |
+| data/manifests/bigearthnet/s2-members.v1.txt | 204000 |
+| data/manifests/bigearthnet/source-registry.v1.json | 2951 |
+| data/manifests/bigearthnet/stage1-loop3-checks.v1.json | 347 |
+| data/manifests/bigearthnet/stage1-loop4-contract-audit.json | 4915 |
+| data/manifests/bigearthnet/stage1-loop4-preregistration.json | 2401 |
+| data/manifests/bigearthnet/stage1-norm-loader-check.v1.json | 1179 |
+| data/manifests/bigearthnet/stage1-norm-options.v1.json | 12408 |
+| data/manifests/bigearthnet/stage1-norm-study.v1.json | 3068328 |
+| data/manifests/bigearthnet/stage1-norm-train-ids.v1.json | 233334 |
+| data/manifests/bigearthnet/stage1-real-validation.v1.json | 145958 |
+| data/manifests/bigearthnet/stage1-shards-eval-2000.v1.json | 3362 |
+| data/manifests/bigearthnet/stage1-shards-train-150000.attempt1-aborted-archive-order.v1.json | 25693 |
+| data/manifests/bigearthnet/stage1-shards-train-150000.v1.json | 108678 |
+| data/manifests/bigearthnet/stage1-shards-train-150000.v2.json | 18686 |
+| data/manifests/bigearthnet/stage1-shards-train-2000.v1.json | 4091 |
+| data/manifests/bigearthnet/stage1-split-verification.v1.json | 692 |
+| data/manifests/bigearthnet/stage1-train-rebuild-ids-loop10.v1.json | 8703700 |
+| data/manifests/bigearthnet/stage1-train-selection-150000.v1.json | 2617 |
+| data/manifests/bigearthnet/stage1-train-shard-ids-audit.v1.json | 8700714 |
+| data/manifests/cdse/flood-runs.v1.json | 9596 |
+| data/manifests/cdse/scenes.v1.json | 3958 |
+| data/manifests/cdse/sensor-necessity-results.v1.json | 4836 |
+| data/manifests/flood_events.v1.json | 5397 |
+| data/sar_gate/annotation_template.md | 24666 |
+| data/sar_gate/sar_cheatsheet.md | 2583 |
+
+No data/ path is added or modified. No Sen1Floods11 pack directory or its raw
+S1/S2/hand-label arrays is tracked. The pack remains external and its licence
+remains unconfirmed. T09's per-chip metric report is results evidence, not the
+pack. No credential-like filenames or standard private-key/AWS/GitHub-token
+signatures were found in newly introduced text files. Existing main's files
+are inventoried without deleting or rewriting them.
+
+### Merge 3 — task/T14-flood-pack @ df4a236
+
+`git merge --no-ff task/T14-flood-pack`: Already up to date (ancestor of starting
+main). No merge commit or conflict. Full `python3.11 -m pytest -q` in the same
+locked venv: **1,322 passed, 5 failed, 2 skipped, 40 setup errors,
+0 import/collection errors**, exit 1, 37.72 s. Raw log:
+/private/tmp/t05-after-t14.log. Unsuccessful identities are identical to T09
+and the T04 missing-package baseline. No allowed environment/path-only code fix
+can supply the absent authentic training-package assets from this checkout.
+No source, training, data, annotation, or result code was changed for these tests.
+
+### Merge 4 — task/T13-india-adapt (next)
+
+Will attempt --no-ff --no-commit at recorded head a0d7002. Only the recorded
+adaptation code/test/run-cell/hypothesis allowlist may enter the final tree.
+Any protected conflict aborts this merge with both sides preserved in this log.
