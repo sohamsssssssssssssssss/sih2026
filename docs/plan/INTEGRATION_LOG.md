@@ -170,12 +170,16 @@ Only these T13-specific files are approved for the final tree:
 
 - ben/adapt.py
 - ben/test_adapt.py
+- ben/transfer.py (T13 shared coarse_logits/load_wc dependency)
 - ben/run_adapt_gpu.txt
 - ben/run_adapt_seeds_gpu.txt
 - docs/hypotheses/T13.md
 - docs/hypotheses/T13b.md
 
 BEN architecture/normalizer/projection helpers are already supplied by T09.
+Inspection found T13 also needs its coarse_logits and load_wc additions in
+ben/transfer.py; that loader/model file is included in the code allowlist and
+remains subject to the mandatory conflict stop rule.
 Do not import T13's inherited backend/model/count/B13 changes or results, result
 arrays, or pending T13b analysis. If the --no-ff merge is conflict-free, retain
 only the listed file changes from it before committing. A conflict in model,
@@ -185,3 +189,14 @@ the allowlist. Trivial docs/.gitignore/adjacent conflicts may be resolved and lo
 ## Environment and sequential merge/test record
 
 Pending: isolated Python 3.11 venv, dependency installation, and per-branch runs.
+
+### Dependency setup, attempt 1
+
+Created .venv with Python 3.11.15. Ran venv pip against requirements.txt,
+backend/requirements.txt, and explicit peft/streamlit/pyarrow/hypothesis.
+Resolver failed before installation: `No matching distribution found for
+groundingdino` (no compatible versions listed). No package is substituted and
+repository requirements are unchanged. The remaining identical requirements
+will be installed from a temporary list excluding only this unavailable entry.
+The missing optional provider distribution will remain an explicit limitation.
+Full installer output: /private/tmp/t05-install.log.
