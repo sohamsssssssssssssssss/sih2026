@@ -34,7 +34,12 @@
     "flood-otsu": {
       "status": "experimental_unvalidated",
       "verdict": "FAIL: India-test IoU 0.631332 < 0.65; fixed method, no tuning",
-      "evidence_refs": []
+      "evidence_refs": [
+        {
+          "commit": "7ffe13027e5e09d92ddb44bff220f485c23c880a",
+          "results": "outputs/T07c-flood.md"
+        }
+      ]
     }
   }
 }
