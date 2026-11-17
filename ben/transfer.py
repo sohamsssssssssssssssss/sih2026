@@ -57,9 +57,26 @@ def coarse_members(classes):
     return {k: v for k, v in members.items() if v}, sorted(set(classes) - mapped)
 
 
+def coarse_logits(logits, members):
+    """Shared max-member pooling, differentiable for torch adaptation logits."""
+    if isinstance(logits, torch.Tensor):
+        return torch.stack([logits[:, idx].max(1).values for idx in members.values()], 1)
+    return np.stack([logits[:, idx].max(1) for idx in members.values()], 1)
+
+
 def to_coarse(logits, members):
     prob = 1 / (1 + np.exp(-np.clip(logits, -50, 50)))
-    return np.stack([prob[:, idx].max(1) for idx in members.values()], 1)
+    return coarse_logits(prob, members)
+
+
+def load_wc(pack):
+    """Load the same WorldCover arrays, labels and metadata for transfer and adaptation."""
+    meta = pd.read_parquet(pack / "meta.parquet")
+    info = json.loads((pack / "classes.json").read_text())
+    labels = np.load(pack / "labels_coarse.npy").astype(np.float32)
+    raw = {"s1": np.load(pack / "s1.npy", mmap_mode="r"),
+           "s2": np.load(pack / "s2_10m.npy", mmap_mode="r")}
+    return raw, labels, meta, info
 
 
 def group_metrics(y, scores, rng_seed=SEED):
@@ -108,11 +125,8 @@ def evaluate(args):
     t0 = time.time()
     wc, runs = Path(args.wc_pack), Path(args.runs)
     wc_manifest = verify_wc_manifest(wc)
-    meta = pd.read_parquet(wc / "meta.parquet")
-    wc_info = json.loads((wc / "classes.json").read_text())
-    y_wc_all = np.load(wc / "labels_coarse.npy").astype(np.float32)
+    raw, y_wc_all, meta, wc_info = load_wc(wc)
     wc_classes = wc_info["coarse_classes"]
-    raw = {"s1": np.load(wc / "s1.npy"), "s2": np.load(wc / "s2_10m.npy")}
     regions, groups = meta.region.to_numpy(), meta.group.to_numpy()
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     out = {"wc_manifest_sha256": wc_manifest, "coarse_present_fraction": wc_info["present_fraction"], "modes": {},
