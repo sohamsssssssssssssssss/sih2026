@@ -192,6 +192,37 @@ def scored(y, scores):
     return m
 
 
+
+def prediction_block(meta, indices, fold, mode, arm, scores, labels):
+    """Keep test rows in prediction order; IDs refer to the manifest's global idx."""
+    rows = meta.iloc[indices]
+    scores, labels = np.asarray(scores), np.asarray(labels)
+    if scores.shape != (len(rows), len(COMMON)) or labels.shape != scores.shape:
+        raise ValueError('STOP: prediction/label shape mismatch')
+    if not np.isfinite(scores).all() or np.any((scores < 0) | (scores > 1)) or not np.isin(labels, [0, 1]).all():
+        raise ValueError('STOP: invalid coarse scores or test labels')
+    return {'patch_id': np.array([f'worldcover:{int(i)}' for i in rows.idx]),
+            'patch_idx': rows.idx.to_numpy(dtype=np.int64),
+            'fold': np.full(len(rows), fold), 'mode': np.full(len(rows), mode),
+            'arm': np.full(len(rows), arm), 'scores': scores.astype(np.float32),
+            'labels': labels.astype(np.uint8)}
+
+
+def save_test_predictions(path, blocks, seed, manifest_sha256, code_commit):
+    """One pickle-free compressed archive per seed; never overwrite prior output."""
+    if not blocks:
+        raise ValueError('STOP: no test predictions')
+    data = {key: np.concatenate([block[key] for block in blocks]) for key in blocks[0]}
+    keys = list(zip(data['patch_id'], data['fold'], data['mode'], data['arm']))
+    if len(set(keys)) != len(keys):
+        raise ValueError('STOP: duplicate test prediction key')
+    with Path(path).open('xb') as stream:
+        np.savez_compressed(stream, **data, classes=np.array(COMMON), seed=np.array(seed),
+                            wc_manifest_sha256=np.array(manifest_sha256), code_commit=np.array(code_commit))
+    return {'file': Path(path).name, 'sha256': lc.sha256(path), 'rows': len(keys),
+            'classes': list(COMMON), 'patch_id_format': 'worldcover:<global idx>'}
+
+
 def table(out):
     lines = ['# T13 India adaptation', '', 'WorldCover map labels; smoke runs are not scientific results.', '',
              '| Mode | Fold | Arm | Group | n | mAP | CI95 | Prevalence | Shuffled-score chance | Original mAP |',
@@ -222,7 +253,8 @@ def run(args):
         raise ValueError('STOP: epochs must be 1..15 and smoke limit >=20')
     lc.seed_all()
     pack, runs, dest = Path(args.wc_pack), Path(args.runs), Path(args.out_dir)
-    if (dest/'ben-adapt.json').exists():
+    prediction_path = dest/f'ben-adapt-predictions-seed-{args.train_seed}.npz'
+    if (dest/'ben-adapt.json').exists() or prediction_path.exists():
         raise ValueError('STOP: output already exists')
     manifest_hash = tr.verify_wc_manifest(pack)
     raw, yall, meta, info = tr.load_wc(pack)
@@ -259,6 +291,7 @@ def run(args):
         out['modes'][mode] = {'checkpoint_sha256':lc.sha256(path),'stored_logits_sha256':lc.sha256(logits_path),
                               'reproduction':checks,'coarse_classes':list(members),'folds':{}}
         print(f'{mode}: baseline reproduction PASS ({len(checks)} groups; tolerance 1e-4)',flush=True)
+    prediction_blocks = []
     for mode,(ckpt,members,baseline_logits) in prepared.items():
         arrays = {k:raw[k] for k in ckpt['inputs']}
         cols = [info['coarse_classes'].index(c) for c in members]
@@ -296,6 +329,7 @@ def run(args):
                 # None is exactly the original stored checkpoint predictions, not a rerun.
                 logits = baseline_logits[test] if arm == 'none' else lc.predict(model,arrays,norm,test,device,args.batch_size)
                 scores = tr.to_coarse(logits,members)[:,common_idx]
+                prediction_blocks.append(prediction_block(meta,test,fold,mode,arm,scores,y[test][:,common_idx]))
                 groups = {'pooled':scored(y[test][:,common_idx],scores)}
                 for region in FOLDS[fold][1]:
                     mask = (meta.iloc[test].region == region).to_numpy()
@@ -337,6 +371,7 @@ def run(args):
     out['runtime_s'] = time.time()-start
     out = tr._finite(out)
     dest.mkdir(parents=True,exist_ok=True)
+    out['test_predictions'] = save_test_predictions(prediction_path,prediction_blocks,args.train_seed,manifest_hash,out['code']['git_sha'])
     (dest/'ben-adapt.json').write_text(json.dumps(out,indent=2,allow_nan=False)+'\n')
     (dest/'ben-adapt.md').write_text(table(out))
     print(f'DONE {dest / "ben-adapt.json"} runtime={out["runtime_s"]:.1f}s smoke_only={out["smoke_only"]}',flush=True)
