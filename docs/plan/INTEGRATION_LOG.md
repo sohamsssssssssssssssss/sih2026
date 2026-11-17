@@ -211,3 +211,75 @@ installed. pip check reports no broken installed requirements. groundingdino
 remains unavailable from the configured index; no replacement was installed.
 Exact installed distributions are frozen in requirements-lock.txt. No model or
 training source was changed. The initial RESULTS.md generator check is bit-identical.
+
+### Merge 1 — task/T04-plan-files @ 9bde585
+
+`git merge --no-ff task/T04-plan-files`: Already up to date (ancestor of starting
+main). No merge commit or conflict. Full test command uses the venv on PATH:
+`python3.11 -m pytest -q`. Result: **1,066 passed, 5 failed, 40 setup errors,
+0 import/collection errors**, exit 1, 53.62 s. Raw log:
+/private/tmp/t05-after-t04.log. Dependency import blockers are resolved; the
+unavailable optional groundingdino package does not cause an import error.
+
+All 45 unsuccessful tests fail on missing untracked package assets under
+packages/stage1-t4-smoke: config.yaml, config-full.yaml,
+config-last4-vision-fp32.yaml, revision.json, package-manifest.json, or the
+packaged src/scripts/run_stage1_smoke.py. No package assets are tracked in any
+Git history at that path. Root training scripts themselves exist unchanged.
+The four old FP32 smoke tests now pass with peft installed, and the old
+bigearthnet_shards failure now passes with pyarrow installed. The two old
+package smoke tests remain missing-fixture failures. Imports newly succeeding
+expose additional missing-package setup errors; these are not merge regressions.
+
+Rule 4 boundary: no source, test expectations, training code, data or result
+code was changed. Authentic package configs/captions/patch archive cannot be
+reconstructed from an approved path in this checkout. Asked for an approved
+fixture source outside protected worktrees; no fixture is invented or copied
+from /Users/soham/sih2026 or another worktree. Each unsuccessful test below has
+that same missing-package cause and remains unfixable within the current inputs:
+
+- FAILED scripts/test_stage1_full.py::test_config_full_yaml_has_no_placeholder_steps — missing untracked package fixture; no code/data fix applied.
+- FAILED scripts/test_stage1_smoke.py::test_t4_smoke_package - FileNotFoundErro... — missing untracked package fixture; no code/data fix applied.
+- FAILED scripts/test_stage1_smoke.py::test_t4_package_entry_and_stages - FileN... — missing untracked package fixture; no code/data fix applied.
+- FAILED scripts/test_stage1_t4_package.py::test_package_manifest_integrity - F... — missing untracked package fixture; no code/data fix applied.
+- FAILED scripts/test_stage1_t4_package.py::test_updated_package_runner_matches_source — missing untracked package fixture; no code/data fix applied.
+- ERROR scripts/test_stage1_resume_variant.py::test_cpu_resume_restores_all_state_without_gpu_checkpoint_copy — missing untracked package fixture; no code/data fix applied.
+- ERROR scripts/test_stage1_resume_variant.py::test_resume_rejects_changed_identity[vision_fp32] — missing untracked package fixture; no code/data fix applied.
+- ERROR scripts/test_stage1_resume_variant.py::test_resume_rejects_changed_identity[vision_trainable_last_n_blocks] — missing untracked package fixture; no code/data fix applied.
+- ERROR scripts/test_stage1_resume_variant.py::test_resume_rejects_changed_identity[learning_rates] — missing untracked package fixture; no code/data fix applied.
+- ERROR scripts/test_stage1_resume_variant.py::test_resume_rejects_changed_identity[seed] — missing untracked package fixture; no code/data fix applied.
+- ERROR scripts/test_stage1_resume_variant.py::test_resume_rejects_changed_identity[steps] — missing untracked package fixture; no code/data fix applied.
+- ERROR scripts/test_stage1_resume_variant.py::test_resume_rejects_changed_identity[captions] — missing untracked package fixture; no code/data fix applied.
+- ERROR scripts/test_stage1_resume_variant.py::test_resume_rejects_changed_identity[contract] — missing untracked package fixture; no code/data fix applied.
+- ERROR scripts/test_stage1_resume_variant.py::test_resume_rejects_changed_identity[shuffle] — missing untracked package fixture; no code/data fix applied.
+- ERROR scripts/test_stage1_resume_variant.py::test_relocated_identical_config_preserves_identity — missing untracked package fixture; no code/data fix applied.
+- ERROR scripts/test_stage1_resume_variant.py::test_eval_cpu_load_and_shuffled_arm_keep_training_identity — missing untracked package fixture; no code/data fix applied.
+- ERROR scripts/test_stage1_resume_variant.py::test_missing_identity_and_bad_data_position_are_rejected — missing untracked package fixture; no code/data fix applied.
+- ERROR scripts/test_stage1_revision_gate.py::test_local_dir_metadata_proves_revision — missing untracked package fixture; no code/data fix applied.
+- ERROR scripts/test_stage1_revision_gate.py::test_missing_source_fails - FileN... — missing untracked package fixture; no code/data fix applied.
+- ERROR scripts/test_stage1_revision_gate.py::test_metadata_mismatch_fails - Fi... — missing untracked package fixture; no code/data fix applied.
+- ERROR scripts/test_stage1_revision_gate.py::test_weight_mismatch_fails - File... — missing untracked package fixture; no code/data fix applied.
+- ERROR scripts/test_stage1_revision_gate.py::test_smoke_missing_source_never_reaches_model — missing untracked package fixture; no code/data fix applied.
+- ERROR scripts/test_stage1_revision_gate.py::test_config_source_has_priority[6666666666666666666666666666666666666666] — missing untracked package fixture; no code/data fix applied.
+- ERROR scripts/test_stage1_revision_gate.py::test_config_source_has_priority[7777777777777777777777777777777777777777] — missing untracked package fixture; no code/data fix applied.
+- ERROR scripts/test_stage1_revision_gate.py::test_config_source_has_priority[None] — missing untracked package fixture; no code/data fix applied.
+- ERROR scripts/test_stage1_revision_gate.py::test_missing_weight_file_is_recorded_failure — missing untracked package fixture; no code/data fix applied.
+- ERROR scripts/test_stage1_revision_gate.py::test_empty_expected_weights_never_passes — missing untracked package fixture; no code/data fix applied.
+- ERROR scripts/test_stage1_revision_gate.py::test_failed_proof_is_not_overwritten — missing untracked package fixture; no code/data fix applied.
+- ERROR scripts/test_stage1_t4_package.py::test_stage_verify_passes_when_hashes_match — missing untracked package fixture; no code/data fix applied.
+- ERROR scripts/test_stage1_t4_package.py::test_stage_verify_aborts_on_weight_mismatch — missing untracked package fixture; no code/data fix applied.
+- ERROR scripts/test_stage1_t4_package.py::test_stage_verify_aborts_on_revision_mismatch — missing untracked package fixture; no code/data fix applied.
+- ERROR scripts/test_stage1_t4_package.py::test_stage_smoke_passes_first_attempt_and_records_rate — missing untracked package fixture; no code/data fix applied.
+- ERROR scripts/test_stage1_t4_package.py::test_stage_smoke_falls_back_to_vision_fp32 — missing untracked package fixture; no code/data fix applied.
+- ERROR scripts/test_stage1_t4_package.py::test_stage_smoke_both_attempts_fail — missing untracked package fixture; no code/data fix applied.
+- ERROR scripts/test_stage1_t4_package.py::test_stage_resume_stops_and_resumes_with_continuity — missing untracked package fixture; no code/data fix applied.
+- ERROR scripts/test_stage1_t4_package.py::test_stage_resume_fails_beyond_threshold — missing untracked package fixture; no code/data fix applied.
+- ERROR scripts/test_stage1_t4_package.py::test_stage_overfit_gates_pass_and_steps_sized_from_smoke — missing untracked package fixture; no code/data fix applied.
+- ERROR scripts/test_stage1_t4_package.py::test_stage_overfit_shuffle_gate_fails_when_ratio_low — missing untracked package fixture; no code/data fix applied.
+- ERROR scripts/test_stage1_t4_package.py::test_stage_extrapolate_uses_measured_rate — missing untracked package fixture; no code/data fix applied.
+- ERROR scripts/test_stage1_t4_package.py::test_happy_path_runs_stages_in_registered_order — missing untracked package fixture; no code/data fix applied.
+- ERROR scripts/test_stage1_t4_package.py::test_main_stops_at_first_failed_stage — missing untracked package fixture; no code/data fix applied.
+- ERROR scripts/test_stage1_t4_package.py::test_memory_matrix_records_control_oom_and_variant — missing untracked package fixture; no code/data fix applied.
+- ERROR scripts/test_stage1_t4_package.py::test_explicit_last4_fp32_reaches_resume_and_overfit — missing untracked package fixture; no code/data fix applied.
+- ERROR scripts/test_stage1_t4_package.py::test_resume_only_runs_exact_variant_and_keeps_previous_evidence — missing untracked package fixture; no code/data fix applied.
+- ERROR scripts/test_stage1_t4_package.py::test_resume_execution_failure_is_preserved — missing untracked package fixture; no code/data fix applied.
