@@ -170,6 +170,8 @@ Only these T13-specific files are approved for the final tree:
 
 - ben/adapt.py
 - ben/test_adapt.py
+- ben/test_transfer.py (imported BEN19 fixture)
+- ben/test_landcover.py (imported make_pack fixture)
 - ben/transfer.py (T13 shared coarse_logits/load_wc dependency)
 - ben/run_adapt_gpu.txt
 - ben/run_adapt_seeds_gpu.txt
@@ -200,3 +202,12 @@ repository requirements are unchanged. The remaining identical requirements
 will be installed from a temporary list excluding only this unavailable entry.
 The missing optional provider distribution will remain an explicit limitation.
 Full installer output: /private/tmp/t05-install.log.
+
+### Dependency setup, completed available set
+
+Installed all available requested requirements into .venv, plus scikit-learn
+(already required by the approved T09 branch). peft, streamlit and pyarrow are
+installed. pip check reports no broken installed requirements. groundingdino
+remains unavailable from the configured index; no replacement was installed.
+Exact installed distributions are frozen in requirements-lock.txt. No model or
+training source was changed. The initial RESULTS.md generator check is bit-identical.
