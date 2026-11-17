@@ -1,0 +1,66 @@
+%%bash
+# Kaggle GPU cell: BigEarthNet pilot land-cover baseline, S1 vs S2 vs S1+S2 (ben/landcover.py).
+# Notebook: Accelerator GPU T4, Internet OFF is fine (no downloads). Run as a committed version (Save & Run All).
+# Inputs (any dataset names; found by search):
+#   - code dataset containing ben/landcover.py (from satquery-ben-code.zip)
+#   - pack dataset containing MANIFEST.json (ben-pilot-20k)
+# Outputs in /kaggle/working: ben-landcover-<mode>.json + test logits/idx/labels, compare JSONs, progress file.
+set -euo pipefail
+trap 'echo "FAILED at line $LINENO: $BASH_COMMAND"' ERR
+
+T=/kaggle/tmp/ben-landcover
+W=/kaggle/working
+PROGRESS="$W/ben-landcover-progress.txt"
+mkdir -p "$T" "$W"
+for f in "$W"/ben-landcover-*.json; do
+  if [ -e "$f" ]; then echo "HARD STOP: $f exists; outputs must be fresh"; exit 1; fi
+done
+
+# 1. Code: exactly one ben/landcover.py under /kaggle/input (bash 4+ on Kaggle).
+mapfile -t CODE < <(find /kaggle/input -type f -path "*/ben/landcover.py")
+if [ "${#CODE[@]}" -ne 1 ]; then
+  echo "HARD STOP: expected exactly 1 ben/landcover.py under /kaggle/input, found ${#CODE[@]}:"; printf '  %s\n' "${CODE[@]}"; exit 1
+fi
+CODE_ROOT=$(dirname "$(dirname "${CODE[0]}")")
+rm -rf "$T/code" && mkdir -p "$T/code" && cp -r "$CODE_ROOT/ben" "$T/code/ben"
+export PYTHONPATH="$T/code"
+echo "CODE_ROOT=$CODE_ROOT"
+
+# 2. Pack: exactly one MANIFEST.json under /kaggle/input.
+mapfile -t MAN < <(find /kaggle/input -name MANIFEST.json)
+if [ "${#MAN[@]}" -ne 1 ]; then
+  echo "HARD STOP: expected exactly 1 MANIFEST.json under /kaggle/input, found ${#MAN[@]}:"; printf '  %s\n' "${MAN[@]}"; exit 1
+fi
+PACK=$(dirname "${MAN[0]}")
+echo "PACK=$PACK"
+nvidia-smi --query-gpu=name,memory.total --format=csv
+python -c "import torch, torchvision, sklearn; print('torch', torch.__version__, 'cuda', torch.cuda.is_available())"
+
+# 3. Train/evaluate each mode (progress also goes to $PROGRESS, since Kaggle shows cell logs only at the end).
+cd "$T/code"
+for MODE in s1 s2 s1s2; do
+  echo "=== mode $MODE ===" | tee -a "$PROGRESS"
+  python ben/landcover.py --pack "$PACK" --mode "$MODE" --control shuffle --out-dir "$W" --progress "$PROGRESS"
+done
+
+# 4. Paired bootstrap comparisons from the saved logits.
+python ben/landcover.py --compare "$W/ben-landcover-s1s2.json" "$W/ben-landcover-s2.json" --output "$W/ben-landcover-compare-s1s2-vs-s2.json"
+python ben/landcover.py --compare "$W/ben-landcover-s2.json" "$W/ben-landcover-s1.json" --output "$W/ben-landcover-compare-s2-vs-s1.json"
+
+# 5. Summary table.
+python - "$W" <<'EOF'
+import json, sys
+from pathlib import Path
+w = Path(sys.argv[1])
+print(f"{'mode':<6} {'test mAP':>9} {'CI95':>17} {'microF1':>8} {'macroF1':>8} {'prior':>7} {'shuffled':>9} {'best_ep':>7}")
+for mode in ("s1", "s2", "s1s2"):
+    r = json.loads((w / f"ben-landcover-{mode}.json").read_text())
+    lo, hi = r["bootstrap"]["macro_map_ci95"]
+    print(f"{mode:<6} {r['macro_map']:>9.4f} [{lo:.4f}, {hi:.4f}] {r['micro_f1']:>8.4f} {r['macro_f1']:>8.4f} "
+          f"{r['prior_baseline']['macro_map']:>7.4f} {r['control']['macro_map']:>9.4f} {r['best_epoch']:>7}")
+for name in ("s1s2-vs-s2", "s2-vs-s1"):
+    c = json.loads((w / f"ben-landcover-compare-{name}.json").read_text())
+    print(f"{c['a']} - {c['b']}: diff {c['diff']:+.4f} CI95 [{c['diff_ci95'][0]:+.4f}, {c['diff_ci95'][1]:+.4f}]")
+EOF
+ls -la "$W"
+echo "CELL DONE"
