@@ -392,3 +392,83 @@ No source, training, data, annotation, or result code was changed for these test
 Will attempt --no-ff --no-commit at recorded head a0d7002. Only the recorded
 adaptation code/test/run-cell/hypothesis allowlist may enter the final tree.
 Any protected conflict aborts this merge with both sides preserved in this log.
+
+## Mandatory stop — T13 merge aborted
+
+The fourth merge stopped with a single add/add conflict in **ben/transfer.py**.
+This is protected model/evaluation/data-loader code, not a trivial documentation
+or adjacent-line conflict. No conflict was resolved and no T13 merge commit was
+created. Ran `git merge --abort` successfully; the worktree returned clean to
+4ff4eaf96f6aeae2259c532646685b3188a868b4. All automatically staged T13 changes,
+including inherited model/result/data-array changes, were discarded by the abort.
+No T13 code, hypotheses, pending analysis or result files entered integration.
+
+Both sides, preserved for owner review:
+
+- Ours: integration pre-merge `4ff4eaf96f6aeae2259c532646685b3188a868b4`, from T09 a45d1f9; blob `1efb712003f894b7c415ffbc0dfe521abd21781e`.
+- Incoming: task/T13-india-adapt `a0d7002cb9a43162e297f98a795694982791acb5`; blob `12470d087be9c38e7b6784ec235e370f1d4a6373`.
+
+Ours retains the original max-sigmoid projection and direct WorldCover loading.
+Incoming adds differentiable `coarse_logits`, routes `to_coarse` through that
+helper, and introduces `load_wc` (including mmap array loading) for adaptation.
+Choosing either side affects the adaptation/model/loader interface. No choice
+was guessed. Exact side-to-side diff:
+
+```diff
+--- ours: T09 ben/transfer.py
++++ incoming: T13 ben/transfer.py
+@@ -59,0 +60,7 @@
++def coarse_logits(logits, members):
++    """Shared max-member pooling, differentiable for torch adaptation logits."""
++    if isinstance(logits, torch.Tensor):
++        return torch.stack([logits[:, idx].max(1).values for idx in members.values()], 1)
++    return np.stack([logits[:, idx].max(1) for idx in members.values()], 1)
++
++
+@@ -62 +69,11 @@
+-    return np.stack([prob[:, idx].max(1) for idx in members.values()], 1)
++    return coarse_logits(prob, members)
++
++
++def load_wc(pack):
++    """Load the same WorldCover arrays, labels and metadata for transfer and adaptation."""
++    meta = pd.read_parquet(pack / "meta.parquet")
++    info = json.loads((pack / "classes.json").read_text())
++    labels = np.load(pack / "labels_coarse.npy").astype(np.float32)
++    raw = {"s1": np.load(pack / "s1.npy", mmap_mode="r"),
++           "s2": np.load(pack / "s2_10m.npy", mmap_mode="r")}
++    return raw, labels, meta, info
+@@ -111,3 +128 @@
+-    meta = pd.read_parquet(wc / "meta.parquet")
+-    wc_info = json.loads((wc / "classes.json").read_text())
+-    y_wc_all = np.load(wc / "labels_coarse.npy").astype(np.float32)
++    raw, y_wc_all, meta, wc_info = load_wc(wc)
+@@ -115 +129,0 @@
+-    raw = {"s1": np.load(wc / "s1.npy"), "s2": np.load(wc / "s2_10m.npy")}
+```
+
+No test run is claimed for the conflicted transient tree. After the abort, code
+and result files exactly match the last tested T14/no-op state. The only later
+changes are this stop record and tracker bookkeeping. No additional integration
+or repair is attempted after the protected conflict.
+
+## Final review state (partial integration; not a clean-baseline claim)
+
+- T04 9bde585 and T14 df4a236 were already ancestors of starting origin/main.
+- T09 a45d1f9 was cleanly merged with --no-ff as 54ae066.
+- T13 a0d7002 was aborted on protected loader/model conflict; it remains unmerged.
+- T15, feature/change-vqa and keep/* were not explicitly merged or selected.
+- T06, T07, T08, T09 are marked done with hashes; flood-otsu stays experimental
+  with India-test IoU 0.631332 < 0.65; T15 stays open.
+- Last full test result: **1,322 passed, 5 failed, 2 skipped, 40 setup errors,
+  0 import/collection errors**. All unsuccessful identities and their missing
+  authentic-package cause are listed above. GroundingDINO distribution remains
+  unavailable; no substitute was installed. No training/data/result source fix
+  or fabricated fixture was used to hide a failure.
+- RESULTS.md was regenerated with an empty diff. All three >5 MB files and all
+  49 data/ non-code paths are inherited main assets. No new large/data/private-key
+  file or Sen1Floods11 pack was introduced; no result number changed.
+- requirements-lock.txt captures the installed environment. Main and other
+  worktrees are untouched. No main push, force push, branch deletion or history
+  rewrite occurred. This partial branch is published only for review; further
+  integration requires resolution of ben/transfer.py under the owner's rules.
