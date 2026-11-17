@@ -11,6 +11,8 @@ from data.flood.build_pack import load_split, sha256, verify_pack
 SEED, REPS = 17, 2000
 PACK_SHA = '250c230b4698ac4b7cab33e2c1666ebed2b1699455aafca5e56fb429ac6c60ad'
 MASKS = ('primary','strict')
+SENSORS = {'s1': ('s1',), 's2': ('s2',), 's1s2': ('s1', 's2')}
+INPUT_CHANNELS = {'s1': 2, 's2': 13, 's1s2': 15}
 
 
 def code_info():
@@ -44,9 +46,11 @@ class Pack:
         return self.index.loc[self.index.split==name].sort_values('row').reset_index(drop=True)
 
     def inputs(self,split,indices,mode,control='none'):
+        if mode not in SENSORS:
+            raise ValueError(f'Unknown input mode: {mode}')
         arrays=self.split(split)
         parts=[]
-        for sensor in (('s1',) if mode=='s1' else ('s1','s2')):
+        for sensor in SENSORS[mode]:
             x=arrays[sensor][indices].astype(np.float32)
             missing=~np.isfinite(x)
             if sensor=='s2':

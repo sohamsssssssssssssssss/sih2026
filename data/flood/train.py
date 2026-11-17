@@ -17,7 +17,7 @@ import numpy as np
 import torch
 import yaml
 
-from data.flood.learning import Pack,SEED,MASKS,masks,counts,iou,grouped,code_info,coverage,compare_hypotheses,metric_table
+from data.flood.learning import Pack,SEED,MASKS,INPUT_CHANNELS,masks,counts,iou,grouped,code_info,coverage,compare_hypotheses,metric_table
 from data.flood.build_pack import sha256
 from data.flood.model import UNet,FullResolutionCNN,loss
 
@@ -129,7 +129,7 @@ def fit(pack,config,out_dir,action,dev):
     if architecture not in ('unet','full_resolution'):
         raise ValueError('STOP: unknown architecture')
     model_class=FullResolutionCNN if architecture=='full_resolution' else UNet
-    model=model_class(2 if config['mode']=='s1' else 15).to(dev)
+    model=model_class(INPUT_CHANNELS[config['mode']]).to(dev)
     labels=labels_for_training(pack,indices,config['control'])
     opt=torch.optim.AdamW(model.parameters(),lr=config['lr'],weight_decay=config['weight_decay'])
     scheduler=torch.optim.lr_scheduler.CosineAnnealingLR(opt,T_max=config['epochs']) if config['schedule']=='cosine' else None
@@ -205,7 +205,7 @@ def benchmark(pack,config,out_dir,dev):
     results={}
     for mode in ('s1','s1s2'):
         cfg={**config,'mode':mode,'augmentation':True,'control':'none'}
-        model=UNet(2 if mode=='s1' else 15).to(dev)
+        model=UNet(INPUT_CHANNELS[mode]).to(dev)
         opt=torch.optim.AdamW(model.parameters(),lr=cfg['lr'])
         indices=np.arange(len(pack.rows('train')))
         labels=labels_for_training(pack,indices,'none')
