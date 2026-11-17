@@ -1,0 +1,7 @@
+{
+  "checkpoints": {
+    "s1": "~/ben-work/transfer-run-1/ben-landcover-s1-checkpoint.pt",
+    "s2": "~/ben-work/transfer-run-1/ben-landcover-s2-checkpoint.pt",
+    "s1s2": "~/ben-work/transfer-run-1/ben-landcover-s1s2-checkpoint.pt"
+  }
+}

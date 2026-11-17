@@ -1,0 +1,3 @@
+# Install alongside the application requirements for core contract/router tests.
+pytest
+hypothesis

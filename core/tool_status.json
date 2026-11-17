@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "tools": {
+    "qwen2.5vl-3b": {
+      "status": "experimental_unvalidated",
+      "evidence_refs": [
+        {
+          "commit": "2e421efa935d7f80c050cfefa49f5ce3abafdffa",
+          "results": "results/qwen2.5vl-3b__ladder__rescored__20260904.json"
+        }
+      ]
+    },
+    "grounding-dino-swint": {
+      "status": "experimental_unvalidated",
+      "evidence_refs": []
+    },
+    "optical-sar-deterministic": {
+      "status": "experimental_unvalidated",
+      "evidence_refs": []
+    },
+    "change-deterministic": {
+      "status": "experimental_unvalidated",
+      "evidence_refs": []
+    },
+    "landcover": {
+      "status": "experimental_unvalidated",
+      "evidence_refs": [
+        {
+          "commit": "d5f72964369b9085cda1f0550f1cc3476061e979",
+          "results": "outputs/T07c-landcover.md"
+        }
+      ]
+    },
+    "flood-otsu": {
+      "status": "experimental_unvalidated",
+      "verdict": "FAIL: India-test IoU 0.631332 < 0.65; fixed method, no tuning",
+      "evidence_refs": [
+        {
+          "commit": "7ffe13027e5e09d92ddb44bff220f485c23c880a",
+          "results": "outputs/T07c-flood.md"
+        }
+      ]
+    }
+  }
+}

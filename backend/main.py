@@ -2,11 +2,12 @@
 
 import os
 import re
+from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Response
 from fastapi.middleware.cors import CORSMiddleware
 
-from backend.routes import analyze, resolution, sar, sentinel1, traces
+from backend.routes import analyze, resolution, sar, sentinel1, traces, ask
 from backend.schemas import HealthResponse
 from backend.services import capabilities_overview
 from orchestrator import trace as trace_store
@@ -44,7 +45,16 @@ def cors_origins(raw: str | None) -> list[str]:
     return origins
 
 
+@asynccontextmanager
+async def lifespan(application):
+    yield
+    runtime = getattr(application.state, "ask_service", None)
+    if runtime is not None:
+        runtime.close()
+
+
 app = FastAPI(
+    lifespan=lifespan,
     title="SatQuery AI API",
     description="Offline-first read API over SatQuery's existing orchestration and committed artifacts.",
     version="0.1.0",
@@ -57,6 +67,7 @@ app.add_middleware(
     allow_methods=["GET", "POST"],
     allow_headers=["Content-Type"],
 )
+app.include_router(ask.router)
 app.include_router(analyze.router)
 app.include_router(resolution.router)
 app.include_router(sar.router)

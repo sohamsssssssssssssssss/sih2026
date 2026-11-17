@@ -11,6 +11,8 @@ from pathlib import Path
 from threading import RLock
 from typing import Any
 
+from core.canonical import canonical_json
+
 TRACE_PATH = Path(__file__).resolve().parents[1] / "trace.jsonl"
 _TRACE: list[dict[str, Any]] = []
 _LOADED_PATH: Path | None = None
@@ -41,7 +43,8 @@ class _TailRepair:
 
 
 def _canonical(record: dict[str, Any]) -> str:
-    return json.dumps(record, sort_keys=True)
+    """Private alias kept for callers; the shared module owns the form."""
+    return canonical_json(record)
 
 
 def _record_hash(record_without_hash: dict[str, Any], prev_hash: str) -> str:

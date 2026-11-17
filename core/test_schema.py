@@ -141,3 +141,216 @@ def test_committed_schemas_are_current(tmp_path):
     committed = S.Path(S.__file__).resolve().parents[1] / "docs" / "schemas"
     for p in S.export_json_schemas(tmp_path):
         assert (committed / p.name).read_text() == p.read_text(), f"docs/schemas/{p.name} stale: run python -m core.schema"
+
+
+# --- R01 I1/I2: payloads must be JSON values, rejected at construction -----------------
+
+DEEP_PAYLOAD = {
+    "fractions": [0.1, None, True, 2, "x"],
+    "nested": {"list": [{"ok": False}], "empty": []},
+    "flag": None,
+}
+
+
+@pytest.mark.parametrize("bad", [
+    float("nan"),
+    float("inf"),
+    float("-inf"),
+    {"a": [float("nan")]},
+    ["ok", {"deep": float("inf")}],
+    {"a": {"b": [1, float("-inf")]}},
+    b"bytes",
+    b"\xff",
+    object(),
+    (1, 2),
+    {1, 2},
+    {1: "a"},
+    {"a": (1, 2)},
+    ["ok", {2: "b"}],
+], ids=["nan", "inf", "-inf", "nested-nan", "list-inf", "deep-inf", "bytes", "invalid-utf8", "object",
+        "tuple", "set", "int-key", "nested-tuple", "nested-int-key"])
+def test_non_json_payloads_rejected_everywhere(bad):
+    with pytest.raises(ValidationError):
+        tool_result(value=bad)
+    with pytest.raises(ValidationError):
+        make(S.Patch, labels={"x": bad})
+    with pytest.raises(ValidationError):
+        make(S.Evidence, summary={"x": bad})
+    with pytest.raises(ValidationError):
+        make(S.PackManifest, norm_stats={"VV": bad})
+
+
+def test_numpy_payload_rejected_with_guidance():
+    with pytest.raises(ValidationError, match=r"ndarray is not valid JSON at value; call \.tolist\(\)"):
+        tool_result(value=np.zeros((2, 2)))
+    with pytest.raises(ValidationError, match=r"\.tolist\(\)"):
+        make(S.Patch, labels={"mask": np.zeros((2, 2), dtype=bool)})
+
+
+def test_payload_error_names_field_and_path():
+    with pytest.raises(ValidationError, match=r"non-finite float nan is not valid JSON at value\[0\]"):
+        tool_result(value=[float("nan")])
+    with pytest.raises(ValidationError, match=r"is not valid JSON at labels\['a'\]\[1\]"):
+        make(S.Patch, labels={"a": [1.0, float("inf")]})
+
+
+def test_valid_payloads_are_accepted():
+    assert tool_result(value=DEEP_PAYLOAD).value == DEEP_PAYLOAD
+    assert make(S.Patch, labels=DEEP_PAYLOAD).labels == DEEP_PAYLOAD
+    assert make(S.Evidence, summary=DEEP_PAYLOAD).summary == DEEP_PAYLOAD
+    assert make(S.PackManifest, norm_stats={"VV": DEEP_PAYLOAD}).norm_stats["VV"] == DEEP_PAYLOAD
+
+
+# --- R01 I3: sequences are immutable tuples; mappings stay dicts -----------------------
+
+def test_sequence_fields_are_tuples():
+    sc = make(S.Scene)
+    assert isinstance(sc.bands, tuple)
+    with pytest.raises(AttributeError):
+        sc.bands.append("B12")
+    assert isinstance(tool_result().evidence, tuple)
+    with pytest.raises(TypeError):
+        tool_result().evidence[0] = None
+    assert isinstance(make(S.Answer).sensors_used, tuple)
+    assert isinstance(make(S.PackManifest).band_order, tuple)
+    assert isinstance(make(S.Query).needs_sensor, tuple)
+    assert isinstance(make(S.ToolStatus).evidence_refs, tuple)
+
+
+def test_mapping_mutation_is_detected_by_revalidation():
+    pm = make(S.PackManifest)
+    dump = pm.model_dump()
+    dump["splits"]["test"] = 99
+    with pytest.raises(ValidationError, match="splits sum to 100"):
+        S.PackManifest.model_validate(dump)
+
+
+PAYLOAD_OVERRIDES = {
+    S.Scene: {"bands": ("B02", "B03")},
+    S.Patch: {"labels": DEEP_PAYLOAD},
+    S.PackManifest: {"norm_stats": {"VV": DEEP_PAYLOAD}},
+    S.Query: {"needs_sensor": ("S2", "S1")},
+    S.Evidence: {"summary": DEEP_PAYLOAD},
+    S.ToolResult: {"value": DEEP_PAYLOAD},
+    S.Answer: {"primary": tool_result(value=DEEP_PAYLOAD)},
+    S.EvalRecord: {},
+    S.ToolStatus: {"evidence_refs": ("RESULTS.md#R2",)},
+}
+
+
+@pytest.mark.parametrize("model", S.MODELS, ids=lambda m: m.__name__)
+def test_payload_round_trip_through_dump_and_json(model):
+    obj = make(model, **PAYLOAD_OVERRIDES[model])
+    assert model.model_validate(obj.model_dump()) == obj
+    assert model.model_validate_json(obj.model_dump_json()) == obj
+
+
+@pytest.mark.parametrize("model", [S.PackManifest, S.Answer, S.EvalRecord], ids=lambda m: m.__name__)
+def test_after_validators_hold_on_revalidation(model):
+    obj = make(model)
+    assert model.model_validate(obj.model_dump()) == obj
+    assert model.model_validate_json(obj.model_dump_json()) == obj
+
+
+# --- R01 I4: counts and offsets are strict ints ----------------------------------------
+
+@pytest.mark.parametrize("window", [(True, 0, 10, 10), (0, True, 10, 10), (0, 0, True, 10), (0, 0, 10, True)])
+def test_window_rejects_bool_offsets(window):
+    with pytest.raises(ValidationError):
+        make(S.Patch, window=window)
+
+
+def test_counts_reject_bool_and_float():
+    with pytest.raises(ValidationError):
+        make(S.EvalRecord, n=True)
+    with pytest.raises(ValidationError):
+        make(S.EvalRecord, n=3.0)
+    with pytest.raises(ValidationError):
+        tool_result(latency_ms=True)
+    with pytest.raises(ValidationError):
+        tool_result(latency_ms=1.0)
+    with pytest.raises(ValidationError):
+        make(S.PackManifest, n_patches=True)
+    with pytest.raises(ValidationError):
+        make(S.PackManifest, splits={"test": True, "val": 1})
+
+
+# --- R01 "Untested rules" --------------------------------------------------------------
+
+@pytest.mark.parametrize("window", [(0, 0, 10, 0), (0, 0, -5, 10), (0, 0, 10, -5), (0, 0, 0, 0), (-1, 0, 10, 10)])
+def test_patch_window_boundaries(window):
+    with pytest.raises(ValidationError):
+        make(S.Patch, window=window)
+
+
+def test_uppercase_hex_rejected():
+    with pytest.raises(ValidationError):
+        make(S.Scene, scene_id="A" * 64)
+    with pytest.raises(ValidationError):
+        tool_result(checkpoint_sha="A" * 64)
+    with pytest.raises(ValidationError):
+        make(S.EvalRecord, commit="B" * 40)
+
+
+@pytest.mark.parametrize("bounds", [(0.0, 0.0, 0.0, 10.0), (0.0, 0.0, 10.0, 0.0), (5.0, 0.0, 5.0, 10.0)])
+def test_scene_bounds_equality_rejected(bounds):
+    with pytest.raises(ValidationError):
+        make(S.Scene, bounds=bounds)
+
+
+def test_scene_pct_boundaries():
+    assert make(S.Scene, cloud_pct=100.0, nodata_pct=100.0).nodata_pct == 100.0
+    with pytest.raises(ValidationError):
+        make(S.Scene, cloud_pct=100.1)
+    with pytest.raises(ValidationError):
+        make(S.Scene, nodata_pct=100.1)
+
+
+def test_scene_id_metadata_and_band_sensitivity():
+    px = np.zeros((2, 4, 4), np.uint16)
+    base = {"sensor": "S2", "bands": ["B02", "B03"], "nested": {"a": 1, "b": 2}}
+    a = S.scene_id_for(px.tobytes(), base)
+    # nested key order is irrelevant, outer key order too
+    assert a == S.scene_id_for(px.tobytes(), {"nested": {"b": 2, "a": 1}, "bands": ["B02", "B03"], "sensor": "S2"})
+    # a non-gsd metadata field and the band order both change the id
+    assert a != S.scene_id_for(px.tobytes(), {**base, "sensor": "S1"})
+    assert a != S.scene_id_for(px.tobytes(), {**base, "bands": ["B03", "B02"]})
+    assert a != S.scene_id_for(px.tobytes(), {**base, "nested": {"a": 2, "b": 2}})
+    # same bytes in a different shape give the same id: shape is not part of the contract
+    assert a == S.scene_id_for(px.reshape(-1).tobytes(), base)
+
+
+def test_pack_manifest_created_forms():
+    with pytest.raises(ValidationError):
+        make(S.PackManifest, created=date(2026, 11, 16))
+    assert make(S.PackManifest, created="2026-11-16T00:00:00Z").created.utcoffset() == timedelta(0)
+    weird = timezone(timedelta(0), "IST")  # zero offset: same instant, accepted
+    assert make(S.PackManifest, created=datetime(2026, 11, 16, tzinfo=weird)).created.utcoffset() == timedelta(0)
+
+
+def test_tool_result_confidence_endpoints():
+    assert tool_result(raw_confidence=0.0).raw_confidence == 0.0
+    assert tool_result(raw_confidence=1.0).raw_confidence == 1.0
+
+
+def test_answer_allowed_combinations():
+    assert make(S.Answer, status="refused", refusal_reason="cloud", confidence=None).primary is not None
+    assert make(S.Answer, status="low_confidence", refusal_reason="cloud").refusal_reason == "cloud"
+    assert make(S.Answer, confidence=None).confidence is None
+
+
+def test_eval_record_ci95_reversed_and_equal():
+    with pytest.raises(ValidationError):
+        make(S.EvalRecord, value=0.6, ci95=(0.9, 0.5))
+    assert make(S.EvalRecord, value=0.6, ci95=(0.6, 0.6)).ci95 == (0.6, 0.6)
+
+
+@pytest.mark.parametrize("status", ["validated", "experimental_unvalidated", "disabled"])
+def test_tool_status_values(status):
+    assert make(S.ToolStatus, status=status).status == status
+
+
+@pytest.mark.parametrize("text", ["\n\t ", "\u00a0", "\u2003"])
+def test_query_whitespace_variants_rejected(text):
+    with pytest.raises(ValidationError):
+        make(S.Query, text=text)

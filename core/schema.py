@@ -1,26 +1,92 @@
 """SatQuery data contracts (MASTER_PLAN Part 4.2). Contracts only: no tools, API or models.
 
 Every model is frozen, rejects unknown fields and NaN/inf, and round-trips through JSON.
-Regenerate docs/schemas/ with `python -m core.schema`.
+Free-form payload fields (ToolResult.value, Evidence.summary, Patch.labels,
+PackManifest.norm_stats) accept JSON values only: None, bool, int, finite float, str, and
+lists/dicts of those. NaN/inf, bytes, tuples, sets, numpy arrays and arbitrary objects are
+rejected at construction. Nothing is auto-converted: tools must call ``.tolist()`` on
+arrays (and convert other non-JSON objects) before building a contract.
+
+Sequence fields are tuples, so they cannot be mutated in place. Mapping fields stay dicts
+for JSON fidelity but are read-only by contract: use ``model_copy(update=...)`` to change
+them, never in-place mutation (`pm.splits["test"] = 99` is forbidden).
+
+Regenerate docs/schemas/ with `python -m core.schema`. Those JSON Schemas are structural
+only; cross-field rules live in this module and this module is authoritative.
 """
 from __future__ import annotations
 
 import hashlib
 import json
+import math
 from datetime import date, datetime, timedelta
 from pathlib import Path
-from typing import Annotated, Any, Literal
+from typing import Annotated, Any, Literal, Union
 
-from pydantic import BaseModel, ConfigDict, Field, StringConstraints, field_validator, model_validator
+from pydantic import (
+    BaseModel,
+    BeforeValidator,
+    ConfigDict,
+    Field,
+    StringConstraints,
+    ValidationInfo,
+    field_validator,
+    model_validator,
+)
+from typing_extensions import TypeAliasType
 
+from core.canonical import canonical_json
 from core.schema_version import SCHEMA_VERSION
-from orchestrator.trace import _canonical  # the trace's canonical JSON; one hashing scheme repo-wide
 
 Sha256 = Annotated[str, StringConstraints(pattern=r"^[0-9a-f]{64}$")]
 GitSha = Annotated[str, StringConstraints(pattern=r"^[0-9a-f]{40}$")]
 NonEmpty = Annotated[str, StringConstraints(min_length=1)]
 Unit = Annotated[float, Field(ge=0, le=1)]
 Pct = Annotated[float, Field(ge=0, le=100)]
+Count = Annotated[int, Field(strict=True, ge=0)]
+PositiveCount = Annotated[int, Field(strict=True, gt=0)]
+
+# Recursive JSON value: None, bool, int, finite float, str, or lists/dicts of those.
+# Strict members keep bool/float/tuple/non-str-key coercions out; the walker below gives
+# a field-and-path error message before the union's opaque one is reached.
+JsonValue = TypeAliasType("JsonValue", Union[
+    None,
+    bool,
+    Annotated[int, Field(strict=True)],
+    Annotated[float, Field(strict=True, allow_inf_nan=False)],
+    Annotated[str, Field(strict=True)],
+    Annotated[list["JsonValue"], Field(strict=True)],
+    Annotated[dict[str, "JsonValue"], Field(strict=True)],
+])
+
+
+def _check_json(value: object, field: str, path: str = "") -> object:
+    """Return a detached JSON copy of `value`, or raise naming the field and failing path."""
+    here = field + path
+    if value is None or isinstance(value, (bool, str, int)):
+        return value
+    if isinstance(value, float):
+        if not math.isfinite(value):
+            raise ValueError(f"non-finite float {value!r} is not valid JSON at {here}")
+        return value
+    if isinstance(value, list):
+        return [_check_json(item, field, f"{path}[{i}]") for i, item in enumerate(value)]
+    if isinstance(value, dict):
+        out = {}
+        for key, item in value.items():
+            if not isinstance(key, str):
+                raise ValueError(f"dict key {key!r} is not a string at {here}")
+            out[key] = _check_json(item, field, f"{path}[{key!r}]")
+        return out
+    raise ValueError(f"{type(value).__name__} is not valid JSON at {here}; call .tolist() or convert it first")
+
+
+def _json_payload(value: object, info: ValidationInfo) -> object:
+    return _check_json(value, info.field_name or "payload")
+
+
+JsonPayload = Annotated[JsonValue, BeforeValidator(_json_payload)]
+JsonObject = Annotated[dict[str, JsonValue], BeforeValidator(_json_payload)]
 
 
 class _Contract(BaseModel):
@@ -29,13 +95,13 @@ class _Contract(BaseModel):
 
 def scene_id_for(pixels: bytes, metadata: dict[str, Any]) -> str:
     """sha256 hex of pixel bytes + canonical metadata JSON (same canonical form as orchestrator.trace)."""
-    return hashlib.sha256(pixels + _canonical(metadata).encode("utf-8")).hexdigest()
+    return hashlib.sha256(pixels + canonical_json(metadata).encode("utf-8")).hexdigest()
 
 
 class Scene(_Contract):
     scene_id: Sha256
     sensor: Literal["S2", "S1", "RGB_HR", "S1S2", "UNKNOWN"]
-    bands: list[str]
+    bands: tuple[str, ...]
     units: Literal["reflectance_x1e4", "dB", "uint8", "unknown"]
     gsd_m: Annotated[float, Field(gt=0)]
     crs: NonEmpty
@@ -57,17 +123,10 @@ class Scene(_Contract):
 class Patch(_Contract):
     patch_id: NonEmpty
     scene_id: Sha256
-    window: tuple[int, int, int, int]  # row_off, col_off, height, width
+    window: tuple[Count, Count, PositiveCount, PositiveCount]  # row_off, col_off, height, width
     split: Literal["train", "val", "test", "holdout_india"]
     region: NonEmpty
-    labels: dict[str, Any]
-
-    @field_validator("window")
-    @classmethod
-    def _window(cls, w):
-        if min(w) < 0 or w[2] == 0 or w[3] == 0:
-            raise ValueError("window offsets must be >=0 and height,width >0")
-        return w
+    labels: JsonObject
 
 
 class PackManifest(_Contract):
@@ -76,14 +135,14 @@ class PackManifest(_Contract):
     created: datetime
     builder_commit: GitSha
     files: dict[str, Sha256]
-    n_patches: Annotated[int, Field(ge=0)]
-    splits: dict[str, Annotated[int, Field(ge=0)]]
-    regions: dict[str, Annotated[int, Field(ge=0)]]
-    band_order: list[str]
+    n_patches: Count
+    splits: dict[str, Count]
+    regions: dict[str, Count]
+    band_order: tuple[str, ...]
     units: NonEmpty
-    norm_stats: dict[str, Any]
+    norm_stats: JsonObject
     checks: dict[str, bool]
-    sources: list[str]
+    sources: tuple[str, ...]
     licence: NonEmpty  # "unknown" allowed
     redistribution: Literal["allowed", "not_allowed", "unknown"]
 
@@ -105,35 +164,43 @@ class Query(_Contract):
     text: Annotated[str, StringConstraints(min_length=1, strip_whitespace=True)]
     qtype: Literal["landcover", "presence", "flood", "change", "count", "locate", "open", "context"]
     needs_gsd_m: Annotated[float, Field(gt=0)] | None = None
-    needs_sensor: list[str] = []
+    needs_sensor: tuple[str, ...] = ()
 
 
 class Evidence(_Contract):
     kind: Literal["mask", "boxes", "fractions", "diff", "text"]
     uri: str | None = None
-    summary: dict[str, Any] = {}
+    summary: JsonObject = {}
+    needs_sensor: tuple[str, ...] = ()
 
 
 class ToolResult(_Contract):
     tool: NonEmpty
     tool_version: NonEmpty
     checkpoint_sha: Sha256 | None = None
-    value: Any
+    value: JsonPayload
     raw_confidence: Unit | None = None
-    evidence: list[Evidence] = []
-    latency_ms: Annotated[int, Field(ge=0)]
+    evidence: tuple[Evidence, ...] = ()
+    latency_ms: Count
+
+
+RefusalReason = Literal[
+    "gsd_too_coarse", "cloud", "sensor_missing", "tool_unvalidated", "checks_disagree",
+    "out_of_distribution", "not_answerable", "second_scene_missing", "nodata",
+    "bands_missing", "tool_missing", "tool_disabled", "tool_error", "timeout",
+]
 
 
 class Answer(_Contract):
     status: Literal["answered", "refused", "low_confidence"]
     text: str
     confidence: Unit | None = None
-    refusal_reason: Literal["gsd_too_coarse", "cloud", "sensor_missing", "tool_unvalidated",
-                            "checks_disagree", "out_of_distribution"] | None = None
-    sensors_used: list[str] = []
+    refusal_reason: RefusalReason | None = None
+    sensors_used: tuple[str, ...] = ()
     primary: ToolResult | None = None
     verification: dict[str, Literal["agree", "disagree", "skipped"]] = {}
     trace_id: NonEmpty
+    evidence: tuple[Evidence, ...] = ()
 
     @model_validator(mode="after")
     def _status_invariants(self):
@@ -159,7 +226,7 @@ class EvalRecord(_Contract):
     checkpoint_sha: Sha256 | None = None
     metric: NonEmpty
     value: float
-    n: Annotated[int, Field(gt=0)]
+    n: PositiveCount
     ci95: tuple[float, float] | None = None
     control: Literal["blank", "shuffled", "swapped", "identical", "degraded"] | None = None
     hypothesis_ref: NonEmpty  # path to the pre-committed hypothesis
@@ -176,7 +243,7 @@ class ToolStatus(_Contract):
     version: NonEmpty
     status: Literal["validated", "experimental_unvalidated", "disabled"] = "experimental_unvalidated"  # fail closed
     measured: dict[str, float] = {}
-    evidence_refs: list[str] = []
+    evidence_refs: tuple[str, ...] = ()
 
 
 MODELS: tuple[type[_Contract], ...] = (Scene, Patch, PackManifest, Query, Evidence, ToolResult, Answer, EvalRecord, ToolStatus)
