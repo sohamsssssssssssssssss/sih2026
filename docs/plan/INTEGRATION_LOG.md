@@ -578,3 +578,17 @@ merged; **T13b analysis remains pending**. flood-otsu remains experimental_unval
 India-test IoU 0.631332 < 0.65; T15 stays open and unmerged. Only integration/spine-v1
 is pushed. No main merge/push, force push, deletion or history rewrite occurred;
 protected worktree files were not inspected or modified.
+
+## 18 Nov 2026 — T13b registered paired-bootstrap results
+
+Merged `task/T13-india-adapt` at `eb1bb87` into `integration/spine-v1`
+at `de23faa`. Merge commit: `3cec3da`. The only conflict was an add/add
+in `docs/plan/DECISIONS.md`. Both decision histories were preserved, with
+the T13b entries placed by date and no existing entries removed. The
+`results/t13b/` files match `eb1bb87` exactly. The merge introduced no
+NPZ files or blobs over 5 MB.
+
+Full suite in the existing Python 3.11 venv (`python3.11 -m pytest -q -rs`):
+**1,366 passed, 47 skipped, 0 failed, 0 errors** in 66.32 s. The
+baseline had 1,354 passed and 47 skipped. The skip reasons match the
+baseline.
