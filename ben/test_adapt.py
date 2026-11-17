@@ -235,7 +235,8 @@ def test_shuffle_fixed_keeps_final_epoch_without_validation_choice():
 def test_seed_repeat_cell_contract():
     text=(Path(adapt.__file__).parent/'run_adapt_seeds_gpu.txt').read_text()
     assert text.splitlines()[0]=='%%bash' and text.rstrip().endswith('echo "CELL DONE"')
-    for needle in ('set -euo pipefail', 'trap ', 'for S in 1 2 3', '--train-seed "$S"', 'seed-$S'):
+    for needle in ('set -euo pipefail', 'trap ', 'for S in 1 2 3', '--train-seed "$S"', 'seed-$S',
+                   'ben-adapt-predictions-seed-$S.npz', 'HARD STOP: per-patch NPZ missing'):
         assert needle in text, needle
     code='\n'.join(l for l in text.splitlines() if not l.lstrip().startswith('#'))
     assert not re.search(r'/kaggle/input/[A-Za-z0-9]',code)

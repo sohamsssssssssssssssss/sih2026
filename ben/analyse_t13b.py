@@ -4,14 +4,22 @@ import hashlib
 import json
 import math
 from pathlib import Path
+import re
 import statistics
 import subprocess
+
+import sys
+
+import numpy as np
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))  # run as a script: make `ben` importable
+from ben import landcover as lc, transfer as tr  # noqa: E402
 
 MODES = ('s1', 's2', 's1s2')
 ARMS = ('none', 'renorm', 'head', 'full', 'shuffle', 'shuffle-fixed', 'bn-only')
 BASE_ARMS = ARMS[:5]
 CLASSES = ('trees', 'shrub_grass', 'cropland', 'built', 'water')
-COMMIT = 'a0d7002cb9a43162e297f98a795694982791acb5'
+NPZ = 'ben-adapt-predictions-seed-{}.npz'
 REFERENCE_SHA = 'f5eb2569d343f3eab62bc65b19e9b3e6e773ea881d75454caef00000070fd447'
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -58,6 +66,93 @@ def stats(values):
     return {'mean': statistics.fmean(values), 'min': min(values), 'max': max(values)}
 
 
+def read_predictions(folder, runs):
+    """Per-seed NPZ archives for the registered CI method. None when absent; a partial set stops the analysis."""
+    paths = {s: folder / f'seed-{s}' / NPZ.format(s) for s in (1, 2, 3)}
+    present = [s for s in paths if paths[s].exists()]
+    if not present:
+        return None
+    if len(present) != 3:
+        raise ValueError(f'Partial per-patch prediction set; seeds present: {present}')
+    table = {}
+    for run in runs:
+        seed, path, saved = run['seed'], paths[run['seed']], run.get('test_predictions')
+        if saved is None or saved['file'] != path.name or sha(path) != saved['sha256']:
+            raise ValueError(f'NPZ does not match the checksum recorded in seed {seed} JSON')
+        with np.load(path, allow_pickle=False) as z:
+            data = {k: z[k] for k in z.files}
+        if (str(data['wc_manifest_sha256']) != runs[0]['wc_manifest_sha256'] or str(data['code_commit']) != run['code']['git_sha']
+                or int(data['seed']) != seed or tuple(data['classes'].tolist()) != CLASSES):
+            raise ValueError(f'NPZ header mismatch for seed {seed}')
+        for mode in MODES:
+            for fold in ('A', 'B'):
+                for arm in ARMS:
+                    sel = (data['mode'] == mode) & (data['fold'] == fold) & (data['arm'] == arm)
+                    order = np.argsort(data['patch_idx'][sel], kind='stable')
+                    idx = data['patch_idx'][sel][order]
+                    if not sel.any() or len(set(idx.tolist())) != len(idx):
+                        raise ValueError(f'Missing or duplicate rows: seed {seed} {mode} {fold} {arm}')
+                    if not np.array_equal(data['patch_id'][sel][order], np.array([f'worldcover:{int(i)}' for i in idx])):
+                        raise ValueError(f'patch_id does not match patch_idx: seed {seed} {mode} {fold} {arm}')
+                    if metric(run, mode, arm, fold)['n'] != len(idx):
+                        raise ValueError(f'Row count differs from JSON: seed {seed} {mode} {fold} {arm}')
+                    scores = data['scores'][sel][order].astype(np.float64)
+                    if not np.isfinite(scores).all():
+                        raise ValueError('Non-finite stored scores')
+                    table.setdefault((mode, fold, arm), []).append(
+                        (idx, data['labels'][sel][order].astype(np.int64), scores))
+    out = {}
+    for (mode, fold, arm), entries in table.items():
+        idx0, y0, _ = entries[0]
+        for idx, y, _ in entries[1:]:
+            if not (np.array_equal(idx, idx0) and np.array_equal(y, y0)):
+                raise ValueError(f'Seeds disagree on rows or labels: {mode} {fold} {arm}')
+        ref = table[(mode, fold, 'none')][0][0]
+        if not np.array_equal(idx0, ref):
+            raise ValueError(f'Arms disagree on patch order: {mode} {fold} {arm}')
+        out[(mode, fold, arm)] = {'idx': idx0, 'y': y0, 'scores': np.mean([s for _, _, s in entries], axis=0)}
+    return out
+
+
+def paired_bootstrap(y, a, b):
+    """Registered CI (T13b (c)): patch bootstrap, 1000 reps, seed 17, paired resamples, fixed class set as in tr.group_metrics."""
+    keep = y.sum(0) >= tr.MIN_POSITIVES
+    y, a, b = y[:, keep], a[:, keep], b[:, keep]
+    point = lc.macro_map(y, a)[0] - lc.macro_map(y, b)[0]
+    rng, diffs = np.random.default_rng(tr.SEED), []
+    for _ in range(tr.BOOT):
+        s = rng.integers(0, len(y), len(y))
+        diffs.append(lc.macro_map(y[s], a[s])[0] - lc.macro_map(y[s], b[s])[0])
+    diffs = np.array(diffs)
+    if not np.isfinite(diffs).all():
+        raise ValueError('Non-finite bootstrap difference (a resample lost every kept class)')
+    return {'seed_avg_point': float(point), 'ci95': lc.ci95(diffs), 'classes_used': [int(i) for i in np.flatnonzero(keep)]}
+
+
+def registered_contrast(runs, preds, mode, right, fold=None, left='full'):
+    """Mean over seeds of (left - right) > 0 AND CI95 lower bound > 0, CI from seed-averaged predictions."""
+    if fold is None:
+        a_idx, y, a = pooled(preds, mode, left)
+        b_idx, _, b = pooled(preds, mode, right)
+    else:
+        y, a = preds[(mode, fold, left)]['y'], preds[(mode, fold, left)]['scores']
+        b = preds[(mode, fold, right)]['scores']
+    boot = paired_bootstrap(y, a, b)
+    samples = [{'seed': r['seed'], 'value': metric(r, mode, left, fold)['macro_map'] - metric(r, mode, right, fold)['macro_map']}
+               for r in runs]
+    mean = statistics.fmean(s['value'] for s in samples)
+    lo = boot['ci95'][0]
+    return {**stats([s['value'] for s in samples]), 'seeds': samples, 'seed_avg_point': boot['seed_avg_point'],
+            'ci95': boot['ci95'], 'verdict': 'PASS' if mean > 0 and lo > 0 else 'FAIL',
+            'method': 'registered: seed-averaged patch bootstrap, 1000 reps, seed 17'}
+
+
+def pooled(preds, mode, arm):
+    """Out-of-fold India set: fold A then fold B. Patch order is identical across arms (checked on read)."""
+    a, b = preds[(mode, 'A', arm)], preds[(mode, 'B', arm)]
+    return (np.concatenate([a['idx'], b['idx']]), np.vstack([a['y'], b['y']]), np.vstack([a['scores'], b['scores']]))
+
+
 def metric(run, mode, arm, fold=None, group='pooled'):
     mode = run['modes'][mode]
     return mode['out_of_fold'][arm] if fold is None else mode['folds'][fold]['arms'][arm]['groups'][group]
@@ -90,9 +185,6 @@ def validate_inputs(folder, reference):
         relative = Path(name)
         if relative.is_absolute() or '..' in relative.parts or sha(folder / relative) != digest:
             raise ValueError(f'Input checksum mismatch: {name}')
-    expected = {name: hashlib.sha256(subprocess.check_output(
-        ['git', 'show', f'{COMMIT}:ben/{name}.py'], cwd=ROOT)).hexdigest()
-        for name in ('adapt', 'transfer', 'landcover')}
     runs = []
     for seed in (1, 2, 3):
         directory = folder / f'seed-{seed}'
@@ -100,8 +192,6 @@ def validate_inputs(folder, reference):
         last = [x.strip() for x in (directory / 'ben-adapt-progress.txt').read_text().splitlines() if x.strip()][-1]
         if not last.startswith('DONE ') or f'/seed-{seed}/ben-adapt.json' not in last:
             raise ValueError('Incomplete seed progress log')
-        assert run['code']['git_sha'] == COMMIT
-        assert all(run['code'][name + '_py_sha256'] == digest for name, digest in expected.items())
         assert run['seed'] == run['config']['train_seed'] == seed
         assert not run['smoke_only'] and run['split_seed'] == 17
         assert run['config']['epochs'] == 15 and run['config']['bootstrap_reps'] == 1000
@@ -110,6 +200,18 @@ def validate_inputs(folder, reference):
         for mode in MODES:
             assert set(run['modes'][mode]['out_of_fold']) == set(ARMS)
         runs.append(run)
+    # The code commit is whatever the runs recorded (the T13_CODE_COMMIT of the Kaggle dataset); it must be
+    # one commit, an ancestor of HEAD, and its ben/*.py files must hash to what each run recorded.
+    commits = {r['code']['git_sha'] for r in runs}
+    if len(commits) != 1 or not re.fullmatch(r'[0-9a-f]{40}', next(iter(commits))):
+        raise ValueError(f'Seeds must share one 40-hex code commit: {commits}')
+    code_commit, = commits
+    subprocess.run(['git', 'merge-base', '--is-ancestor', code_commit, 'HEAD'], cwd=ROOT, check=True)
+    expected = {name: hashlib.sha256(subprocess.check_output(
+        ['git', 'show', f'{code_commit}:ben/{name}.py'], cwd=ROOT)).hexdigest()
+        for name in ('adapt', 'transfer', 'landcover')}
+    for run in runs:
+        assert all(run['code'][name + '_py_sha256'] == digest for name, digest in expected.items())
     assert sha(reference) == REFERENCE_SHA
     old = read_json(reference)
     assert old['seed'] == 17 and not old['smoke_only']
@@ -136,7 +238,7 @@ def validate_inputs(folder, reference):
                 assert actual['min_positives'] == 10
                 assert all(actual['positives'][i] >= 10 for i in actual['classes_used'])
     return runs, old, {'manifest_sha256': sha(checksums), 'reference_json_sha256': sha(reference),
-                       'code_commit': COMMIT,
+                       'code_commit': code_commit,
                        'seed_json_sha256': {str(s): sha(folder / f'seed-{s}/ben-adapt.json') for s in (1, 2, 3)}}
 
 
@@ -202,8 +304,11 @@ def audit_splits(runs, pack):
             'label_snapshot_limit': 'test labels reconstructed from recorded permutations and verified source, not saved runtime snapshots'}
 
 
-def analyse(runs, old, audit, provenance):
-    out = {'provenance': provenance, 'ci_method': 'conservative per-seed substitute; no seed-averaged CI estimated',
+def analyse(runs, old, audit, provenance, preds=None):
+    registered = preds is not None
+    out = {'provenance': provenance,
+           'ci_method': ('registered: seed-averaged per-patch bootstrap from saved NPZ (T13b (c))' if registered else
+                         'conservative per-seed substitute (DECISIONS.md); no per-patch predictions saved'),
            'modes': {}, 'audit': audit, 'inconclusive_criteria': []}
     for mode in MODES:
         cells = {}
@@ -217,7 +322,8 @@ def analyse(runs, old, audit, provenance):
                           'P3': 'FAIL' if st['mean'] < chance else 'PASS',
                           'seed17': reference, 'seed17_in_range': None if reference is None else st['min'] <= reference <= st['max']}
         assert cells['none']['min'] == cells['none']['max']
-        comparisons = {right: contrast(runs, mode, right) for right in ('none', 'renorm', 'shuffle')}
+        comparisons = {right: (registered_contrast(runs, preds, mode, right) if registered else contrast(runs, mode, right))
+                       for right in ('none', 'renorm', 'shuffle')}
         regions = []
         for fold in ('A', 'B'):
             for region in runs[0]['modes'][mode]['folds'][fold]['test_regions']:
@@ -257,9 +363,16 @@ def analyse(runs, old, audit, provenance):
     anomaly['seed17'] = {'none': old_none, 'shuffle': old_shuffle, 'gap': old_shuffle-old_none}
     anomaly['shuffle_mean_gap'] = anomaly['shuffle']['mean']-anomaly['none']['mean']
     anomaly['d_mean_condition'] = bool(old_shuffle > old_none and anomaly['shuffle-fixed']['mean'] <= anomaly['none']['mean'])
-    anomaly['d_ci'] = contrast(runs, 's2', 'none', fold='A', left='shuffle-fixed')
-    anomaly['d_registered_ci_verdict'] = 'INCONCLUSIVE'  # no paired interval is present for any seed
-    out['inconclusive_criteria'].append('(d): registered shuffle-fixed-minus-none CI predicate not saved; mean direction reported separately')
+    if registered:
+        anomaly['d_ci'] = registered_contrast(runs, preds, 's2', 'none', fold='A', left='shuffle-fixed')
+        anomaly['d_registered_ci_verdict'] = anomaly['d_ci']['verdict']
+        # (d): artefact claimed only if shuffle beats none in T13 AND shuffle-fixed does not beat none (CI lower bound <= 0).
+        anomaly['d_artefact_claimed'] = bool(old_shuffle > old_none and anomaly['d_ci']['verdict'] == 'FAIL')
+        anomaly['e_ci'] = registered_contrast(runs, preds, 's2', 'shuffle-fixed', fold='A', left='bn-only')
+    else:
+        anomaly['d_ci'] = contrast(runs, 's2', 'none', fold='A', left='shuffle-fixed')
+        anomaly['d_registered_ci_verdict'] = 'INCONCLUSIVE'  # no paired interval is present for any seed
+        out['inconclusive_criteria'].append('(d): registered shuffle-fixed-minus-none CI predicate not saved; mean direction reported separately')
     anomaly['e_mean_condition'] = anomaly['bn-only']['mean'] >= anomaly['shuffle-fixed']['mean']
     anomaly['attribution'] = ('BN re-estimation supported by rule (e)' if anomaly['e_mean_condition'] and audit['pass']
                               else 'Unexplained (or invalidated by a failed real-data audit)')
@@ -382,6 +495,62 @@ def report(out):
     return text
 
 
+def report_registered(out):
+    """Registered-method report: paired CIs from saved per-patch predictions. Every criterion is evaluated as written."""
+    a = out['anomaly']
+    text = ('# T13b analysis, registered CI method\n\n'
+            '**CI method used: REGISTERED** (docs/hypotheses/T13b.md:31): patch-level bootstrap, 1000 reps, seed 17, on '
+            'seed-averaged per-patch predictions read from the three saved NPZ archives. Differences use paired resamples. '
+            'The seed-level substitute rule was not used.\n\n'
+            f"Verdicts: P1 **{out['P1']}**, P2 **{out['P2']}**, P3 (non-diagnostic cells) **{out['P3_gate']}**, overall gate **{out['gate']}**. "
+            'Not a final-model claim. Real-data index/permutation/pixel-hash audits: '
+            f"**{'PASS' if out['audit']['pass'] else 'FAIL'}**.\n\n")
+    text += '## OOF India-pooled cells (seed mean, min–max, exact chance)\n\n| Mode | Arm | Seed 1 | Seed 2 | Seed 3 | Mean | Min–max | Exact chance | P3 |\n|---|---|---:|---:|---:|---:|---|---|---|\n'
+    for mode, m in out['modes'].items():
+        for arm, c in m['cells'].items():
+            vals = ' | '.join(fmt(s['value']) for s in c['seeds'])
+            text += f"| {mode} | {arm} | {vals} | {fmt(c['mean'])} | {fmt(c['min'])}–{fmt(c['max'])} | {c['chance']!r} | {c['P3']} |\n"
+    text += '\nP3 uses unrounded values. shuffle-fixed and bn-only are diagnostics, excluded from the gate.\n\n'
+    text += '## Paired contrasts, registered CI\n\n| Mode | Contrast | Seed 1 | Seed 2 | Seed 3 | Seed mean | Seed-averaged point | CI95 (paired) | Verdict |\n|---|---|---:|---:|---:|---:|---:|---|---|\n'
+    for mode, m in out['modes'].items():
+        for right, label in (('none', 'full−none (P1)'), ('shuffle', 'full−shuffle (P2)'), ('renorm', 'full−renorm (matched, not gated)')):
+            c = m['comparisons'][right]
+            vals = ' | '.join(fmt(s['value']) for s in c['seeds'])
+            text += (f"| {mode} | {label} | {vals} | {fmt(c['mean'])} | {fmt(c['seed_avg_point'])} | {ci_text(c['ci95'])} | {c['verdict']} |\n")
+    text += ('\nP1/P2 rule: mean over seeds > 0 AND CI95 lower bound > 0 (PASS), otherwise FAIL. No INCONCLUSIVE verdict arises under this method.\n\n')
+    text += '## Diagnostic arms (not gated)\n\n'
+    text += ('| Contrast | Seed 1 | Seed 2 | Seed 3 | Seed mean | Seed-averaged point | CI95 (paired) | Verdict |\n|---|---:|---:|---:|---:|---:|---|---|\n')
+    d, e = a['d_ci'], a['e_ci']
+    for label, c in (('(d) shuffle-fixed−none, fold A, s2', d), ('(e) bn-only−shuffle-fixed, fold A, s2', e)):
+        vals = ' | '.join(fmt(s['value']) for s in c['seeds'])
+        text += f"| {label} | {vals} | {fmt(c['mean'])} | {fmt(c['seed_avg_point'])} | {ci_text(c['ci95'])} | {c['verdict']} |\n"
+    text += (f"\n(d) artefact claimed: **{'YES' if a['d_artefact_claimed'] else 'NO'}** (requires seed-17 shuffle > none and shuffle-fixed−none CI lower bound <= 0). "
+             f"(e) mean rule: bn-only {a['bn-only']['mean']!r} vs shuffle-fixed {a['shuffle-fixed']['mean']!r}: **{'PASS' if a['e_mean_condition'] else 'FAIL'}**. "
+             f"Attribution: **{a['attribution']}**. The (e) rule is the registered mean inequality; its CI is reported beside it, not as a gate.\n\n")
+    text += '## Fold-A optical anomaly, arm means\n\n| Arm | Seed 1 | Seed 2 | Seed 3 | Mean | Exact fold prevalence |\n|---|---:|---:|---:|---:|---|\n'
+    for arm in ('none', 'shuffle', 'shuffle-fixed', 'bn-only', 'full'):
+        c = a[arm]
+        text += f"| {arm} | {' | '.join(fmt(s['value']) for s in c['seeds'])} | {fmt(c['mean'])} | {c['chance']!r} |\n"
+    text += f"\nSeed 17 re-read: none={a['seed17']['none']!r}, shuffle={a['seed17']['shuffle']!r}, difference={a['seed17']['gap']!r}.\n\n"
+    text += '## Selected epochs\n\n| Mode | Fold | Seed | Full | Shuffle | Shuffle-fixed | BN-only |\n|---|---|---:|---:|---:|---:|---:|\n'
+    for row in a['epochs']:
+        text += f"| {row['mode']} | {row['fold']} | {row['seed']} | {row['full']} | {row['shuffle']} | {row['shuffle-fixed']} | {row['bn-only']} |\n"
+    text += '\n## Region regressions (seed means, not gated)\n\n| Mode | Region | None | Full | Full−none |\n|---|---|---:|---:|---:|\n'
+    for mode, m in out['modes'].items():
+        bad = [r for r in m['regions'] if r['worse']]
+        if not bad: text += f'| {mode} | none | — | — | — |\n'
+        for r in bad: text += f"| {mode} | {r['region']} | {fmt(r['none_mean'])} | {fmt(r['full_mean'])} | {fmt(r['delta_mean'])} |\n"
+    text += '\n## Seed-17 stability, every OOF cell\n\n| Mode | Arm | Seed 17 | Seeds 1–3 min–max | In range? |\n|---|---|---:|---|---|\n'
+    for mode, m in out['modes'].items():
+        for arm, c in m['cells'].items():
+            flag = 'N/A: absent in seed 17' if c['seed17'] is None else 'IN' if c['seed17_in_range'] else '**OUTSIDE**'
+            text += f"| {mode} | {arm} | {fmt(c['seed17'])} | {fmt(c['min'])}–{fmt(c['max'])} | {flag} |\n"
+    text += '\n## Gate and remaining criteria\n\n'
+    text += f"Overall gate: **{out['gate']}** (P1={out['P1']}, P2={out['P2']}, P3={out['P3_gate']}). Step 3 (final models): NOT RUN. No final checkpoint or deployment claim.\n\n"
+    text += '## Provenance\n\n```json\n' + json.dumps(out['provenance'], indent=2) + '\n```\n'
+    return text
+
+
 def main(argv=None):
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--runs', type=Path, default=Path.home()/'ben-work/adapt-run-2')
@@ -391,11 +560,12 @@ def main(argv=None):
     args = p.parse_args(argv)
     runs, old, provenance = validate_inputs(args.runs, args.reference)
     audit = audit_splits(runs, args.pack)
-    result = analyse(runs, old, audit, provenance)
+    preds = read_predictions(args.runs, runs)  # None: no NPZ, substitute rule applies
+    result = analyse(runs, old, audit, provenance, preds)
     args.out.mkdir(parents=True, exist_ok=True)
     (args.out/'summary.json').write_text(json.dumps(result, indent=2, allow_nan=False)+'\n')
-    (args.out/'REPORT.md').write_text(report(result))
-    print(json.dumps({'P1': result['P1'], 'P2': result['P2'], 'gate': result['gate'],
+    (args.out/'REPORT.md').write_text(report_registered(result) if preds is not None else report(result))
+    print(json.dumps({'ci_method': result['ci_method'], 'P1': result['P1'], 'P2': result['P2'], 'gate': result['gate'],
                       'inconclusive': result['inconclusive_criteria'], 'anomaly': result['anomaly']['attribution']}, indent=2))
     return result
 

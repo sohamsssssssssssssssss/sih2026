@@ -1,8 +1,9 @@
 %%bash
-# T13b: training seeds 1, 2, 3 on the same folds (split stays at lc.SEED=17). Arms: none, renorm, head, full,
-# shuffle, plus diagnostics shuffle-fixed and bn-only (docs/hypotheses/T13b.md). Expected runtime about 60 min total.
+# T13b rerun with per-patch predictions; code <CODE_HASH_PLACEHOLDER>
+# Training seeds 1, 2, 3 on the same folds (split stays at lc.SEED=17). Arms: none, renorm, head, full,
+# shuffle, plus diagnostics shuffle-fixed and bn-only (docs/hypotheses/T13b.md). Expected runtime about 60 min plus NPZ export.
 # Attach: code dataset (ben/ plus T13_CODE_COMMIT.txt beside it), WorldCover pack, checkpoint dataset ben-transfer-run-1.
-# Writes only under /kaggle/working/seed-<n>/. Do not run until Soham approves.
+# Writes only under /kaggle/working/seed-<n>/ (JSON, progress log, per-patch NPZ). Do not run until Soham approves.
 set -euo pipefail
 trap 'echo "FAILED at line $LINENO: $BASH_COMMAND"' ERR
 W=/kaggle/working
@@ -47,5 +48,7 @@ nvidia-smi --query-gpu=name,memory.total --format=csv
 for S in 1 2 3; do
   mkdir -p "$W/seed-$S"
   python ben/adapt.py --wc-pack "$WC" --runs "$RUNS" --modes s1 s2 s1s2 --epochs 15 --device cuda --train-seed "$S" --out-dir "$W/seed-$S" | tee "$W/seed-$S/ben-adapt-progress.txt"
+  NPZ="$W/seed-$S/ben-adapt-predictions-seed-$S.npz"
+  if [ ! -s "$NPZ" ]; then echo "HARD STOP: per-patch NPZ missing for seed $S: $NPZ"; exit 1; fi
 done
 echo "CELL DONE"
