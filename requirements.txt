@@ -23,3 +23,6 @@ accelerate
 asf_search
 hyp3_sdk
 pyarrow>=17,<23
+
+# Reused BEN checkpoint helpers import sklearn metrics when weights load.
+scikit-learn

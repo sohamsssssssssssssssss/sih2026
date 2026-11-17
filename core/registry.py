@@ -27,6 +27,7 @@ _COMMIT = re.compile(r"^[0-9a-f]{40}$")
 # one mapping function instead of its own table.
 CAPABILITY_TOOLS: dict[str, str] = {
     "landcover": "landcover",
+    "flood": "flood-otsu",
     "single_image_vqa": "qwen2.5vl-3b",
     "grounding": "grounding-dino-swint",
     "change_vqa": "change-deterministic",

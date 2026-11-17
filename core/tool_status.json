@@ -24,6 +24,16 @@
     },
     "landcover": {
       "status": "experimental_unvalidated",
+      "evidence_refs": [
+        {
+          "commit": "d5f72964369b9085cda1f0550f1cc3476061e979",
+          "results": "outputs/T07c-landcover.md"
+        }
+      ]
+    },
+    "flood-otsu": {
+      "status": "experimental_unvalidated",
+      "verdict": "FAIL: India-test IoU 0.631332 < 0.65; fixed method, no tuning",
       "evidence_refs": []
     }
   }

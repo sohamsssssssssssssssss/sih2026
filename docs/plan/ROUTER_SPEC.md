@@ -16,7 +16,7 @@ also conservatively requires a second scene. No multilingual coverage is claimed
 | Intent | Ranked tool names |
 |---|---|
 | landcover | landcover |
-| flood with optical | optical-sar-deterministic, flood-otsu |
+| flood with optical | flood-otsu |
 | flood radar-only | flood-otsu |
 | change | change-deterministic |
 | count/detect/locate | grounding-dino-swint |
@@ -113,7 +113,7 @@ missing_band removes B08; coarse_count sets Query.needs_gsd_m=1.
 | E06 | What fraction is cropland? | s2 | landcover |
 | E07 | Describe the vegetation cover. | s2 | landcover |
 | E08 | Is there forest here? | s2 | landcover |
-| E09 | Is there flood water? | joint | optical-sar-deterministic |
+| E09 | Is there flood water? | joint | flood-otsu |
 | E10 | Map the water extent. | s1 | flood-otsu |
 | E11 | Which area is inundated? | s1 | flood-otsu |
 | E12 | Map flooding through the clouds. | joint_cloud | flood-otsu |
@@ -138,7 +138,7 @@ missing_band removes B08; coarse_count sets Query.needs_gsd_m=1.
 | E31 | What is this village's name? | s2 | refuse:not_answerable |
 | E32 | What changed since last year? | s2 | refuse:second_scene_missing |
 | E33 | What is the land cover? | s2_cloud | refuse:cloud |
-| E34 | Map flooding through clouds. | joint_cloud_no_radar | refuse:cloud |
+| E34 | Map flooding through clouds. | joint_cloud_no_radar | refuse:tool_missing |
 | E35 | Describe this scene. | s2_nodata | refuse:nodata |
 | E36 | What is the land cover? | s2_missing_band | refuse:bands_missing |
 | E37 | What is the land cover? | tool_disabled | refuse:tool_disabled |
@@ -150,3 +150,8 @@ Warnings: E12/E13/E18 monsoon_mode, E14 out_of_region, E26 out_of_distribution.
 These remain routes, not silent refusals. Report the complete route confusion
 table and every off-diagonal error. Preserve missing-tool reality in production;
 no registry validation or model availability is inferred from fake tests.
+
+T07c supersedes the placeholder table: landcover -> landcover; every flood route ->
+flood-otsu. Missing/disabled radar now refuses tool_missing/tool_disabled directly.
+Both tools are registered experimental; joint landcover uses s1s2 unless cloudy.
+The original T08 report remains a historical measurement of its pre-T07c table.

@@ -103,6 +103,13 @@ def evaluate(query: Query, scene: Scene, choice: Route, registry: ToolRegistry, 
                 return refuse("cloud", needs=("S1",))
             selected, mode = radar, "S1"
             event("cloud", "reroute", warning="monsoon_mode", tool=selected, mode=mode)
+    if selected == "flood-otsu" and not optical:
+        for index, item in enumerate(scenes):
+            if item.sensor == "S1S2" and item.cloud_pct is not None:
+                event("cloud_threshold", "used", scene=index, threshold=CLOUD_PCT,
+                      observed=item.cloud_pct, provenance="PROVISIONAL")
+                if item.cloud_pct > CLOUD_PCT:
+                    event("cloud", "radar_selection", scene=index, warning="monsoon_mode", tool=selected, mode="S1")
     event("cloud", "pass" if optical else "not_applicable")
     try:
         tool = registry.get(selected)

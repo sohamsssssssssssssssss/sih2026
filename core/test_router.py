@@ -164,7 +164,7 @@ def test_monsoon_executes_only_radar_and_traces_every_decision(tmp_path):
     assert reg.get('flood-otsu').calls[0][2] == b'radar'
     assert not reg.get('optical-sar-deterministic').calls
     events = trace.records()
-    assert sum(e.get('phase') == 'route' and 'rank' in e for e in events) == 2
+    assert sum(e.get('phase') == 'route' and 'rank' in e for e in events) == 1
     assert any(e.get('warning') == 'monsoon_mode' for e in events)
     for rule in ('cloud_threshold', 'nodata_threshold', 'region', 'ood_threshold', 'calibration', 'status'):
         assert any(e.get('rule') == rule for e in events)
@@ -395,7 +395,7 @@ def test_disabled_radar_cannot_rescue_cloudy_scene(tmp_path):
     t = reg.get('flood-otsu')
     t.status = ToolStatus(name=t.name, version=t.version, status='disabled')
     q = Query(text='Map flood water', qtype='open')
-    assert evaluate(q, a, route(q, a), reg, **inputs).refusal_reason == 'cloud'
+    assert evaluate(q, a, route(q, a), reg, **inputs).refusal_reason == 'tool_disabled'
 
 
 def test_declared_required_bands_for_custom_general_tool(tmp_path):
