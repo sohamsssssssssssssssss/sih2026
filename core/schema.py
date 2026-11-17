@@ -171,6 +171,7 @@ class Evidence(_Contract):
     kind: Literal["mask", "boxes", "fractions", "diff", "text"]
     uri: str | None = None
     summary: JsonObject = {}
+    needs_sensor: tuple[str, ...] = ()
 
 
 class ToolResult(_Contract):
@@ -183,16 +184,23 @@ class ToolResult(_Contract):
     latency_ms: Count
 
 
+RefusalReason = Literal[
+    "gsd_too_coarse", "cloud", "sensor_missing", "tool_unvalidated", "checks_disagree",
+    "out_of_distribution", "not_answerable", "second_scene_missing", "nodata",
+    "bands_missing", "tool_missing", "tool_disabled",
+]
+
+
 class Answer(_Contract):
     status: Literal["answered", "refused", "low_confidence"]
     text: str
     confidence: Unit | None = None
-    refusal_reason: Literal["gsd_too_coarse", "cloud", "sensor_missing", "tool_unvalidated",
-                            "checks_disagree", "out_of_distribution"] | None = None
+    refusal_reason: RefusalReason | None = None
     sensors_used: tuple[str, ...] = ()
     primary: ToolResult | None = None
     verification: dict[str, Literal["agree", "disagree", "skipped"]] = {}
     trace_id: NonEmpty
+    evidence: tuple[Evidence, ...] = ()
 
     @model_validator(mode="after")
     def _status_invariants(self):

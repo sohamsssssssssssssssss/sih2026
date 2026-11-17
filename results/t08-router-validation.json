@@ -1,0 +1,511 @@
+{
+  "t07_commit": "7bfb1790ad92a8e63225d6475f1d2975ef0e43c2",
+  "spec_commit": "ac5e0b23c0b3166b65cecf961ed8c6222e604512",
+  "core": {
+    "passed": 243,
+    "skipped": 2
+  },
+  "full_baseline": {
+    "passed": 1069,
+    "failed": 7,
+    "errors": 12,
+    "skipped": 3
+  },
+  "full_final": {
+    "passed": 1173,
+    "failed": 7,
+    "errors": 12,
+    "skipped": 3
+  },
+  "no_new_failure_identities": true,
+  "unchanged_failure_identities": [
+    {
+      "kind": "error",
+      "test": "::data.test_bigearthnet"
+    },
+    {
+      "kind": "error",
+      "test": "::data.test_bigearthnet_pilot"
+    },
+    {
+      "kind": "error",
+      "test": "::demo_gui.test_capability_status"
+    },
+    {
+      "kind": "error",
+      "test": "::demo_gui.test_failure_paths"
+    },
+    {
+      "kind": "error",
+      "test": "::demo_gui.test_golden_path"
+    },
+    {
+      "kind": "error",
+      "test": "::demo_gui.test_offline"
+    },
+    {
+      "kind": "error",
+      "test": "::demo_gui.test_robustness_tab"
+    },
+    {
+      "kind": "error",
+      "test": "::demo_gui.test_sar_tab"
+    },
+    {
+      "kind": "error",
+      "test": "::scripts.test_stage1_full"
+    },
+    {
+      "kind": "error",
+      "test": "::scripts.test_stage1_resume_variant"
+    },
+    {
+      "kind": "error",
+      "test": "::scripts.test_stage1_revision_gate"
+    },
+    {
+      "kind": "error",
+      "test": "::scripts.test_stage1_t4_package"
+    },
+    {
+      "kind": "failure",
+      "test": "data.test_bigearthnet_shards::test_verifier_checks_source_pixels_captions_and_all_row_checksums"
+    },
+    {
+      "kind": "failure",
+      "test": "scripts.test_stage1_smoke::test_fp32_trainable_masters_and_complete_checkpoint[False-4]"
+    },
+    {
+      "kind": "failure",
+      "test": "scripts.test_stage1_smoke::test_fp32_trainable_masters_and_complete_checkpoint[False-None]"
+    },
+    {
+      "kind": "failure",
+      "test": "scripts.test_stage1_smoke::test_fp32_trainable_masters_and_complete_checkpoint[True-4]"
+    },
+    {
+      "kind": "failure",
+      "test": "scripts.test_stage1_smoke::test_fp32_trainable_masters_and_complete_checkpoint[True-None]"
+    },
+    {
+      "kind": "failure",
+      "test": "scripts.test_stage1_smoke::test_t4_package_entry_and_stages"
+    },
+    {
+      "kind": "failure",
+      "test": "scripts.test_stage1_smoke::test_t4_smoke_package"
+    }
+  ],
+  "junit_sha256": {
+    "baseline": "8117031b5a510f9bb1b960a3ec24218cdb9a8ae9040a0ebe6863a0ae3ab47938",
+    "final": "edea560f6d80a9ae7254aeb243db52fd450ce806219632eb4c7e80d403dd0e13"
+  },
+  "confusion": {
+    "labels": [
+      "land-cover",
+      "optical-sar-deterministic",
+      "flood-otsu",
+      "change-deterministic",
+      "grounding-dino-swint",
+      "qwen2.5vl-3b",
+      "refusal"
+    ],
+    "rows_expected_columns_actual": [
+      [
+        10,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        4,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        4,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        4,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        3,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        14
+      ]
+    ]
+  },
+  "examples": [
+    {
+      "id": "E01",
+      "question": "What is the land cover?",
+      "profile": "s2",
+      "expected": "land-cover",
+      "actual": "land-cover",
+      "warnings": []
+    },
+    {
+      "id": "E02",
+      "question": "How much cropland is visible?",
+      "profile": "s2",
+      "expected": "land-cover",
+      "actual": "land-cover",
+      "warnings": []
+    },
+    {
+      "id": "E03",
+      "question": "Is this forest cover?",
+      "profile": "s2",
+      "expected": "land-cover",
+      "actual": "land-cover",
+      "warnings": []
+    },
+    {
+      "id": "E04",
+      "question": "Estimate the built-up area.",
+      "profile": "s2",
+      "expected": "land-cover",
+      "actual": "land-cover",
+      "warnings": []
+    },
+    {
+      "id": "E05",
+      "question": "What land cover does the radar show?",
+      "profile": "s1",
+      "expected": "land-cover",
+      "actual": "land-cover",
+      "warnings": []
+    },
+    {
+      "id": "E06",
+      "question": "What fraction is cropland?",
+      "profile": "s2",
+      "expected": "land-cover",
+      "actual": "land-cover",
+      "warnings": []
+    },
+    {
+      "id": "E07",
+      "question": "Describe the vegetation cover.",
+      "profile": "s2",
+      "expected": "land-cover",
+      "actual": "land-cover",
+      "warnings": []
+    },
+    {
+      "id": "E08",
+      "question": "Is there forest here?",
+      "profile": "s2",
+      "expected": "land-cover",
+      "actual": "land-cover",
+      "warnings": []
+    },
+    {
+      "id": "E09",
+      "question": "Is there flood water?",
+      "profile": "joint",
+      "expected": "optical-sar-deterministic",
+      "actual": "optical-sar-deterministic",
+      "warnings": []
+    },
+    {
+      "id": "E10",
+      "question": "Map the water extent.",
+      "profile": "s1",
+      "expected": "flood-otsu",
+      "actual": "flood-otsu",
+      "warnings": []
+    },
+    {
+      "id": "E11",
+      "question": "Which area is inundated?",
+      "profile": "s1",
+      "expected": "flood-otsu",
+      "actual": "flood-otsu",
+      "warnings": []
+    },
+    {
+      "id": "E12",
+      "question": "Map flooding through the clouds.",
+      "profile": "joint_cloud",
+      "expected": "flood-otsu",
+      "actual": "flood-otsu",
+      "warnings": [
+        "monsoon_mode"
+      ]
+    },
+    {
+      "id": "E13",
+      "question": "Describe the land cover through clouds.",
+      "profile": "joint_cloud",
+      "expected": "land-cover",
+      "actual": "land-cover",
+      "warnings": [
+        "monsoon_mode"
+      ]
+    },
+    {
+      "id": "E14",
+      "question": "Map flood water outside India.",
+      "profile": "s1_outside",
+      "expected": "flood-otsu",
+      "actual": "flood-otsu",
+      "warnings": [
+        "out_of_region"
+      ]
+    },
+    {
+      "id": "E15",
+      "question": "What changed between these dates?",
+      "profile": "change_s2",
+      "expected": "change-deterministic",
+      "actual": "change-deterministic",
+      "warnings": []
+    },
+    {
+      "id": "E16",
+      "question": "Have the buildings changed?",
+      "profile": "change_s2",
+      "expected": "change-deterministic",
+      "actual": "change-deterministic",
+      "warnings": []
+    },
+    {
+      "id": "E17",
+      "question": "Has the water extent expanded?",
+      "profile": "change_s1",
+      "expected": "change-deterministic",
+      "actual": "change-deterministic",
+      "warnings": []
+    },
+    {
+      "id": "E18",
+      "question": "Compare before and after the flooding.",
+      "profile": "change_joint_cloud",
+      "expected": "change-deterministic",
+      "actual": "change-deterministic",
+      "warnings": [
+        "monsoon_mode"
+      ]
+    },
+    {
+      "id": "E19",
+      "question": "How many cars are visible?",
+      "profile": "rgb",
+      "expected": "grounding-dino-swint",
+      "actual": "grounding-dino-swint",
+      "warnings": []
+    },
+    {
+      "id": "E20",
+      "question": "Detect ships.",
+      "profile": "s2",
+      "expected": "grounding-dino-swint",
+      "actual": "grounding-dino-swint",
+      "warnings": []
+    },
+    {
+      "id": "E21",
+      "question": "Locate buildings.",
+      "profile": "rgb",
+      "expected": "grounding-dino-swint",
+      "actual": "grounding-dino-swint",
+      "warnings": []
+    },
+    {
+      "id": "E22",
+      "question": "How many trees are visible?",
+      "profile": "s2",
+      "expected": "grounding-dino-swint",
+      "actual": "grounding-dino-swint",
+      "warnings": []
+    },
+    {
+      "id": "E23",
+      "question": "Describe this scene.",
+      "profile": "s2",
+      "expected": "qwen2.5vl-3b",
+      "actual": "qwen2.5vl-3b",
+      "warnings": []
+    },
+    {
+      "id": "E24",
+      "question": "What is visible in this image?",
+      "profile": "s2",
+      "expected": "qwen2.5vl-3b",
+      "actual": "qwen2.5vl-3b",
+      "warnings": []
+    },
+    {
+      "id": "E25",
+      "question": "Explain this pattern.",
+      "profile": "s2",
+      "expected": "qwen2.5vl-3b",
+      "actual": "qwen2.5vl-3b",
+      "warnings": []
+    },
+    {
+      "id": "E26",
+      "question": "What is Rajasthan's land cover?",
+      "profile": "ood",
+      "expected": "land-cover",
+      "actual": "land-cover",
+      "warnings": [
+        "out_of_distribution"
+      ]
+    },
+    {
+      "id": "E27",
+      "question": "What is the price of this land?",
+      "profile": "s2",
+      "expected": "refuse:not_answerable",
+      "actual": "refuse:not_answerable",
+      "warnings": []
+    },
+    {
+      "id": "E28",
+      "question": "Who owns these fields?",
+      "profile": "s2",
+      "expected": "refuse:not_answerable",
+      "actual": "refuse:not_answerable",
+      "warnings": []
+    },
+    {
+      "id": "E29",
+      "question": "How many people live here?",
+      "profile": "rgb",
+      "expected": "refuse:not_answerable",
+      "actual": "refuse:not_answerable",
+      "warnings": []
+    },
+    {
+      "id": "E30",
+      "question": "Predict tomorrow's flood.",
+      "profile": "joint",
+      "expected": "refuse:not_answerable",
+      "actual": "refuse:not_answerable",
+      "warnings": []
+    },
+    {
+      "id": "E31",
+      "question": "What is this village's name?",
+      "profile": "s2",
+      "expected": "refuse:not_answerable",
+      "actual": "refuse:not_answerable",
+      "warnings": []
+    },
+    {
+      "id": "E32",
+      "question": "What changed since last year?",
+      "profile": "s2",
+      "expected": "refuse:second_scene_missing",
+      "actual": "refuse:second_scene_missing",
+      "warnings": []
+    },
+    {
+      "id": "E33",
+      "question": "What is the land cover?",
+      "profile": "s2_cloud",
+      "expected": "refuse:cloud",
+      "actual": "refuse:cloud",
+      "warnings": []
+    },
+    {
+      "id": "E34",
+      "question": "Map flooding through clouds.",
+      "profile": "joint_cloud_no_radar",
+      "expected": "refuse:cloud",
+      "actual": "refuse:cloud",
+      "warnings": []
+    },
+    {
+      "id": "E35",
+      "question": "Describe this scene.",
+      "profile": "s2_nodata",
+      "expected": "refuse:nodata",
+      "actual": "refuse:nodata",
+      "warnings": []
+    },
+    {
+      "id": "E36",
+      "question": "What is the land cover?",
+      "profile": "s2_missing_band",
+      "expected": "refuse:bands_missing",
+      "actual": "refuse:bands_missing",
+      "warnings": []
+    },
+    {
+      "id": "E37",
+      "question": "What is the land cover?",
+      "profile": "tool_disabled",
+      "expected": "refuse:tool_disabled",
+      "actual": "refuse:tool_disabled",
+      "warnings": []
+    },
+    {
+      "id": "E38",
+      "question": "Explain this pattern.",
+      "profile": "no_vlm",
+      "expected": "refuse:tool_missing",
+      "actual": "refuse:tool_missing",
+      "warnings": []
+    },
+    {
+      "id": "E39",
+      "question": "What is the land cover?",
+      "profile": "no_landcover",
+      "expected": "refuse:tool_missing",
+      "actual": "refuse:tool_missing",
+      "warnings": []
+    },
+    {
+      "id": "E40",
+      "question": "Count cars at one-metre detail.",
+      "profile": "coarse_count",
+      "expected": "refuse:gsd_too_coarse",
+      "actual": "refuse:gsd_too_coarse",
+      "warnings": []
+    }
+  ]
+}

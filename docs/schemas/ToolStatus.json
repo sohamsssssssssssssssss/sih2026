@@ -44,5 +44,5 @@
   ],
   "title": "ToolStatus",
   "type": "object",
-  "x-schema-version": "1.1.0"
+  "x-schema-version": "1.2.0"
 }

@@ -14,6 +14,14 @@
           "title": "Kind",
           "type": "string"
         },
+        "needs_sensor": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Needs Sensor",
+          "type": "array"
+        },
         "summary": {
           "additionalProperties": {
             "$ref": "#/$defs/JsonValue"
@@ -155,6 +163,14 @@
       "default": null,
       "title": "Confidence"
     },
+    "evidence": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/Evidence"
+      },
+      "title": "Evidence",
+      "type": "array"
+    },
     "primary": {
       "anyOf": [
         {
@@ -175,7 +191,13 @@
             "sensor_missing",
             "tool_unvalidated",
             "checks_disagree",
-            "out_of_distribution"
+            "out_of_distribution",
+            "not_answerable",
+            "second_scene_missing",
+            "nodata",
+            "bands_missing",
+            "tool_missing",
+            "tool_disabled"
           ],
           "type": "string"
         },
@@ -233,5 +255,5 @@
   ],
   "title": "Answer",
   "type": "object",
-  "x-schema-version": "1.1.0"
+  "x-schema-version": "1.2.0"
 }
