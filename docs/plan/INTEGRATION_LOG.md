@@ -283,3 +283,14 @@ that same missing-package cause and remains unfixable within the current inputs:
 - ERROR scripts/test_stage1_t4_package.py::test_explicit_last4_fp32_reaches_resume_and_overfit — missing untracked package fixture; no code/data fix applied.
 - ERROR scripts/test_stage1_t4_package.py::test_resume_only_runs_exact_variant_and_keeps_previous_evidence — missing untracked package fixture; no code/data fix applied.
 - ERROR scripts/test_stage1_t4_package.py::test_resume_execution_failure_is_preserved — missing untracked package fixture; no code/data fix applied.
+
+### Merge 2 — task/T09-ask-api @ a45d1f9
+
+`git merge --no-ff task/T09-ask-api`: clean merge; commit
+54ae066a7afee28434045adadc626ebc8e5982ba. No conflicts or resolutions.
+Full `python3.11 -m pytest -q` in the locked venv: **1,322 passed, 5 failed,
+2 skipped, 40 setup errors, 0 import/collection errors**, exit 1, 39.48 s.
+Raw log: /private/tmp/t05-after-t09.log. The 45 unsuccessful test identities
+match the T04 missing-package baseline exactly; both requested real CPU API
+end-to-end tests passed. CUDA-only legacy adapter tests are skipped.
+No model/data/result/training code was edited to make tests pass.
