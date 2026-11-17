@@ -1,15 +1,15 @@
 {
   "provenance": {
-    "manifest_sha256": "7dece9ad5296f3da61fa96be86a3923b8164ded6d052b250ee22d3d4b6ba0e51",
+    "manifest_sha256": "7a214a412b20d73cd356e6bd356555209621baca23ffe25f23a8f0a6250f52a6",
     "reference_json_sha256": "f5eb2569d343f3eab62bc65b19e9b3e6e773ea881d75454caef00000070fd447",
-    "code_commit": "a0d7002cb9a43162e297f98a795694982791acb5",
+    "code_commit": "0b581f71f3cd82dcbb3cc4b3aaab05ac75c32d31",
     "seed_json_sha256": {
-      "1": "827e98194eb3e7acd77fbb77ac8c54c84856c6b60d274f5c3cf1305917802bcf",
-      "2": "5ae1dadbb20ef51d8d165681544a798c47cdb784de9d052351d1bd8ab5092389",
-      "3": "c4e92c69fccc119a4cf6b8b2a871b95d398d52035fffb4a084758934e1b89478"
+      "1": "ca9336591d71031a28ae6723ef021780fa7059c8bd2710f4842cd5f57cfcf71e",
+      "2": "7b4ebb55a98e684482e40edb28d8664a0a9e161f22c78cdfcd8928fcbc7912c9",
+      "3": "1556fd211bf27debec5b20e76c18ba4816740ce06669d68a2657fdb8c33cbbef"
     }
   },
-  "ci_method": "conservative per-seed substitute; no seed-averaged CI estimated",
+  "ci_method": "registered: seed-averaged per-patch bootstrap from saved NPZ (T13b (c))",
   "modes": {
     "s1": {
       "cells": {
@@ -46,7 +46,11 @@
           "chance": 0.36244444444444446,
           "P3": "PASS",
           "seed17": 0.5160183005973724,
-          "seed17_in_range": true
+          "seed17_in_range": true,
+          "seed_averaged_ci95": [
+            0.5028313346701065,
+            0.5324362714182687
+          ]
         },
         "renorm": {
           "mean": 0.5052431516200061,
@@ -81,7 +85,11 @@
           "chance": 0.36244444444444446,
           "P3": "PASS",
           "seed17": 0.5052431516200061,
-          "seed17_in_range": true
+          "seed17_in_range": true,
+          "seed_averaged_ci95": [
+            0.49190702957116605,
+            0.521255957072722
+          ]
         },
         "head": {
           "mean": 0.5435253612969401,
@@ -116,7 +124,11 @@
           "chance": 0.36244444444444446,
           "P3": "PASS",
           "seed17": 0.5447840989179882,
-          "seed17_in_range": true
+          "seed17_in_range": true,
+          "seed_averaged_ci95": [
+            0.5292299991566422,
+            0.5622362864484226
+          ]
         },
         "full": {
           "mean": 0.7114082898120704,
@@ -151,7 +163,11 @@
           "chance": 0.36244444444444446,
           "P3": "PASS",
           "seed17": 0.7259814287908919,
-          "seed17_in_range": false
+          "seed17_in_range": false,
+          "seed_averaged_ci95": [
+            0.6982421492623561,
+            0.7308327662763348
+          ]
         },
         "shuffle": {
           "mean": 0.53923943827498,
@@ -186,7 +202,11 @@
           "chance": 0.36244444444444446,
           "P3": "PASS",
           "seed17": 0.4457250379480017,
-          "seed17_in_range": false
+          "seed17_in_range": false,
+          "seed_averaged_ci95": [
+            0.5374465769004394,
+            0.572798650639992
+          ]
         },
         "shuffle-fixed": {
           "mean": 0.47588075737058283,
@@ -221,7 +241,11 @@
           "chance": 0.36244444444444446,
           "P3": "PASS",
           "seed17": null,
-          "seed17_in_range": null
+          "seed17_in_range": null,
+          "seed_averaged_ci95": [
+            0.4796315234178291,
+            0.513818281581191
+          ]
         },
         "bn-only": {
           "mean": 0.6769590087279388,
@@ -256,7 +280,11 @@
           "chance": 0.36244444444444446,
           "P3": "PASS",
           "seed17": null,
-          "seed17_in_range": null
+          "seed17_in_range": null,
+          "seed_averaged_ci95": [
+            0.6631233622734628,
+            0.6941878617158367
+          ]
         }
       },
       "comparisons": {
@@ -267,36 +295,24 @@
           "seeds": [
             {
               "seed": 1,
-              "value": 0.20118841367970974,
-              "ci95": [
-                0.1822875169484927,
-                0.2203788858104016
-              ],
-              "verdict": "PASS",
-              "ci_source": "saved paired patch-bootstrap CI"
+              "value": 0.20118841367970974
             },
             {
               "seed": 2,
-              "value": 0.1830689409692996,
-              "ci95": [
-                0.16426526928128166,
-                0.20128192001293121
-              ],
-              "verdict": "PASS",
-              "ci_source": "saved paired patch-bootstrap CI"
+              "value": 0.1830689409692996
             },
             {
               "seed": 3,
-              "value": 0.20191261299508456,
-              "ci95": [
-                0.18355946012984595,
-                0.22033181243131889
-              ],
-              "verdict": "PASS",
-              "ci_source": "saved paired patch-bootstrap CI"
+              "value": 0.20191261299508456
             }
           ],
-          "verdict": "PASS"
+          "seed_avg_point": 0.1970357695269036,
+          "ci95": [
+            0.1787793524924593,
+            0.21560712999058113
+          ],
+          "verdict": "PASS",
+          "method": "registered: seed-averaged patch bootstrap, 1000 reps, seed 17"
         },
         "renorm": {
           "mean": 0.20616513819206428,
@@ -305,36 +321,24 @@
           "seeds": [
             {
               "seed": 1,
-              "value": 0.21196356265707605,
-              "ci95": [
-                0.19664458920708092,
-                0.22655593681399147
-              ],
-              "verdict": "PASS",
-              "ci_source": "saved paired patch-bootstrap CI"
+              "value": 0.21196356265707605
             },
             {
               "seed": 2,
-              "value": 0.1938440899466659,
-              "ci95": [
-                0.1793123449204152,
-                0.2070597618925665
-              ],
-              "verdict": "PASS",
-              "ci_source": "saved paired patch-bootstrap CI"
+              "value": 0.1938440899466659
             },
             {
               "seed": 3,
-              "value": 0.21268776197245087,
-              "ci95": [
-                0.19765751077814325,
-                0.22755271424822857
-              ],
-              "verdict": "PASS",
-              "ci_source": "saved paired patch-bootstrap CI"
+              "value": 0.21268776197245087
             }
           ],
-          "verdict": "PASS"
+          "seed_avg_point": 0.20781091850426991,
+          "ci95": [
+            0.1924955079411138,
+            0.22249093519793303
+          ],
+          "verdict": "PASS",
+          "method": "registered: seed-averaged patch bootstrap, 1000 reps, seed 17"
         },
         "shuffle": {
           "mean": 0.17216885153709038,
@@ -343,27 +347,24 @@
           "seeds": [
             {
               "seed": 1,
-              "value": 0.17826269259089633,
-              "ci95": null,
-              "verdict": "INCONCLUSIVE",
-              "ci_source": "paired CI not saved"
+              "value": 0.17826269259089633
             },
             {
               "seed": 2,
-              "value": 0.19461540485245077,
-              "ci95": null,
-              "verdict": "INCONCLUSIVE",
-              "ci_source": "paired CI not saved"
+              "value": 0.19461540485245077
             },
             {
               "seed": 3,
-              "value": 0.14362845716792405,
-              "ci95": null,
-              "verdict": "INCONCLUSIVE",
-              "ci_source": "paired CI not saved"
+              "value": 0.14362845716792405
             }
           ],
-          "verdict": "INCONCLUSIVE"
+          "seed_avg_point": 0.1600040402672951,
+          "ci95": [
+            0.14289190758887776,
+            0.17589121236915314
+          ],
+          "verdict": "PASS",
+          "method": "registered: seed-averaged patch bootstrap, 1000 reps, seed 17"
         }
       },
       "regions": [
@@ -417,7 +418,7 @@
         }
       ],
       "P1": "PASS",
-      "P2": "INCONCLUSIVE",
+      "P2": "PASS",
       "P3_gate": "PASS",
       "legacy_H1": {
         "renorm": {
@@ -564,7 +565,11 @@
           "chance": 0.36244444444444446,
           "P3": "PASS",
           "seed17": 0.5758845629845176,
-          "seed17_in_range": true
+          "seed17_in_range": true,
+          "seed_averaged_ci95": [
+            0.560809854074109,
+            0.5927507636838745
+          ]
         },
         "renorm": {
           "mean": 0.4710494574426513,
@@ -599,7 +604,11 @@
           "chance": 0.36244444444444446,
           "P3": "PASS",
           "seed17": 0.4710494574426513,
-          "seed17_in_range": true
+          "seed17_in_range": true,
+          "seed_averaged_ci95": [
+            0.45588802097635395,
+            0.487507127656132
+          ]
         },
         "head": {
           "mean": 0.6500347040726182,
@@ -634,7 +643,11 @@
           "chance": 0.36244444444444446,
           "P3": "PASS",
           "seed17": 0.6745057915197072,
-          "seed17_in_range": false
+          "seed17_in_range": false,
+          "seed_averaged_ci95": [
+            0.6364734174219953,
+            0.6653626065240565
+          ]
         },
         "full": {
           "mean": 0.6779086417630985,
@@ -669,7 +682,11 @@
           "chance": 0.36244444444444446,
           "P3": "PASS",
           "seed17": 0.7206568021485963,
-          "seed17_in_range": false
+          "seed17_in_range": false,
+          "seed_averaged_ci95": [
+            0.6703340185380183,
+            0.6985318147392141
+          ]
         },
         "shuffle": {
           "mean": 0.5455566749811159,
@@ -704,7 +721,11 @@
           "chance": 0.36244444444444446,
           "P3": "PASS",
           "seed17": 0.5599402829551264,
-          "seed17_in_range": true
+          "seed17_in_range": true,
+          "seed_averaged_ci95": [
+            0.5644618663894952,
+            0.5961764527435569
+          ]
         },
         "shuffle-fixed": {
           "mean": 0.40205986757118445,
@@ -739,7 +760,11 @@
           "chance": 0.36244444444444446,
           "P3": "PASS",
           "seed17": null,
-          "seed17_in_range": null
+          "seed17_in_range": null,
+          "seed_averaged_ci95": [
+            0.3961365057978731,
+            0.4179608628193235
+          ]
         },
         "bn-only": {
           "mean": 0.5965694399017064,
@@ -774,7 +799,11 @@
           "chance": 0.36244444444444446,
           "P3": "PASS",
           "seed17": null,
-          "seed17_in_range": null
+          "seed17_in_range": null,
+          "seed_averaged_ci95": [
+            0.5828172140314462,
+            0.6111790440929218
+          ]
         }
       },
       "comparisons": {
@@ -785,36 +814,24 @@
           "seeds": [
             {
               "seed": 1,
-              "value": 0.11258873321129959,
-              "ci95": [
-                0.09495908201142196,
-                0.12957708121905068
-              ],
-              "verdict": "PASS",
-              "ci_source": "saved paired patch-bootstrap CI"
+              "value": 0.11258873321129959
             },
             {
               "seed": 2,
-              "value": 0.10050834597401326,
-              "ci95": [
-                0.0836814232587684,
-                0.11575078582914504
-              ],
-              "verdict": "PASS",
-              "ci_source": "saved paired patch-bootstrap CI"
+              "value": 0.10050834597401326
             },
             {
               "seed": 3,
-              "value": 0.09297515715042948,
-              "ci95": [
-                0.07615633835626608,
-                0.1085855543129481
-              ],
-              "verdict": "PASS",
-              "ci_source": "saved paired patch-bootstrap CI"
+              "value": 0.09297515715042948
             }
           ],
-          "verdict": "PASS"
+          "seed_avg_point": 0.10825671474774712,
+          "ci95": [
+            0.09048497969249296,
+            0.12410862192460878
+          ],
+          "verdict": "PASS",
+          "method": "registered: seed-averaged patch bootstrap, 1000 reps, seed 17"
         },
         "renorm": {
           "mean": 0.20685918432044711,
@@ -823,36 +840,24 @@
           "seeds": [
             {
               "seed": 1,
-              "value": 0.2174238387531659,
-              "ci95": [
-                0.19790455718787567,
-                0.23569254133857634
-              ],
-              "verdict": "PASS",
-              "ci_source": "saved paired patch-bootstrap CI"
+              "value": 0.2174238387531659
             },
             {
               "seed": 2,
-              "value": 0.20534345151587957,
-              "ci95": [
-                0.1872689606483034,
-                0.2230240183023655
-              ],
-              "verdict": "PASS",
-              "ci_source": "saved paired patch-bootstrap CI"
+              "value": 0.20534345151587957
             },
             {
               "seed": 3,
-              "value": 0.1978102626922958,
-              "ci95": [
-                0.17937076525332263,
-                0.21597128699501753
-              ],
-              "verdict": "PASS",
-              "ci_source": "saved paired patch-bootstrap CI"
+              "value": 0.1978102626922958
             }
           ],
-          "verdict": "PASS"
+          "seed_avg_point": 0.21309182028961343,
+          "ci95": [
+            0.19467329312498666,
+            0.23004204088805355
+          ],
+          "verdict": "PASS",
+          "method": "registered: seed-averaged patch bootstrap, 1000 reps, seed 17"
         },
         "shuffle": {
           "mean": 0.13235196678198244,
@@ -861,27 +866,24 @@
           "seeds": [
             {
               "seed": 1,
-              "value": 0.1642443869254263,
-              "ci95": null,
-              "verdict": "INCONCLUSIVE",
-              "ci_source": "paired CI not saved"
+              "value": 0.1642443869254263
             },
             {
               "seed": 2,
-              "value": 0.15002399407942546,
-              "ci95": null,
-              "verdict": "INCONCLUSIVE",
-              "ci_source": "paired CI not saved"
+              "value": 0.15002399407942546
             },
             {
               "seed": 3,
-              "value": 0.08278751934109552,
-              "ci95": null,
-              "verdict": "INCONCLUSIVE",
-              "ci_source": "paired CI not saved"
+              "value": 0.08278751934109552
             }
           ],
-          "verdict": "INCONCLUSIVE"
+          "seed_avg_point": 0.10440240518236876,
+          "ci95": [
+            0.08513096282900036,
+            0.12275340234230057
+          ],
+          "verdict": "PASS",
+          "method": "registered: seed-averaged patch bootstrap, 1000 reps, seed 17"
         }
       },
       "regions": [
@@ -935,7 +937,7 @@
         }
       ],
       "P1": "PASS",
-      "P2": "INCONCLUSIVE",
+      "P2": "PASS",
       "P3_gate": "PASS",
       "legacy_H1": {
         "renorm": {
@@ -1082,7 +1084,11 @@
           "chance": 0.36244444444444446,
           "P3": "PASS",
           "seed17": 0.6673327585253356,
-          "seed17_in_range": true
+          "seed17_in_range": true,
+          "seed_averaged_ci95": [
+            0.6534084292681165,
+            0.6826077786315483
+          ]
         },
         "renorm": {
           "mean": 0.5047077387613149,
@@ -1117,7 +1123,11 @@
           "chance": 0.36244444444444446,
           "P3": "PASS",
           "seed17": 0.5047077387613149,
-          "seed17_in_range": true
+          "seed17_in_range": true,
+          "seed_averaged_ci95": [
+            0.4930529722284141,
+            0.5179634321141648
+          ]
         },
         "head": {
           "mean": 0.6468543288430458,
@@ -1152,7 +1162,11 @@
           "chance": 0.36244444444444446,
           "P3": "PASS",
           "seed17": 0.6531968434465122,
-          "seed17_in_range": true
+          "seed17_in_range": true,
+          "seed_averaged_ci95": [
+            0.6316308235755693,
+            0.6655165332440809
+          ]
         },
         "full": {
           "mean": 0.7047940486725156,
@@ -1187,7 +1201,11 @@
           "chance": 0.36244444444444446,
           "P3": "PASS",
           "seed17": 0.6907543792691249,
-          "seed17_in_range": false
+          "seed17_in_range": false,
+          "seed_averaged_ci95": [
+            0.6992835261663122,
+            0.7270877997034502
+          ]
         },
         "shuffle": {
           "mean": 0.39948582328835563,
@@ -1222,7 +1240,11 @@
           "chance": 0.36244444444444446,
           "P3": "PASS",
           "seed17": 0.3863633642079398,
-          "seed17_in_range": true
+          "seed17_in_range": true,
+          "seed_averaged_ci95": [
+            0.41973128241007157,
+            0.44486205007527985
+          ]
         },
         "shuffle-fixed": {
           "mean": 0.3591451585047283,
@@ -1257,7 +1279,11 @@
           "chance": 0.36244444444444446,
           "P3": "FAIL",
           "seed17": null,
-          "seed17_in_range": null
+          "seed17_in_range": null,
+          "seed_averaged_ci95": [
+            0.33138936294048393,
+            0.36043333649828446
+          ]
         },
         "bn-only": {
           "mean": 0.6102043393828919,
@@ -1292,7 +1318,11 @@
           "chance": 0.36244444444444446,
           "P3": "PASS",
           "seed17": null,
-          "seed17_in_range": null
+          "seed17_in_range": null,
+          "seed_averaged_ci95": [
+            0.5960669763691492,
+            0.628744360595033
+          ]
         }
       },
       "comparisons": {
@@ -1303,36 +1333,24 @@
           "seeds": [
             {
               "seed": 1,
-              "value": 0.031035799626599858,
-              "ci95": [
-                0.018197602018945956,
-                0.04459283777022629
-              ],
-              "verdict": "PASS",
-              "ci_source": "saved paired patch-bootstrap CI"
+              "value": 0.031035799626599858
             },
             {
               "seed": 2,
-              "value": 0.05137951239935179,
-              "ci95": [
-                0.03618639062350315,
-                0.06593058849687208
-              ],
-              "verdict": "PASS",
-              "ci_source": "saved paired patch-bootstrap CI"
+              "value": 0.05137951239935179
             },
             {
               "seed": 3,
-              "value": 0.029968558415588653,
-              "ci95": [
-                0.016271982999715474,
-                0.04391681802410771
-              ],
-              "verdict": "PASS",
-              "ci_source": "saved paired patch-bootstrap CI"
+              "value": 0.029968558415588653
             }
           ],
-          "verdict": "PASS"
+          "seed_avg_point": 0.04453261347093329,
+          "ci95": [
+            0.031053652521904025,
+            0.05880922266724051
+          ],
+          "verdict": "PASS",
+          "method": "registered: seed-averaged patch bootstrap, 1000 reps, seed 17"
         },
         "renorm": {
           "mean": 0.20008630991120077,
@@ -1341,36 +1359,24 @@
           "seeds": [
             {
               "seed": 1,
-              "value": 0.19366081939062052,
-              "ci95": [
-                0.18105334917088345,
-                0.20585687124152421
-              ],
-              "verdict": "PASS",
-              "ci_source": "saved paired patch-bootstrap CI"
+              "value": 0.19366081939062052
             },
             {
               "seed": 2,
-              "value": 0.21400453216337245,
-              "ci95": [
-                0.1997118398229597,
-                0.22794616975477094
-              ],
-              "verdict": "PASS",
-              "ci_source": "saved paired patch-bootstrap CI"
+              "value": 0.21400453216337245
             },
             {
               "seed": 3,
-              "value": 0.19259357817960931,
-              "ci95": [
-                0.1794564135332337,
-                0.20613182284519072
-              ],
-              "verdict": "PASS",
-              "ci_source": "saved paired patch-bootstrap CI"
+              "value": 0.19259357817960931
             }
           ],
-          "verdict": "PASS"
+          "seed_avg_point": 0.20715763323495395,
+          "ci95": [
+            0.19371430418818675,
+            0.22042172692021136
+          ],
+          "verdict": "PASS",
+          "method": "registered: seed-averaged patch bootstrap, 1000 reps, seed 17"
         },
         "shuffle": {
           "mean": 0.30530822538416,
@@ -1379,27 +1385,24 @@
           "seeds": [
             {
               "seed": 1,
-              "value": 0.20797242656052306,
-              "ci95": null,
-              "verdict": "INCONCLUSIVE",
-              "ci_source": "paired CI not saved"
+              "value": 0.20797242656052306
             },
             {
               "seed": 2,
-              "value": 0.38459622179283437,
-              "ci95": null,
-              "verdict": "INCONCLUSIVE",
-              "ci_source": "paired CI not saved"
+              "value": 0.38459622179283437
             },
             {
               "seed": 3,
-              "value": 0.32335602779912265,
-              "ci95": null,
-              "verdict": "INCONCLUSIVE",
-              "ci_source": "paired CI not saved"
+              "value": 0.32335602779912265
             }
           ],
-          "verdict": "INCONCLUSIVE"
+          "seed_avg_point": 0.280762524836628,
+          "ci95": [
+            0.26533702472971704,
+            0.29505434001116454
+          ],
+          "verdict": "PASS",
+          "method": "registered: seed-averaged patch bootstrap, 1000 reps, seed 17"
         }
       },
       "regions": [
@@ -1453,7 +1456,7 @@
         }
       ],
       "P1": "PASS",
-      "P2": "INCONCLUSIVE",
+      "P2": "PASS",
       "P3_gate": "PASS",
       "legacy_H1": {
         "renorm": {
@@ -1789,13 +1792,7 @@
     "method": "real index/permutation reconstruction and raw-pixel SHA256 per mode; no inference",
     "label_snapshot_limit": "test labels reconstructed from recorded permutations and verified source, not saved runtime snapshots"
   },
-  "inconclusive_criteria": [
-    "P2/s1: paired full-minus-shuffle CI not saved",
-    "P2/s2: paired full-minus-shuffle CI not saved",
-    "P2/s1s2: paired full-minus-shuffle CI not saved",
-    "(d): registered shuffle-fixed-minus-none CI predicate not saved; mean direction reported separately",
-    "Overall T13b gate: P2 unresolved"
-  ],
+  "inconclusive_criteria": [],
   "anomaly": {
     "none": {
       "mean": 0.5763124803967011,
@@ -1827,7 +1824,11 @@
           ]
         }
       ],
-      "chance": 0.35622222222222216
+      "chance": 0.35622222222222216,
+      "seed_averaged_ci95": [
+        0.5529026530742345,
+        0.6015757411838154
+      ]
     },
     "shuffle": {
       "mean": 0.613497535361097,
@@ -1859,7 +1860,11 @@
           ]
         }
       ],
-      "chance": 0.35622222222222216
+      "chance": 0.35622222222222216,
+      "seed_averaged_ci95": [
+        0.6282580064165081,
+        0.6690013719959716
+      ]
     },
     "shuffle-fixed": {
       "mean": 0.4010789691722225,
@@ -1891,7 +1896,11 @@
           ]
         }
       ],
-      "chance": 0.35622222222222216
+      "chance": 0.35622222222222216,
+      "seed_averaged_ci95": [
+        0.39628118607285295,
+        0.42904919089769217
+      ]
     },
     "bn-only": {
       "mean": 0.6880084555066773,
@@ -1923,7 +1932,11 @@
           ]
         }
       ],
-      "chance": 0.35622222222222216
+      "chance": 0.35622222222222216,
+      "seed_averaged_ci95": [
+        0.6741181782696212,
+        0.7052955949019651
+      ]
     },
     "full": {
       "mean": 0.7262067188948977,
@@ -1955,7 +1968,11 @@
           ]
         }
       ],
-      "chance": 0.35622222222222216
+      "chance": 0.35622222222222216,
+      "seed_averaged_ci95": [
+        0.717454722653424,
+        0.7563621221753063
+      ]
     },
     "seed17": {
       "none": 0.5763124803967011,
@@ -1971,29 +1988,53 @@
       "seeds": [
         {
           "seed": 1,
-          "value": -0.20923937043367558,
-          "ci95": null,
-          "verdict": "INCONCLUSIVE",
-          "ci_source": "paired CI not saved"
+          "value": -0.20923937043367558
         },
         {
           "seed": 2,
-          "value": -0.14927162549933815,
-          "ci95": null,
-          "verdict": "INCONCLUSIVE",
-          "ci_source": "paired CI not saved"
+          "value": -0.14927162549933815
         },
         {
           "seed": 3,
-          "value": -0.16718953774042206,
-          "ci95": null,
-          "verdict": "INCONCLUSIVE",
-          "ci_source": "paired CI not saved"
+          "value": -0.16718953774042206
         }
       ],
-      "verdict": "INCONCLUSIVE"
+      "seed_avg_point": -0.165219539670381,
+      "ci95": [
+        -0.18951918553509856,
+        -0.14034752227567507
+      ],
+      "verdict": "FAIL",
+      "method": "registered: seed-averaged patch bootstrap, 1000 reps, seed 17"
     },
-    "d_registered_ci_verdict": "INCONCLUSIVE",
+    "d_registered_ci_verdict": "FAIL",
+    "d_artefact_claimed": true,
+    "e_ci": {
+      "mean": 0.2869294863344549,
+      "min": 0.26134231477234593,
+      "max": 0.321213753352949,
+      "seeds": [
+        {
+          "seed": 1,
+          "value": 0.321213753352949
+        },
+        {
+          "seed": 2,
+          "value": 0.26134231477234593
+        },
+        {
+          "seed": 3,
+          "value": 0.2782323908780698
+        }
+      ],
+      "seed_avg_point": 0.27693381397554,
+      "ci95": [
+        0.2565874920884059,
+        0.29679830005504165
+      ],
+      "verdict": "PASS",
+      "method": "registered: seed-averaged patch bootstrap, 1000 reps, seed 17"
+    },
     "e_mean_condition": true,
     "attribution": "BN re-estimation supported by rule (e)",
     "epochs": [
@@ -2162,7 +2203,12 @@
     ]
   },
   "P1": "PASS",
-  "P2": "INCONCLUSIVE",
+  "P2": "PASS",
   "P3_gate": "PASS",
-  "gate": "INCONCLUSIVE"
+  "gate": "PASS",
+  "prediction_npz_sha256": {
+    "1": "1c7ba3770e063ff05f3b2d33b11c345657dc9e52c419457d049697d9a97ec15e",
+    "2": "a434ffa43c30748fa4033050472e67ca52fd705d273b395a2651d6487c748946",
+    "3": "0a3b0b5fac4b25e313093f666f3cbafbfa419fb31414d2769029c29c03bc65f9"
+  }
 }

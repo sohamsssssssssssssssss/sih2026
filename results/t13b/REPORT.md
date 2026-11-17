@@ -1,174 +1,77 @@
-CI verdicts use the conservative per-seed substitute; see DECISIONS.md.
+# T13b analysis, registered CI method
 
-Full fine-tuning beats none in every seed and mode under the available paired CIs (P1 PASS), and all full-minus-renorm intervals are positive. P2 and the overall gate are INCONCLUSIVE because full-minus-shuffle paired CIs were not saved; the larger half-Europe/India-gap recovery claim does not hold for optical or fusion, and shuffled controls are not uniformly at chance. The fold-A optical shuffle lift persists on seed means (0.613498 versus none 0.576312). BN re-estimation is supported by rule (e): bn-only 0.688008 >= shuffle-fixed 0.401079. The mean-only (d) direction supports an epoch-selection effect, but its registered CI predicate is not evaluable. No new training/inference run or final-model claim is made.
+Full fine-tuning beats the stored baseline (P1 **PASS**) and shuffle (P2 **PASS**) across all three modes. The overall gate is **PASS**. The fusion shuffle-fixed diagnostic falls below chance, and full fine-tuning still regresses in some regions. The fold-A optical shuffle gain on the seed mean is +0.037185. Rule (d) supports an epoch-selection artefact, and rule (e) supports BN re-estimation. Compared with the substitute-rule report at `9672b78`, the rerun confirms P1 and confirms the rule (e) result. All 21 cell means match the earlier report. Its half-gap recovery and shuffled-control findings also hold: full fine-tuning clears the half-gap threshold only for S1, and the S1 and S2 shuffled controls sit more than 0.05 from chance. The saved predictions resolve the previously inconclusive P2, gate and rule (d).
 
-# T13b saved-output analysis
+**CI method used: REGISTERED** (docs/hypotheses/T13b.md:31): patch-level bootstrap, 1000 reps, seed 17, on seed-averaged per-patch predictions read from the three saved NPZ archives. Differences use paired resamples. The seed-level substitute rule was not used.
 
-Deviation: [DECISIONS.md](../../docs/plan/DECISIONS.md), commit 1966156. Original [T13b preregistration](../../docs/hypotheses/T13b.md) is unchanged (4a9162c, 2662aab, as present at a0d7002). All means below are the plain arithmetic mean of seed-level mAPs; no ensemble mAP or CI is imputed. No CI endpoints are averaged. Per-seed intervals are the saved 1000-replicate patch bootstrap, seed 17. They ignore training-seed, region and split variance. Fixed folds cover six Indian regions; WorldCover labels are map products, not independent ground truth.
+Verdicts: P1 **PASS**, P2 **PASS**, P3 (non-diagnostic cells) **PASS**, overall gate **PASS**. Not a final-model claim. Real-data index/permutation/pixel-hash audits: **PASS**.
 
-## OOF India-pooled cells
+## OOF India-pooled cells (seed mean, min–max, exact chance)
 
-| Mode | Arm | Seed 1 mAP [CI95] | Seed 2 mAP [CI95] | Seed 3 mAP [CI95] | Mean | Min–max | Exact chance | P3 |
-|---|---|---|---|---|---:|---|---|---|
-| s1 | none | 0.516018 [0.502831, 0.532436] | 0.516018 [0.502831, 0.532436] | 0.516018 [0.502831, 0.532436] | 0.516018 | 0.516018–0.516018 | 0.36244444444444446 | PASS |
-| s1 | renorm | 0.505243 [0.491907, 0.521256] | 0.505243 [0.491907, 0.521256] | 0.505243 [0.491907, 0.521256] | 0.505243 | 0.505243–0.505243 | 0.36244444444444446 | PASS |
-| s1 | head | 0.540109 [0.524908, 0.557579] | 0.544968 [0.529895, 0.562885] | 0.545499 [0.530301, 0.563821] | 0.543525 | 0.540109–0.545499 | 0.36244444444444446 | PASS |
-| s1 | full | 0.717207 [0.702029, 0.735120] | 0.699087 [0.684608, 0.716577] | 0.717931 [0.703008, 0.735501] | 0.711408 | 0.699087–0.717931 | 0.36244444444444446 | PASS |
-| s1 | shuffle | 0.538944 [0.523906, 0.557235] | 0.504472 [0.489218, 0.524933] | 0.574302 [0.557064, 0.592169] | 0.539239 | 0.504472–0.574302 | 0.36244444444444446 | PASS |
-| s1 | shuffle-fixed | 0.475415 [0.461820, 0.493840] | 0.446677 [0.433515, 0.463953] | 0.505551 [0.490651, 0.524410] | 0.475881 | 0.446677–0.505551 | 0.36244444444444446 | PASS |
-| s1 | bn-only | 0.678590 [0.664735, 0.695554] | 0.676092 [0.662192, 0.693189] | 0.676194 [0.662235, 0.693484] | 0.676959 | 0.676092–0.678590 | 0.36244444444444446 | PASS |
-| s2 | none | 0.575885 [0.560810, 0.592751] | 0.575885 [0.560810, 0.592751] | 0.575885 [0.560810, 0.592751] | 0.575885 | 0.575885–0.575885 | 0.36244444444444446 | PASS |
-| s2 | renorm | 0.471049 [0.455888, 0.487507] | 0.471049 [0.455888, 0.487507] | 0.471049 [0.455888, 0.487507] | 0.471049 | 0.471049–0.471049 | 0.36244444444444446 | PASS |
-| s2 | head | 0.642226 [0.627629, 0.657928] | 0.654522 [0.640843, 0.669779] | 0.653356 [0.639580, 0.669046] | 0.650035 | 0.642226–0.654522 | 0.36244444444444446 | PASS |
-| s2 | full | 0.688473 [0.673646, 0.703764] | 0.676393 [0.662640, 0.690990] | 0.668860 [0.654883, 0.684137] | 0.677909 | 0.668860–0.688473 | 0.36244444444444446 | PASS |
-| s2 | shuffle | 0.524229 [0.510269, 0.540304] | 0.526369 [0.510271, 0.545199] | 0.586072 [0.572685, 0.601851] | 0.545557 | 0.524229–0.586072 | 0.36244444444444446 | PASS |
-| s2 | shuffle-fixed | 0.385678 [0.375185, 0.397675] | 0.417623 [0.407591, 0.431817] | 0.402879 [0.393050, 0.415740] | 0.402060 | 0.385678–0.417623 | 0.36244444444444446 | PASS |
-| s2 | bn-only | 0.595780 [0.582080, 0.610500] | 0.596273 [0.582255, 0.610919] | 0.597655 [0.583732, 0.612269] | 0.596569 | 0.595780–0.597655 | 0.36244444444444446 | PASS |
-| s1s2 | none | 0.667333 [0.653408, 0.682608] | 0.667333 [0.653408, 0.682608] | 0.667333 [0.653408, 0.682608] | 0.667333 | 0.667333–0.667333 | 0.36244444444444446 | PASS |
-| s1s2 | renorm | 0.504708 [0.493053, 0.517963] | 0.504708 [0.493053, 0.517963] | 0.504708 [0.493053, 0.517963] | 0.504708 | 0.504708–0.504708 | 0.36244444444444446 | PASS |
-| s1s2 | head | 0.640912 [0.625310, 0.658279] | 0.658096 [0.642099, 0.675297] | 0.641555 [0.625480, 0.658949] | 0.646854 | 0.640912–0.658096 | 0.36244444444444446 | PASS |
-| s1s2 | full | 0.698369 [0.686390, 0.712565] | 0.718712 [0.705296, 0.734677] | 0.697301 [0.685632, 0.711710] | 0.704794 | 0.697301–0.718712 | 0.36244444444444446 | PASS |
-| s1s2 | shuffle | 0.490396 [0.477697, 0.504960] | 0.334116 [0.324589, 0.349129] | 0.373945 [0.361771, 0.389889] | 0.399486 | 0.334116–0.490396 | 0.36244444444444446 | PASS |
-| s1s2 | shuffle-fixed | 0.405764 [0.390633, 0.422435] | 0.349766 [0.339779, 0.365400] | 0.321906 [0.311447, 0.336365] | 0.359145 | 0.321906–0.405764 | 0.36244444444444446 | FAIL |
-| s1s2 | bn-only | 0.610023 [0.594540, 0.627352] | 0.607308 [0.591679, 0.625289] | 0.613282 [0.598206, 0.630448] | 0.610204 | 0.607308–0.613282 | 0.36244444444444446 | PASS |
+| Mode | Arm | Seed 1 | Seed 2 | Seed 3 | Mean | Min–max | Exact chance | P3 | Seed-averaged CI95 |
+|---|---|---:|---:|---:|---:|---|---|---|---|
+| s1 | none | 0.516018 | 0.516018 | 0.516018 | 0.516018 | 0.516018–0.516018 | 0.36244444444444446 | PASS | [0.502831, 0.532436] |
+| s1 | renorm | 0.505243 | 0.505243 | 0.505243 | 0.505243 | 0.505243–0.505243 | 0.36244444444444446 | PASS | [0.491907, 0.521256] |
+| s1 | head | 0.540109 | 0.544968 | 0.545499 | 0.543525 | 0.540109–0.545499 | 0.36244444444444446 | PASS | [0.529230, 0.562236] |
+| s1 | full | 0.717207 | 0.699087 | 0.717931 | 0.711408 | 0.699087–0.717931 | 0.36244444444444446 | PASS | [0.698242, 0.730833] |
+| s1 | shuffle | 0.538944 | 0.504472 | 0.574302 | 0.539239 | 0.504472–0.574302 | 0.36244444444444446 | PASS | [0.537447, 0.572799] |
+| s1 | shuffle-fixed | 0.475415 | 0.446677 | 0.505551 | 0.475881 | 0.446677–0.505551 | 0.36244444444444446 | PASS | [0.479632, 0.513818] |
+| s1 | bn-only | 0.678590 | 0.676092 | 0.676194 | 0.676959 | 0.676092–0.678590 | 0.36244444444444446 | PASS | [0.663123, 0.694188] |
+| s2 | none | 0.575885 | 0.575885 | 0.575885 | 0.575885 | 0.575885–0.575885 | 0.36244444444444446 | PASS | [0.560810, 0.592751] |
+| s2 | renorm | 0.471049 | 0.471049 | 0.471049 | 0.471049 | 0.471049–0.471049 | 0.36244444444444446 | PASS | [0.455888, 0.487507] |
+| s2 | head | 0.642226 | 0.654522 | 0.653356 | 0.650035 | 0.642226–0.654522 | 0.36244444444444446 | PASS | [0.636473, 0.665363] |
+| s2 | full | 0.688473 | 0.676393 | 0.668860 | 0.677909 | 0.668860–0.688473 | 0.36244444444444446 | PASS | [0.670334, 0.698532] |
+| s2 | shuffle | 0.524229 | 0.526369 | 0.586072 | 0.545557 | 0.524229–0.586072 | 0.36244444444444446 | PASS | [0.564462, 0.596176] |
+| s2 | shuffle-fixed | 0.385678 | 0.417623 | 0.402879 | 0.402060 | 0.385678–0.417623 | 0.36244444444444446 | PASS | [0.396137, 0.417961] |
+| s2 | bn-only | 0.595780 | 0.596273 | 0.597655 | 0.596569 | 0.595780–0.597655 | 0.36244444444444446 | PASS | [0.582817, 0.611179] |
+| s1s2 | none | 0.667333 | 0.667333 | 0.667333 | 0.667333 | 0.667333–0.667333 | 0.36244444444444446 | PASS | [0.653408, 0.682608] |
+| s1s2 | renorm | 0.504708 | 0.504708 | 0.504708 | 0.504708 | 0.504708–0.504708 | 0.36244444444444446 | PASS | [0.493053, 0.517963] |
+| s1s2 | head | 0.640912 | 0.658096 | 0.641555 | 0.646854 | 0.640912–0.658096 | 0.36244444444444446 | PASS | [0.631631, 0.665517] |
+| s1s2 | full | 0.698369 | 0.718712 | 0.697301 | 0.704794 | 0.697301–0.718712 | 0.36244444444444446 | PASS | [0.699284, 0.727088] |
+| s1s2 | shuffle | 0.490396 | 0.334116 | 0.373945 | 0.399486 | 0.334116–0.490396 | 0.36244444444444446 | PASS | [0.419731, 0.444862] |
+| s1s2 | shuffle-fixed | 0.405764 | 0.349766 | 0.321906 | 0.359145 | 0.321906–0.405764 | 0.36244444444444446 | FAIL | [0.331389, 0.360433] |
+| s1s2 | bn-only | 0.610023 | 0.607308 | 0.613282 | 0.610204 | 0.607308–0.613282 | 0.36244444444444446 | PASS | [0.596067, 0.628744] |
 
-P3 is tested on unrounded values. shuffle-fixed and bn-only are reported but excluded from the gate by (d)/(e); the below-chance s1s2 shuffle-fixed cell is therefore a reported diagnostic failure, not a gate failure.
+P3 uses unrounded values. shuffle-fixed and bn-only are diagnostics, excluded from the gate.
 
-## Registered and matched comparisons side by side
+## Paired contrasts, registered CI
 
-| Mode | Seed | full−none (registered), paired CI95 | full−renorm (matched), paired CI95 |
-|---|---:|---|---|
-| s1 | 1 | 0.201188 [0.182288, 0.220379] | 0.211964 [0.196645, 0.226556] |
-| s1 | 2 | 0.183069 [0.164265, 0.201282] | 0.193844 [0.179312, 0.207060] |
-| s1 | 3 | 0.201913 [0.183559, 0.220332] | 0.212688 [0.197658, 0.227553] |
-| s1 | plain mean / substitute verdict | 0.195390 / PASS | 0.206165 / PASS |
-| s2 | 1 | 0.112589 [0.094959, 0.129577] | 0.217424 [0.197905, 0.235693] |
-| s2 | 2 | 0.100508 [0.083681, 0.115751] | 0.205343 [0.187269, 0.223024] |
-| s2 | 3 | 0.092975 [0.076156, 0.108586] | 0.197810 [0.179371, 0.215971] |
-| s2 | plain mean / substitute verdict | 0.102024 / PASS | 0.206859 / PASS |
-| s1s2 | 1 | 0.031036 [0.018198, 0.044593] | 0.193661 [0.181053, 0.205857] |
-| s1s2 | 2 | 0.051380 [0.036186, 0.065931] | 0.214005 [0.199712, 0.227946] |
-| s1s2 | 3 | 0.029969 [0.016272, 0.043917] | 0.192594 [0.179456, 0.206132] |
-| s1s2 | plain mean / substitute verdict | 0.037461 / PASS | 0.200086 / PASS |
+| Mode | Contrast | Seed 1 | Seed 2 | Seed 3 | Seed mean | Seed-averaged point | CI95 (paired) | Verdict |
+|---|---|---:|---:|---:|---:|---:|---|---|
+| s1 | full−none (P1) | 0.201188 | 0.183069 | 0.201913 | 0.195390 | 0.197036 | [0.178779, 0.215607] | PASS |
+| s1 | full−shuffle (P2) | 0.178263 | 0.194615 | 0.143628 | 0.172169 | 0.160004 | [0.142892, 0.175891] | PASS |
+| s1 | full−renorm (matched, not gated) | 0.211964 | 0.193844 | 0.212688 | 0.206165 | 0.207811 | [0.192496, 0.222491] | PASS |
+| s2 | full−none (P1) | 0.112589 | 0.100508 | 0.092975 | 0.102024 | 0.108257 | [0.090485, 0.124109] | PASS |
+| s2 | full−shuffle (P2) | 0.164244 | 0.150024 | 0.082788 | 0.132352 | 0.104402 | [0.085131, 0.122753] | PASS |
+| s2 | full−renorm (matched, not gated) | 0.217424 | 0.205343 | 0.197810 | 0.206859 | 0.213092 | [0.194673, 0.230042] | PASS |
+| s1s2 | full−none (P1) | 0.031036 | 0.051380 | 0.029969 | 0.037461 | 0.044533 | [0.031054, 0.058809] | PASS |
+| s1s2 | full−shuffle (P2) | 0.207972 | 0.384596 | 0.323356 | 0.305308 | 0.280763 | [0.265337, 0.295054] | PASS |
+| s1s2 | full−renorm (matched, not gated) | 0.193661 | 0.214005 | 0.192594 | 0.200086 | 0.207158 | [0.193714, 0.220422] | PASS |
 
-None uses stored BEN normalization; renorm/full share adaptation-train normalization. full−none includes renormalization cost and is not the same estimand as full−renorm. No seed-mean CI is available.
+P1/P2 rule: mean over seeds > 0 AND CI95 lower bound > 0 (PASS), otherwise FAIL. No INCONCLUSIVE verdict arises under this method.
 
-## Registered rules, quoted, and verdicts
+## Diagnostic arms (not gated)
 
-### CI95
+| Contrast | Seed 1 | Seed 2 | Seed 3 | Seed mean | Seed-averaged point | CI95 (paired) | Verdict |
+|---|---:|---:|---:|---:|---:|---|---|
+| (d) shuffle-fixed−none, fold A, s2 | -0.209239 | -0.149272 | -0.167190 | -0.175234 | -0.165220 | [-0.189519, -0.140348] | FAIL |
+| (e) bn-only−shuffle-fixed, fold A, s2 | 0.321214 | 0.261342 | 0.278232 | 0.286929 | 0.276934 | [0.256587, 0.296798] | PASS |
 
-> **CI95.** Patch-level bootstrap, 1000 reps, seed 17, on the seed-averaged predictions. Differences use a paired bootstrap on the seed-averaged predictions of both arms. This interval does not include seed variance (see (a)).
+(d) artefact claimed: **YES** (requires seed-17 shuffle > none and shuffle-fixed−none CI lower bound <= 0). (e) mean rule: bn-only 0.6880084555066773 vs shuffle-fixed 0.4010789691722225: **PASS**. Attribution: **BN re-estimation supported by rule (e)**. The (e) rule is the registered mean inequality; its CI is reported beside it, not as a gate.
 
-DEVIATION: use saved per-seed paired CIs and unanimity: all PASS -> PASS; all FAIL -> FAIL; any mixture or unavailable required CI -> INCONCLUSIVE. No registered seed-averaged bootstrap can be reconstructed.
+## Fold-A optical anomaly, arm means
 
-### P1
+| Arm | Seed 1 | Seed 2 | Seed 3 | Mean | Exact fold prevalence | Seed-averaged CI95 |
+|---|---:|---:|---:|---:|---|---|
+| none | 0.576312 | 0.576312 | 0.576312 | 0.576312 | 0.35622222222222216 | [0.552903, 0.601576] |
+| shuffle | 0.582602 | 0.597907 | 0.659984 | 0.613498 | 0.35622222222222216 | [0.628258, 0.669001] |
+| shuffle-fixed | 0.367073 | 0.427041 | 0.409123 | 0.401079 | 0.35622222222222216 | [0.396281, 0.429049] |
+| bn-only | 0.688287 | 0.688383 | 0.687355 | 0.688008 | 0.35622222222222216 | [0.674118, 0.705296] |
+| full | 0.733637 | 0.726336 | 0.718647 | 0.726207 | 0.35622222222222216 | [0.717455, 0.756362] |
 
-> **P1 (full beats none).** Per mode: mean over seeds of (full - none) > 0 AND the CI95 lower bound > 0. All three modes must pass.
+Seed 17 re-read: none=0.5763124803967011, shuffle=0.6452245460444148, difference=0.06891206564771368.
 
-| Mode | Seed | Difference | Paired CI95 | Per-seed verdict |
-|---|---:|---:|---|---|
-| s1 | 1 | 0.201188 | [0.182288, 0.220379] | PASS |
-| s1 | 2 | 0.183069 | [0.164265, 0.201282] | PASS |
-| s1 | 3 | 0.201913 | [0.183559, 0.220332] | PASS |
-| s1 | mean / substitute | 0.195390 | not averaged | PASS |
-| s2 | 1 | 0.112589 | [0.094959, 0.129577] | PASS |
-| s2 | 2 | 0.100508 | [0.083681, 0.115751] | PASS |
-| s2 | 3 | 0.092975 | [0.076156, 0.108586] | PASS |
-| s2 | mean / substitute | 0.102024 | not averaged | PASS |
-| s1s2 | 1 | 0.031036 | [0.018198, 0.044593] | PASS |
-| s1s2 | 2 | 0.051380 | [0.036186, 0.065931] | PASS |
-| s1s2 | 3 | 0.029969 | [0.016272, 0.043917] | PASS |
-| s1s2 | mean / substitute | 0.037461 | not averaged | PASS |
-
-Overall P1: **PASS**. Missing paired full−shuffle intervals are not replaced by differences between marginal CI endpoints.
-
-### P2
-
-> **P2 (full beats shuffle).** Per mode: mean over seeds of (full - shuffle) > 0 AND CI95 lower bound > 0. All three modes must pass.
-
-| Mode | Seed | Difference | Paired CI95 | Per-seed verdict |
-|---|---:|---:|---|---|
-| s1 | 1 | 0.178263 | not saved | INCONCLUSIVE |
-| s1 | 2 | 0.194615 | not saved | INCONCLUSIVE |
-| s1 | 3 | 0.143628 | not saved | INCONCLUSIVE |
-| s1 | mean / substitute | 0.172169 | not averaged | INCONCLUSIVE |
-| s2 | 1 | 0.164244 | not saved | INCONCLUSIVE |
-| s2 | 2 | 0.150024 | not saved | INCONCLUSIVE |
-| s2 | 3 | 0.082788 | not saved | INCONCLUSIVE |
-| s2 | mean / substitute | 0.132352 | not averaged | INCONCLUSIVE |
-| s1s2 | 1 | 0.207972 | not saved | INCONCLUSIVE |
-| s1s2 | 2 | 0.384596 | not saved | INCONCLUSIVE |
-| s1s2 | 3 | 0.323356 | not saved | INCONCLUSIVE |
-| s1s2 | mean / substitute | 0.305308 | not averaged | INCONCLUSIVE |
-
-Overall P2: **INCONCLUSIVE**. Missing paired full−shuffle intervals are not replaced by differences between marginal CI endpoints.
-
-### P3
-
-> **P3 (chance).** A cell whose seed-mean mAP is below the pooled prevalence baseline for India out-of-fold patches, as computed in the run's JSON, is a reported failure. The threshold is the exact prevalence value from the run, not a rounded number.
-
-Gate-eligible cells: **PASS**. All cells and their exact run prevalence, including diagnostic failures, are listed above.
-
-### P4
-
-> **P4 (regressions).** Any region where the seed-mean full mAP is below its seed-mean none mAP is listed by name. Reported, not a gate.
-
-Reported, not gated. Every region/mode regression is named below.
-
-### Gate
-
-> **Gate.** PASS only if P1 and P2 pass in all three modes and no P3 failure exists. A tie or a CI that touches zero is a FAIL.
-
-**INCONCLUSIVE**: P1=PASS, P2=INCONCLUSIVE, P3 (non-diagnostic arms)=PASS. This is not a PASS and does not authorize final models.
-
-### Step 3
-
-> **Step 3 (final models).** No pass/fail and no test metrics. Output is checkpoint, data hash, code commit, seed, epochs, region list.
-
-NOT RUN. No final checkpoint, final-model accuracy, or deployment claim is produced.
-
-## Fold-A optical anomaly and required checks
-
-> 1. **Permutation scope.** Test: for every fold and mode, train labels are a permutation of the original train labels, val labels are a permutation of the original val labels, and test labels are byte-identical to the originals. A failure means the shuffle touched test data. (Existing test `test_shuffle_is_confined_to_train_and_val` covers this on the fixture; the check is repeated on the real fold indices.)
-
-> 2. **Leakage.** Test: train, val and test index sets are pairwise disjoint per fold, and no test region appears in train or val. Also a sha256 of each patch's pixels: no exact duplicate between a test patch and any train/val patch.
-
-> 3. **Seed persistence.** The gap (shuffle minus none) must hold on the seed mean (seeds 1, 2, 3), not only on seed 17.
-
-> 4. **Candidate mechanism, to test not assume.** The shuffle arm also shuffles validation labels, so its epoch is chosen on shuffled validation. Record the selected epochs for shuffle and full. If they differ, the arms are not identically trained. The diagnostic arm below tests this directly.
-
-Real-data index/permutation/pixel-hash audits: **PASS**. All 18 seed/mode/fold checks are in summary.json. Test-label preservation is reconstructed from saved permutations plus verified source, not from saved runtime label snapshots. No model was executed for these audits.
-
-| Arm | Seed 1 [CI95] | Seed 2 [CI95] | Seed 3 [CI95] | Mean | Exact fold prevalence |
-|---|---|---|---|---:|---|
-| none | 0.576312 [0.552903, 0.601576] | 0.576312 [0.552903, 0.601576] | 0.576312 [0.552903, 0.601576] | 0.576312 | 0.35622222222222216 |
-| shuffle | 0.582602 [0.564983, 0.603668] | 0.597907 [0.575938, 0.620829] | 0.659984 [0.643164, 0.680495] | 0.613498 | 0.35622222222222216 |
-| shuffle-fixed | 0.367073 [0.350803, 0.387876] | 0.427041 [0.409576, 0.447521] | 0.409123 [0.392264, 0.427972] | 0.401079 | 0.35622222222222216 |
-| bn-only | 0.688287 [0.674439, 0.705604] | 0.688383 [0.674445, 0.705651] | 0.687355 [0.673486, 0.704605] | 0.688008 | 0.35622222222222216 |
-| full | 0.733637 [0.715059, 0.755826] | 0.726336 [0.709003, 0.747068] | 0.718647 [0.701598, 0.738583] | 0.726207 | 0.35622222222222216 |
-
-Seed 17 re-read: none=0.5763124803967011, shuffle=0.6452245460444148, difference=0.06891206564771368. Seed-mean shuffle−none=0.037185054964395836; persistence check **PASS**.
-
-### (d)
-
-> Decision rule for the diagnosis, fixed now: "epoch-selection artefact" is claimed only if shuffle beats none in T13 AND shuffle-fixed does not beat none (CI lower bound <= 0). Otherwise the cause is recorded as unexplained or as named by the (b) checks.
-
-Requested mean-based reading: **PASS** (seed-17 shuffle > none; shuffle-fixed seed mean <= none). This is a directional epoch-selection diagnostic, not a claim that an unavailable CI passed. The original CI predicate remains **INCONCLUSIVE**.
-
-| Seed | shuffle-fixed−none | Paired CI95 | CI predicate |
-|---:|---:|---|---|
-| 1 | -0.209239 | not saved | INCONCLUSIVE |
-| 2 | -0.149272 | not saved | INCONCLUSIVE |
-| 3 | -0.167190 | not saved | INCONCLUSIVE |
-### (e)
-
-> Decision rule, fixed now: compare fold-A pooled mAP for s2, seed mean over seeds 1, 2, 3. If **bn-only >= shuffle-fixed**, BatchNorm re-estimation, not label noise, explains the fold-A anomaly. If bn-only < shuffle-fixed, the BatchNorm candidate is not supported as the whole explanation, and the cause stays as recorded under (b)/(d).
-
-
-Mean-based verdict: **PASS**. bn-only=0.6880084555066773, shuffle-fixed=0.4010789691722225. Attribution: **BN re-estimation supported by rule (e)**. This is the preregistered mean inequality, not an independent causal estimate. The existing synthetic BN-invariance test checks unchanged weights/changed running stats; real before/after model states were not saved.
-
-
-### Selected epochs (validation selection differs from fixed-final diagnostics)
+## Selected epochs
 
 | Mode | Fold | Seed | Full | Shuffle | Shuffle-fixed | BN-only |
 |---|---|---:|---:|---:|---:|---:|
@@ -191,7 +94,7 @@ Mean-based verdict: **PASS**. bn-only=0.6880084555066773, shuffle-fixed=0.401078
 | s1s2 | A | 3 | 14 | 10 | 15 | 15 |
 | s1s2 | B | 3 | 14 | 1 | 15 | 15 |
 
-## Region regressions (seed means)
+## Region regressions (seed means, not gated)
 
 | Mode | Region | None | Full | Full−none |
 |---|---|---:|---:|---:|
@@ -226,77 +129,155 @@ Mean-based verdict: **PASS**. bn-only=0.6880084555066773, shuffle-fixed=0.401078
 | s1s2 | shuffle-fixed | not saved | 0.321906–0.405764 | N/A: absent in seed 17 |
 | s1s2 | bn-only | not saved | 0.607308–0.613282 | N/A: absent in seed 17 |
 
-Inclusivity is tested at full precision; display rounding never determines a verdict. Diagnostic arms have no seed-17 reference.
+## Gate and remaining criteria
 
-## T13 rules still in force (point rules on seed means)
-
-> H1: The best adaptation arm recovers at least half the original Europe-minus-India
-> mAP gap for each mode. Choose the best of renorm/head/full separately within each
-> fold using adaptation-validation mAP only (ties: renorm, head, full). Pool its
-> out-of-fold predictions for the final score. For each mode, let I0 be original
-> India mAP, E0 original Europe mAP, and Ia selected-arm out-of-fold India mAP on
-> the same five-class comparison set. Pass iff E0 > I0 and
-> Ia - I0 >= 0.5 * (E0 - I0). Overall H1 passes only if all three modes pass.
-> A nonpositive gap or unavailable comparison metric is reported as not evaluable,
-> not a pass. Compute E0 and I0 from the original checkpoint on this pack; do not
-> use rounded context numbers as thresholds. Include uncertainty without claiming
-> that a point-threshold pass proves statistical significance.
-
-> H2: Arm ranking is renorm < head < full. Pass per mode only if this strict ordering
-> holds for out-of-fold India-pooled mAP, using each arm's validation-selected
-> epochs. Ties fail. Overall H2 passes only if all modes pass. None is reported as
-> an anchor, not included in this ordering.
-
-> H3: Shuffled-label full controls stay at prevalence level. Operational tolerance:
-> absolute difference between out-of-fold control mAP and the prevalence baseline
-> must be <= 0.05 per mode; overall pass requires all modes. Report the difference
-> and CI even if this fails. A pretrained checkpoint can retain predictive signal
-> under shuffled fine-tuning, so this is a hypothesis, not a guaranteed sanity
-> check. Shuffled-score chance columns are distinct from shuffled-label training.
-
-The later T13 correction forbids arm selection: all renorm/head/full arms are reported independently. No best arm is selected.
-
-| Mode | Arm | Mean gain | Half-gap threshold | H1 |
-|---|---|---:|---:|---|
-| s1 | renorm | -0.010775 | 0.085838 | FAIL |
-| s1 | head | 0.027507 | 0.085838 | FAIL |
-| s1 | full | 0.195390 | 0.085838 | PASS |
-| s2 | renorm | -0.104835 | 0.169400 | FAIL |
-| s2 | head | 0.074150 | 0.169400 | FAIL |
-| s2 | full | 0.102024 | 0.169400 | FAIL |
-| s1s2 | renorm | -0.162625 | 0.119379 | FAIL |
-| s1s2 | head | -0.020478 | 0.119379 | FAIL |
-| s1s2 | full | 0.037461 | 0.119379 | FAIL |
-
-| Mode | H2 strict renorm<head<full | Shuffle mean−exact prevalence | H3 absolute gap <=0.05 |
-|---|---|---:|---|
-| s1 | PASS | 0.176795 | FAIL |
-| s2 | PASS | 0.183112 | FAIL |
-| s1s2 | PASS | 0.037041 | PASS |
-
-## Inconclusive criteria — stop after this report
-
-- P2/s1: paired full-minus-shuffle CI not saved
-- P2/s2: paired full-minus-shuffle CI not saved
-- P2/s1s2: paired full-minus-shuffle CI not saved
-- (d): registered shuffle-fixed-minus-none CI predicate not saved; mean direction reported separately
-- Overall T13b gate: P2 unresolved
-
-No rerun is initiated. Soham decides whether to authorize one. Future NPZ export is independent code-only instrumentation (8e87936); its synthetic archive test passed, and no experiment was executed.
+Overall gate: **PASS** (P1=PASS, P2=PASS, P3=PASS). Step 3 (final models): NOT RUN. No final checkpoint or deployment claim.
 
 ## Provenance
 
 ```json
 {
-  "manifest_sha256": "7dece9ad5296f3da61fa96be86a3923b8164ded6d052b250ee22d3d4b6ba0e51",
+  "manifest_sha256": "7a214a412b20d73cd356e6bd356555209621baca23ffe25f23a8f0a6250f52a6",
   "reference_json_sha256": "f5eb2569d343f3eab62bc65b19e9b3e6e773ea881d75454caef00000070fd447",
-  "code_commit": "a0d7002cb9a43162e297f98a795694982791acb5",
+  "code_commit": "0b581f71f3cd82dcbb3cc4b3aaab05ac75c32d31",
   "seed_json_sha256": {
-    "1": "827e98194eb3e7acd77fbb77ac8c54c84856c6b60d274f5c3cf1305917802bcf",
-    "2": "5ae1dadbb20ef51d8d165681544a798c47cdb784de9d052351d1bd8ab5092389",
-    "3": "c4e92c69fccc119a4cf6b8b2a871b95d398d52035fffb4a084758934e1b89478"
+    "1": "ca9336591d71031a28ae6723ef021780fa7059c8bd2710f4842cd5f57cfcf71e",
+    "2": "7b4ebb55a98e684482e40edb28d8664a0a9e161f22c78cdfcd8928fcbc7912c9",
+    "3": "1556fd211bf27debec5b20e76c18ba4816740ce06669d68a2657fdb8c33cbbef"
   }
 }
 ```
 
-All input JSON source hashes match a0d7002. Input seed logs end in DONE and SHA256SUMS.txt is verified; seed 17 matches the preregistered reference hash. Small summary.json contains all unrounded numbers and audit checks; no data or weights are committed.
+## Preregistered rules and observed results
+
+> Folds are fixed: fold A (adapt punjab, kerala, assam; test delhi, sundarbans, rajasthan) and fold B (swapped). The split comes from `fold_indices`, which keeps `lc.SEED = 17`. The brief asks for the same folds, so the split does not change with the seed.
+
+Verified identical fold memberships for all three rerun seeds and the reference.
+
+> Training seeds are 1, 2 and 3. A training seed controls `seed_everything` (python, numpy, torch), the batch-order RNG and torch generator used in training, and the label permutation in `shuffled_labels`. It is passed explicitly as `--train-seed`. Nothing else changes.
+
+The three seed identities and their recorded configuration match the registered seeds.
+
+> Seed 17 is the original T13 run. It is reported as a reference but is not in the seed mean.
+
+The reference hash was verified and the score appears only in stability and reference comparisons.
+
+> The "none" arm uses the stored checkpoint predictions and does not train, so it has no seed spread by construction.
+
+None has zero spread in every OOF mode.
+
+> Known limit: fixed folds mean seed spread does not capture split variability. Only six regions exist.
+
+The intervals are conditional on the fixed folds.
+
+> **Permutation scope.** Test: for every fold and mode, train labels are a permutation of the original train labels, val labels are a permutation of the original val labels, and test labels are byte-identical to the originals. A failure means the shuffle touched test data. (Existing test `test_shuffle_is_confined_to_train_and_val` covers this on the fixture; the check is repeated on the real fold indices.)
+
+18/18 checks passed. Saved permutations preserve test labels, and the exported labels match the WorldCover pack.
+
+> **Leakage.** Test: train, val and test index sets are pairwise disjoint per fold, and no test region appears in train or val. Also a sha256 of each patch's pixels: no exact duplicate between a test patch and any train/val patch.
+
+18/18 checks passed for indices, regions, and exact pixel hashes.
+
+> **Seed persistence.** The gap (shuffle minus none) must hold on the seed mean (seeds 1, 2, 3), not only on seed 17.
+
+**PASS**. Mean shuffle−none was +0.037185.
+
+> **Candidate mechanism, to test not assume.** The shuffle arm also shuffles validation labels, so its epoch is chosen on shuffled validation. Record the selected epochs for shuffle and full. If they differ, the arms are not identically trained. The diagnostic arm below tests this directly.
+
+The selected-epochs table gives the full and shuffle epochs for all 18 seed, mode and fold combinations.
+
+> **Seed mean and spread.** Report the mean over seeds 1, 2, 3, plus the min and max per cell.
+
+The OOF table gives the three seed scores, their arithmetic mean and min–max for every cell.
+
+> **CI95.** Patch-level bootstrap, 1000 reps, seed 17, on the seed-averaged predictions. Differences use a paired bootstrap on the seed-averaged predictions of both arms. This interval does not include seed variance (see (a)).
+
+The OOF table gives intervals for individual arms. The contrast tables give paired intervals using the same resampled patches for both arms.
+
+> **P1 (full beats none).** Per mode: mean over seeds of (full - none) > 0 AND the CI95 lower bound > 0. All three modes must pass.
+
+**PASS**. The contrast table gives each mode’s seed mean, paired CI95 and verdict.
+
+> **P2 (full beats shuffle).** Per mode: mean over seeds of (full - shuffle) > 0 AND CI95 lower bound > 0. All three modes must pass.
+
+**PASS**. The contrast table gives each mode’s seed mean, paired CI95 and verdict.
+
+> **P3 (chance).** A cell whose seed-mean mAP is below the pooled prevalence baseline for India out-of-fold patches, as computed in the run's JSON, is a reported failure. The threshold is the exact prevalence value from the run, not a rounded number.
+
+The OOF table reports every cell against its exact prevalence. Gate-eligible cells **PASS**.
+
+> **P4 (regressions).** Any region where the seed-mean full mAP is below its seed-mean none mAP is listed by name. Reported, not a gate.
+
+All regressions are listed by region and mode above. They do not enter the gate.
+
+> **Gate.** PASS only if P1 and P2 pass in all three modes and no P3 failure exists. A tie or a CI that touches zero is a FAIL.
+
+**PASS** with P1 PASS, P2 PASS, and gate-eligible P3 PASS.
+
+> **Step 3 (final models).** No pass/fail and no test metrics. Output is checkpoint, data hash, code commit, seed, epochs, region list.
+
+Final models fall outside this saved-output analysis.
+
+> shuffle-fixed uses exactly the shuffle arm's training labels (train permuted within train, val permuted within val, as in `shuffled_labels`), the same optimiser, schedule and epoch count as full, and returns the **final-epoch** weights. It does no validation-based epoch selection.
+
+The saved shuffle permutations match across the two arms in all fold and mode checks. The epoch table records the fixed final epoch.
+
+> It is reported next to shuffle in every table, with the same CI95 method.
+
+Both shuffle arms appear with their registered intervals in the OOF and anomaly tables.
+
+> It is excluded from P1, P2 and the gate.
+
+The gate uses full against none and shuffle, with P3 applied to the non-diagnostic cells.
+
+> Hypothesis H-diag: if shuffle-fixed scores close to prevalence (not above none), the optical fold-A shuffle result in T13 came from validation-based epoch selection under shuffled labels, not from the image signal. If shuffle-fixed also beats none, the shuffled-label signal is not explained by epoch selection and the (b) checks decide.
+
+Fold-A optical shuffle-fixed mean 0.401079, prevalence 0.35622222222222216, and none mean 0.576312. The quoted decision rule below determines the verdict.
+
+> Decision rule for the diagnosis, fixed now: "epoch-selection artefact" is claimed only if shuffle beats none in T13 AND shuffle-fixed does not beat none (CI lower bound <= 0). Otherwise the cause is recorded as unexplained or as named by the (b) checks.
+
+Epoch-selection artefact **supported** under (d). Seed-17 shuffle−none was +0.068912. The shuffle-fixed−none paired CI95 was [-0.189519, -0.140348].
+
+> Procedure: start from the original checkpoint, use the **renorm** statistics as input normalisation, and run the adaptation-train images through the network in train mode under no_grad, using the same epochs, seeded batch order and augmentation as the other trained arms. Only BatchNorm running statistics change. No labels, no optimiser, no weight updates. Final-epoch model, no validation-based selection.
+
+The run metadata and selected epochs identify the BN-only arm for all three seeds and folds.
+
+> Tests required: convolution and classifier weights are unchanged; BatchNorm running statistics change.
+
+The existing synthetic BN test verifies unchanged convolution and classifier weights and changed BN running statistics. The saved outputs contain predictions for the real-data analysis.
+
+> Reported next to shuffle-fixed in every table, with the same CI95 method.
+
+Both diagnostic arms have seed-averaged CI95s in the OOF and fold-A tables.
+
+> Excluded from P1, P2 and the gate.
+
+The BN-only comparison does not enter the gate.
+
+> Decision rule, fixed now: compare fold-A pooled mAP for s2, seed mean over seeds 1, 2, 3. If **bn-only >= shuffle-fixed**, BatchNorm re-estimation, not label noise, explains the fold-A anomaly. If bn-only < shuffle-fixed, the BatchNorm candidate is not supported as the whole explanation, and the cause stays as recorded under (b)/(d).
+
+**PASS** under (e). BN-only was 0.688008 versus shuffle-fixed 0.401079.
+
+> The registered reference stays **none** (stored BEN normalisation, original checkpoint). It is not changed.
+
+P1 uses none. The matched comparison uses renorm.
+
+> Every table reports two comparisons side by side:
+> - **full − none** (registered, used by P1)
+> - **full − renorm** (matched normalisation: the same renorm statistics, with no training other than the full arm's)
+
+The table below places the registered and matched comparisons side by side.
+
+> The report states the confound: none and renorm differ in normalisation, so full − none includes the cost of renormalisation. The renorm arm alone is worse than none in T13 (s2 out-of-fold 0.471 vs 0.576), so full − none understates the training effect in s2 and overstates it if renorm is the better reference.
+
+Full−none includes the change in normalization. For optical input, full−renorm is larger than full−none in this rerun.
+
+## Registered and matched comparisons by mode
+
+| Mode | Full−none mean [paired CI95] | Full−renorm mean [paired CI95] |
+|---|---|---|
+| s1 | +0.195390 [0.178779, 0.215607] | +0.206165 [0.192496, 0.222491] |
+| s2 | +0.102024 [0.090485, 0.124109] | +0.206859 [0.194673, 0.230042] |
+| s1s2 | +0.037461 [0.031054, 0.058809] | +0.200086 [0.193714, 0.220422] |
+
+Seed 17 is a reference and is excluded from seed means. Fixed folds cover six regions. Patch bootstrap intervals omit seed and region variance. WorldCover provides map labels.
