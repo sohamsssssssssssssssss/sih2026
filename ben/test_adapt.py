@@ -235,7 +235,8 @@ def test_shuffle_fixed_keeps_final_epoch_without_validation_choice():
 def test_seed_repeat_cell_contract():
     text=(Path(adapt.__file__).parent/'run_adapt_seeds_gpu.txt').read_text()
     assert text.splitlines()[0]=='%%bash' and text.rstrip().endswith('echo "CELL DONE"')
-    for needle in ('set -euo pipefail', 'trap ', 'for S in 1 2 3', '--train-seed "$S"', 'seed-$S'):
+    for needle in ('set -euo pipefail', 'trap ', 'for S in 1 2 3', '--train-seed "$S"', 'seed-$S',
+                   'ben-adapt-predictions-seed-$S.npz', 'HARD STOP: per-patch NPZ missing'):
         assert needle in text, needle
     code='\n'.join(l for l in text.splitlines() if not l.lstrip().startswith('#'))
     assert not re.search(r'/kaggle/input/[A-Za-z0-9]',code)
@@ -252,3 +253,31 @@ def test_bn_only_changes_only_batchnorm_statistics():
     assert not torch.equal(before['bn.running_mean'],after['bn.running_mean'])
     assert all(not p.requires_grad for p in model.parameters())
     assert result['best_epoch']==2 and not model.training
+
+
+def test_prediction_archive_preserves_test_alignment_and_all_arms(tmp_path):
+    meta = pd.DataFrame({'idx': [0, 1, 2], 'region': ['punjab', 'delhi', 'assam']})
+    indices = np.array([2, 0])
+    scores = np.array([[.1, .2, .3, .4, .5], [.9, .8, .7, .6, .5]], dtype=np.float32)
+    labels = np.array([[0, 1, 0, 1, 0], [1, 0, 1, 0, 1]])
+    blocks = [adapt.prediction_block(meta,indices,'A','s2',arm,scores,labels) for arm in adapt.ARMS]
+    target = tmp_path/'predictions.npz'
+    info = adapt.save_test_predictions(target,blocks,3,'a'*64,'b'*40)
+    with np.load(target,allow_pickle=False) as saved:
+        assert saved['classes'].tolist() == adapt.COMMON
+        assert saved['patch_id'][:2].tolist() == ['worldcover:2', 'worldcover:0']
+        assert saved['patch_idx'][:2].tolist() == [2, 0]
+        assert saved['scores'].shape == (2*len(adapt.ARMS), 5)
+        assert np.array_equal(saved['scores'][:2],scores)
+        assert np.array_equal(saved['labels'][:2],labels)
+        assert set(saved['arm']) == set(adapt.ARMS)
+        assert set(saved['fold']) == {'A'} and set(saved['mode']) == {'s2'}
+        assert int(saved['seed']) == 3 and str(saved['wc_manifest_sha256']) == 'a'*64
+        assert str(saved['code_commit']) == 'b'*40
+    assert info['sha256'] == lc.sha256(target) and info['rows'] == 2*len(adapt.ARMS)
+    with pytest.raises(FileExistsError):
+        adapt.save_test_predictions(target,blocks,3,'a'*64,'b'*40)
+    with pytest.raises(ValueError,match='duplicate'):
+        adapt.save_test_predictions(tmp_path/'duplicate.npz',[blocks[0],blocks[0]],3,'a'*64,'b'*40)
+    with pytest.raises(ValueError,match='shape'):
+        adapt.prediction_block(meta,indices,'A','s2','full',scores[:1],labels)
