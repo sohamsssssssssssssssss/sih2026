@@ -24,3 +24,8 @@
   - Facts that differ from the brief: S1 is already dB, and the S2 band order is B04,B03,B02,B08.
   - Macro mAP uses a fixed class set per group (≥10 positives), and group differences use one common class set.
 - **Detector counting is not validated.** DIOR val exact match at 0.35 is 0.324, against 0.500 for always-0 (1837259).
+
+## 18 Nov 2026
+
+- **T15 flood U-Net parked.** Soham parked the U-Net after S1-only scored 0.897 on eight chips (gate >0.9). T15d D1 failed: S1+S2 scored 0.965 on eight chips but 0.744 on the worst chip (required >0.95). S2 alone scored 0.842 on that chip. D2 points to the pipeline under the registered rule. The cause remains unresolved. References: preregistration `7daad8d`, diagnostic branch and report-reader reference `7fd5d12`, and parked note `f72523f`. Resume only by Soham's decision.
+- **Flood answers use per-scene Otsu.** `flood-otsu` remains `experimental_unvalidated`. The fixed method scored 0.631 India-test IoU against its 0.65 gate. Shipped B1 scored 0.704. The Otsu method was not tuned and no threshold was relaxed.
