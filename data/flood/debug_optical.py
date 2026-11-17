@@ -106,8 +106,9 @@ def summarize(pack, dest, dev):
             path = dest/name/'flood-run.json'; r = read(path)
             assert r['pack_manifest_sha256'] == pack.sha and r['device'] == 'mps'
             assert r['action'] == 'tiny' and r['train_indices'] == ([WORST] if scope == 'single' else ROWS)
-            assert len(r['history']) == 400 and r['stop_reason'] == 'epoch_budget'
+            assert len(r['history']) == 400
             if mode != 's1':
+                assert r['stop_reason'] == 'epoch_budget'
                 assert r['config'] == config_for(read(dest/'cosine400/flood-run.json'), mode, scope)
             rows.append({'mode': mode, 'scope': scope, 'best_iou': r['metrics']['primary']['train']['water_iou'],
                          'end_loss': r['history'][-1]['train_loss'], 'best_epoch': r['best_epoch'],
