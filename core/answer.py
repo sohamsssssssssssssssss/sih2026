@@ -7,7 +7,7 @@ from pathlib import Path
 
 from core.gate import GateDecision, evaluate
 from core.registry import ToolRegistry
-from core.router import Route, route
+from core.router import CHANGE_UNSUPPORTED, Route, route
 from core.schema import Answer, Evidence, Query, Scene, ToolResult, ToolStatus
 from orchestrator.trace import append_record
 
@@ -72,7 +72,10 @@ def assemble(result: ToolResult | None, gate: GateDecision, status: ToolStatus |
     if reason is not None:
         record_events(trace_id, "answer", [{"rule": "status", "status": "refused", "refusal_reason": reason},
                                           {"rule": "calibration", "outcome": "not_applicable"}])
-        return Answer(status="refused", text=f"Cannot answer: {reason}.", refusal_reason=reason,
+        text = f"Cannot answer: {reason}."
+        if reason == "not_answerable" and any(e.summary.get("policy") == "change_unsupported" for e in evidence):
+            text = CHANGE_UNSUPPORTED
+        return Answer(status="refused", text=text, refusal_reason=reason,
                       evidence=evidence, trace_id=trace_id)
     experimental = status.status != "validated"
     clean_result = ToolResult.model_validate({
@@ -98,7 +101,7 @@ def assemble(result: ToolResult | None, gate: GateDecision, status: ToolStatus |
 
 
 def decide(query: Query, scene: Scene, registry: ToolRegistry, *, trace_id: str, **gate_inputs) -> tuple[Route, GateDecision]:
-    choice = route(query, scene)
+    choice = route(query, scene, has_second_scene=gate_inputs.get("second_scene") is not None)
     record_events(trace_id, "route", [{"intent": choice.intent, "reason": choice.reason}])
     record_events(trace_id, "route", [{"rank": i, "tool": name, "reason": choice.reason}
                                       for i, name in enumerate(choice.tools, 1)])
@@ -111,7 +114,7 @@ def run_query(query: Query, scene: Scene, pixels_by_sensor: dict, registry: Tool
               trace_id: str, calibration_path: str | Path | None = None, **gate_inputs) -> Answer:
     """Caller supplies mode-specific pixels; cloudy optical pixels cannot stand in for radar.
 
-    Change pixels are a date-ordered pair; joint optical-SAR pixels are a sensor pair.
+    Joint optical-SAR pixels are a sensor pair.
     Pixel loaders/adapters retain responsibility for grid, units and payload checks.
     """
     _, decision = decide(query, scene, registry, trace_id=trace_id, **gate_inputs)

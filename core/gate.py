@@ -6,7 +6,7 @@ from typing import Mapping
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from core.registry import ToolRegistry, UnknownTool
-from core.router import NON_IMAGERY, Route
+from core.router import CHANGE_UNSUPPORTED, COMPARE, NON_IMAGERY, TEMPORAL, Route
 from core.schema import Evidence, Query, RefusalReason, Scene
 
 # PROVISIONAL guards, not calibrated accuracy cutoffs; ROUTER_SPEC.md records why.
@@ -14,7 +14,7 @@ CLOUD_PCT = 50.0
 NODATA_PCT = 50.0
 OOD_STD = 2.0
 INDIA_BOUNDS = (68.0, 6.0, 98.0, 38.0)
-DETERMINISTIC = {"flood-otsu", "change-deterministic", "optical-sar-deterministic"}
+DETERMINISTIC = {"flood-otsu", "optical-sar-deterministic"}
 
 
 class Thresholds(BaseModel):
@@ -60,7 +60,7 @@ def evaluate(query: Query, scene: Scene, choice: Route, registry: ToolRegistry, 
     """Inspect metadata only. Observed/training means must share units and band order."""
     events: list[Evidence] = []
     selected = choice.tools[0] if choice.tools else None
-    mode = "S2" if scene.sensor == "S1S2" and selected == "change-deterministic" else scene.sensor
+    mode = scene.sensor
 
     def event(rule, outcome, *, needs=(), **details):
         events.append(Evidence(kind="text", needs_sensor=needs,
@@ -70,17 +70,15 @@ def evaluate(query: Query, scene: Scene, choice: Route, registry: ToolRegistry, 
         event(reason, "refused", needs=needs, **details)
         return GateDecision(selected, mode, reason, tuple(events))
 
+    if (choice.intent == "change" or query.qtype == "change" or second_scene is not None
+            or TEMPORAL.search(query.text) or COMPARE.search(query.text)):
+        selected = None
+        return refuse("not_answerable", policy="change_unsupported", reference="T18", detail=CHANGE_UNSUPPORTED)
     if NON_IMAGERY.search(query.text) or choice.intent == "not_answerable":
         return refuse("not_answerable")
     event("answerability", "pass")
-    temporal = choice.intent == "change" or query.qtype == "change"
-    if temporal and second_scene is None:
-        return refuse("second_scene_missing")
-    scenes = (scene, second_scene) if temporal else (scene,)
-    if temporal and (scene.crs, scene.bounds, scene.bands, scene.gsd_m) != (
-            second_scene.crs, second_scene.bounds, second_scene.bands, second_scene.gsd_m):
-        return refuse("checks_disagree", detail="Temporal scenes need identical CRS, bounds, bands and GSD")
-    event("second_date", "pass" if temporal else "not_applicable")
+    event("second_date", "not_applicable")
+    scenes = (scene,)
     for index, item in enumerate(scenes):
         event("region_threshold", "used", scene=index, threshold=list(thresholds.india_bounds), provenance="PROVISIONAL")
         try:
@@ -109,8 +107,7 @@ def evaluate(query: Query, scene: Scene, choice: Route, registry: ToolRegistry, 
             elif item.cloud_pct > thresholds.cloud_pct:
                 cloudy = True
         if cloudy:
-            radar = {"landcover": "landcover", "flood": "flood-otsu",
-                     "change": "change-deterministic"}.get(choice.intent)
+            radar = {"landcover": "landcover", "flood": "flood-otsu"}.get(choice.intent)
             try:
                 radar_tool = registry.get(radar) if radar else None
             except UnknownTool:
@@ -140,11 +137,6 @@ def evaluate(query: Query, scene: Scene, choice: Route, registry: ToolRegistry, 
         required = (("VV", "VH", "B02", "B03", "B04", "B08") if mode == "S1S2" else
                     ("VV", "VH") if mode == "S1" else ("B02", "B03", "B04", "B08"))
         required_sensors = ("S1", "S2") if mode == "S1S2" else ("S1",) if mode == "S1" else ("S2",)
-    elif selected == "change-deterministic":
-        required = (("VV", "VH", "dataMask") if mode == "S1" else
-                    ("red", "green", "blue") if mode == "RGB_HR" else
-                    ("B02", "B03", "B04", "B08", "dataMask"))
-        required_sensors = ("S1",) if mode == "S1" else ("RGB_HR",) if mode == "RGB_HR" else ("S2",)
     elif selected == "flood-otsu":
         required, required_sensors = ("VH",), ("S1",)
         mode = "S1"

@@ -5,6 +5,13 @@ Precondition: core/orchestrator 366 passed, 2 skipped, 7 subtests passed on a
 committed snapshot. Untouched full suite: 7 failed, 12 errors, 1069 passed,
 3 skipped. Final comparison uses failure identities, not just counts.
 
+## Change QA policy after T18
+
+Change QA is unsupported with one or two dates. The change route has no
+tool candidates. The gate returns `not_answerable` with the T18 reason
+before temporal metadata or tools are checked. Temporal rows below reflect
+this policy. The remaining route and gate descriptions document T08.
+
 ## Routes
 
 Deterministic English word-boundary patterns, no model call. Precedence:
@@ -119,10 +126,10 @@ missing_band removes B08; coarse_count sets Query.needs_gsd_m=1.
 | E12 | Map flooding through the clouds. | joint_cloud | flood-otsu |
 | E13 | Describe the land cover through clouds. | joint_cloud | landcover |
 | E14 | Map flood water outside India. | s1_outside | flood-otsu |
-| E15 | What changed between these dates? | change_s2 | change-deterministic |
-| E16 | Have the buildings changed? | change_s2 | change-deterministic |
-| E17 | Has the water extent expanded? | change_s1 | change-deterministic |
-| E18 | Compare before and after the flooding. | change_joint_cloud | change-deterministic |
+| E15 | What changed between these dates? | change_s2 | refuse:not_answerable |
+| E16 | Have the buildings changed? | change_s2 | refuse:not_answerable |
+| E17 | Has the water extent expanded? | change_s1 | refuse:not_answerable |
+| E18 | Compare before and after the flooding. | change_joint_cloud | refuse:not_answerable |
 | E19 | How many cars are visible? | rgb | grounding-dino-swint |
 | E20 | Detect ships. | s2 | grounding-dino-swint |
 | E21 | Locate buildings. | rgb | grounding-dino-swint |
@@ -136,7 +143,7 @@ missing_band removes B08; coarse_count sets Query.needs_gsd_m=1.
 | E29 | How many people live here? | rgb | refuse:not_answerable |
 | E30 | Predict tomorrow's flood. | joint | refuse:not_answerable |
 | E31 | What is this village's name? | s2 | refuse:not_answerable |
-| E32 | What changed since last year? | s2 | refuse:second_scene_missing |
+| E32 | What changed since last year? | s2 | refuse:not_answerable |
 | E33 | What is the land cover? | s2_cloud | refuse:cloud |
 | E34 | Map flooding through clouds. | joint_cloud_no_radar | refuse:tool_missing |
 | E35 | Describe this scene. | s2_nodata | refuse:nodata |

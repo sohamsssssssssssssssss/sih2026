@@ -105,7 +105,7 @@ def test_spec_examples(case_id, text, profile, expected, tmp_path):
     actual = f'refuse:{gate.refusal_reason}' if not gate.passed else gate.tool
     assert actual == expected
     assert trace.verify_chain()[0]
-    if case_id in ('E12', 'E13', 'E18'):
+    if case_id in ('E12', 'E13'):
         assert any(e.summary.get('warning') == 'monsoon_mode' for e in gate.evidence)
     if case_id == 'E14':
         assert any(e.summary.get('warning') == 'out_of_region' for e in gate.evidence)
@@ -217,42 +217,42 @@ def test_unknown_metadata_warns(update, warning, tmp_path):
     assert any(e.summary.get('warning') == warning for e in gate.evidence)
 
 
-@pytest.mark.parametrize('change', [dict(crs='EPSG:3857'), dict(gsd_m=20), dict(bands=('B02',)), dict(bounds=(76, 20, 76.1, 20.1))])
-def test_temporal_grid_mismatch_refuses(change, tmp_path):
-    reg = registry(tmp_path)
-    a = scene()
-    q = Query(text='What changed?', qtype='change')
-    gate = evaluate(q, a, route(q, a), reg, second_scene=scene(**change))
-    assert gate.refusal_reason == 'checks_disagree'
+@pytest.mark.parametrize('text,qtype,with_pair', [
+    ('Describe the scene', 'change', False),
+    ('Describe the scene', 'open', True),
+    ('What changed?', 'open', False),
+    ('Show the before/after flooding', 'open', True),
+    ('How did water extent increase?', 'open', False),
+    ('Flood extent in 2023 and 2024', 'open', False),
+    ('Map cropland on both dates', 'open', False),
+])
+def test_temporal_refusal_preempts_tools_and_metadata(text, qtype, with_pair, tmp_path):
+    a = scene(nodata_pct=100, cloud_pct=100)
+    reg = registry(tmp_path, status='validated')
+    answer = run_query(Query(text=text, qtype=qtype), a, {}, reg, trace_id='temporal',
+                       second_scene=scene(crs='EPSG:3857') if with_pair else None)
+    assert answer.status == 'refused' and answer.refusal_reason == 'not_answerable'
+    assert answer.primary is None and answer.confidence is None
+    assert 'T18' in answer.text and answer.evidence[-1].summary['reference'] == 'T18'
+    assert not any(tool.calls for tool in reg.list())
+    assert any(e.get('phase') == 'route' and e.get('intent') == 'change' for e in trace.records())
+    assert not any(e.get('phase') == 'execution' for e in trace.records())
 
 
-def test_second_scene_cloud_and_bands_checked(tmp_path):
-    a, reg, inputs = fixture('change_joint_cloud', tmp_path)
-    q = Query(text='What changed?', qtype='change')
-    inputs['second_scene'] = a.model_copy(update={'nodata_pct': 80})
-    assert evaluate(q, a, route(q, a), reg, **inputs).refusal_reason == 'nodata'
-    # Identical grids, but second date lacks S1: no monsoon replacement.
-    inputs['second_scene'] = a.model_copy(update={'sensor': 'S2'})
-    assert evaluate(q, a, route(q, a), reg, **inputs).refusal_reason == 'cloud'
-
-
-def test_explicit_change_qtype_and_sensor_requirement(tmp_path):
-    reg = registry(tmp_path)
-    q = Query(text='Describe the scene', qtype='change')
-    assert evaluate(q, scene(), route(q, scene()), reg).refusal_reason == 'second_scene_missing'
+def test_explicit_sensor_requirement(tmp_path):
     q = Query(text='land cover', qtype='open', needs_sensor=('S1',))
-    assert evaluate(q, scene(), route(q, scene()), reg).refusal_reason == 'sensor_missing'
+    assert evaluate(q, scene(), route(q, scene()), registry(tmp_path)).refusal_reason == 'sensor_missing'
 
 
 @pytest.mark.parametrize('shift,warn', [(2.0, False), (2.001, True), (-3.18, True)])
-def test_ood_boundary_and_second_date(shift, warn, tmp_path):
+def test_ood_boundary(shift, warn, tmp_path):
     reg = registry(tmp_path)
     a = scene()
-    q = Query(text='What changed?', qtype='change')
+    q = Query(text='Map land cover', qtype='landcover')
     stats = {b: (100, 10) for b in BANDS}
     means = {b: 100 for b in BANDS}
-    gate = evaluate(q, a, route(q, a), reg, second_scene=scene(), training_stats=stats,
-                    band_means=(means, {**means, 'B04': 100 + shift * 10}))
+    gate = evaluate(q, a, route(q, a), reg, training_stats=stats,
+                    band_means=({**means, 'B04': 100 + shift * 10},))
     assert gate.passed
     assert any(e.summary.get('warning') == 'out_of_distribution' for e in gate.evidence) == warn
     assert gate.clean == (not warn)

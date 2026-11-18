@@ -170,7 +170,7 @@ def test_no_shared_orbit_track_is_an_explicit_error() -> None:
         s1.pick_pair([acquisition(1)], [acquisition(13, "descending", 85)])
 
 
-def test_fetched_pair_is_ingested_and_answers_a_flood_question(runtime_dirs) -> None:
+def test_fetched_pair_is_ingested_and_temporal_flood_qa_abstains(runtime_dirs) -> None:
     hub = FakeSentinelHub(before=[acquisition(1, relative_orbit=99), acquisition(1)], after=[acquisition(13)])
 
     with httpx.Client(transport=httpx.MockTransport(hub)) as client:
@@ -192,13 +192,12 @@ def test_fetched_pair_is_ingested_and_answers_a_flood_question(runtime_dirs) -> 
     with rasterio.open(services.INGESTED_RASTER_DIR / f"{fetched['after']['scene_id']}.tif") as raster:
         assert raster.descriptions == ("VV", "VH", "dataMask")
 
-    answer = services.analyze_scene(
-        fetched["before"]["scene_id"], "Did flooding expand between these scenes?", None,
-        scene_id_2=fetched["after"]["scene_id"],
-    )
-
-    stats = next(item for item in answer["evidence"] if item["type"] == "water_change_statistics")
-    assert stats["status"] == "measured" and stats["new_water_ha"] > 0
+    with pytest.raises(services.ProviderNotReady, match="T18") as refused:
+        services.analyze_scene(
+            fetched["before"]["scene_id"], "Did flooding expand between these scenes?", None,
+            scene_id_2=fetched["after"]["scene_id"],
+        )
+    assert refused.value.reason_code == "not_answerable"
 
 
 def test_process_output_on_the_wrong_grid_is_rejected(runtime_dirs) -> None:

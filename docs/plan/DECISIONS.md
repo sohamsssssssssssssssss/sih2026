@@ -53,3 +53,14 @@ remains the historical record for the earlier analysis.
 
 - **T15 flood U-Net parked.** Soham parked the U-Net after S1-only scored 0.897 on eight chips (gate >0.9). T15d D1 failed: S1+S2 scored 0.965 on eight chips but 0.744 on the worst chip (required >0.95). S2 alone scored 0.842 on that chip. D2 points to the pipeline under the registered rule. The cause remains unresolved. References: preregistration `7daad8d`, diagnostic branch and report-reader reference `7fd5d12`, and parked note `f72523f`. Resume only by Soham's decision.
 - **Flood answers use per-scene Otsu.** `flood-otsu` remains `experimental_unvalidated`. The fixed method scored 0.631 India-test IoU against its 0.65 gate. Shipped B1 scored 0.704. The Otsu method was not tuned and no threshold was relaxed.
+
+## 18 Nov 2026 — Change QA disabled
+
+Soham disabled temporal change QA and stopped CDVQA work. In G3 (`89fc5bf`),
+the adapter retained much of its accuracy when the two input images were
+identical. The T18 preregistration (`86cdf97`) and results (`1d0cbaf`) showed
+that CDVQA presence labels are strongly predictable from the question text
+alone (82.8% and 82.3%). Pixel differencing (56.0% and 55.0%) did not beat
+train majority (56.2% and 55.5%). Change requests now receive the existing
+`not_answerable` reason and the capabilities endpoints advertise change QA
+as unsupported. The registered `change-deterministic` tool is disabled.

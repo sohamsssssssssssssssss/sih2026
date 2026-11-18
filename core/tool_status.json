@@ -19,7 +19,7 @@
       "evidence_refs": []
     },
     "change-deterministic": {
-      "status": "experimental_unvalidated",
+      "status": "disabled",
       "evidence_refs": []
     },
     "landcover": {

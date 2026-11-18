@@ -74,19 +74,16 @@ class AskService:
 
     def work(self,request,state):
         first=self.scenes.load(request.scene_ref)
-        second=self.scenes.load(request.second_scene_ref) if request.second_scene_ref is not None else None
-        query=Query(text=request.question,qtype='open')
+        query=Query(text=request.question,qtype='change' if request.second_scene_ref is not None else 'open')
         with state.lock:
             if state.expired(): return None
             checked=self.verified_trace()
             if not checked['verified']: raise trace.TraceIntegrityError(checked['message'])
             record_events(state.trace_id,'config',[{'thresholds_sha256':self.thresholds_sha,
                           'thresholds':self.thresholds.model_dump(mode='json'),'timeout_s':self.config.timeout}])
-            record_events(state.trace_id,'scene',[{'scene_id':item.scene.scene_id,'source':item.scene.source}
-                          for item in (first,second) if item is not None])
+            record_events(state.trace_id,'scene',[{'scene_id':first.scene.scene_id,'source':first.scene.source}])
             _,gate=decide(query,first.scene,self.registry,trace_id=state.trace_id,
-                          second_scene=second.scene if second else None,
-                          band_means=tuple(x.means() for x in (first,second) if x is not None),
+                          band_means=(first.means(),),
                           thresholds=self.thresholds)
             if not gate.passed:
                 answer=assemble(None,gate,None,trace_id=state.trace_id)
@@ -103,18 +100,14 @@ class AskService:
                     # Metadata gate passed; load under the tool lock before checking
                     # distribution shift against the checkpoint's own TRAIN statistics.
                     _,stats,_,_=tool._load(gate.mode.lower())
-                    train={};observations=[]
-                    for item in (first,second):
-                        if item is None: continue
-                        means={}
-                        for key,stat in stats.items():
-                            values=item.arrays[key]['pixels'].astype(np.float32)
-                            values=(np.clip(values,np.array(stat['clip_lo'])[:,None,None],np.array(stat['clip_hi'])[:,None,None])
-                                    if key=='s1' else values*stat['scale'])
-                            for band,mean,std,observed in zip(item.arrays[key]['bands'],stat['mean'],stat['std'],values):
-                                train[band]=(mean,std)
-                                if np.isfinite(observed).any(): means[band]=float(observed[np.isfinite(observed)].mean())
-                        observations.append(means)
+                    train={};means={}
+                    for key,stat in stats.items():
+                        values=first.arrays[key]['pixels'].astype(np.float32)
+                        values=(np.clip(values,np.array(stat['clip_lo'])[:,None,None],np.array(stat['clip_hi'])[:,None,None])
+                                if key=='s1' else values*stat['scale'])
+                        for band,mean,std,observed in zip(first.arrays[key]['bands'],stat['mean'],stat['std'],values):
+                            train[band]=(mean,std)
+                            if np.isfinite(observed).any(): means[band]=float(observed[np.isfinite(observed)].mean())
                     after_load=set(getattr(tool,'_loaded',{}))
                     if after_load-before:
                         self.loaded[tool.name]=sorted(after_load)
@@ -124,15 +117,13 @@ class AskService:
                         if after_load-before:
                             record_events(state.trace_id,'load',[{'tool':tool.name,'modes':sorted(after_load-before),**memory()}])
                         _,gate=decide(query,first.scene,self.registry,trace_id=state.trace_id,
-                                      second_scene=second.scene if second else None,band_means=tuple(observations),
+                                      band_means=(means,),
                                       training_stats=train,thresholds=self.thresholds)
                         if not gate.passed:
                             state.closed=True
                             return assemble(None,gate,None,trace_id=state.trace_id)
                     before=after_load
                 pixels=first.pixels(tool.name,gate.mode,self.config.data_dir/'previews')
-                if second:
-                    pixels=(pixels,second.pixels(tool.name,gate.mode,self.config.data_dir/'previews'))
                 with state.lock:
                     if state.expired(): return None
                     record_events(state.trace_id,'execution',[{'tool':tool.name,'mode':gate.mode,'outcome':'start'}])

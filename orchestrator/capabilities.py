@@ -12,6 +12,7 @@ the existing name-keyed registry, which remains the execution interface.
 from dataclasses import dataclass
 from threading import Lock
 
+from core.router import CHANGE_UNSUPPORTED
 from models.base import ModelReadiness
 
 # Stable internal capability identifiers.
@@ -155,6 +156,12 @@ def capability_readiness(capability: str) -> dict[str, object]:
             "registered": False, "available": False, "state": "NOT_IMPLEMENTED",
             "provider": None, "reason_code": "NO_PROVIDER",
             "detail": "No real provider is registered for this capability.",
+        }
+    if capability == CHANGE_VQA:
+        return {
+            "registered": True, "available": False, "state": "UNAVAILABLE",
+            "provider": resolved.provider_name, "reason_code": "not_answerable",
+            "detail": CHANGE_UNSUPPORTED,
         }
     from orchestrator.registry import get
 

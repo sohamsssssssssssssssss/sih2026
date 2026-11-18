@@ -15,6 +15,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Protocol, runtime_checkable
 
+from core.router import CHANGE_UNSUPPORTED
 from core.schema import Query, Scene, ToolResult, ToolStatus
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -273,6 +274,12 @@ def capability_state(capability: str, *, registry: ToolRegistry | None = None) -
         _ensure_defaults()
         active = _DEFAULT
     tool_name = CAPABILITY_TOOLS.get(capability)
+    if capability == "change_vqa":
+        return {
+            "capability": capability, "tool": tool_name,
+            "registered": tool_name in active.names(), "state": "UNAVAILABLE",
+            "available": False, "label": None, "reason": CHANGE_UNSUPPORTED,
+        }
     if tool_name is None:
         return {
             "capability": capability,

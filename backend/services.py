@@ -37,6 +37,7 @@ from models.paths import public_path
 os.environ["HF_HUB_OFFLINE"] = "1"
 os.environ["TRANSFORMERS_OFFLINE"] = "1"
 
+from core.router import CHANGE_UNSUPPORTED, COMPARE, TEMPORAL  # noqa: E402
 from orchestrator.capabilities import (  # noqa: E402
     CapabilityUnavailable,
     CHANGE_VQA,
@@ -834,6 +835,14 @@ def analyze_scene(
             requested_capability=capability,
         )
     )
+    # An explicit provider override cannot turn temporal QA into single-image QA.
+    # Optical–SAR comparison still accepts a pair of different sensors.
+    if (plan.selected_capability == CHANGE_VQA or TEMPORAL.search(question)
+            or (plan.selected_capability != OPTICAL_SAR
+                and (scene_id_2 is not None or COMPARE.search(question)))):
+        raise ProviderNotReady(
+            CHANGE_VQA, None, ModelReadiness(False, "not_answerable", CHANGE_UNSUPPORTED)
+        )
     execution = build_execution_plan(plan)
     if plan.missing_inputs:
         if "second_scene" in plan.missing_inputs:

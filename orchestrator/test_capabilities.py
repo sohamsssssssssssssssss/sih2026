@@ -12,6 +12,7 @@ from models.grounding_dino import GroundingDINOModel
 from models.optical_sar import OpticalSARModel
 from models.qwen_vl import QwenVLModel
 
+from core.router import CHANGE_UNSUPPORTED
 from orchestrator import capabilities
 from orchestrator.capabilities import (
     CHANGE_VQA,
@@ -149,7 +150,7 @@ class CapabilityRegistryTests(unittest.TestCase):
             [
                 {"name": "single_image_vqa", "registered": True, "available": True, "state": "AVAILABLE", "provider": "qwen2.5vl-3b", "reason_code": None, "detail": None},
                 {"name": "grounding", "registered": True, "available": True, "state": "AVAILABLE", "provider": "grounding-dino-swint", "reason_code": None, "detail": None},
-                {"name": "change_vqa", "registered": True, "available": True, "state": "AVAILABLE", "provider": "change-deterministic", "reason_code": None, "detail": None},
+                {"name": "change_vqa", "registered": True, "available": False, "state": "UNAVAILABLE", "provider": "change-deterministic", "reason_code": "not_answerable", "detail": CHANGE_UNSUPPORTED},
                 {"name": "optical_sar", "registered": True, "available": True, "state": "AVAILABLE", "provider": "optical-sar-deterministic", "reason_code": None, "detail": None},
             ],
         )

@@ -101,7 +101,7 @@ def test_all_refusal_reasons_cross_api_boundary(api,monkeypatch,reason):
 
 
 @pytest.mark.parametrize('question,reason',[('What is the price?','not_answerable'),
-                                         ('What changed since last year?','second_scene_missing')])
+                                         ('What changed since last year?','not_answerable')])
 def test_actual_gate_refusals(api,question,reason):
     client,runtime,tool=api
     response=ask(client,upload(client),question)
@@ -190,10 +190,27 @@ def test_invalid_and_unknown_refs(api):
     assert client.get('/trace/nonexistent').status_code==404
 
 
-def test_second_scene_is_loaded_before_gate(api):
-    client,_,_=api
-    ref=upload(client)
-    assert ask(client,ref,'What changed?',second_scene_ref='upload_'+'f'*32).status_code==404
+@pytest.mark.parametrize('question', ['What changed?', 'Map flood water'])
+def test_pair_abstains_and_advertises_change_unavailability(api, question):
+    client, _, tool = api
+    ref = upload(client)
+    response = ask(client, ref, question, second_scene_ref=ref)
+    assert response.status_code == 200
+    answer = response.json()
+    assert answer['status'] == 'refused' and answer['refusal_reason'] == 'not_answerable'
+    assert 'T18' in answer['text'] and tool.calls == 0
+    capabilities = {row['capability']: row for row in client.get('/capabilities').json()['capabilities']}
+    assert capabilities['change_vqa']['state'] == 'UNAVAILABLE'
+    assert not capabilities['change_vqa']['available'] and 'T18' in capabilities['change_vqa']['reason']
+    assert capabilities['flood']['available']
+
+
+def test_temporal_refusal_does_not_require_second_scene_pixels(api):
+    client, _, tool = api
+    response = ask(client, upload(client), 'What changed?', second_scene_ref='upload_'+'f'*32)
+    assert response.status_code == 200
+    assert response.json()['refusal_reason'] == 'not_answerable'
+    assert tool.calls == 0
 
 
 def test_threshold_file_changes_gate_and_adapter_consistently(api):

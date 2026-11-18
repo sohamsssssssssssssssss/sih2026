@@ -53,7 +53,7 @@ def execute_plan(
     unavailable = [step.capability for step in plan.steps if not step.provider_available]
     if unavailable:
         raise CapabilityUnavailable(
-            f"No provider is registered for capability: {unavailable[0]}"
+            plan.plan.unavailable_reason or f"Provider unavailable for capability: {unavailable[0]}"
         )
     if not plan.executable:
         raise CapabilityUnavailable(

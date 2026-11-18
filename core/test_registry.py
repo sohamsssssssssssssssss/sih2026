@@ -219,9 +219,12 @@ def test_capability_mapping_disabled_and_unregistered(tmp_path: Path) -> None:
     assert capability_state("not_a_capability", registry=reg)["state"] == "NOT_IMPLEMENTED"
 
 
-def test_default_tools_are_registered_and_experimental() -> None:
+def test_default_tools_have_expected_status() -> None:
     import core.registry as module
 
     module.reset_registry()
     assert set(module.names()) == set(CAPABILITY_TOOLS.values())
-    assert all(tool.status.status == "experimental_unvalidated" for tool in module.list_tools())
+    assert {t.name: t.status.status for t in module.list_tools()} == {
+        name: "disabled" if name == "change-deterministic" else "experimental_unvalidated"
+        for name in CAPABILITY_TOOLS.values()
+    }
