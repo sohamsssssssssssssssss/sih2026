@@ -108,7 +108,7 @@ def test_spec_examples(case_id, text, profile, expected, tmp_path):
     if case_id in ('E12', 'E13'):
         assert any(e.summary.get('warning') == 'monsoon_mode' for e in gate.evidence)
     if case_id == 'E14':
-        assert any(e.summary.get('warning') == 'out_of_region' for e in gate.evidence)
+        assert gate.evidence[-1].summary['policy'] == 'out_of_region'
     if case_id == 'E26':
         assert any(e.summary.get('warning') == 'out_of_distribution' for e in gate.evidence)
     assert not any(tool.calls for tool in reg.list())
@@ -207,7 +207,7 @@ def test_threshold_boundaries(value, passed, field, reason, tmp_path):
 
 
 @pytest.mark.parametrize('update,warning', [({'crs': 'INVALID'}, 'region_unknown'),
-    ({'cloud_pct': None}, 'cloud_unknown'), ({'bounds': (-2, 45, -1, 46)}, 'out_of_region')])
+    ({'cloud_pct': None}, 'cloud_unknown')])
 def test_unknown_metadata_warns(update, warning, tmp_path):
     reg = registry(tmp_path)
     a = scene(**update)
@@ -215,6 +215,41 @@ def test_unknown_metadata_warns(update, warning, tmp_path):
     gate = evaluate(q, a, route(q, a), reg)
     assert gate.passed and not gate.clean
     assert any(e.summary.get('warning') == warning for e in gate.evidence)
+
+
+@pytest.mark.parametrize('bounds,inside', [
+    ((68, 6, 98, 38), True),
+    ((68.00001, 6.00001, 97.99999, 37.99999), True),
+    ((67.99999, 6, 98, 38), False),
+    ((68, 5.99999, 98, 38), False),
+    ((68, 6, 98.00001, 38), False),
+    ((68, 6, 98, 38.00001), False),
+])
+def test_india_bounds_refuse_before_execution(bounds, inside, tmp_path):
+    reg = registry(tmp_path, status='validated')
+    a = scene(bounds=bounds)
+    q = Query(text='What is the land cover?', qtype='landcover')
+    answer = run_query(q, a, {'S2': b'pixels'}, reg, trace_id='india-boundary')
+    if inside:
+        assert answer.primary.tool == 'landcover' and reg.get('landcover').calls
+    else:
+        assert answer.status == 'refused' and answer.refusal_reason == 'not_answerable'
+        assert 'outside the supported India region' in answer.text
+        assert answer.primary is None and answer.confidence is None
+        assert not any(tool.calls for tool in reg.list())
+
+
+def test_unknown_cloud_answer_explains_metadata_gap(tmp_path):
+    reg = registry(tmp_path)
+    a = scene(cloud_pct=None)
+    tool = reg.get('landcover')
+    tool.run = lambda *_: ToolResult(tool=tool.name, tool_version=tool.version, latency_ms=1,
+                                    value={'answer': 'Uncalibrated coarse land-cover presence scores.'})
+    answer = run_query(Query(text='Map land cover', qtype='landcover'), a, {'S2': b'pixels'}, reg,
+                       trace_id='unknown-cloud')
+    assert answer.status == 'low_confidence' and answer.confidence is None
+    assert 'Uncalibrated' in answer.text and 'Cloud cover not checked (no cloud metadata).' in answer.text
+    assert any(e.summary.get('warning') == 'cloud_unknown' for e in answer.evidence)
 
 
 @pytest.mark.parametrize('text,qtype,with_pair', [

@@ -43,8 +43,9 @@ hash chain uses core.canonical. No model is loaded or called in route/gate logic
 1. Prices/costs, names/ownership, people and future/prediction -> not_answerable.
 2. Change without a second scene -> second_scene_missing. Temporal CRS/bounds
    mismatch -> checks_disagree (exact metadata contract comparison).
-3. Transform bounds to EPSG:4326. Outside [68,6,98,38] -> out_of_region, allowed
-   with a warning. **PROVISIONAL** conservative rectangle, not a legal boundary.
+3. Transform bounds to EPSG:4326. Extending outside [68,6,98,38] yields a
+   `not_answerable` refusal with `out_of_region` evidence. Bounds may touch the
+   edges. The **PROVISIONAL** rectangle is a service limit, not a legal boundary.
    Failed transformation -> region_unknown and low_confidence, not a guess.
 4. Nodata >50% on either required scene -> nodata. **PROVISIONAL** majority-missing
    guard, not a scientifically validated accuracy cutoff. Equality passes.
@@ -54,6 +55,7 @@ hash chain uses core.canonical. No model is loaded or called in route/gate logic
    Otherwise refuse cloud, Evidence.needs_sensor=(S1,). Count/general have no
    authorized radar replacement. **PROVISIONAL** majority-cloud guard; <=50% is
    not claimed reliable. Unknown optical cloud -> cloud_unknown/low_confidence.
+   The displayed answer explains that cloud cover was not checked because metadata is absent.
 6. Required sensors absent -> sensor_missing. Missing bands -> bands_missing,
    with exact band names and needed sensors in evidence. Validate both dates after
    any reroute. Combined optical-SAR requires S1+S2. Known mode-dependent bands:
@@ -125,7 +127,7 @@ missing_band removes B08; coarse_count sets Query.needs_gsd_m=1.
 | E11 | Which area is inundated? | s1 | flood-otsu |
 | E12 | Map flooding through the clouds. | joint_cloud | flood-otsu |
 | E13 | Describe the land cover through clouds. | joint_cloud | landcover |
-| E14 | Map flood water outside India. | s1_outside | flood-otsu |
+| E14 | Map flood water outside India. | s1_outside | refuse:not_answerable |
 | E15 | What changed between these dates? | change_s2 | refuse:not_answerable |
 | E16 | Have the buildings changed? | change_s2 | refuse:not_answerable |
 | E17 | Has the water extent expanded? | change_s1 | refuse:not_answerable |
@@ -153,7 +155,7 @@ missing_band removes B08; coarse_count sets Query.needs_gsd_m=1.
 | E39 | What is the land cover? | no_landcover | refuse:tool_missing |
 | E40 | Count cars at one-metre detail. | coarse_count | refuse:gsd_too_coarse |
 
-Warnings: E12/E13/E18 monsoon_mode, E14 out_of_region, E26 out_of_distribution.
+Warnings: E12/E13/E18 monsoon_mode, E26 out_of_distribution.
 These remain routes, not silent refusals. Report the complete route confusion
 table and every off-diagonal error. Preserve missing-tool reality in production;
 no registry validation or model availability is inferred from fake tests.

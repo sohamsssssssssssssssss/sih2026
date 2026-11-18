@@ -5,7 +5,7 @@ import json
 import math
 from pathlib import Path
 
-from core.gate import GateDecision, evaluate
+from core.gate import OUTSIDE_INDIA, GateDecision, evaluate
 from core.registry import ToolRegistry
 from core.router import CHANGE_UNSUPPORTED, Route, route
 from core.schema import Answer, Evidence, Query, Scene, ToolResult, ToolStatus
@@ -73,8 +73,12 @@ def assemble(result: ToolResult | None, gate: GateDecision, status: ToolStatus |
         record_events(trace_id, "answer", [{"rule": "status", "status": "refused", "refusal_reason": reason},
                                           {"rule": "calibration", "outcome": "not_applicable"}])
         text = f"Cannot answer: {reason}."
-        if reason == "not_answerable" and any(e.summary.get("policy") == "change_unsupported" for e in evidence):
-            text = CHANGE_UNSUPPORTED
+        if reason == "not_answerable":
+            policies = [e.summary.get("policy") for e in evidence]
+            if "change_unsupported" in policies:
+                text = CHANGE_UNSUPPORTED
+            elif "out_of_region" in policies:
+                text = OUTSIDE_INDIA
         return Answer(status="refused", text=text, refusal_reason=reason,
                       evidence=evidence, trace_id=trace_id)
     experimental = status.status != "validated"
@@ -95,7 +99,11 @@ def assemble(result: ToolResult | None, gate: GateDecision, status: ToolStatus |
                                       {"rule": "status", "status": answer_status, "tool_status": status.status,
                                        "gate_clean": gate.clean}])
     text = clean_result.value.get("answer") if isinstance(clean_result.value, dict) else None
-    return Answer(status=answer_status, text=text if isinstance(text, str) else "Tool result available in evidence.",
+    if not isinstance(text, str):
+        text = "Tool result available in evidence."
+    if any(e.summary.get("warning") == "cloud_unknown" for e in evidence):
+        text += " Cloud cover not checked (no cloud metadata)."
+    return Answer(status=answer_status, text=text,
                   confidence=confidence, primary=clean_result, sensors_used=("S1", "S2") if gate.mode == "S1S2" else (gate.mode,),
                   evidence=(*evidence, *clean_result.evidence, label), trace_id=trace_id)
 

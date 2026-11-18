@@ -14,6 +14,7 @@ CLOUD_PCT = 50.0
 NODATA_PCT = 50.0
 OOD_STD = 2.0
 INDIA_BOUNDS = (68.0, 6.0, 98.0, 38.0)
+OUTSIDE_INDIA = "Cannot answer because the scene extends outside the supported India region."
 DETERMINISTIC = {"flood-otsu", "optical-sar-deterministic"}
 
 
@@ -88,8 +89,11 @@ def evaluate(query: Query, scene: Scene, choice: Route, registry: ToolRegistry, 
                 raise ValueError("Non-finite transformed bounds")
             outside = not (thresholds.india_bounds[0] <= bounds[0] < bounds[2] <= thresholds.india_bounds[2]
                            and thresholds.india_bounds[1] <= bounds[1] < bounds[3] <= thresholds.india_bounds[3])
-            event("region", "out_of_region" if outside else "pass", scene=index,
-                  warning="out_of_region" if outside else None)
+            if outside:
+                event("region", "out_of_region", scene=index)
+                selected = None
+                return refuse("not_answerable", scene=index, policy="out_of_region", detail=OUTSIDE_INDIA)
+            event("region", "pass", scene=index, warning=None)
         except (ValueError, RuntimeError):
             event("region", "unknown", scene=index, warning="region_unknown")
         event("nodata_threshold", "used", scene=index, threshold=thresholds.nodata_pct,
