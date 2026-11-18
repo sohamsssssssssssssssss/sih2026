@@ -82,7 +82,7 @@ pip install -r requirements.txt
 
 ## Run the demo locally
 
-On the integration Mac, use the existing Python 3.11 `.venv` and install the frontend with `npm ci --prefix frontend`. For a fresh backend venv, install the pinned Mac packages with `.venv/bin/python -m pip install -r requirements-lock.txt`. The live examples use the WorldCover pack at `~/ben-work/wc/pack`, the Sen1Floods11 pack at `~/satquery-data/flood/packs/sen1floods11-hand-v1`, and the local BEN checkpoint paths in [land-cover configuration](configs/landcover.json). `SATQUERY_WORLDCOVER_DIR` and `SATQUERY_FLOOD_DIR` override pack paths. Punjab and Mumbai optical GeoTIFFs are shipped in [demo fixtures](tests/fixtures/README.md).
+On the integration Mac, use the existing Python 3.11 `.venv` and install the frontend with `npm ci --prefix frontend`. For a fresh backend venv, install the pinned Mac packages with `.venv/bin/python -m pip install -r requirements-lock.txt`. The existing demo examples use the WorldCover pack at `~/ben-work/wc/pack`, the Sen1Floods11 pack at `~/satquery-data/flood/packs/sen1floods11-hand-v1`, and the local BEN checkpoint paths in [land-cover configuration](configs/landcover.json). `SATQUERY_WORLDCOVER_DIR` and `SATQUERY_FLOOD_DIR` override pack paths. Punjab and Mumbai optical GeoTIFFs are shipped in [demo fixtures](tests/fixtures/README.md).
 
 From the repository root, start both servers with one command:
 
@@ -90,9 +90,15 @@ From the repository root, start both servers with one command:
 bash scripts/run-demo.sh
 ```
 
-Open [Ask](http://127.0.0.1:3000/ask) and click one of the five live examples, or upload a GeoTIFF and submit your own question. The API runs on port 8000. Stop both servers with Ctrl+C. Change QA is disabled by decision. Qwen and Grounding DINO are unavailable on this Mac because they require CUDA.
+Open [Ask](http://127.0.0.1:3000/ask). Select **Find a scene by place and date**, enter a place name or decimal latitude and longitude separated by a comma, and choose a sensor. The optional end date makes the UTC date window inclusive. You can also run a local demo example or upload a GeoTIFF.
 
-With Google Chrome installed, run `npm --prefix frontend run test:e2e` to exercise the same live examples and a typed upload in the browser. The test starts the demo when needed and writes screenshots to [UI acceptance](docs/plan/ui-acceptance/).
+Sentinel-2 selects the least-cloudy matching Earth Search item. Its scene-level cloud cover is the catalog percentage for the full Sentinel-2 scene. Sentinel-1 selects the latest matching dual-polarisation RTC item from Microsoft Planetary Computer. Each request reads a 120 × 120 window per band. Live requests use public services and require no API key.
+
+If a provider is unavailable, Ask identifies and analyses a separate cached scene for the selected sensor. The [backup manifest](data/fresh-backups/manifest.json) lists the five chips, bounding boxes in WGS84 longitude/latitude, acquisition dates, source item IDs, and SHA-256 checksums. Run `SATQUERY_OFFLINE=1 bash scripts/run-demo.sh` to verify the fallback without contacting providers. In offline mode, the place-name field accepts the matching backup names or decimal coordinates. A working provider with no matching scene yields a no-scene message.
+
+The API runs on port 8000. Stop both servers with Ctrl+C.
+
+With Google Chrome installed, run `npm --prefix frontend run test:e2e` to exercise the local examples, upload, and live STAC flow. Playwright starts the demo when needed and writes screenshots to [Prompt 17 screenshots](docs/screens/p17/). After stopping any running demo, run `SATQUERY_OFFLINE=1 npm --prefix frontend run test:e2e -- --grep "offline fallback"` to exercise the offline case.
 
 ---
 
