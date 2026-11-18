@@ -97,20 +97,14 @@ def test_one_step_grounding_delegates_with_evidence() -> None:
     assert result["evidence"] == [{"type": "bounding_box"}]
 
 
-def test_executor_delegates_change_vqa() -> None:
-    calls: list[dict[str, Any]] = []
-
-    def route_fn(**kwargs: Any) -> dict[str, Any]:
-        calls.append(kwargs)
-        return {"answer": "Change summary", "evidence": [{"type": "change_statistics"}]}
-
-    result = call(
-        build("What changed between these images?", scenes=("a", "b")),
-        route_fn=route_fn,
-    )
-
-    assert calls[0]["capability"] == CHANGE_VQA
-    assert result["evidence"] == [{"type": "change_statistics"}]
+def test_executor_refuses_change_vqa_before_calling_provider() -> None:
+    calls = []
+    with pytest.raises(CapabilityUnavailable, match="T18"):
+        call(
+            build("What changed between these images?", scenes=("a", "b")),
+            route_fn=lambda **kwargs: calls.append(kwargs) or {},
+        )
+    assert calls == []
 
 
 def test_executor_rejects_planned_two_step_change_chain() -> None:

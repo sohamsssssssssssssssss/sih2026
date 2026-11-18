@@ -25,6 +25,7 @@ from backend.routes import analyze as analyze_routes
 from backend.schemas import MAX_QUESTION_LENGTH
 from models.base import ModelReadiness
 from models.qwen_vl import QwenVLModel
+from core.router import CHANGE_UNSUPPORTED
 from orchestrator import capabilities
 from orchestrator import router as model_router
 
@@ -95,42 +96,63 @@ def upload(
     )
 
 
-def test_health_ready_when_trace_and_all_capabilities_are_ready(client: TestClient) -> None:
-    response = client.get("/api/health")
-
+@pytest.mark.parametrize("endpoint", ["/api/health", "/health"])
+def test_health_ready_with_one_intentionally_disabled_tool(client: TestClient, endpoint: str) -> None:
+    response = client.get(endpoint)
     assert response.status_code == 200
     body = response.json()
     assert body["status"] == "ready"
-    assert body["mode"] == "offline-first"
-    assert body["checks"]["trace"] == {"ok": True, "detail": None}
-    assert set(body["checks"]["capabilities"]) == set(capabilities.KNOWN_CAPABILITIES)
-    assert all(
-        check == {"available": True, "reason_code": None}
-        for check in body["checks"]["capabilities"].values()
-    )
+    assert body["disabled_by_decision"] == {"change-deterministic": CHANGE_UNSUPPORTED}
+    checks = body["checks"]["capabilities"] if endpoint == "/api/health" else body["capability_checks"]
+    assert set(checks) == set(capabilities.KNOWN_CAPABILITIES) - {"change_vqa"}
+    assert all(check == {"available": True, "reason_code": None} for check in checks.values())
+    if endpoint == "/api/health":
+        assert body["checks"]["trace"] == {"ok": True, "detail": None}
 
 
+@pytest.mark.parametrize("endpoint", ["/api/health", "/health"])
 def test_health_degraded_when_a_capability_is_unavailable(
-    client: TestClient, monkeypatch: pytest.MonkeyPatch
+    client: TestClient, monkeypatch: pytest.MonkeyPatch, endpoint: str
 ) -> None:
     monkeypatch.setattr(
         QwenVLModel,
         "readiness",
-        lambda _: ModelReadiness(False, "CUDA_UNAVAILABLE", "A CUDA GPU is required."),
+        lambda _: ModelReadiness(False, "ARTIFACT_UNAVAILABLE", "Weights are missing."),
     )
 
-    response = client.get("/api/health")
+    response = client.get(endpoint)
 
     assert response.status_code == 200
     body = response.json()
     assert body["status"] == "degraded"
-    assert body["mode"] == "offline-first"
-    assert body["checks"]["trace"]["ok"] is True
-    assert body["checks"]["capabilities"][capabilities.SINGLE_IMAGE_VQA] == {
+    assert body["disabled_by_decision"] == {"change-deterministic": CHANGE_UNSUPPORTED}
+    checks = body["checks"]["capabilities"] if endpoint == "/api/health" else body["capability_checks"]
+    assert checks[capabilities.SINGLE_IMAGE_VQA] == {
         "available": False,
-        "reason_code": "CUDA_UNAVAILABLE",
+        "reason_code": "ARTIFACT_UNAVAILABLE",
     }
-    assert body["checks"]["capabilities"][capabilities.OPTICAL_SAR]["available"] is True
+    assert checks[capabilities.OPTICAL_SAR]["available"] is True
+
+
+@pytest.mark.parametrize("endpoint", ["/api/health", "/health"])
+@pytest.mark.parametrize("reason", ["CUDA_UNAVAILABLE", "DEPENDENCY_UNAVAILABLE"])
+def test_cuda_limits_do_not_degrade_runnable_tools(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch, endpoint: str, reason: str
+) -> None:
+    from backend import services
+    from models.grounding_dino import GroundingDINOModel
+
+    monkeypatch.setattr(services.sys, "platform", "darwin")
+    monkeypatch.delenv("SATQUERY_ALLOW_MPS", raising=False)
+    for model in (QwenVLModel, GroundingDINOModel):
+        monkeypatch.setattr(model, "readiness", lambda _: ModelReadiness(False, reason, "Provider unavailable."))
+
+    body = client.get(endpoint).json()
+    assert body["status"] == "ready"
+    assert body["unavailable_on_host"] == {"qwen2.5vl-3b": "Requires CUDA", "grounding-dino-swint": "Requires CUDA"}
+    assert body["disabled_by_decision"] == {"change-deterministic": CHANGE_UNSUPPORTED}
+    checks = body["checks"]["capabilities"] if endpoint == "/api/health" else body["capability_checks"]
+    assert set(checks) == {"optical_sar"}
 
 
 def test_health_unavailable_with_503_when_trace_is_corrupted(client: TestClient) -> None:
@@ -145,7 +167,7 @@ def test_health_unavailable_with_503_when_trace_is_corrupted(client: TestClient)
     assert body["mode"] == "offline-first"
     assert body["checks"]["trace"]["ok"] is False
     assert "malformed" in body["checks"]["trace"]["detail"]
-    assert set(body["checks"]["capabilities"]) == set(capabilities.KNOWN_CAPABILITIES)
+    assert set(body["checks"]["capabilities"]) == set(capabilities.KNOWN_CAPABILITIES) - {"change_vqa"}
 
 
 def test_known_golden_scene_serves_real_png(client: TestClient) -> None:
@@ -701,8 +723,17 @@ def test_compatible_pair_executes_joint_optical_sar_provider(
     assert trace_store.verify_chain()[0] is True
 
 
-def test_compatible_bitemporal_pair_executes_change_provider(
-    client: TestClient,
+def assert_change_refusal(response) -> None:
+    assert response.status_code == 503, response.text
+    assert response.json()["detail"] == {
+        "capability": "change_vqa", "provider": None,
+        "reason_code": "not_answerable", "detail": CHANGE_UNSUPPORTED,
+    }
+
+
+@pytest.mark.parametrize("capability", ["change_vqa", "single_image_vqa"])
+def test_compatible_bitemporal_pair_abstains(
+    client: TestClient, capability: str,
 ) -> None:
     before = upload(
         client,
@@ -733,28 +764,12 @@ def test_compatible_bitemporal_pair_executes_change_provider(
             "scene_id": before,
             "scene_id_2": after,
             "question": "Did built-up area increase?",
-            "capability": "change_vqa",
+            "capability": capability,
         },
     )
 
-    assert response.status_code == 200, response.text
-    payload = response.json()
-    assert payload["model"] == {
-        "name": "change-deterministic",
-        "version": "bitemporal-difference-v2",
-    }
-    assert "confidence" not in payload
-    assert "does not infer semantic change classes" in payload["answer"]
-    assert [item["type"] for item in payload["evidence"]] == [
-        "temporal_inputs", "change_statistics", "temporal_valid_coverage"
-    ]
-    assert payload["trace"]["input_summary"]["n_images"] == 2
-    assert payload["trace"]["params"]["temporal_order"] == ["t1", "t2"]
-    assert payload["trace"]["params"]["acquisition_times"] == [
-        "2026-01-01T00:00:00+00:00", "2026-01-02T00:00:00+00:00"
-    ]
-    assert trace_store.records()[0]["model_name"] == "change-deterministic"
-    assert trace_store.verify_chain()[0] is True
+    assert_change_refusal(response)
+    assert trace_store.records() == []
 
 
 def sar_tiff_bytes(water_rows: slice) -> bytes:
@@ -771,7 +786,7 @@ def sar_tiff_bytes(water_rows: slice) -> bytes:
         return memory.read()
 
 
-def test_sar_pair_flood_question_returns_water_change_geojson(client: TestClient) -> None:
+def test_sar_pair_temporal_flood_question_abstains(client: TestClient) -> None:
     metadata = {"modality": "sar", "sensor": "Sentinel-1", "polarization": "VV,VH", "pair_group": "flood-1"}
     before = upload(
         client, "before.tif", sar_tiff_bytes(slice(0, 5)),
@@ -787,16 +802,8 @@ def test_sar_pair_flood_question_returns_water_change_geojson(client: TestClient
         json={"scene_id": before, "scene_id_2": after, "question": "Did flooding expand between these scenes?"},
     )
 
-    assert response.status_code == 200, response.text
-    payload = response.json()
-    assert payload["model"]["name"] == "change-deterministic"
-    assert payload["trace"]["params"]["capability"] == "change_vqa"
-    evidence = {item["type"]: item for item in payload["evidence"]}
-    assert evidence["water_change_statistics"]["new_water_ha"] == pytest.approx(4.0, rel=1e-2)
-    features = evidence["water_change_polygons"]["geojson"]["features"]
-    assert [feature["properties"] for feature in features] == [{"change": "new_water", "pixels": 400}]
-    assert "4.0 ha became open water" in payload["answer"]
-    assert trace_store.verify_chain()[0] is True
+    assert_change_refusal(response)
+    assert trace_store.records() == []
 
 
 def test_scene_id_is_not_derived_from_malicious_filename(client: TestClient) -> None:
@@ -1337,7 +1344,7 @@ def test_capabilities_endpoint_reports_truthful_availability(
         "capabilities": [
             {"name": "single_image_vqa", "registered": True, "available": True, "state": "AVAILABLE", "provider": "qwen2.5vl-3b", "reason_code": None, "detail": None},
             {"name": "grounding", "registered": True, "available": True, "state": "AVAILABLE", "provider": "grounding-dino-swint", "reason_code": None, "detail": None},
-            {"name": "change_vqa", "registered": True, "available": True, "state": "AVAILABLE", "provider": "change-deterministic", "reason_code": None, "detail": None},
+            {"name": "change_vqa", "registered": True, "available": False, "state": "UNAVAILABLE", "provider": "change-deterministic", "reason_code": "not_answerable", "detail": CHANGE_UNSUPPORTED},
             {"name": "optical_sar", "registered": True, "available": True, "state": "AVAILABLE", "provider": "optical-sar-deterministic", "reason_code": None, "detail": None},
         ]
     }
@@ -1448,8 +1455,11 @@ def test_explicit_pair_capability_reports_missing_second_scene_first(
             "capability": capability,
         },
     )
-    assert response.status_code == 422
-    assert response.json() == {"detail": "This request requires two scenes."}
+    if capability == "change_vqa":
+        assert_change_refusal(response)
+    else:
+        assert response.status_code == 422
+        assert response.json() == {"detail": "This request requires two scenes."}
     assert trace_store.records() == []
 
 
@@ -1512,8 +1522,11 @@ def test_inferred_pair_capability_requires_second_scene(
         "/api/analyze",
         json={"scene_id": services.GOLDEN_SCENE_ID, "question": question},
     )
-    assert response.status_code == 422
-    assert response.json() == {"detail": "This request requires two scenes."}
+    if question.startswith("What changed"):
+        assert_change_refusal(response)
+    else:
+        assert response.status_code == 422
+        assert response.json() == {"detail": "This request requires two scenes."}
     assert trace_store.records() == []
 
 
@@ -1730,7 +1743,7 @@ def test_plan_endpoint_reports_two_step_chain_for_temporal_localization(
             "capability": "change_vqa",
             "depends_on": [],
             "required_inputs": ["scene_pair"],
-            "provider_available": True,
+            "provider_available": False,
             "provider": "change-deterministic",
         },
         {
@@ -1742,7 +1755,7 @@ def test_plan_endpoint_reports_two_step_chain_for_temporal_localization(
             "provider": "grounding-dino-swint",
         },
     ]
-    assert payload["unavailable_capabilities"] == []
+    assert payload["unavailable_capabilities"] == ["change_vqa"]
     assert payload["executable"] is False
     assert trace_store.records() == []
 
@@ -1820,11 +1833,7 @@ def test_multi_step_plan_analyze_invokes_no_provider(
             "question": "Where did flooding increase?",
         },
     )
-    # Structural inputs are checked first: the combined change→grounding plan
-    # requires a scene pair the current API cannot supply, so it fails as a
-    # client error before any availability check or provider invocation.
-    assert response.status_code == 422
-    assert response.json() == {"detail": "This request requires two scenes."}
+    assert_change_refusal(response)
     assert trace_store.records() == []
 
 
@@ -1845,7 +1854,7 @@ def test_multi_step_request_on_golden_scene_cannot_use_cache(
             "question": "Where did flooding increase?",
         },
     )
-    assert response.status_code == 422
+    assert_change_refusal(response)
     assert "showing the exact committed result" not in response.text
     assert trace_store.records() == []
 
@@ -1917,7 +1926,7 @@ def test_caller_cannot_forge_execution_step_metadata(
     assert params["execution_step_count"] == 1
 
 
-def test_change_analysis_and_traces_never_expose_absolute_server_paths(
+def test_change_refusal_never_exposes_absolute_server_paths(
     client: TestClient, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
     # Treat the test sandbox as the repository root so runtime rasters live "in" the repo.
@@ -1951,15 +1960,9 @@ def test_change_analysis_and_traces_never_expose_absolute_server_paths(
     )
     traces = client.get("/api/traces")
 
-    assert response.status_code == 200, response.text
+    assert_change_refusal(response)
     assert traces.status_code == 200
-    expected = [f"rasters/{scene_id}.tif" for scene_id in scene_ids]
-    inputs = response.json()["evidence"][0]
-    assert inputs["type"] == "temporal_inputs"
-    assert [inputs["t1"]["path"], inputs["t2"]["path"]] == expected
-    assert all(len(inputs[key]["sha256"]) == 64 for key in ("t1", "t2"))
-    assert response.json()["trace"]["input_summary"]["image_paths"] == expected
-    assert traces.json()["records"][0]["input_summary"]["image_paths"] == expected
+    assert traces.json()["records"] == []
     for text in (response.text, traces.text):
         assert str(tmp_path) not in text
         assert str(services.ROOT) not in text

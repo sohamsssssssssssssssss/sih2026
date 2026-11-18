@@ -95,7 +95,8 @@ def test_temporal_questions_select_change_vqa(question: str) -> None:
     assert result.selected_capability == CHANGE_VQA
     assert result.rule_id == "change_temporal_compare"
     assert result.missing_inputs == ("second_scene",)
-    assert result.provider_available is True
+    assert result.provider_available is False
+    assert "T18" in result.unavailable_reason
     assert result.provider == "change-deterministic"
     assert result.executable is False
 
@@ -159,7 +160,7 @@ def test_pair_capabilities_report_missing_second_scene() -> None:
     for capability in (CHANGE_VQA, OPTICAL_SAR):
         result = plan("Question", capability=capability)
         assert result.missing_inputs == ("second_scene",)
-        assert result.provider_available is True
+        assert result.provider_available is (capability == OPTICAL_SAR)
 
 
 def test_pair_capability_with_two_scenes_has_no_missing_inputs() -> None:
@@ -169,7 +170,7 @@ def test_pair_capability_with_two_scenes_has_no_missing_inputs() -> None:
         capability=CHANGE_VQA,
     )
     assert result.missing_inputs == ()
-    assert result.executable is True
+    assert result.executable is False
 
 
 def test_no_scene_is_reported_as_missing() -> None:
@@ -274,7 +275,7 @@ def test_demo_flood_question_selects_change_vqa() -> None:
     assert result.selected_capability == CHANGE_VQA
     assert result.rule_id == "parsed_flood_change"
     assert result.missing_inputs == ()
-    assert result.executable is True
+    assert result.executable is False
 
 
 def test_parse_that_agrees_with_keyword_rules_keeps_their_rule_id() -> None:
@@ -290,8 +291,8 @@ def test_flood_question_over_sar_pair_replaces_unimplemented_chain() -> None:
     )
     assert result.selected_capability == CHANGE_VQA
     assert result.rule_id == "parsed_flood_change"
-    assert result.unavailable_reason is None
-    assert result.executable is True
+    assert "T18" in result.unavailable_reason
+    assert result.executable is False
 
 
 @pytest.mark.parametrize(

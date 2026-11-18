@@ -1,13 +1,13 @@
 "use client";
 
-import { Activity, Aperture, History, Radar, Satellite, Settings2 } from "lucide-react";
+import { Activity, History, MessageCircle, Radar, Satellite, Settings2 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { runtimeDotColour, useRuntimeState, type RuntimeState } from "@/components/status/RuntimeStatus";
 
 const navigation = [
-  { href: "/workspace", label: "Workspace", icon: Aperture },
+  { href: "/ask", label: "Ask", icon: MessageCircle },
   { href: "/resolution", label: "Resolution Lab", icon: Activity },
   { href: "/sar", label: "SAR Validation", icon: Radar },
   { href: "/executions", label: "Executions", icon: History },
@@ -16,7 +16,7 @@ const navigation = [
 
 const POSTURE: Record<RuntimeState, { label: string; note: string }> = {
   checking: { label: "Checking runtime…", note: "Contacting the local API." },
-  ready: { label: "All capabilities ready", note: "Live inference and cached replay are available." },
+  ready: { label: "Ready on this machine", note: "See Ask for live capability details." },
   degraded: { label: "Partially available", note: "Some live models are not ready here. Cached replay stays explicit." },
   unavailable: { label: "Analysis disabled", note: "The execution trace failed verification. See System." },
   offline: { label: "API not connected", note: "Start the backend on port 8000." },

@@ -24,3 +24,43 @@
   - Facts that differ from the brief: S1 is already dB, and the S2 band order is B04,B03,B02,B08.
   - Macro mAP uses a fixed class set per group (≥10 positives), and group differences use one common class set.
 - **Detector counting is not validated.** DIOR val exact match at 0.35 is 0.324, against 0.500 for always-0 (1837259).
+
+## 17 Nov 2026 — T13b
+
+## T13b CI deviation — approved by Soham before analysis
+
+> T13b CI rule (T13b.md:31) needs per-patch predictions that weren't saved. Substitute: a CI-based criterion PASSES only if it passes in EACH of seeds 1, 2, 3 using that seed's own patch-bootstrap CI95 from its JSON. It FAILS if it fails in all three. Otherwise it is INCONCLUSIVE. This is stricter than the registered rule, so it cannot inflate a pass. Seed means use the plain mean of the seed-level values.
+
+The preregistration in docs/hypotheses/T13b.md is unchanged. No rerun is
+approved. Report the original CI rule and this deviation explicitly; never
+average CI endpoints or invent a missing paired interval. Any inconclusive
+registered criterion is referred back to Soham after the report. Saving future
+prediction artifacts is a separate code-only task, not permission to run them.
+
+## 18 Nov 2026 — T13b
+
+### T13b registered bootstrap supersedes the substitute report
+
+The substitute-rule results in commit `9672b78` are superseded by the
+registered-bootstrap results in [the T13b report](../../results/t13b/REPORT.md).
+The saved seed 1–3 outputs from `adapt-run-3` (run code `0b581f7`) include
+per-patch predictions. The analysis uses the preregistered bootstrap on those
+predictions, including paired resamples for arm comparisons. P1, P2 and the
+overall gate pass, and the bootstrap resolves rule (d). The decision above
+remains the historical record for the earlier analysis.
+
+## 18 Nov 2026
+
+- **T15 flood U-Net parked.** Soham parked the U-Net after S1-only scored 0.897 on eight chips (gate >0.9). T15d D1 failed: S1+S2 scored 0.965 on eight chips but 0.744 on the worst chip (required >0.95). S2 alone scored 0.842 on that chip. D2 points to the pipeline under the registered rule. The cause remains unresolved. References: preregistration `7daad8d`, diagnostic branch and report-reader reference `7fd5d12`, and parked note `f72523f`. Resume only by Soham's decision.
+- **Flood answers use per-scene Otsu.** `flood-otsu` remains `experimental_unvalidated`. The fixed method scored 0.631 India-test IoU against its 0.65 gate. Shipped B1 scored 0.704. The Otsu method was not tuned and no threshold was relaxed.
+
+## 18 Nov 2026 — Change QA disabled
+
+Soham disabled temporal change QA and stopped CDVQA work. In G3 (`89fc5bf`),
+the adapter retained much of its accuracy when the two input images were
+identical. The T18 preregistration (`86cdf97`) and results (`1d0cbaf`) showed
+that CDVQA presence labels are strongly predictable from the question text
+alone (82.8% and 82.3%). Pixel differencing (56.0% and 55.0%) did not beat
+train majority (56.2% and 55.5%). Change requests now receive the existing
+`not_answerable` reason and the capabilities endpoints advertise change QA
+as unsupported. The registered `change-deterministic` tool is disabled.

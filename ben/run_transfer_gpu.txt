@@ -1,0 +1,63 @@
+%%bash
+# Kaggle GPU cell: retrain the BEN land-cover baselines (s1, s2, s1s2) with the exact 99f27ea settings, save
+# checkpoints, then evaluate them on the WorldCover 2021 India + Europe-control pack (ben/transfer.py).
+# Notebook: Accelerator GPU T4, Internet OFF is fine. Run as a committed version (Save & Run All).
+# Inputs (any dataset names; each found by a unique file):
+#   - code:    */ben/landcover.py            (satquery-ben-code zip)
+#   - BEN:     MANIFEST.json beside s2_20m.npy   (ben-pilot-20k)
+#   - WC:      MANIFEST.json beside fractions.npy (WorldCover transfer pack)
+set -euo pipefail
+trap 'echo "FAILED at line $LINENO: $BASH_COMMAND"' ERR
+
+T=/kaggle/tmp/ben-transfer
+W=/kaggle/working
+PROGRESS="$W/ben-transfer-progress.txt"
+mkdir -p "$T" "$W"
+for f in "$W"/ben-landcover-*.json "$W"/ben-transfer.json; do
+  if [ -e "$f" ]; then echo "HARD STOP: $f exists; outputs must be fresh"; exit 1; fi
+done
+
+mapfile -t CODE < <(find /kaggle/input -type f -path "*/ben/landcover.py")
+mapfile -t BENF < <(find /kaggle/input -type f -name s2_20m.npy)
+mapfile -t WCF < <(find /kaggle/input -type f -name fractions.npy)
+for pair in "ben/landcover.py:${#CODE[@]}" "BEN s2_20m.npy:${#BENF[@]}" "WorldCover fractions.npy:${#WCF[@]}"; do
+  if [ "${pair##*:}" -ne 1 ]; then
+    echo "HARD STOP: expected exactly 1 ${pair%:*} under /kaggle/input, found ${pair##*:}"
+    printf '  %s\n' "${CODE[@]}" "${BENF[@]}" "${WCF[@]}"; exit 1
+  fi
+done
+CODE_FILE=${CODE[0]}
+BEN=$(dirname "${BENF[0]}")
+WC=$(dirname "${WCF[0]}")
+for d in "$BEN" "$WC"; do
+  if [ ! -f "$d/MANIFEST.json" ]; then echo "HARD STOP: no MANIFEST.json beside $d"; exit 1; fi
+done
+CODE_ROOT=$(dirname "$(dirname "$CODE_FILE")")
+rm -rf "$T/code" && mkdir -p "$T/code" && cp -r "$CODE_ROOT/ben" "$T/code/ben"
+export PYTHONPATH="$T/code"
+echo "CODE_ROOT=$CODE_ROOT BEN=$BEN WC=$WC"
+nvidia-smi --query-gpu=name,memory.total --format=csv
+cd "$T/code"
+
+# 1. Retrain with the 99f27ea defaults (30 epochs, batch 128, AdamW 1e-3/1e-4, cosine, seed 17) + checkpoint.
+for MODE in s1 s2 s1s2; do
+  echo "=== train $MODE ===" | tee -a "$PROGRESS"
+  python ben/landcover.py --pack "$BEN" --mode "$MODE" --control shuffle --save-checkpoint --out-dir "$W" --progress "$PROGRESS"
+done
+
+# 2. New BEN test macro mAP beside the committed 99f27ea values (GPU nondeterminism -> small differences expected).
+python - "$W" <<'EOF'
+import json, sys
+from pathlib import Path
+committed = {"s1": 0.5598, "s2": 0.6254, "s1s2": 0.6283}
+print(f"{'mode':<6} {'committed':>9} {'this run':>9} {'delta':>8} best_epoch")
+for m, c in committed.items():
+    r = json.loads((Path(sys.argv[1]) / f"ben-landcover-{m}.json").read_text())
+    print(f"{m:<6} {c:>9.4f} {r['macro_map']:>9.4f} {r['macro_map'] - c:>+8.4f} {r['best_epoch']}")
+EOF
+
+# 3. Transfer evaluation on WorldCover (normalised with each checkpoint's BEN train stats).
+echo "=== transfer ===" | tee -a "$PROGRESS"
+python ben/transfer.py --wc-pack "$WC" --runs "$W" --modes s1 s2 s1s2 --output "$W/ben-transfer.json" | tee -a "$PROGRESS"
+ls -la "$W"
+echo "CELL DONE"

@@ -5,6 +5,7 @@ import json
 import logging
 import os
 import re
+import sys
 import warnings
 from collections.abc import Mapping
 from dataclasses import asdict
@@ -37,6 +38,7 @@ from models.paths import public_path
 os.environ["HF_HUB_OFFLINE"] = "1"
 os.environ["TRANSFORMERS_OFFLINE"] = "1"
 
+from core.router import CHANGE_UNSUPPORTED, COMPARE, TEMPORAL  # noqa: E402
 from orchestrator.capabilities import (  # noqa: E402
     CapabilityUnavailable,
     CHANGE_VQA,
@@ -834,6 +836,14 @@ def analyze_scene(
             requested_capability=capability,
         )
     )
+    # An explicit provider override cannot turn temporal QA into single-image QA.
+    # Optical–SAR comparison still accepts a pair of different sensors.
+    if (plan.selected_capability == CHANGE_VQA or TEMPORAL.search(question)
+            or (plan.selected_capability != OPTICAL_SAR
+                and (scene_id_2 is not None or COMPARE.search(question)))):
+        raise ProviderNotReady(
+            CHANGE_VQA, None, ModelReadiness(False, "not_answerable", CHANGE_UNSUPPORTED)
+        )
     execution = build_execution_plan(plan)
     if plan.missing_inputs:
         if "second_scene" in plan.missing_inputs:
@@ -1044,11 +1054,56 @@ def plan_analysis(
     }
 
 
+def health_capabilities() -> tuple[dict[str, dict], dict[str, str], dict[str, str]]:
+    """Group runnable health checks, policy decisions and CUDA host limitations."""
+    from core.registry import CAPABILITY_TOOLS, list_tools
+
+    capabilities = capabilities_overview()["capabilities"]
+    disabled_tools = {tool.name for tool in list_tools() if tool.status.status == "disabled"}
+    policy_reasons = {CAPABILITY_TOOLS[CHANGE_VQA]: CHANGE_UNSUPPORTED}
+    disabled = {
+        name: policy_reasons.get(name, "Disabled by product decision.")
+        for name in sorted(disabled_tools)
+    }
+    checks = {}
+    host_limits = {}
+    for entry in capabilities:
+        capability = entry["name"]
+        tool = CAPABILITY_TOOLS.get(capability)
+        if tool in disabled_tools:
+            continue
+        reason = entry["reason_code"]
+        requires_cuda = (
+            reason == "CUDA_UNAVAILABLE"
+            or (
+                sys.platform == "darwin"
+                and reason == "DEPENDENCY_UNAVAILABLE"
+                and (tool == "grounding-dino-swint" or os.environ.get("SATQUERY_ALLOW_MPS") != "1")
+            )
+        )
+        if tool in {"qwen2.5vl-3b", "grounding-dino-swint"} and requires_cuda:
+            host_limits[tool] = "Requires CUDA"
+        else:
+            checks[capability] = {"available": bool(entry["available"]), "reason_code": reason}
+    return checks, disabled, host_limits
+
+
 def capabilities_overview() -> dict[str, Any]:
-    """Truthful availability snapshot backed by the provider registry."""
+    """Truthful snapshot: provider readiness plus the tool-maturity mapping."""
+    from core.registry import capability_state
     from orchestrator.capabilities import capabilities_status
 
-    return {"capabilities": capabilities_status()}
+    entries = []
+    for entry in capabilities_status():
+        maturity = capability_state(str(entry["name"]))
+        entries.append(
+            {
+                **entry,
+                "state": maturity["state"],
+                "available": bool(entry["available"]) and bool(maturity["available"]),
+            }
+        )
+    return {"capabilities": entries}
 
 
 def resolution_report() -> dict[str, Any]:

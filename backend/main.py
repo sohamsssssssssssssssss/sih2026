@@ -2,13 +2,14 @@
 
 import os
 import re
+from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Response
 from fastapi.middleware.cors import CORSMiddleware
 
-from backend.routes import analyze, resolution, sar, sentinel1, traces
+from backend.routes import analyze, resolution, sar, sentinel1, traces, ask
 from backend.schemas import HealthResponse
-from backend.services import capabilities_overview
+from backend.services import health_capabilities
 from orchestrator import trace as trace_store
 
 CORS_ORIGINS_ENV = "SATQUERY_CORS_ORIGINS"
@@ -44,7 +45,16 @@ def cors_origins(raw: str | None) -> list[str]:
     return origins
 
 
+@asynccontextmanager
+async def lifespan(application):
+    yield
+    runtime = getattr(application.state, "ask_service", None)
+    if runtime is not None:
+        runtime.close()
+
+
 app = FastAPI(
+    lifespan=lifespan,
     title="SatQuery AI API",
     description="Offline-first read API over SatQuery's existing orchestration and committed artifacts.",
     version="0.1.0",
@@ -57,6 +67,7 @@ app.add_middleware(
     allow_methods=["GET", "POST"],
     allow_headers=["Content-Type"],
 )
+app.include_router(ask.router)
 app.include_router(analyze.router)
 app.include_router(resolution.router)
 app.include_router(sar.router)
@@ -73,17 +84,6 @@ def _trace_check() -> dict[str, object]:
     return {"ok": True, "detail": None}
 
 
-def _capability_checks() -> dict[str, dict[str, object]]:
-    """Per-capability provider readiness; never loads weights or runs inference."""
-    return {
-        str(entry["name"]): {
-            "available": bool(entry["available"]),
-            "reason_code": entry.get("reason_code"),
-        }
-        for entry in capabilities_overview()["capabilities"]
-    }
-
-
 @app.get(
     "/api/health",
     response_model=HealthResponse,
@@ -91,7 +91,7 @@ def _capability_checks() -> dict[str, dict[str, object]]:
 )
 def health(response: Response) -> HealthResponse:
     trace_check = _trace_check()
-    capability_checks = _capability_checks()
+    capability_checks, disabled, host_limits = health_capabilities()
     if not trace_check["ok"]:
         status = "unavailable"
         response.status_code = 503
@@ -103,6 +103,8 @@ def health(response: Response) -> HealthResponse:
         {
             "status": status,
             "mode": "offline-first",
+            "disabled_by_decision": disabled,
+            "unavailable_on_host": host_limits,
             "checks": {"trace": trace_check, "capabilities": capability_checks},
         }
     )

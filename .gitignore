@@ -60,3 +60,6 @@ frontend/public/maplibre/
 # Deployment settings (DOMAIN, model directory); keep local.
 .env
 .env.*
+
+/frontend/test-results/
+/frontend/playwright-report/

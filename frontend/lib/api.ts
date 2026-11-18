@@ -1,6 +1,6 @@
 import type {
   AnalysisResponse, ExecutionMode, KosiSarChange, ResolutionReport, SarReport, SceneCatalog, SceneUploadMetadata,
-  SceneUploadResponse, TraceRecord, UploadedScene,
+  SceneUploadResponse, UploadedScene,
 } from "./types";
 import {
   GOLDEN_SCENE, analysisFailure, describeFailure, parseFailureDetail, validateAnalysis, type FailureDetail,
@@ -15,12 +15,12 @@ export function getSceneImageUrl(sceneId: string) {
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(`${API_URL}${path}`, {
     ...init,
-    headers: { "Content-Type": "application/json", ...init?.headers },
+    headers: init?.body instanceof FormData ? init.headers : { "Content-Type": "application/json", ...init?.headers },
     cache: "no-store",
   });
   if (!response.ok) {
     const body = await response.json().catch(() => null);
-    throw new Error(body?.detail ?? `Request failed (${response.status})`);
+    throw new Error(typeof body?.detail === "string" ? body.detail : `Request failed (${response.status})`);
   }
   return response.json() as Promise<T>;
 }
@@ -134,16 +134,6 @@ export function getSar(scene = "mumbai-coastal") {
   return request<SarReport>(`/api/sar/${scene}`);
 }
 
-export function getTraces() {
-  return request<{ records: TraceRecord[]; count: number }>("/api/traces");
-}
-
-export async function verifyTraces() {
-  const response = await request<{ verified: unknown }>("/api/traces/verify", { method: "POST", signal: AbortSignal.timeout(10000) });
-  if (typeof response.verified !== "boolean") throw new Error("Integrity status unavailable.");
-  return { verified: response.verified, message: response.verified ? "Current process-local chain verified." : "Integrity verification failed for the current process-local chain." };
-}
-
 export type HealthStatus = "ready" | "degraded" | "unavailable";
 
 export interface HealthResponse {
@@ -190,4 +180,83 @@ export async function getKosiSarChange(): Promise<KosiSarChange> {
 
 export function getKosiSarRasterUrl(path: KosiSarChange["raster_download_url"]) {
   return `${API_URL}${path}`;
+}
+
+
+export type AskSceneRef = string | { pack_id: string; patch_id: string };
+type AskEvidence = { needs_sensor: string[]; summary: Record<string, unknown> };
+
+export interface AskAnswer {
+  status: "answered" | "low_confidence" | "refused";
+  text: string;
+  confidence: number | null;
+  refusal_reason: string | null;
+  primary: { tool: string; value: Record<string, unknown> } | null;
+  evidence: AskEvidence[];
+  trace_id: string;
+}
+
+export function askScene(question: string, scene_ref: AskSceneRef, second_scene_ref?: AskSceneRef) {
+  return request<AskAnswer>("/ask", {
+    method: "POST", body: JSON.stringify({ question, scene_ref, second_scene_ref }),
+  });
+}
+
+export type FreshSceneInput = ({ place: string } | { lat: number; lon: number }) & {
+  sensor: "S1" | "S2"; start_date: string; end_date?: string;
+};
+
+export interface ScenePreview {
+  image: string;
+  preview_kind: string;
+  scene: { sensor: string; source: string; acquired: string | null; cloud_pct: number | null };
+  provenance: {
+    source: string; item_id: string; acquisition_datetime: string; collection: string;
+    mode: "live" | "cached"; label: string; cloud_pct_label?: string;
+  } | null;
+}
+export type FreshScene = ScenePreview & {
+  scene_ref: AskSceneRef; fallback_reason: string | null; backup_place?: string;
+};
+
+export function fetchAskScene(input: FreshSceneInput) {
+  return request<FreshScene | { refusal: AskAnswer }>("/scenes/fetch", {
+    method: "POST", body: JSON.stringify(input),
+  });
+}
+
+export function getAskPreview(scene_ref: AskSceneRef) {
+  return request<ScenePreview>("/scenes/preview", {
+    method: "POST", body: JSON.stringify({ scene_ref }),
+  });
+}
+
+export function uploadAskScene(file: File) {
+  const body = new FormData();
+  body.append("file", file);
+  return request<{ upload_id: string; scene: { sensor: string; cloud_pct: number | null } }>("/scenes", {
+    method: "POST", body,
+  });
+}
+
+export function getAskTrace(id?: string) {
+  return request<{ events: Record<string, unknown>[]; verified: boolean; message: string }>(
+    id ? `/trace/${encodeURIComponent(id)}` : "/trace",
+  );
+}
+
+export function getAskCapabilities() {
+  return request<{
+    capabilities: { capability: string; tool: string; available: boolean; reason?: string }[];
+    tools: { name: string; status: "validated" | "experimental_unvalidated" | "disabled" }[];
+  }>("/capabilities");
+}
+
+export function getAskHealth() {
+  return request<{
+    status: HealthStatus;
+    unavailable_on_host: Record<string, string>;
+    disabled_by_decision: Record<string, string>;
+    capability_checks: Record<string, { available: boolean; reason_code: string | null }>;
+  }>("/health");
 }

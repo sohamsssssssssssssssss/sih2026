@@ -10,3 +10,8 @@ python-multipart==0.0.22
 pillow>=11,<12
 numpy>=2,<3
 rasterio>=1.4,<2
+
+# Existing project pack dependencies used lazily by /ask WorldCover references.
+pandas
+pyarrow>=17,<23
+planetary-computer>=1,<2

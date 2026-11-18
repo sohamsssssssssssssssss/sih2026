@@ -1,0 +1,54 @@
+%%bash
+# T13b rerun with per-patch predictions; code a5531188731d8cbefdd21a9a493775e04e7502c9
+# Training seeds 1, 2, 3 on the same folds (split stays at lc.SEED=17). Arms: none, renorm, head, full,
+# shuffle, plus diagnostics shuffle-fixed and bn-only (docs/hypotheses/T13b.md). Expected runtime about 60 min plus NPZ export.
+# Attach: code dataset (ben/ plus T13_CODE_COMMIT.txt beside it), WorldCover pack, checkpoint dataset ben-transfer-run-1.
+# Writes only under /kaggle/working/seed-<n>/ (JSON, progress log, per-patch NPZ). Do not run until Soham approves.
+set -euo pipefail
+trap 'echo "FAILED at line $LINENO: $BASH_COMMAND"' ERR
+W=/kaggle/working
+T="$W/t13-code"
+export PYTHONDONTWRITEBYTECODE=1
+export MPLCONFIGDIR="$W/.matplotlib"
+export XDG_CACHE_HOME="$W/.cache"
+export TMPDIR="$W/tmp"
+mkdir -p "$TMPDIR"
+for S in 1 2 3; do
+  if [ -e "$W/seed-$S" ]; then echo "HARD STOP: output exists: $W/seed-$S"; exit 1; fi
+done
+if [ -e "$T" ]; then echo "HARD STOP: code copy exists: $T"; exit 1; fi
+mapfile -t CODE < <(find /kaggle/input -type f -path '*/ben/adapt.py')
+mapfile -t WCF < <(find /kaggle/input -type f -name fractions.npy)
+mapfile -t RUNF < <(find /kaggle/input -type f -name ben-transfer.json)
+for pair in "ben/adapt.py:${#CODE[@]}" "fractions.npy:${#WCF[@]}" "ben-transfer.json:${#RUNF[@]}"; do
+  if [ "${pair##*:}" -ne 1 ]; then echo "HARD STOP: expected exactly one ${pair%:*}, found ${pair##*:}"; exit 1; fi
+done
+WC=$(dirname "${WCF[0]}")
+RUNS=$(dirname "${RUNF[0]}")
+CODE_ROOT=$(dirname "$(dirname "${CODE[0]}")")
+if [[ "$RUNS/" != *"/ben-transfer-run-1/"* ]]; then
+  echo "HARD STOP: checkpoints must come from dataset ben-transfer-run-1: $RUNS"; exit 1
+fi
+if [ ! -f "$WC/MANIFEST.json" ]; then echo "HARD STOP: missing WC manifest"; exit 1; fi
+for MODE in s1 s2 s1s2; do
+  for NAME in "ben-landcover-$MODE-checkpoint.pt" "wc-$MODE-logits.npy"; do
+    mapfile -t MATCHES < <(find /kaggle/input -type f -name "$NAME")
+    if [ "${#MATCHES[@]}" -ne 1 ]; then echo "HARD STOP: expected exactly one $NAME, found ${#MATCHES[@]}"; exit 1; fi
+    if [ "${MATCHES[0]}" != "$RUNS/$NAME" ]; then echo "HARD STOP: $NAME not beside ben-transfer.json"; exit 1; fi
+  done
+done
+mkdir -p "$T"
+cp -R "$CODE_ROOT/ben" "$T/ben"
+if [ ! -f "$CODE_ROOT/T13_CODE_COMMIT.txt" ]; then echo "HARD STOP: missing T13_CODE_COMMIT.txt in code dataset"; exit 1; fi
+export T13_CODE_COMMIT=$(cat "$CODE_ROOT/T13_CODE_COMMIT.txt")
+if [[ ! "$T13_CODE_COMMIT" =~ ^[0-9a-f]{40}$ ]]; then echo "HARD STOP: invalid code commit"; exit 1; fi
+export PYTHONPATH="$T"
+cd "$T"
+nvidia-smi --query-gpu=name,memory.total --format=csv
+for S in 1 2 3; do
+  mkdir -p "$W/seed-$S"
+  python ben/adapt.py --wc-pack "$WC" --runs "$RUNS" --modes s1 s2 s1s2 --epochs 15 --device cuda --train-seed "$S" --out-dir "$W/seed-$S" | tee "$W/seed-$S/ben-adapt-progress.txt"
+  NPZ="$W/seed-$S/ben-adapt-predictions-seed-$S.npz"
+  if [ ! -s "$NPZ" ]; then echo "HARD STOP: per-patch NPZ missing for seed $S: $NPZ"; exit 1; fi
+done
+echo "CELL DONE"

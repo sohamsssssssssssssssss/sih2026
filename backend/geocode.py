@@ -58,22 +58,22 @@ class Place:
 
 
 _LOCK = threading.Lock()
-_CACHE: dict[str, tuple[Place, ...]] = {}
+_CACHE: dict[tuple[str, bool], tuple[Place, ...]] = {}
 _last_request_at: float | None = None
 
 
-def geocode(client: httpx.Client, place: str) -> list[Place]:
-    """Nominatim's candidates for ``place`` in India, best first; [] when it knows none."""
+def geocode(client: httpx.Client, place: str, *, india_only: bool = True) -> list[Place]:
+    """Nominatim's candidates for ``place``, best first; [] when it knows none."""
     query = " ".join(place.split())
     if not query or len(query) > MAX_PLACE_CHARS:
         raise ValueError(f"A place name of 1 to {MAX_PLACE_CHARS} characters is required.")
-    key = query.casefold()
+    key = (query.casefold(), india_only)
     # ponytail: one lock covers cache and request; per-key locks if lookups ever get busy
     with _LOCK:
         places = _CACHE.get(key)
         if places is None:
             _wait_turn()
-            places = _search(client, query)
+            places = _search(client, query, india_only=india_only)
             if len(_CACHE) >= MAX_CACHE_ENTRIES:
                 del _CACHE[next(iter(_CACHE))]
             _CACHE[key] = places
@@ -89,8 +89,10 @@ def _wait_turn() -> None:
     _last_request_at = time.monotonic()
 
 
-def _search(client: httpx.Client, query: str) -> tuple[Place, ...]:
-    params = {"q": query, "format": "jsonv2", "countrycodes": COUNTRY_CODES, "limit": RESULT_LIMIT}
+def _search(client: httpx.Client, query: str, *, india_only: bool) -> tuple[Place, ...]:
+    params = {"q": query, "format": "jsonv2", "limit": RESULT_LIMIT}
+    if india_only:
+        params["countrycodes"] = COUNTRY_CODES
     try:
         response = client.get(
             SEARCH_URL, params=params, headers={"User-Agent": USER_AGENT}, timeout=REQUEST_TIMEOUT_SECONDS
