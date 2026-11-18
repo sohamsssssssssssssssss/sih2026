@@ -248,6 +248,24 @@ def test_real_cpu_end_to_end(tmp_path,monkeypatch,pack,patch,question):
     finally: runtime.close()
 
 
+def test_real_mumbai_s2_cloud_metadata_refuses_without_inference(tmp_path, monkeypatch):
+    fixture = Path(__file__).resolve().parents[1] / 'tests/fixtures/mumbai-s2-cloudy.tif'
+    runtime = AskService(AskConfig(data_dir=tmp_path/'data', trace_dir=tmp_path/'trace'))
+    monkeypatch.setattr(app.state, 'ask_service', runtime, raising=False)
+    with TestClient(app) as client:
+        uploaded = client.post('/scenes', files={'file': (fixture.name, fixture.read_bytes(), 'image/tiff')})
+        assert uploaded.status_code == 201, uploaded.text
+        data = uploaded.json()
+        assert data['scene']['sensor'] == 'S2' and data['scene']['cloud_pct'] == 99.980801
+        response = ask(client, data['upload_id'], 'What is the land cover?')
+        assert response.status_code == 200, response.text
+        answer = response.json()
+        assert answer['status'] == 'refused' and answer['refusal_reason'] == 'cloud'
+        assert answer['primary'] is None and any(e['needs_sensor'] == ['S1'] for e in answer['evidence'])
+        chain = client.get('/trace/' + answer['trace_id']).json()
+        assert chain['verified'] and not any(e['phase'] == 'execution' for e in chain['events'])
+
+
 def test_error_after_timeout_is_audited_without_late_answer(api):
     client,runtime,tool=api
     runtime.config=replace(runtime.config,timeout=0.03)
