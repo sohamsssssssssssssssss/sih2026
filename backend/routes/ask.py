@@ -1,9 +1,11 @@
 """Contract-based /ask routes on the existing FastAPI application."""
 import asyncio
+from pathlib import Path
 import threading
 from typing import Annotated
 
 from fastapi import APIRouter, File, HTTPException, Request, UploadFile
+from fastapi.responses import FileResponse
 from pydantic import BaseModel, ConfigDict, StringConstraints
 
 from backend.ask_service import AskService, memory
@@ -48,6 +50,16 @@ async def ask(body:AskRequest,request:Request):
         raise HTTPException(503,'Persistent execution trace or local scene storage is unavailable') from error
 
 
+@router.get('/scenes/demo/{fixture}')
+def demo_fixture(fixture: str):
+    if fixture not in {'punjab-s2.tif', 'mumbai-s2-cloudy.tif'}:
+        raise HTTPException(404, 'Unknown demo fixture')
+    path = Path(__file__).resolve().parents[2] / 'tests' / 'fixtures' / fixture
+    if not path.is_file():
+        raise HTTPException(404, 'Demo fixture is not available on this installation')
+    return FileResponse(path, media_type='image/tiff', filename=fixture)
+
+
 @router.post('/scenes',status_code=201)
 async def upload(request:Request,file:UploadFile=File(...)):
     runtime=service(request)
@@ -86,9 +98,9 @@ def get_trace(request:Request,trace_id:str|None=None):
 @router.get('/health')
 def health(request:Request):
     runtime=service(request)
-    checks, disabled = health_capabilities()
+    checks, disabled, host_limits = health_capabilities()
     return {'status':'ready' if all(check['available'] for check in checks.values()) else 'degraded',
-            'disabled_by_decision':disabled,'capability_checks':checks,
+            'disabled_by_decision':disabled,'unavailable_on_host':host_limits,'capability_checks':checks,
             'schema_version':SCHEMA_VERSION,'code_commit':runtime.commit,'tools_loaded':runtime.loaded,
             'tools_registered':list(runtime.registry.names()),'timeout_s':runtime.config.timeout,
             'packs':['worldcover','sen1floods11-hand-v1'],**memory()}

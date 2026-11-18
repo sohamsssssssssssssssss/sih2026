@@ -117,7 +117,7 @@ def test_health_degraded_when_a_capability_is_unavailable(
     monkeypatch.setattr(
         QwenVLModel,
         "readiness",
-        lambda _: ModelReadiness(False, "CUDA_UNAVAILABLE", "A CUDA GPU is required."),
+        lambda _: ModelReadiness(False, "ARTIFACT_UNAVAILABLE", "Weights are missing."),
     )
 
     response = client.get(endpoint)
@@ -129,9 +129,30 @@ def test_health_degraded_when_a_capability_is_unavailable(
     checks = body["checks"]["capabilities"] if endpoint == "/api/health" else body["capability_checks"]
     assert checks[capabilities.SINGLE_IMAGE_VQA] == {
         "available": False,
-        "reason_code": "CUDA_UNAVAILABLE",
+        "reason_code": "ARTIFACT_UNAVAILABLE",
     }
     assert checks[capabilities.OPTICAL_SAR]["available"] is True
+
+
+@pytest.mark.parametrize("endpoint", ["/api/health", "/health"])
+@pytest.mark.parametrize("reason", ["CUDA_UNAVAILABLE", "DEPENDENCY_UNAVAILABLE"])
+def test_cuda_limits_do_not_degrade_runnable_tools(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch, endpoint: str, reason: str
+) -> None:
+    from backend import services
+    from models.grounding_dino import GroundingDINOModel
+
+    monkeypatch.setattr(services.sys, "platform", "darwin")
+    monkeypatch.delenv("SATQUERY_ALLOW_MPS", raising=False)
+    for model in (QwenVLModel, GroundingDINOModel):
+        monkeypatch.setattr(model, "readiness", lambda _: ModelReadiness(False, reason, "Provider unavailable."))
+
+    body = client.get(endpoint).json()
+    assert body["status"] == "ready"
+    assert body["unavailable_on_host"] == {"qwen2.5vl-3b": "Requires CUDA", "grounding-dino-swint": "Requires CUDA"}
+    assert body["disabled_by_decision"] == {"change-deterministic": CHANGE_UNSUPPORTED}
+    checks = body["checks"]["capabilities"] if endpoint == "/api/health" else body["capability_checks"]
+    assert set(checks) == {"optical_sar"}
 
 
 def test_health_unavailable_with_503_when_trace_is_corrupted(client: TestClient) -> None:

@@ -15,12 +15,12 @@ export function getSceneImageUrl(sceneId: string) {
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(`${API_URL}${path}`, {
     ...init,
-    headers: { "Content-Type": "application/json", ...init?.headers },
+    headers: init?.body instanceof FormData ? init.headers : { "Content-Type": "application/json", ...init?.headers },
     cache: "no-store",
   });
   if (!response.ok) {
     const body = await response.json().catch(() => null);
-    throw new Error(body?.detail ?? `Request failed (${response.status})`);
+    throw new Error(typeof body?.detail === "string" ? body.detail : `Request failed (${response.status})`);
   }
   return response.json() as Promise<T>;
 }
@@ -190,4 +190,54 @@ export async function getKosiSarChange(): Promise<KosiSarChange> {
 
 export function getKosiSarRasterUrl(path: KosiSarChange["raster_download_url"]) {
   return `${API_URL}${path}`;
+}
+
+
+export type AskSceneRef = string | { pack_id: string; patch_id: string };
+type AskEvidence = { needs_sensor: string[]; summary: Record<string, unknown> };
+
+export interface AskAnswer {
+  status: "answered" | "low_confidence" | "refused";
+  text: string;
+  confidence: number | null;
+  refusal_reason: string | null;
+  primary: { tool: string; value: Record<string, unknown> } | null;
+  evidence: AskEvidence[];
+  trace_id: string;
+}
+
+export function askScene(question: string, scene_ref: AskSceneRef, second_scene_ref?: AskSceneRef) {
+  return request<AskAnswer>("/ask", {
+    method: "POST", body: JSON.stringify({ question, scene_ref, second_scene_ref }),
+  });
+}
+
+export function uploadAskScene(file: File) {
+  const body = new FormData();
+  body.append("file", file);
+  return request<{ upload_id: string; scene: { sensor: string; cloud_pct: number | null } }>("/scenes", {
+    method: "POST", body,
+  });
+}
+
+export function getAskTrace(id: string) {
+  return request<{ events: Record<string, unknown>[]; verified: boolean; message: string }>(
+    `/trace/${encodeURIComponent(id)}`,
+  );
+}
+
+export function getAskCapabilities() {
+  return request<{
+    capabilities: { capability: string; tool: string; available: boolean; reason?: string }[];
+    tools: { name: string; status: "validated" | "experimental_unvalidated" | "disabled" }[];
+  }>("/capabilities");
+}
+
+export function getAskHealth() {
+  return request<{
+    status: HealthStatus;
+    unavailable_on_host: Record<string, string>;
+    disabled_by_decision: Record<string, string>;
+    capability_checks: Record<string, { available: boolean; reason_code: string | null }>;
+  }>("/health");
 }

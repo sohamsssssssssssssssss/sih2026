@@ -5,6 +5,7 @@ import json
 import logging
 import os
 import re
+import sys
 import warnings
 from collections.abc import Mapping
 from dataclasses import asdict
@@ -1053,8 +1054,8 @@ def plan_analysis(
     }
 
 
-def health_capabilities() -> tuple[dict[str, dict], dict[str, str]]:
-    """Return enabled capability checks and separately record intentional disablement."""
+def health_capabilities() -> tuple[dict[str, dict], dict[str, str], dict[str, str]]:
+    """Group runnable health checks, policy decisions and CUDA host limitations."""
     from core.registry import CAPABILITY_TOOLS, list_tools
 
     capabilities = capabilities_overview()["capabilities"]
@@ -1064,11 +1065,27 @@ def health_capabilities() -> tuple[dict[str, dict], dict[str, str]]:
         name: policy_reasons.get(name, "Disabled by product decision.")
         for name in sorted(disabled_tools)
     }
-    checks = {
-        str(entry["name"]): {"available": bool(entry["available"]), "reason_code": entry["reason_code"]}
-        for entry in capabilities if CAPABILITY_TOOLS.get(entry["name"]) not in disabled_tools
-    }
-    return checks, disabled
+    checks = {}
+    host_limits = {}
+    for entry in capabilities:
+        capability = entry["name"]
+        tool = CAPABILITY_TOOLS.get(capability)
+        if tool in disabled_tools:
+            continue
+        reason = entry["reason_code"]
+        requires_cuda = (
+            reason == "CUDA_UNAVAILABLE"
+            or (
+                sys.platform == "darwin"
+                and reason == "DEPENDENCY_UNAVAILABLE"
+                and (tool == "grounding-dino-swint" or os.environ.get("SATQUERY_ALLOW_MPS") != "1")
+            )
+        )
+        if tool in {"qwen2.5vl-3b", "grounding-dino-swint"} and requires_cuda:
+            host_limits[tool] = "Requires CUDA"
+        else:
+            checks[capability] = {"available": bool(entry["available"]), "reason_code": reason}
+    return checks, disabled, host_limits
 
 
 def capabilities_overview() -> dict[str, Any]:

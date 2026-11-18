@@ -91,7 +91,7 @@ def _trace_check() -> dict[str, object]:
 )
 def health(response: Response) -> HealthResponse:
     trace_check = _trace_check()
-    capability_checks, disabled = health_capabilities()
+    capability_checks, disabled, host_limits = health_capabilities()
     if not trace_check["ok"]:
         status = "unavailable"
         response.status_code = 503
@@ -104,6 +104,7 @@ def health(response: Response) -> HealthResponse:
             "status": status,
             "mode": "offline-first",
             "disabled_by_decision": disabled,
+            "unavailable_on_host": host_limits,
             "checks": {"trace": trace_check, "capabilities": capability_checks},
         }
     )

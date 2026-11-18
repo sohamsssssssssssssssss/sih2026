@@ -115,6 +115,7 @@ class HealthResponse(BaseModel):
     mode: Literal["offline-first"] = "offline-first"
     checks: HealthChecks
     disabled_by_decision: dict[str, str]
+    unavailable_on_host: dict[str, str]
 
 
 class PlanStepSummary(BaseModel):
