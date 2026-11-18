@@ -1,6 +1,6 @@
 import type {
   AnalysisResponse, ExecutionMode, KosiSarChange, ResolutionReport, SarReport, SceneCatalog, SceneUploadMetadata,
-  SceneUploadResponse, TraceRecord, UploadedScene,
+  SceneUploadResponse, UploadedScene,
 } from "./types";
 import {
   GOLDEN_SCENE, analysisFailure, describeFailure, parseFailureDetail, validateAnalysis, type FailureDetail,
@@ -134,16 +134,6 @@ export function getSar(scene = "mumbai-coastal") {
   return request<SarReport>(`/api/sar/${scene}`);
 }
 
-export function getTraces() {
-  return request<{ records: TraceRecord[]; count: number }>("/api/traces");
-}
-
-export async function verifyTraces() {
-  const response = await request<{ verified: unknown }>("/api/traces/verify", { method: "POST", signal: AbortSignal.timeout(10000) });
-  if (typeof response.verified !== "boolean") throw new Error("Integrity status unavailable.");
-  return { verified: response.verified, message: response.verified ? "Current process-local chain verified." : "Integrity verification failed for the current process-local chain." };
-}
-
 export type HealthStatus = "ready" | "degraded" | "unavailable";
 
 export interface HealthResponse {
@@ -212,6 +202,35 @@ export function askScene(question: string, scene_ref: AskSceneRef, second_scene_
   });
 }
 
+export type FreshSceneInput = ({ place: string } | { lat: number; lon: number }) & {
+  sensor: "S1" | "S2"; start_date: string; end_date?: string;
+};
+
+export interface ScenePreview {
+  image: string;
+  preview_kind: string;
+  scene: { sensor: string; source: string; acquired: string | null; cloud_pct: number | null };
+  provenance: {
+    source: string; item_id: string; acquisition_datetime: string; collection: string;
+    mode: "live" | "cached"; label: string; cloud_pct_label?: string;
+  } | null;
+}
+export type FreshScene = ScenePreview & {
+  scene_ref: AskSceneRef; fallback_reason: string | null; backup_place?: string;
+};
+
+export function fetchAskScene(input: FreshSceneInput) {
+  return request<FreshScene | { refusal: AskAnswer }>("/scenes/fetch", {
+    method: "POST", body: JSON.stringify(input),
+  });
+}
+
+export function getAskPreview(scene_ref: AskSceneRef) {
+  return request<ScenePreview>("/scenes/preview", {
+    method: "POST", body: JSON.stringify({ scene_ref }),
+  });
+}
+
 export function uploadAskScene(file: File) {
   const body = new FormData();
   body.append("file", file);
@@ -220,9 +239,9 @@ export function uploadAskScene(file: File) {
   });
 }
 
-export function getAskTrace(id: string) {
+export function getAskTrace(id?: string) {
   return request<{ events: Record<string, unknown>[]; verified: boolean; message: string }>(
-    `/trace/${encodeURIComponent(id)}`,
+    id ? `/trace/${encodeURIComponent(id)}` : "/trace",
   );
 }
 

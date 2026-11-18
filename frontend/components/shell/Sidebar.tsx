@@ -1,6 +1,6 @@
 "use client";
 
-import { Activity, Aperture, History, MessageCircle, Radar, Satellite, Settings2 } from "lucide-react";
+import { Activity, History, MessageCircle, Radar, Satellite, Settings2 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -8,7 +8,6 @@ import { runtimeDotColour, useRuntimeState, type RuntimeState } from "@/componen
 
 const navigation = [
   { href: "/ask", label: "Ask", icon: MessageCircle },
-  { href: "/workspace", label: "Workspace", icon: Aperture },
   { href: "/resolution", label: "Resolution Lab", icon: Activity },
   { href: "/sar", label: "SAR Validation", icon: Radar },
   { href: "/executions", label: "Executions", icon: History },

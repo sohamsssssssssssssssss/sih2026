@@ -123,7 +123,7 @@ export function CinematicIntro() {
 
   return (
     <section ref={sectionRef} className="sq-intro" data-failed={failed} aria-label="SatQuery introduction">
-      <noscript><p style={{ padding: 24 }}>JavaScript is required for the cinematic introduction. <a href="/workspace">Enter the SatQuery workspace →</a></p></noscript>
+      <noscript><p style={{ padding: 24 }}>JavaScript is required for the cinematic introduction. <a href="/ask">Enter the SatQuery workspace →</a></p></noscript>
       <div className="sq-sticky">
         <video ref={videoRef} src="/videos/satquery-intro.mp4" muted playsInline preload="auto" aria-hidden="true" onError={() => setFailed(true)} />
         <div className="sq-vignette" aria-hidden="true" />
@@ -142,7 +142,7 @@ export function CinematicIntro() {
             <button
               type="button"
               className="sq-google-btn"
-              onClick={() => router.push("/workspace")}
+              onClick={() => router.push("/ask")}
               title="Continue with Google"
             >
               <svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true">
@@ -158,7 +158,7 @@ export function CinematicIntro() {
           <form
             onSubmit={event => {
               event.preventDefault();
-              router.push("/workspace");
+              router.push("/ask");
             }}
           >
             <label htmlFor="intro-email">Email</label>

@@ -53,7 +53,7 @@ export function CinematicExperience() {
             <span><Satellite size={16} /></span>
             SATQUERY AI
           </Link>
-          <Link href="/workspace" className="cinematic-enter-link">
+          <Link href="/ask" className="cinematic-enter-link">
             ENTER WORKSPACE <ArrowUpRight size={14} />
           </Link>
         </header>
