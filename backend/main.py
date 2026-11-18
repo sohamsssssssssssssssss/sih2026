@@ -9,7 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from backend.routes import analyze, resolution, sar, sentinel1, traces, ask
 from backend.schemas import HealthResponse
-from backend.services import capabilities_overview
+from backend.services import health_capabilities
 from orchestrator import trace as trace_store
 
 CORS_ORIGINS_ENV = "SATQUERY_CORS_ORIGINS"
@@ -84,17 +84,6 @@ def _trace_check() -> dict[str, object]:
     return {"ok": True, "detail": None}
 
 
-def _capability_checks() -> dict[str, dict[str, object]]:
-    """Per-capability provider readiness; never loads weights or runs inference."""
-    return {
-        str(entry["name"]): {
-            "available": bool(entry["available"]),
-            "reason_code": entry.get("reason_code"),
-        }
-        for entry in capabilities_overview()["capabilities"]
-    }
-
-
 @app.get(
     "/api/health",
     response_model=HealthResponse,
@@ -102,7 +91,7 @@ def _capability_checks() -> dict[str, dict[str, object]]:
 )
 def health(response: Response) -> HealthResponse:
     trace_check = _trace_check()
-    capability_checks = _capability_checks()
+    capability_checks, disabled = health_capabilities()
     if not trace_check["ok"]:
         status = "unavailable"
         response.status_code = 503
@@ -114,6 +103,7 @@ def health(response: Response) -> HealthResponse:
         {
             "status": status,
             "mode": "offline-first",
+            "disabled_by_decision": disabled,
             "checks": {"trace": trace_check, "capabilities": capability_checks},
         }
     )

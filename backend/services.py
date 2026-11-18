@@ -1053,6 +1053,24 @@ def plan_analysis(
     }
 
 
+def health_capabilities() -> tuple[dict[str, dict], dict[str, str]]:
+    """Return enabled capability checks and separately record intentional disablement."""
+    from core.registry import CAPABILITY_TOOLS, list_tools
+
+    capabilities = capabilities_overview()["capabilities"]
+    disabled_tools = {tool.name for tool in list_tools() if tool.status.status == "disabled"}
+    policy_reasons = {CAPABILITY_TOOLS[CHANGE_VQA]: CHANGE_UNSUPPORTED}
+    disabled = {
+        name: policy_reasons.get(name, "Disabled by product decision.")
+        for name in sorted(disabled_tools)
+    }
+    checks = {
+        str(entry["name"]): {"available": bool(entry["available"]), "reason_code": entry["reason_code"]}
+        for entry in capabilities if CAPABILITY_TOOLS.get(entry["name"]) not in disabled_tools
+    }
+    return checks, disabled
+
+
 def capabilities_overview() -> dict[str, Any]:
     """Truthful snapshot: provider readiness plus the tool-maturity mapping."""
     from core.registry import capability_state

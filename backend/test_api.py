@@ -96,24 +96,23 @@ def upload(
     )
 
 
-def test_health_reflects_intentionally_unavailable_change_capability(client: TestClient) -> None:
-    response = client.get("/api/health")
-
+@pytest.mark.parametrize("endpoint", ["/api/health", "/health"])
+def test_health_ready_with_one_intentionally_disabled_tool(client: TestClient, endpoint: str) -> None:
+    response = client.get(endpoint)
     assert response.status_code == 200
     body = response.json()
-    assert body["status"] == "degraded"
-    assert body["mode"] == "offline-first"
-    assert body["checks"]["trace"] == {"ok": True, "detail": None}
-    assert set(body["checks"]["capabilities"]) == set(capabilities.KNOWN_CAPABILITIES)
-    for name, check in body["checks"]["capabilities"].items():
-        assert check == (
-            {"available": False, "reason_code": "not_answerable"} if name == "change_vqa"
-            else {"available": True, "reason_code": None}
-        )
+    assert body["status"] == "ready"
+    assert body["disabled_by_decision"] == {"change-deterministic": CHANGE_UNSUPPORTED}
+    checks = body["checks"]["capabilities"] if endpoint == "/api/health" else body["capability_checks"]
+    assert set(checks) == set(capabilities.KNOWN_CAPABILITIES) - {"change_vqa"}
+    assert all(check == {"available": True, "reason_code": None} for check in checks.values())
+    if endpoint == "/api/health":
+        assert body["checks"]["trace"] == {"ok": True, "detail": None}
 
 
+@pytest.mark.parametrize("endpoint", ["/api/health", "/health"])
 def test_health_degraded_when_a_capability_is_unavailable(
-    client: TestClient, monkeypatch: pytest.MonkeyPatch
+    client: TestClient, monkeypatch: pytest.MonkeyPatch, endpoint: str
 ) -> None:
     monkeypatch.setattr(
         QwenVLModel,
@@ -121,18 +120,18 @@ def test_health_degraded_when_a_capability_is_unavailable(
         lambda _: ModelReadiness(False, "CUDA_UNAVAILABLE", "A CUDA GPU is required."),
     )
 
-    response = client.get("/api/health")
+    response = client.get(endpoint)
 
     assert response.status_code == 200
     body = response.json()
     assert body["status"] == "degraded"
-    assert body["mode"] == "offline-first"
-    assert body["checks"]["trace"]["ok"] is True
-    assert body["checks"]["capabilities"][capabilities.SINGLE_IMAGE_VQA] == {
+    assert body["disabled_by_decision"] == {"change-deterministic": CHANGE_UNSUPPORTED}
+    checks = body["checks"]["capabilities"] if endpoint == "/api/health" else body["capability_checks"]
+    assert checks[capabilities.SINGLE_IMAGE_VQA] == {
         "available": False,
         "reason_code": "CUDA_UNAVAILABLE",
     }
-    assert body["checks"]["capabilities"][capabilities.OPTICAL_SAR]["available"] is True
+    assert checks[capabilities.OPTICAL_SAR]["available"] is True
 
 
 def test_health_unavailable_with_503_when_trace_is_corrupted(client: TestClient) -> None:
@@ -147,7 +146,7 @@ def test_health_unavailable_with_503_when_trace_is_corrupted(client: TestClient)
     assert body["mode"] == "offline-first"
     assert body["checks"]["trace"]["ok"] is False
     assert "malformed" in body["checks"]["trace"]["detail"]
-    assert set(body["checks"]["capabilities"]) == set(capabilities.KNOWN_CAPABILITIES)
+    assert set(body["checks"]["capabilities"]) == set(capabilities.KNOWN_CAPABILITIES) - {"change_vqa"}
 
 
 def test_known_golden_scene_serves_real_png(client: TestClient) -> None:

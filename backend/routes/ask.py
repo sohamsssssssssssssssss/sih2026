@@ -7,7 +7,7 @@ from fastapi import APIRouter, File, HTTPException, Request, UploadFile
 from pydantic import BaseModel, ConfigDict, StringConstraints
 
 from backend.ask_service import AskService, memory
-from backend.services import InvalidImageUpload, SceneNotFound
+from backend.services import InvalidImageUpload, SceneNotFound, health_capabilities
 from core.registry import capability_state, CAPABILITY_TOOLS
 from core.schema import Answer
 from core.schema_version import SCHEMA_VERSION
@@ -86,6 +86,9 @@ def get_trace(request:Request,trace_id:str|None=None):
 @router.get('/health')
 def health(request:Request):
     runtime=service(request)
-    return {'schema_version':SCHEMA_VERSION,'code_commit':runtime.commit,'tools_loaded':runtime.loaded,
+    checks, disabled = health_capabilities()
+    return {'status':'ready' if all(check['available'] for check in checks.values()) else 'degraded',
+            'disabled_by_decision':disabled,'capability_checks':checks,
+            'schema_version':SCHEMA_VERSION,'code_commit':runtime.commit,'tools_loaded':runtime.loaded,
             'tools_registered':list(runtime.registry.names()),'timeout_s':runtime.config.timeout,
             'packs':['worldcover','sen1floods11-hand-v1'],**memory()}
