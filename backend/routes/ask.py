@@ -4,11 +4,15 @@ from pathlib import Path
 import threading
 from typing import Annotated
 
+import httpx
+
 from fastapi import APIRouter, File, HTTPException, Request, UploadFile
 from fastapi.responses import FileResponse
 from pydantic import BaseModel, ConfigDict, StringConstraints
 
 from backend.ask_service import AskService, memory
+from backend.fresh_scenes import (FreshRequest, ProviderError, SceneUnavailable,
+                                  backup_for, fetch_chip, offline, resolve_point)
 from backend.services import InvalidImageUpload, SceneNotFound, health_capabilities
 from core.registry import capability_state, CAPABILITY_TOOLS
 from core.schema import Answer
@@ -26,11 +30,14 @@ class PackRef(BaseModel):
     patch_id: Text
 
 
+SceneRef = PackRef | Annotated[str,StringConstraints(pattern=r'^upload_[0-9a-f]{32}$')]
+
+
 class AskRequest(BaseModel):
     model_config=ConfigDict(extra='forbid')
     question: Text
-    scene_ref: PackRef | Annotated[str,StringConstraints(pattern=r'^upload_[0-9a-f]{32}$')]
-    second_scene_ref: PackRef | Annotated[str,StringConstraints(pattern=r'^upload_[0-9a-f]{32}$')] | None = None
+    scene_ref: SceneRef
+    second_scene_ref: SceneRef | None = None
 
 
 def service(request):
@@ -48,6 +55,50 @@ async def ask(body:AskRequest,request:Request):
     except (InvalidImageUpload,ValueError) as error: raise HTTPException(422,str(error)) from error
     except (TraceIntegrityError,OSError) as error:
         raise HTTPException(503,'Persistent execution trace or local scene storage is unavailable') from error
+
+
+@router.post('/scenes/fetch')
+def fresh_scene(body: FreshRequest, request: Request):
+    runtime = service(request)
+    try:
+        with httpx.Client(timeout=10) as client:
+            point, fallback_reason = resolve_point(client, body)
+            west, south, east, north = runtime.thresholds.india_bounds
+            if not (west <= point[0] <= east and south <= point[1] <= north):
+                return {'refusal': runtime.outside_region()}
+            fallback_reason = fallback_reason or ('Offline mode is enabled.' if offline() else None)
+            if fallback_reason is None:
+                try:
+                    pixels = fetch_chip(client, body, point)
+                except ProviderError as error:
+                    fallback_reason = str(error)
+                else:
+                    chip = runtime.scenes.raster(pixels, fresh_mode='live')
+                    ref = PackRef(pack_id='fresh', patch_id=runtime.scenes.save_fresh(pixels))
+                    return {'scene_ref': ref, **chip.preview(), 'fallback_reason': None}
+        backup = backup_for(body, point)
+        ref = PackRef(pack_id='fresh-backups', patch_id=backup['id'])
+        return {'scene_ref': ref, **runtime.scenes.load(ref).preview(),
+                'fallback_reason': fallback_reason, 'backup_place': backup['place']}
+    except (SceneUnavailable, SceneNotFound) as error:
+        raise HTTPException(404, str(error)) from error
+    except (OSError, ValueError, TraceIntegrityError) as error:
+        raise HTTPException(503, 'Scene storage or execution trace is unavailable.') from error
+
+
+class PreviewRequest(BaseModel):
+    model_config = ConfigDict(extra='forbid')
+    scene_ref: SceneRef
+
+
+@router.post('/scenes/preview')
+def scene_preview(body: PreviewRequest, request: Request):
+    try:
+        return service(request).scenes.load(body.scene_ref).preview()
+    except SceneNotFound as error:
+        raise HTTPException(404, str(error)) from error
+    except ValueError as error:
+        raise HTTPException(422, str(error)) from error
 
 
 @router.get('/scenes/demo/{fixture}')

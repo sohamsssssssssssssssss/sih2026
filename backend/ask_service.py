@@ -13,9 +13,9 @@ from uuid import uuid4
 from backend.ask_scenes import SceneStore
 from backend.config import AskConfig, ROOT
 from core.answer import assemble, decide, record_events
-from core.gate import GateDecision, Thresholds
+from core.gate import GateDecision, OUTSIDE_INDIA, Thresholds
 from core import registry as registry_module
-from core.schema import Answer, Query, ToolResult
+from core.schema import Answer, Evidence, Query, ToolResult
 from orchestrator import trace
 
 logger=logging.getLogger('uvicorn.error')
@@ -72,6 +72,17 @@ class AskService:
             events=[r for r in chain if trace_id is None or r.get('trace_id')==trace_id]
         return {'events':events,'verified':verified,'message':message,'chain_scope':'entire persisted chain'}
 
+    def outside_region(self):
+        checked = self.verified_trace()
+        if not checked['verified']:
+            raise trace.TraceIntegrityError(checked['message'])
+        trace_id = uuid4().hex
+        summary = {'rule': 'region', 'outcome': 'out_of_region', 'policy': 'out_of_region',
+                   'threshold': list(self.thresholds.india_bounds), 'detail': OUTSIDE_INDIA}
+        record_events(trace_id, 'gate', [summary])
+        gate = GateDecision(None, 'UNKNOWN', 'not_answerable', (Evidence(kind='text', summary=summary),))
+        return assemble(None, gate, None, trace_id=trace_id)
+
     def work(self,request,state):
         first=self.scenes.load(request.scene_ref)
         query=Query(text=request.question,qtype='change' if request.second_scene_ref is not None else 'open')
@@ -81,7 +92,8 @@ class AskService:
             if not checked['verified']: raise trace.TraceIntegrityError(checked['message'])
             record_events(state.trace_id,'config',[{'thresholds_sha256':self.thresholds_sha,
                           'thresholds':self.thresholds.model_dump(mode='json'),'timeout_s':self.config.timeout}])
-            record_events(state.trace_id,'scene',[{'scene_id':first.scene.scene_id,'source':first.scene.source}])
+            record_events(state.trace_id,'scene',[{'scene_id':first.scene.scene_id,'source':first.scene.source,
+                                                  **(first.provenance or {})}])
             _,gate=decide(query,first.scene,self.registry,trace_id=state.trace_id,
                           band_means=(first.means(),),
                           thresholds=self.thresholds)

@@ -311,3 +311,64 @@ def test_actual_nodata_gate_with_partial_upload(api):
     runtime.scenes.load=load
     a=ask(client,ref).json()
     assert a['refusal_reason']=='nodata' and tool.calls==0
+
+
+def test_fresh_outside_india_refuses_before_stac(api, monkeypatch):
+    client, _, tool = api
+    monkeypatch.setenv('SATQUERY_OFFLINE', '0')
+
+    def unexpected_fetch(*args):
+        pytest.fail('An outside-India point must never reach STAC')
+
+    monkeypatch.setattr('backend.routes.ask.fetch_chip', unexpected_fetch)
+    response = client.post('/scenes/fetch', json={'lat': 48.45, 'lon': 16.15, 'start_date': '2025-08-29'})
+    assert response.status_code == 200
+    refusal = response.json()['refusal']
+    assert refusal['refusal_reason'] == 'not_answerable'
+    history = client.get('/trace/' + refusal['trace_id']).json()
+    assert history['verified']
+    assert any(event.get('policy') == 'out_of_region' for event in history['events'])
+    assert tool.calls == 0
+
+
+@pytest.mark.parametrize('offline_mode', [True, False])
+def test_fresh_fallback_has_provenance_and_uses_the_same_gate(api, monkeypatch, offline_mode):
+    from backend.fresh_scenes import ProviderError
+
+    client, _, tool = api
+    monkeypatch.setenv('SATQUERY_OFFLINE', '1' if offline_mode else '0')
+
+    def failed_fetch(*args):
+        assert not offline_mode, 'Offline mode must not call STAC'
+        raise ProviderError('Earth Search unavailable.')
+
+    monkeypatch.setattr('backend.routes.ask.fetch_chip', failed_fetch)
+    response = client.post('/scenes/fetch', json={'lat': 19.025, 'lon': 72.835, 'start_date': '2025-08-29'})
+    assert response.status_code == 200
+    scene = response.json()
+    assert scene['backup_place'] == 'Mumbai'
+    assert scene['provenance']['mode'] == 'cached'
+    assert scene['provenance']['label'] == 'Cached scene (offline)'
+    assert scene['provenance']['cloud_pct_label'] == 'scene-level cloud cover'
+    assert scene['fallback_reason'] == ('Offline mode is enabled.' if offline_mode else 'Earth Search unavailable.')
+    assert scene['image'].startswith('data:image/png;base64,')
+    answer = ask(client, scene['scene_ref'], question='What is the land cover?').json()
+    assert answer['refusal_reason'] == 'cloud'
+    assert tool.calls == 0
+
+
+def test_fresh_backup_manifest_matches_every_chip(api):
+    from backend.fresh_scenes import BACKUPS
+    from rasterio.warp import transform_bounds
+
+    _, runtime, _ = api
+    records = json.loads((BACKUPS / 'manifest.json').read_text())
+    assert len({record['id'] for record in records}) == 5
+    assert {record['sensor'] for record in records} == {'S1', 'S2'}
+    for record in records:
+        scene = runtime.scenes.load(PackRef(pack_id='fresh-backups', patch_id=record['id']))
+        assert scene.provenance['item_id'] == record['item_id']
+        assert scene.scene.sensor == record['sensor']
+        assert scene.scene.acquired.isoformat() == record['date']
+        assert transform_bounds(scene.scene.crs, 'EPSG:4326', *scene.scene.bounds) == pytest.approx(record['bbox'])
+        assert scene.preview_image().size == (120, 120)

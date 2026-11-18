@@ -1,18 +1,24 @@
 """Trusted local pack references and strictly described GeoTIFF uploads for /ask."""
+import base64
 from dataclasses import dataclass
+from datetime import datetime
 import hashlib
 import json
 import math
+import os
 from pathlib import Path
 import re
+from tempfile import NamedTemporaryFile
 from typing import Any
 from uuid import uuid4
 
+from PIL import Image
 import numpy as np
 import rasterio
 from rasterio.io import MemoryFile
 from rasterio.transform import array_bounds, Affine
 
+from backend.fresh_scenes import BACKUPS
 from backend.services import (InvalidImageUpload, SceneNotFound, MAX_RASTER_BANDS,
                               MAX_RASTER_PIXELS, _sha256_file, _preview_channel)
 from core.schema import Scene, scene_id_for
@@ -30,6 +36,7 @@ class LoadedScene:
     transform: Affine
     context: Any = None
     native: Path | None = None
+    provenance: dict | None = None
 
     def means(self):
         return {b: float(x[np.isfinite(x)].mean(dtype=np.float64))
@@ -47,17 +54,37 @@ class LoadedScene:
         if self.native:
             return str(self.native)
         # The existing VLM/DINO adapters consume display images, not spectral tensors.
-        from PIL import Image
-        item=self.arrays.get('s2')
-        if item is None: raise ValueError('This tool requires an optical display image')
-        x=item['pixels'];bands=item['bands']
-        rgb=[_preview_channel(np.ma.masked_invalid(x[bands.index(b)])) for b in ('B04','B03','B02')]
+        if 's2' not in self.arrays: raise ValueError('This tool requires an optical display image')
         target=directory/(self.scene.scene_id+'.png');directory.mkdir(parents=True,exist_ok=True)
-        if not target.exists(): Image.fromarray(np.stack(rgb,-1)).save(target)
+        if not target.exists(): self.preview_image().save(target)
         return str(target)
 
+    def preview_image(self):
+        if 's2' in self.arrays:
+            item, names = self.arrays['s2'], ('B04', 'B03', 'B02')
+        elif 's1' in self.arrays:
+            item, names = self.arrays['s1'], ('VV',)
+        else:
+            item, names = self.arrays['rgb'], ('red', 'green', 'blue')
+        if any(name not in item['bands'] for name in names):
+            raise ValueError('Scene does not contain the preview bands')
+        channels = [_preview_channel(np.ma.masked_invalid(item['pixels'][item['bands'].index(name)]))
+                    for name in names]
+        return Image.fromarray(channels[0] if len(channels) == 1 else np.stack(channels, -1))
 
-def make_scene(arrays, *, crs, transform, source, cloud=None, invalid=None, metadata=None, extra_bands=()):
+    def preview(self):
+        from io import BytesIO
+
+        image = self.preview_image()
+        image.thumbnail((320, 320))
+        with BytesIO() as stream:
+            image.save(stream, format='PNG')
+            url = 'data:image/png;base64,' + base64.b64encode(stream.getvalue()).decode('ascii')
+        return {'image': url, 'scene': self.scene, 'provenance': self.provenance,
+                'preview_kind': 'VV grayscale' if image.mode == 'L' else 'RGB quicklook'}
+
+
+def make_scene(arrays, *, crs, transform, source, cloud=None, invalid=None, metadata=None, extra_bands=(), acquired=None):
     keys=tuple(k for k in ('s1','s2','rgb') if k in arrays)
     sensor='S1S2' if keys==('s1','s2') else {'s1':'S1','s2':'S2','rgb':'RGB_HR'}[keys[0]]
     first=arrays[keys[0]]['pixels'];height,width=first.shape[-2:]
@@ -82,7 +109,7 @@ def make_scene(arrays, *, crs, transform, source, cloud=None, invalid=None, meta
               cloud_pct=cloud,nodata_pct=float(invalid.mean()*100))
     identity={**info,'transform':list(transform),'shape':[height,width],'validity_sha256':hashlib.sha256(invalid.tobytes()).hexdigest(),**(metadata or {})}
     raw=b''.join(np.ascontiguousarray(arrays[k]['pixels']).tobytes() for k in keys)
-    return Scene(scene_id=scene_id_for(raw,identity),**info)
+    return Scene(scene_id=scene_id_for(raw,identity), acquired=acquired, **info)
 
 
 class SceneStore:
@@ -97,7 +124,7 @@ class SceneStore:
             if _sha256_file(path)!=digest: raise ValueError(f'Pack checksum mismatch: {path.name}')
             self.verified[path]=signature
 
-    def raster(self,data):
+    def raster(self,data, *, fresh_mode=None):
         try:
             with MemoryFile(data) as memory, memory.open() as src:
                 if src.driver!='GTiff' or src.crs is None or src.transform==Affine.identity():
@@ -118,7 +145,7 @@ class SceneStore:
                     if not np.isin(mask[valid_mask],[0,1]).all():
                         raise InvalidImageUpload('dataMask must contain 0 or 1 at valid pixels')
                     invalid |= mask==0
-                if invalid.all(): raise InvalidImageUpload('Raster contains no valid pixels')
+                if invalid.all() and fresh_mode is None: raise InvalidImageUpload('Raster contains no valid pixels')
                 tags=src.tags();arrays={}
                 for key,allowed in [('s1',{'VV','VH'}),('s2',OPTICAL),('rgb',{'red','green','blue'})]:
                     idx=[i for i,b in enumerate(names) if b in allowed]
@@ -130,10 +157,21 @@ class SceneStore:
                 if not arrays or ('rgb' in arrays and len(arrays)>1):
                     raise InvalidImageUpload('Unsupported combination of sensor bands')
                 cloud=float(tags['cloud_pct']) if 'cloud_pct' in tags else None
-                sc=make_scene(arrays,crs=src.crs,transform=src.transform,source='uploaded GeoTIFF; cloud metadata declared by uploader',
-                              cloud=cloud,invalid=invalid,extra_bands=('dataMask',) if 'dataMask' in names else (),
-                              metadata={'dataMask_sha256':hashlib.sha256(pixels[names.index('dataMask')].tobytes()).hexdigest()} if 'dataMask' in names else None)
-                return LoadedScene(sc,arrays,src.transform)
+                provenance = None
+                acquired = None
+                source = 'uploaded GeoTIFF; cloud metadata declared by uploader'
+                metadata = {'dataMask_sha256': hashlib.sha256(pixels[names.index('dataMask')].tobytes()).hexdigest()
+                            if 'dataMask' in names else None}
+                if fresh_mode:
+                    provenance = json.loads(tags['satquery_provenance'])
+                    provenance.update(mode=fresh_mode, label='Live scene' if fresh_mode == 'live' else 'Cached scene (offline)')
+                    source = provenance['source']
+                    acquired = datetime.fromisoformat(provenance['acquisition_datetime']).date()
+                    metadata['provenance'] = provenance
+                sc = make_scene(arrays, crs=src.crs, transform=src.transform, source=source,
+                                cloud=cloud, invalid=invalid, acquired=acquired, metadata=metadata,
+                                extra_bands=('dataMask',) if 'dataMask' in names else ())
+                return LoadedScene(sc, arrays, src.transform, provenance=provenance)
         except InvalidImageUpload: raise
         except Exception as error:
             raise InvalidImageUpload(f'Cannot read GeoTIFF metadata/pixels ({type(error).__name__})') from error
@@ -147,6 +185,21 @@ class SceneStore:
             json.dump({'scene':loaded.scene.model_dump(mode='json'),'sha256':hashlib.sha256(data).hexdigest()},stream)
         return {'upload_id':upload_id,'scene':loaded.scene}
 
+    def save_fresh(self, data):
+        digest = hashlib.sha256(data).hexdigest()
+        directory = self.config.data_dir / 'fresh'
+        directory.mkdir(parents=True, exist_ok=True)
+        target = directory / (digest + '.tif')
+        with NamedTemporaryFile(dir=directory) as stream:
+            stream.write(data)
+            stream.flush()
+            # Publish the content-addressed chip only after completing the write.
+            try:
+                os.link(stream.name, target)
+            except FileExistsError:
+                pass
+        return digest
+
     def load(self,reference):
         if isinstance(reference,str):
             if not UPLOAD_ID.fullmatch(reference): raise SceneNotFound('Unknown upload id')
@@ -157,6 +210,22 @@ class SceneStore:
             loaded=self.raster(path.read_bytes());loaded.native=path
             if loaded.scene!=Scene.model_validate(meta['scene']): raise ValueError('Upload metadata integrity mismatch')
             return loaded
+        if reference.pack_id == 'fresh':
+            digest = reference.patch_id
+            if not re.fullmatch(r'[0-9a-f]{64}', digest):
+                raise SceneNotFound('Unknown fresh scene')
+            path = self.config.data_dir / 'fresh' / (digest + '.tif')
+            if not path.is_file():
+                raise SceneNotFound('Unknown fresh scene')
+            self.verify(path, digest)
+            return self.raster(path.read_bytes(), fresh_mode='live')
+        if reference.pack_id == 'fresh-backups':
+            for row in json.loads((BACKUPS / 'manifest.json').read_text()):
+                if row['id'] == reference.patch_id:
+                    path = BACKUPS / (row['id'] + '.tif')
+                    self.verify(path, row['sha256'])
+                    return self.raster(path.read_bytes(), fresh_mode='cached')
+            raise SceneNotFound('Unknown cached scene')
         if reference.pack_id=='worldcover': return self.worldcover(reference.patch_id)
         if reference.pack_id=='sen1floods11-hand-v1': return self.flood(reference.patch_id)
         raise SceneNotFound('Unknown pack id')
