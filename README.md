@@ -452,6 +452,6 @@ To run the full stack on one NVIDIA GPU VM behind one public URL (Docker Compose
 - **Resolution Robustness Ladder**: Evaluated on 200 real LoveDA scenes degraded across 5 rungs (0.3m, 1m, 2m, 5m, 10m). Rungs at 5m and 10m exhibit collapse to the gold yes-prior and are flagged as degenerate.
 - **Post-Phase-0 progress**: Grounding, pair validation, deterministic optical-SAR and change providers, offline readiness, GPU smoke infrastructure, and the RSVQA-LR adaptation pipeline are implemented. Learned adaptation and the remaining held-out evaluations have not run.
 
-## Development Status
+### Next Phase
 
 The next execution phase is RSVQA-LR provisioning, a bounded QLoRA dry run/training job, base-versus-adapter validation, and one real bi-temporal smoke. No adapted model exists yet.
