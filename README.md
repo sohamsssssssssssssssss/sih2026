@@ -13,13 +13,13 @@ SatQuery AI is a remote-sensing question-answering system built for SIH26167. It
 For a one-page summary with a source for every number, see [docs/STATUS.md](docs/STATUS.md).
 
 ### /ask (current demo path)
-- **Live scenes**: `/ask` finds a scene by place and date. Sentinel-2 L2A comes from Earth Search and Sentinel-1 RTC from Microsoft Planetary Computer, with a 120 × 120 window read per band (`backend/fresh_scenes.py`). Five cached backup chips with SHA-256 checksums cover provider outages (`data/fresh-backups/manifest.json`).
+- **Live scenes**: `/ask` finds a scene by place and date. Sentinel-2 L2A comes from Earth Search and Sentinel-1 RTC from Microsoft Planetary Computer, with a 120 × 120 window read per band (`backend/fresh_scenes.py`). Five cached backup chips with SHA-256 checksums cover provider outages (`data/fresh-backups/manifest.json`). The overall fetch deadline is 20 seconds, including place lookup, STAC search and band reads. At expiry, Ask shows “Live fetch timed out after Ns — showing cached scene from <date>” for a matching backup or refuses with a reason when none exists. The S2 per-read timeout is 60 seconds (`ecb651e`, `5a778ba`).
 - **Gates**: scenes outside the India rectangle [68, 6, 98, 38], optical scenes above 50% cloud and scenes above 50% nodata are refused. These thresholds are provisional guards, not calibrated cutoffs (`core/gate.py:12`).
-- **Land cover — experimental**: Europe-trained model (BigEarthNet checkpoints); India adaptation evaluated, failed promotion gate (G2, G3) — not shipped. Scores are uncalibrated and `confidence` is `null`. India mAP is far below Europe (S2 0.576 vs 0.915, `docs/plan/RESULTS.md`).
+- **Land cover — experimental**. Ask uses the Europe-trained BigEarthNet checkpoints and returns `confidence: null`. Built areas ranked first in live Ludhiana (**0.955**) and Delhi (**0.949**), and cropland ranked first on the Punjab fixture (**0.378**). These are uncalibrated presence scores. The Earth Search BOA offset fix (`84d7f57`) corrected the tested optical inputs. The India-adapted model was evaluated and is not shipped because calibration did not transfer between held-out Indian regions. [Recorded API results](docs/plan/INTEGRATION_LOG.md#2026-11-20--sentinel-2-boa-offset-and-regenerated-backups) · [India promotion decision on `feature/ben-landcover` at `90ccde3`](https://github.com/sohamsssssssssssssssss/sih2026/blob/90ccde3aa4c4d6eb0ee6e7d2d8591e4b792d905a/results/landcover-india-promotion/DECISION.md)
 - **Flood water — experimental**: per-scene Sentinel-1 Otsu open-water mask. India-test IoU 0.631 against a 0.65 gate: FAIL, method not tuned afterwards (`outputs/T07c-flood.md`). The flood U-Net is parked (`docs/plan/DECISIONS.md`).
 - **Change QA — disabled**: change questions receive `not_answerable`. T18 found CDVQA presence labels predictable from question text alone (82.8%) and pixel differencing (56.0%) below train majority (56.2%) (`docs/plan/DECISIONS.md`, commit `252ea5e`).
 
-Judge-style HTTP acceptance of these paths is recorded in [docs/plan/E2E_ACCEPTANCE.md](docs/plan/E2E_ACCEPTANCE.md).
+Judge-style HTTP acceptance of these paths is recorded in [docs/plan/E2E_ACCEPTANCE.md](docs/plan/E2E_ACCEPTANCE.md). Latest recorded checks on 20 Nov 2026. pytest **1,401 passed, 47 skipped, 0 failed**. Vitest **50 passed**. TypeScript **0 diagnostics**. Playwright **9 passed** across the live and offline runs. [Integration log](docs/plan/INTEGRATION_LOG.md#2026-11-20--live-fetch-deadline-and-mumbai-fixture)
 
 ### AVAILABLE (API building blocks)
 - **Controlled image ingestion**: `POST /api/scenes` validates PNG, JPEG, TIFF, and GeoTIFF uploads up to 20 MiB. Raster metadata is observed separately from user declarations.
@@ -395,7 +395,7 @@ python3 -m pytest backend/test_api.py -q
 python3 -m pytest -q
 ```
 
-*For the current count, see the latest test run on the reviewed commit. The last recorded full run (18 Nov 2026) was 1,366 passed, 47 skipped, 0 failed; skip reasons are listed in [docs/plan/INTEGRATION_LOG.md](docs/plan/INTEGRATION_LOG.md).*
+*The full run recorded on 20 Nov 2026 passed 1,401 tests with 47 skipped and 0 failed. [Integration log](docs/plan/INTEGRATION_LOG.md#2026-11-20--live-fetch-deadline-and-mumbai-fixture)*
 
 ---
 
@@ -462,4 +462,4 @@ To run the full stack on one NVIDIA GPU VM behind one public URL (Docker Compose
 
 ### Next Phase
 
-Current open work is listed in [docs/STATUS.md](docs/STATUS.md). The India land-cover input preprocessing is under diagnosis after the failed promotion gate. Adapted models exist as evaluated artefacts; none is shipped in the product.
+Current open work is listed in [docs/STATUS.md](docs/STATUS.md). The India land-cover promotion is closed. [India promotion decision on `feature/ben-landcover` at `90ccde3`](https://github.com/sohamsssssssssssssssss/sih2026/blob/90ccde3aa4c4d6eb0ee6e7d2d8591e4b792d905a/results/landcover-india-promotion/DECISION.md)
