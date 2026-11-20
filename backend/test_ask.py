@@ -332,7 +332,7 @@ def test_real_cpu_end_to_end(tmp_path,monkeypatch,pack,patch,question):
 
 
 def test_real_mumbai_s2_cloud_metadata_refuses_without_inference(tmp_path, monkeypatch):
-    fixture = Path(__file__).resolve().parents[1] / 'tests/fixtures/mumbai-s2-cloudy.tif'
+    fixture = Path(__file__).resolve().parents[1] / 'tests/fixtures/mumbai-s2-cloudy-v2.tif'
     runtime = AskService(AskConfig(data_dir=tmp_path/'data', trace_dir=tmp_path/'trace'))
     monkeypatch.setattr(app.state, 'ask_service', runtime, raising=False)
     with TestClient(app) as client:

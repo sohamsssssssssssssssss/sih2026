@@ -8,6 +8,8 @@ The Earth Search query used collection `sentinel-2-l2a`, bbox `[72.78,18.98,72.8
 
 The source COGs store uint16 DN with scale 0.0001 and offset −0.1. The fixture applies those published values and stores signed int16 reflectance × 10,000 (source DN minus 1,000). Bands are B02, B03, B04, B08, with the same shape, order, and units as the Punjab fixture. Unlike Punjab’s multitemporal composite, Mumbai is a single L2A acquisition. The preview shows B04/B03/B02 with a fixed display-only stretch and gamma. It does not change the GeoTIFF.
 
+The original fixture was introduced on 2026-11-18 in `78e577e`. No standalone generator is tracked. On 2026-11-20 the same item and window were read again through the corrected fetch path. Earth Search marks this baseline 05.11 COG as already offset-corrected. The original fixture subtracted another 1,000 DN from every pixel. The demo and upload tests now use `mumbai-s2-cloudy-v2.tif`, which preserves the original grid, bands and cloud tag. The original fixture remains available.
+
 ## Punjab Sentinel-2 land cover
 
 `punjab-s2.tif` is the optical-only export of WorldCover pack patch `0` (EPSG:32643) used in the HTTP acceptance report. It preserves B02/B03/B04/B08 and their native 120 × 120, 10 m grid. The source composite has no cloud percentage tag. [Acceptance report](../../docs/plan/E2E_ACCEPTANCE.md)

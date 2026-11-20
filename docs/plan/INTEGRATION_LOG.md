@@ -606,3 +606,13 @@ Ports 3000 and 8000 were free before each launch. Both sessions ran through `bas
 | Ludhiana | Live Earth Search, `S2B_43REQ_20261028_0_L2A` | Uncalibrated coarse land-cover presence scores. | Built 0.954770 |
 | Delhi | Live Earth Search, `S2B_43RGM_20261005_0_L2A` | Uncalibrated coarse land-cover presence scores. | Built 0.949291 |
 | Punjab | Local WorldCover demo fixture, patch 0, no STAC item | Uncalibrated coarse land-cover presence scores. Cloud cover not checked (no cloud metadata). | Cropland 0.378211 |
+
+## 2026-11-20 — Live fetch deadline and Mumbai fixture
+
+Live scene acquisition defaults to 20 seconds overall, including place lookup, STAC selection and all band reads. Set `SATQUERY_LIVE_FETCH_TIMEOUT` in seconds to override it. A timeout uses a cache for the requested place or chip footprint, with the backup acquisition date in the message. If no matching cache exists the API returns HTTP 504 with the reason. GDAL can finish the current read in a worker after the deadline. Expired requests do not publish live chips.
+
+The Mumbai fixture was introduced on 2026-11-18 in `78e577e`. Its source, Earth Search item `S2C_43QBB_20250829_0_L2A`, differs from the Mumbai backup item. A fresh read of the same 120 × 120 window confirmed a duplicate −1,000 DN offset. Mean reflectance in B02/B03/B04/B08 order was 0.49092194 / 0.47021519 / 0.46295581 / 0.45865514 before and 0.59092194 / 0.57021519 / 0.56295581 / 0.55865514 after. The new fixture retains the grid and original cloud metadata. The old file is retained.
+
+Verification: pytest **1,401 passed, 47 skipped, 0 failed**. Vitest **50 passed** in 12 files. TypeScript no-emit passed with zero diagnostics. Playwright live run **8 passed, 1 offline-only skip**, and the offline case **1 passed** separately.
+
+The default-budget Ludhiana request first fell back at 20.04 seconds and then returned live on retry in 0.89 seconds. The one-second run returned cached in 1.03 seconds with “Live fetch timed out after 1s — showing cached scene from 2026-10-28”. Both used item `S2B_43REQ_20261028_0_L2A` and answered “Uncalibrated coarse land-cover presence scores.” Built areas ranked first at 0.954770 in both. Ports 3000 and 8000 were free before each launch, and the owned demo sessions were stopped after verification.

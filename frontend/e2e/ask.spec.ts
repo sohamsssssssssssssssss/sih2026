@@ -38,7 +38,7 @@ for (const [name, outcome, phrases] of examples) {
 
 test("upload a GeoTIFF and submit a typed question", async ({ page }) => {
   await page.goto("/ask");
-  await page.getByLabel("Upload GeoTIFF").setInputFiles(resolve("../tests/fixtures/mumbai-s2-cloudy.tif"));
+  await page.getByLabel("Upload GeoTIFF").setInputFiles(resolve("../tests/fixtures/mumbai-s2-cloudy-v2.tif"));
   await expect(page.getByRole("combobox", { name: "Scene", exact: true })).toHaveValue(/^upload_/);
   await page.getByRole("textbox", { name: "Question" }).fill("Describe the land cover");
   await page.getByRole("button", { name: "Ask", exact: true }).click();

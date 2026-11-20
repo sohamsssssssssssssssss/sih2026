@@ -14,7 +14,7 @@ const SCENES: Record<string, Scene> = {
   india: { label: "India flood chip · Sentinel-1", ref: { pack_id: "sen1floods11-hand-v1", patch_id: "India_900498" } },
   second: { label: "Second India chip · Sentinel-1", ref: { pack_id: "sen1floods11-hand-v1", patch_id: "India_956930" } },
   vienna: { label: "Vienna · WorldCover", ref: { pack_id: "worldcover", patch_id: "1800" } },
-  mumbai: { label: "Cloudy Mumbai · Sentinel-2", fixture: "mumbai-s2-cloudy.tif" },
+  mumbai: { label: "Cloudy Mumbai · Sentinel-2", fixture: "mumbai-s2-cloudy-v2.tif" },
 };
 
 const EXAMPLES: Example[] = [

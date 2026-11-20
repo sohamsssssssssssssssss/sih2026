@@ -145,7 +145,7 @@ def scene_preview(body: PreviewRequest, request: Request):
 
 @router.get('/scenes/demo/{fixture}')
 def demo_fixture(fixture: str):
-    if fixture not in {'punjab-s2.tif', 'mumbai-s2-cloudy.tif'}:
+    if fixture not in {'punjab-s2.tif', 'mumbai-s2-cloudy.tif', 'mumbai-s2-cloudy-v2.tif'}:
         raise HTTPException(404, 'Unknown demo fixture')
     path = Path(__file__).resolve().parents[2] / 'tests' / 'fixtures' / fixture
     if not path.is_file():
