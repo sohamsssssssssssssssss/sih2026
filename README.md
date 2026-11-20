@@ -4,21 +4,32 @@
 
 > "Ask your satellite data anything."
 
-SatQuery AI is a capability-oriented remote-sensing visual intelligence system built for SIH26167. It translates natural-language queries into structured, evidence-backed geospatial reasoning over Earth observation imagery, enforcing cryptographic auditability, resolution awareness, and fail-closed safety constraints.
+SatQuery AI is a remote-sensing question-answering system built for SIH26167. It routes natural-language questions over Sentinel-1/2 imagery to registered tools, refuses when its gates or tool status say an answer is not supported, and records every answer in a SHA-256 hash-chained trace. Every model tool is experimental or disabled; see the evidence-linked summary in [docs/STATUS.md](docs/STATUS.md).
 
 ---
 
 ## Current Status
 
-### AVAILABLE
+For a one-page summary with a source for every number, see [docs/STATUS.md](docs/STATUS.md).
+
+### /ask (current demo path)
+- **Live scenes**: `/ask` finds a scene by place and date. Sentinel-2 L2A comes from Earth Search and Sentinel-1 RTC from Microsoft Planetary Computer, with a 120 × 120 window read per band (`backend/fresh_scenes.py`). Five cached backup chips with SHA-256 checksums cover provider outages (`data/fresh-backups/manifest.json`).
+- **Gates**: scenes outside the India rectangle [68, 6, 98, 38], optical scenes above 50% cloud and scenes above 50% nodata are refused. These thresholds are provisional guards, not calibrated cutoffs (`core/gate.py:12`).
+- **Land cover — experimental**: Europe-trained model (BigEarthNet checkpoints); India adaptation evaluated, failed promotion gate (G2, G3) — not shipped. Scores are uncalibrated and `confidence` is `null`. India mAP is far below Europe (S2 0.576 vs 0.915, `docs/plan/RESULTS.md`).
+- **Flood water — experimental**: per-scene Sentinel-1 Otsu open-water mask. India-test IoU 0.631 against a 0.65 gate: FAIL, method not tuned afterwards (`outputs/T07c-flood.md`). The flood U-Net is parked (`docs/plan/DECISIONS.md`).
+- **Change QA — disabled**: change questions receive `not_answerable`. T18 found CDVQA presence labels predictable from question text alone (82.8%) and pixel differencing (56.0%) below train majority (56.2%) (`docs/plan/DECISIONS.md`, commit `252ea5e`).
+
+Judge-style HTTP acceptance of these paths is recorded in [docs/plan/E2E_ACCEPTANCE.md](docs/plan/E2E_ACCEPTANCE.md).
+
+### AVAILABLE (API building blocks)
 - **Controlled image ingestion**: `POST /api/scenes` validates PNG, JPEG, TIFF, and GeoTIFF uploads up to 20 MiB. Raster metadata is observed separately from user declarations.
 - **Deterministic orchestration**: `POST /api/plan` selects capabilities, checks input shape and provider readiness, and emits auditable execution steps. Unsupported multi-step plans fail closed.
 - **Single-image VQA**: `Qwen/Qwen2.5-VL-3B-Instruct` executes from offline local artifacts on CUDA, with opt-in MPS for local iteration. Confidence is `null` when uncalibrated.
 - **Grounding**: Grounding DINO Swin-T returns normalized bounding-box evidence with fixed thresholds (`box=0.35`, `text=0.25`).
 - **Pair compatibility**: Optical-SAR and bi-temporal requests are checked for modality, acquisition metadata, overlap, dimensions, CRS, and affine grid before dispatch.
 - **Deterministic optical-SAR analysis**: Joint Sentinel-2 index and Sentinel-1 backscatter summaries consume both co-registered inputs. This is not a learned fusion model.
-- **Deterministic change analysis**: Co-registered multispectral or RGB pairs produce heuristic magnitude, changed-pixel, coverage, and spatial-extent evidence. This is not semantic change understanding.
-- **Sentinel-1 water change**: Two co-registered VV/VH/dataMask SAR scenes sent to `change_vqa` report new and receded open water in hectares and as GeoJSON polygons, from a split-based Otsu baseline (bimodal tiles, after Chini et al. 2017) that abstains when no part of the scene shows an open-water mode, with a ±1 dB sensitivity range. Where village boundaries exist (the Bihar and Kerala catalogue events), the answer names the most flooded villages with hectares. Confidence is `null`. See `docs/change-baseline.md`.
+- **Deterministic change analysis — disabled**: the `change-deterministic` tool is disabled by decision and `change_vqa` is advertised as unsupported (`core/tool_status.json`, commit `252ea5e`).
+- **Sentinel-1 water change (before the change-QA decision)**: Two co-registered VV/VH/dataMask SAR scenes sent to `change_vqa` reported new and receded open water in hectares and as GeoJSON polygons, from a split-based Otsu baseline (bimodal tiles, after Chini et al. 2017) that abstains when no part of the scene shows an open-water mode, with a ±1 dB sensitivity range. Where village boundaries exist (the Bihar and Kerala catalogue events), the answer names the most flooded villages with hectares. Confidence is `null`. See `docs/change-baseline.md`.
 - **Sentinel-1 fetch from CDSE**: `POST /api/sentinel1/pairs` or `python -m backend.sentinel1 --event kosi-2024` (or an explicit `--bbox`, `--before` and `--after`; needs `CDSE_CLIENT_ID` and `CDSE_CLIENT_SECRET`) picks a same-orbit-track pair, renders terrain-corrected gamma0 for both dates on one UTM grid (tiled and mosaicked up to 50 km per side) and ingests them as scenes. It also records how cloudy Sentinel-2 was over the AOI near the post-event date. Verified live on all three catalogued events; results are in `data/manifests/cdse/flood-runs.v1.json`. The endpoint has no authentication and runs one fetch at a time, so don't expose it publicly yet.
 - **Cryptographic audit trace**: Live and cached-result executions are distinguished in a SHA-256 hash-chained trace.
 - **Explicit cached replay**: The designated committed VQA result is returned only when the caller requests `execution_mode: "cached_result"`; live failure never silently falls back.
@@ -26,7 +37,7 @@ SatQuery AI is a capability-oriented remote-sensing visual intelligence system b
 Historical Kaggle Tesla T4 smoke verification passed through the repository provider path for Qwen and Grounding DINO. See `docs/gpu-smoke.md`. This proves runtime execution, not model accuracy or throughput.
 
 ### PARTIAL / BLOCKED ON GPU OR DATA
-- **Remote-sensing adaptation**: The offline RSVQA-LR QLoRA pipeline and held-out comparison runner are ready. No adapter has been trained and no improvement is claimed.
+- **Remote-sensing adaptation**: Adapters have been trained but none is used by the product. An RSVQA-LR pilot adapter scored 0.696 vs base 0.468 on validation; the CDVQA G3 adapter beat base but its controls showed it mostly ignored the image pair; the India land-cover adaptation passed T13b and then failed its promotion gate (`docs/plan/RESULTS.md`, `results/t13b/REPORT.md`, `docs/STATUS.md`).
 - **Multi-step change-to-grounding execution**: The plan can be represented, but execution remains explicitly unavailable until an intermediate spatial artifact contract exists.
 - **Benchmark and ISRO/SAC evidence**: Existing frozen evaluations and runners do not establish adapted-model, CDVQA, optical-SAR, national, or ISRO/SAC performance.
 
@@ -171,7 +182,7 @@ Verify the backend service is responding and see what it can actually run:
 curl -s http://localhost:8000/api/health
 ```
 
-**Expected Response** (CPU-only machine without the GPU model stack):
+**Recorded Response** (Mac CPU, 18 Nov 2026, from [docs/plan/E2E_ACCEPTANCE.md](docs/plan/E2E_ACCEPTANCE.md)):
 
 ```json
 {
@@ -180,11 +191,13 @@ curl -s http://localhost:8000/api/health
   "checks": {
     "trace": { "ok": true, "detail": null },
     "capabilities": {
-      "single_image_vqa": { "available": false, "reason_code": "DEPENDENCY_UNAVAILABLE" },
-      "grounding": { "available": false, "reason_code": "DEPENDENCY_UNAVAILABLE" },
-      "change_vqa": { "available": true, "reason_code": null },
+      "single_image_vqa": { "available": false, "reason_code": "CUDA_UNAVAILABLE" },
+      "grounding": { "available": false, "reason_code": "CUDA_UNAVAILABLE" },
       "optical_sar": { "available": true, "reason_code": null }
     }
+  },
+  "disabled_by_decision": {
+    "change-deterministic": "Change questions are not supported because the methods are unvalidated. T18 found that image differencing did not beat the majority baseline on CDVQA, while question text alone strongly predicted the labels."
   }
 }
 ```
@@ -382,7 +395,7 @@ python3 -m pytest backend/test_api.py -q
 python3 -m pytest -q
 ```
 
-*Run the command above on the reviewed commit for the current authoritative count; migration checkpoint counts are recorded in commit handoff notes.*
+*For the current count, see the latest test run on the reviewed commit. The last recorded full run (18 Nov 2026) was 1,366 passed, 47 skipped, 0 failed; skip reasons are listed in [docs/plan/INTEGRATION_LOG.md](docs/plan/INTEGRATION_LOG.md).*
 
 ---
 
@@ -394,12 +407,7 @@ Validate TypeScript compilation, Tailwind CSS styling, and Next.js static asset 
 cd frontend && npm run build
 ```
 
-**Expected Output**:
-```
-✓ Compiled successfully
-✓ Generating static pages (8/8)
-Finalizing page optimization ...
-```
+No build output is recorded in the repository; see the latest build run.
 
 ---
 
@@ -450,8 +458,8 @@ To run the full stack on one NVIDIA GPU VM behind one public URL (Docker Compose
   - **Aggregate Accuracy**: `0.5142`
   - **Binary Prediction Yes-Rate**: `0.3675` *(Passed two-sided degeneracy guard [0.15, 0.85])*
 - **Resolution Robustness Ladder**: Evaluated on 200 real LoveDA scenes degraded across 5 rungs (0.3m, 1m, 2m, 5m, 10m). Rungs at 5m and 10m exhibit collapse to the gold yes-prior and are flagged as degenerate.
-- **Post-Phase-0 progress**: Grounding, pair validation, deterministic optical-SAR and change providers, offline readiness, GPU smoke infrastructure, and the RSVQA-LR adaptation pipeline are implemented. Learned adaptation and the remaining held-out evaluations have not run.
+- **Post-Phase-0 progress**: Grounding, pair validation, deterministic optical-SAR, offline readiness, GPU smoke infrastructure, land cover, flood Otsu and the `/ask` flow are implemented. Learned adaptation has run (see Remote-sensing adaptation above); no adapted model is shipped. Change QA is disabled.
 
 ### Next Phase
 
-The next execution phase is RSVQA-LR provisioning, a bounded QLoRA dry run/training job, base-versus-adapter validation, and one real bi-temporal smoke. No adapted model exists yet.
+Current open work is listed in [docs/STATUS.md](docs/STATUS.md). The India land-cover input preprocessing is under diagnosis after the failed promotion gate. Adapted models exist as evaluated artefacts; none is shipped in the product.
