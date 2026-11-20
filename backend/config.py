@@ -17,7 +17,10 @@ class AskConfig:
     flood_dir: Path = field(default_factory=lambda: Path(os.getenv('SATQUERY_FLOOD_DIR', Path.home()/'satquery-data/flood/packs/sen1floods11-hand-v1')).expanduser())
     upload_limit: int = 200 * 1024 * 1024
     decoded_limit: int = 512 * 1024 * 1024
+    live_fetch_timeout: float = field(default_factory=lambda: float(os.getenv('SATQUERY_LIVE_FETCH_TIMEOUT', '20')))
 
     def __post_init__(self):
         if not math.isfinite(self.timeout) or self.timeout <= 0:
             raise ValueError('SATQUERY_TIMEOUT must be finite and positive')
+        if not math.isfinite(self.live_fetch_timeout) or self.live_fetch_timeout <= 0:
+            raise ValueError('SATQUERY_LIVE_FETCH_TIMEOUT must be finite and positive')

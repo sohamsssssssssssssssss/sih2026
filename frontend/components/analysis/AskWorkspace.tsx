@@ -250,7 +250,11 @@ export function AskWorkspace() {
           result = fresh.refusal;
         } else {
           setPreview(fresh);
-          if (fresh.fallback_reason) setFallback(`${fresh.fallback_reason} Showing the ${fresh.backup_place} backup for this question.`);
+          if (fresh.fallback_reason) {
+            setFallback(fresh.fallback_reason.startsWith("Live fetch timed out after ")
+              ? fresh.fallback_reason
+              : `${fresh.fallback_reason} Showing the ${fresh.backup_place} backup for this question.`);
+          }
           setBusy("Asking…");
           const secondary = input.second ? await resolveScene(scenes[input.second]) : undefined;
           result = await askScene(input.question.trim(), fresh.scene_ref, secondary);

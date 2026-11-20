@@ -2,6 +2,7 @@
 import asyncio
 from pathlib import Path
 import threading
+from time import monotonic
 from typing import Annotated
 
 import httpx
@@ -21,6 +22,7 @@ from orchestrator.trace import TraceIntegrityError
 
 router=APIRouter(tags=['ask'])
 _INIT_LOCK=threading.Lock()
+_LIVE_READS = threading.BoundedSemaphore(4)
 Text=Annotated[str,StringConstraints(strip_whitespace=True,min_length=1,max_length=2000)]
 
 
@@ -57,29 +59,69 @@ async def ask(body:AskRequest,request:Request):
         raise HTTPException(503,'Persistent execution trace or local scene storage is unavailable') from error
 
 
-@router.post('/scenes/fetch')
-def fresh_scene(body: FreshRequest, request: Request):
-    runtime = service(request)
+def _acquire_scene(body, bounds, deadline):
+    if not _LIVE_READS.acquire(timeout=max(0, deadline - monotonic())):
+        raise TimeoutError
     try:
+        if monotonic() >= deadline:
+            raise TimeoutError
         with httpx.Client(timeout=10) as client:
             point, fallback_reason = resolve_point(client, body)
-            west, south, east, north = runtime.thresholds.india_bounds
-            if not (west <= point[0] <= east and south <= point[1] <= north):
-                return {'refusal': runtime.outside_region()}
-            fallback_reason = fallback_reason or ('Offline mode is enabled.' if offline() else None)
-            if fallback_reason is None:
+            if not _in_bounds(point, bounds) or fallback_reason:
+                return point, fallback_reason, None
+            if monotonic() >= deadline:
+                raise TimeoutError
+            try:
+                return point, None, fetch_chip(client, body, point, deadline=deadline)
+            except ProviderError as error:
+                return point, str(error), None
+    finally:
+        _LIVE_READS.release()
+
+
+def _in_bounds(point, bounds):
+    west, south, east, north = bounds
+    lon, lat = point
+    return west <= lon <= east and south <= lat <= north
+
+
+@router.post('/scenes/fetch')
+async def fresh_scene(body: FreshRequest, request: Request):
+    runtime = service(request)
+    bounds = runtime.thresholds.india_bounds
+    point = (body.lon, body.lat) if body.place is None else None
+    if point is not None and not _in_bounds(point, bounds):
+        return {'refusal': runtime.outside_region()}
+    try:
+        if offline():
+            backup = backup_for(body, point)
+            reason = 'Offline mode is enabled.'
+        else:
+            timeout = runtime.config.live_fetch_timeout
+            try:
+                # GDAL can finish its current read after cancellation. Only the caller publishes a chip.
+                resolved, reason, pixels = await asyncio.wait_for(
+                    asyncio.to_thread(_acquire_scene, body, bounds, monotonic() + timeout), timeout)
+            except TimeoutError:
+                reason = f'Live fetch timed out after {timeout:g}s'
                 try:
-                    pixels = fetch_chip(client, body, point)
-                except ProviderError as error:
-                    fallback_reason = str(error)
-                else:
+                    backup = backup_for(body, point)
+                    if point is not None and not _in_bounds(point, backup['bbox']):
+                        raise SceneUnavailable
+                except SceneUnavailable:
+                    raise HTTPException(504, f'{reason}. No cached scene is available for this location.') from None
+                reason += f" — showing cached scene from {backup['date']}"
+            else:
+                if not _in_bounds(resolved, bounds):
+                    return {'refusal': runtime.outside_region()}
+                if pixels is not None:
                     chip = runtime.scenes.raster(pixels, fresh_mode='live')
                     ref = PackRef(pack_id='fresh', patch_id=runtime.scenes.save_fresh(pixels))
                     return {'scene_ref': ref, **chip.preview(), 'fallback_reason': None}
-        backup = backup_for(body, point)
+                backup = backup_for(body, resolved)
         ref = PackRef(pack_id='fresh-backups', patch_id=backup['id'])
         return {'scene_ref': ref, **runtime.scenes.load(ref).preview(),
-                'fallback_reason': fallback_reason, 'backup_place': backup['place']}
+                'fallback_reason': reason, 'backup_place': backup['place']}
     except (SceneUnavailable, SceneNotFound) as error:
         raise HTTPException(404, str(error)) from error
     except (OSError, ValueError, TraceIntegrityError) as error:

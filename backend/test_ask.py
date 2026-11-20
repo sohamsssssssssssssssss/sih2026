@@ -421,7 +421,7 @@ def test_fresh_fallback_has_provenance_and_uses_the_same_gate(api, monkeypatch, 
     client, _, tool = api
     monkeypatch.setenv('SATQUERY_OFFLINE', '1' if offline_mode else '0')
 
-    def failed_fetch(*args):
+    def failed_fetch(*args, **kwargs):
         assert not offline_mode, 'Offline mode must not call STAC'
         raise ProviderError('Earth Search unavailable.')
 
@@ -438,6 +438,41 @@ def test_fresh_fallback_has_provenance_and_uses_the_same_gate(api, monkeypatch, 
     answer = ask(client, scene['scene_ref'], question='What is the land cover?').json()
     assert answer['refusal_reason'] == 'cloud'
     assert tool.calls == 0
+
+
+@pytest.mark.parametrize("place,slow,status", [
+    ("Ludhiana", True, 200), ("Pune", True, 504), ("Ludhiana", False, 200),
+])
+def test_live_fetch_deadline(api, monkeypatch, place, slow, status):
+    from threading import Event
+    from backend.fresh_scenes import BACKUPS
+
+    client, runtime, _ = api
+    monkeypatch.setenv("SATQUERY_OFFLINE", "0")
+    runtime.config = replace(runtime.config, live_fetch_timeout=0.05 if slow else 2)
+    monkeypatch.setattr("backend.routes.ask.resolve_point", lambda *_: ((75.86, 30.9), None))
+    release = Event()
+    data = (BACKUPS / "ludhiana-s2-v2.tif").read_bytes()
+
+    def fetch(*args, **kwargs):
+        if slow:
+            assert release.wait(3), "The response must arrive without waiting for the live read"
+        return data
+
+    monkeypatch.setattr("backend.routes.ask.fetch_chip", fetch)
+    try:
+        response = client.post("/scenes/fetch", json={"place": place, "start_date": "2026-10-28"})
+    finally:
+        release.set()
+    assert response.status_code == status
+    result = response.json()
+    if status == 504:
+        assert result["detail"] == "Live fetch timed out after 0.05s. No cached scene is available for this location."
+    else:
+        assert result["provenance"]["mode"] == ("cached" if slow else "live")
+        assert result["fallback_reason"] == (
+            "Live fetch timed out after 0.05s — showing cached scene from 2026-10-28" if slow else None)
+    assert (runtime.config.data_dir / "fresh").exists() is not slow
 
 
 def test_fresh_backup_manifest_matches_every_chip(api):

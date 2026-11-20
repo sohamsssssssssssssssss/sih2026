@@ -5,6 +5,7 @@ import json
 import os
 from pathlib import Path
 import re
+from time import monotonic
 from typing import Annotated, Literal
 from urllib.parse import urlparse
 
@@ -124,7 +125,7 @@ def _read_band(asset, point, sensor, needs_boa_offset=False):
     return pixels, grid
 
 
-def fetch_chip(client, body, point):
+def fetch_chip(client, body, point, *, deadline=float("inf")):
     """Fetch only the 120 × 120 window from each aligned range-readable COG."""
     try:
         item = _item_for(client, body, point)
@@ -146,8 +147,11 @@ def fetch_chip(client, body, point):
         read_timeout = "60" if body.sensor == "S2" else "10"
         with rasterio.Env(GDAL_DISABLE_READDIR_ON_OPEN="EMPTY_DIR", GDAL_HTTP_CONNECTTIMEOUT="5",
                           GDAL_HTTP_TIMEOUT=read_timeout, GDAL_HTTP_MAX_RETRY="0"):
-            reads = [_read_band(item["assets"][key], point, body.sensor, needs_boa_offset)
-                     for key in assets.values()]
+            reads = []
+            for key in assets.values():
+                if monotonic() >= deadline:
+                    raise TimeoutError
+                reads.append(_read_band(item["assets"][key], point, body.sensor, needs_boa_offset))
         crs, affine = reads[0][1]
         if any(grid != (crs, affine) for _, grid in reads):
             raise ValueError("STAC assets have different pixel grids")
@@ -162,6 +166,8 @@ def fetch_chip(client, body, point):
                 if cloud is not None:
                     dst.update_tags(cloud_pct=cloud)
             return buffer.read()
+    except TimeoutError:
+        raise
     except (httpx.HTTPError, RequestException, OSError, ValueError, KeyError, IndexError, TypeError) as error:
         raise ProviderError(f"{PROVIDERS[body.sensor][0]} could not supply imagery ({type(error).__name__}).") from error
 
