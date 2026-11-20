@@ -1,0 +1,169 @@
+{
+  "gate_commit": "db6e127",
+  "method": "temperature scaling, one T per mode, sigmoid(logit(clip(p))/T)",
+  "clip": [
+    1e-06,
+    0.999999
+  ],
+  "log_T_bounds": [
+    -2.995732273553991,
+    2.995732273553991
+  ],
+  "fit_npz": "/Users/soham/ben-work/adapt-run-3/seed-1/ben-adapt-predictions-seed-1.npz",
+  "fit_npz_sha256": "1c7ba3770e063ff05f3b2d33b11c345657dc9e52c419457d049697d9a97ec15e",
+  "g2_prime": "FAIL",
+  "modes": {
+    "s1": {
+      "directions": {
+        "A->B": {
+          "T": 1.8931289480970273,
+          "T_at_bound": false,
+          "raw_macro_ece": 0.12439133160056956,
+          "cal_macro_ece": 0.14657851423810234,
+          "raw_class_ece": {
+            "trees": 0.1714862123900093,
+            "shrub_grass": 0.17671410692985065,
+            "cropland": 0.11249902410279901,
+            "built": 0.1314349675109002,
+            "water": 0.029822347069288702
+          },
+          "cal_class_ece": {
+            "trees": 0.20850662437264209,
+            "shrub_grass": 0.16200008590993822,
+            "cropland": 0.14918425085260614,
+            "built": 0.10518195317005213,
+            "water": 0.10801965688527315
+          },
+          "eval_positives": {
+            "trees": 607,
+            "shrub_grass": 138,
+            "cropland": 530,
+            "built": 279,
+            "water": 105
+          }
+        },
+        "B->A": {
+          "T": 1.444374237932722,
+          "T_at_bound": false,
+          "raw_macro_ece": 0.12186620846537073,
+          "cal_macro_ece": 0.11119077696835482,
+          "raw_class_ece": {
+            "trees": 0.18096455911588338,
+            "shrub_grass": 0.11496514450681085,
+            "cropland": 0.0936290582063561,
+            "built": 0.07704735676387019,
+            "water": 0.14272492373393308
+          },
+          "cal_class_ece": {
+            "trees": 0.1547046967908547,
+            "shrub_grass": 0.07145420849574917,
+            "cropland": 0.07362719871340326,
+            "built": 0.12241328496824709,
+            "water": 0.13375449587351984
+          },
+          "eval_positives": {
+            "trees": 458,
+            "shrub_grass": 276,
+            "cropland": 400,
+            "built": 253,
+            "water": 216
+          }
+        }
+      },
+      "shipped_T": 1.656450581761509,
+      "shipped_T_at_bound": false,
+      "positives": {
+        "A": {
+          "trees": 458,
+          "shrub_grass": 276,
+          "cropland": 400,
+          "built": 253,
+          "water": 216
+        },
+        "B": {
+          "trees": 607,
+          "shrub_grass": 138,
+          "cropland": 530,
+          "built": 279,
+          "water": 105
+        }
+      }
+    },
+    "s2": {
+      "directions": {
+        "A->B": {
+          "T": 2.4081425700766816,
+          "T_at_bound": false,
+          "raw_macro_ece": 0.17777859231728302,
+          "cal_macro_ece": 0.13315685027897814,
+          "raw_class_ece": {
+            "trees": 0.2780959639018935,
+            "shrub_grass": 0.1546131878751718,
+            "cropland": 0.299769997105654,
+            "built": 0.12497778135671803,
+            "water": 0.031436031346977665
+          },
+          "cal_class_ece": {
+            "trees": 0.1588724920466223,
+            "shrub_grass": 0.15771794748032403,
+            "cropland": 0.2424876249610851,
+            "built": 0.0714225078430666,
+            "water": 0.03528367906379272
+          },
+          "eval_positives": {
+            "trees": 607,
+            "shrub_grass": 138,
+            "cropland": 530,
+            "built": 279,
+            "water": 105
+          }
+        },
+        "B->A": {
+          "T": 2.7190218410534746,
+          "T_at_bound": false,
+          "raw_macro_ece": 0.15860849697168708,
+          "cal_macro_ece": 0.19184210022297876,
+          "raw_class_ece": {
+            "trees": 0.23322317053848463,
+            "shrub_grass": 0.050699127822105464,
+            "cropland": 0.06728211084914316,
+            "built": 0.12822259067883957,
+            "water": 0.31361548496986263
+          },
+          "cal_class_ece": {
+            "trees": 0.18208963566646896,
+            "shrub_grass": 0.13092840885183857,
+            "cropland": 0.13528110119655667,
+            "built": 0.23961719842428264,
+            "water": 0.271294156975747
+          },
+          "eval_positives": {
+            "trees": 458,
+            "shrub_grass": 276,
+            "cropland": 400,
+            "built": 253,
+            "water": 216
+          }
+        }
+      },
+      "shipped_T": 2.599634937999421,
+      "shipped_T_at_bound": false,
+      "positives": {
+        "A": {
+          "trees": 458,
+          "shrub_grass": 276,
+          "cropland": 400,
+          "built": 253,
+          "water": 216
+        },
+        "B": {
+          "trees": 607,
+          "shrub_grass": 138,
+          "cropland": 530,
+          "built": 279,
+          "water": 105
+        }
+      }
+    }
+  }
+}
