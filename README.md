@@ -12,6 +12,8 @@ SatQuery AI is a remote-sensing question-answering system built for SIH26167. It
 
 For a one-page summary with a source for every number, see [docs/STATUS.md](docs/STATUS.md).
 
+Judge Q&A: [docs/judge/JUDGE-QA.md](docs/judge/JUDGE-QA.md).
+
 ### /ask (current demo path)
 - **Live scenes**: `/ask` finds a scene by place and date. Sentinel-2 L2A comes from Earth Search and Sentinel-1 RTC from Microsoft Planetary Computer, with a 120 × 120 window read per band (`backend/fresh_scenes.py`). Five cached backup chips with SHA-256 checksums cover provider outages (`data/fresh-backups/manifest.json`). The overall fetch deadline is 20 seconds, including place lookup, STAC search and band reads. At expiry, Ask shows “Live fetch timed out after Ns — showing cached scene from <date>” for a matching backup or refuses with a reason when none exists. The S2 per-read timeout is 60 seconds (`ecb651e`, `5a778ba`).
 - **Gates**: scenes outside the India rectangle [68, 6, 98, 38], optical scenes above 50% cloud and scenes above 50% nodata are refused. These thresholds are provisional guards, not calibrated cutoffs (`core/gate.py:12`).
