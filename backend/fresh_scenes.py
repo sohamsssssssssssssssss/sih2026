@@ -128,8 +128,10 @@ def fetch_chip(client, body, point):
                 raise ValueError("Invalid eo:cloud_cover")
             provenance["cloud_pct_label"] = SCENE_CLOUD_LABEL
         assets = ASSETS[body.sensor]
+        # An S2 window can span multiple compressed 1024-pixel tiles in one range request.
+        read_timeout = "60" if body.sensor == "S2" else "10"
         with rasterio.Env(GDAL_DISABLE_READDIR_ON_OPEN="EMPTY_DIR", GDAL_HTTP_CONNECTTIMEOUT="5",
-                          GDAL_HTTP_TIMEOUT="10", GDAL_HTTP_MAX_RETRY="0"):
+                          GDAL_HTTP_TIMEOUT=read_timeout, GDAL_HTTP_MAX_RETRY="0"):
             reads = [_read_band(item["assets"][key], point, body.sensor) for key in assets.values()]
         crs, affine = reads[0][1]
         if any(grid != (crs, affine) for _, grid in reads):

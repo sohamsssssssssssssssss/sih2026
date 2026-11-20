@@ -67,6 +67,26 @@ def ask(client,ref,question='Map flood water',**extra):
     return client.post('/ask',json={'question':question,'scene_ref':ref,**extra})
 
 
+def test_s2_fetch_allows_slow_tile_transfer(monkeypatch):
+    from backend import fresh_scenes as fresh
+    from rasterio.env import getenv
+
+    item = {"id": "slow-s2", "properties": {"datetime": "2026-10-28T00:00:00Z", "eo:cloud_cover": 0},
+            "assets": {key: {} for key in ("blue", "green", "red", "nir")}}
+    monkeypatch.setattr(fresh, "_item_for", lambda client, body, point: item)
+
+    def read_band(asset, point, sensor):
+        if int(getenv()["GDAL_HTTP_TIMEOUT"]) < 20:
+            raise OSError("simulated 20-second tile transfer timed out")
+        return np.ones((120, 120), dtype=np.float32), ("EPSG:32643", from_origin(500000, 2400000, 10, 10))
+
+    monkeypatch.setattr(fresh, "_read_band", read_band)
+    body = fresh.FreshRequest(place="Ludhiana", sensor="S2", start_date="2026-10-28")
+    with MemoryFile(fresh.fetch_chip(None, body, (75.86, 30.9))) as buf, buf.open() as scene:
+        assert scene.descriptions == ("B02", "B03", "B04", "B08")
+        assert json.loads(scene.tags()["satquery_provenance"])["mode"] == "live"
+
+
 def test_answered_and_trace_and_health(api):
     client,runtime,tool=api
     ref=upload(client);response=ask(client,ref)
