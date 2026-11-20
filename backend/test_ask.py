@@ -71,11 +71,12 @@ def test_s2_fetch_allows_slow_tile_transfer(monkeypatch):
     from backend import fresh_scenes as fresh
     from rasterio.env import getenv
 
-    item = {"id": "slow-s2", "properties": {"datetime": "2026-10-28T00:00:00Z", "eo:cloud_cover": 0},
+    item = {"id": "slow-s2", "properties": {"datetime": "2026-10-28T00:00:00Z", "eo:cloud_cover": 0,
+                                           "earthsearch:boa_offset_applied": True},
             "assets": {key: {} for key in ("blue", "green", "red", "nir")}}
     monkeypatch.setattr(fresh, "_item_for", lambda client, body, point: item)
 
-    def read_band(asset, point, sensor):
+    def read_band(asset, point, sensor, needs_boa_offset):
         if int(getenv()["GDAL_HTTP_TIMEOUT"]) < 20:
             raise OSError("simulated 20-second tile transfer timed out")
         return np.ones((120, 120), dtype=np.float32), ("EPSG:32643", from_origin(500000, 2400000, 10, 10))
@@ -85,6 +86,68 @@ def test_s2_fetch_allows_slow_tile_transfer(monkeypatch):
     with MemoryFile(fresh.fetch_chip(None, body, (75.86, 30.9))) as buf, buf.open() as scene:
         assert scene.descriptions == ("B02", "B03", "B04", "B08")
         assert json.loads(scene.tags()["satquery_provenance"])["mode"] == "live"
+
+
+@pytest.mark.parametrize("properties,delta", [
+    ({"earthsearch:boa_offset_applied": True, "s2:processing_baseline": "05.10"}, 0),
+    ({"earthsearch:boa_offset_applied": False, "s2:processing_baseline": "05.10"}, -1000),
+    ({"s2:processing_baseline": "04.00"}, -1000),
+    ({"earthsearch:boa_offset_applied": False, "s2:processing_baseline": "03.01"}, 0),
+    ({"earthsearch:boa_offset_applied": False}, None),
+    ({"earthsearch:boa_offset_applied": None, "s2:processing_baseline": "05.10"}, None),
+    ({"s2:processing_baseline": "unknown"}, None),
+])
+def test_s2_fetch_boa_offset(monkeypatch, properties, delta):
+    import rasterio
+    from backend import fresh_scenes as fresh
+
+    fixture = Path(__file__).resolve().parents[1] / "tests/fixtures/punjab-s2.tif"
+    open_raster = rasterio.open
+    with open_raster(fixture) as src:
+        x, y = src.xy(60, 60)
+        (lon,), (lat,) = rasterio.warp.transform(src.crs, "EPSG:4326", [x], [y])
+        original = src.read(1).astype(np.float32)
+    point = (lon, lat)
+    body = fresh.FreshRequest(lon=lon, lat=lat, start_date="2026-10-28")
+    asset = {"href": "https://example.invalid/asset.tif",
+             "raster:bands": [{"scale": 0.0001, "offset": -0.1}]}
+    item = {"id": "mock-s2", "properties": {"datetime": "2026-10-28T00:00:00Z", "eo:cloud_cover": 0,
+                                           **properties},
+            "assets": {key: asset for key in fresh.ASSETS["S2"].values()}}
+    monkeypatch.setattr(fresh, "_item_for", lambda *args: item)
+
+    def open_asset(path):
+        assert delta is not None, "Unknown metadata must be rejected before reading the COG"
+        assert path == "/vsicurl/" + asset["href"]
+        return open_raster(fixture)
+
+    monkeypatch.setattr(rasterio, "open", open_asset)
+    if delta is None:
+        with pytest.raises(fresh.ProviderError, match="BOA offset state is unknown"):
+            fresh.fetch_chip(None, body, point)
+        return
+    with MemoryFile(fresh.fetch_chip(None, body, point)) as buf, buf.open() as scene:
+        np.testing.assert_allclose(scene.read(), np.stack([original + delta] * 4), atol=0.001)
+
+
+@pytest.mark.parametrize("patch_id,expected", [("ludhiana-s2", "built"), (None, "cropland")])
+def test_europe_landcover_on_s2_demonstrations(api, patch_id, expected):
+    from core.tools.landcover import LandcoverTool
+
+    _, runtime, _ = api
+    tool = LandcoverTool()
+    checkpoint = Path(json.loads(tool.config_path.read_text())["checkpoints"]["s2"]).expanduser()
+    if not checkpoint.is_file():
+        pytest.skip("Europe S2 checkpoint is absent")
+    if patch_id:
+        scene = runtime.scenes.load(PackRef(pack_id="fresh-backups", patch_id=patch_id))
+    else:
+        fixture = Path(__file__).resolve().parents[1] / "tests/fixtures/punjab-s2.tif"
+        scene = runtime.scenes.raster(fixture.read_bytes())
+    result = tool.run(scene.scene, None, scene.pixels("landcover", "S2", None))
+    assert "scores" in result.value, result.value
+    scores = result.value["scores"]
+    assert expected in sorted(scores, key=scores.get, reverse=True)[:2], scores
 
 
 def test_answered_and_trace_and_health(api):

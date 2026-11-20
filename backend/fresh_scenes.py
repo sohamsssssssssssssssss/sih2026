@@ -4,6 +4,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import re
 from typing import Annotated, Literal
 from urllib.parse import urlparse
 
@@ -88,7 +89,18 @@ def _item_for(client, body, point):
     return items[0]
 
 
-def _read_band(asset, point, sensor):
+def _needs_boa_offset(properties):
+    applied = properties.get("earthsearch:boa_offset_applied", False)
+    if applied is True:
+        return False
+    baseline = properties.get("s2:processing_baseline")
+    if (applied is not False
+            or not isinstance(baseline, str) or not re.fullmatch(r"[0-9]{2}\.[0-9]{2}", baseline)):
+        raise ProviderError("Earth Search S2 BOA offset state is unknown: invalid or missing offset flag or processing baseline.")
+    return int(baseline.split(".")[0]) >= 4
+
+
+def _read_band(asset, point, sensor, needs_boa_offset=False):
     href = asset["href"]
     if sensor == "S1":
         from planetary_computer import sign
@@ -107,7 +119,8 @@ def _read_band(asset, point, sensor):
         pixels = 10 * np.log10(pixels)
     else:
         band = asset["raster:bands"][0]
-        pixels = (pixels * band["scale"] + band.get("offset", 0)) * 10000
+        offset = band["offset"] if needs_boa_offset else 0
+        pixels = (pixels * band["scale"] + offset) * 10000
     return pixels, grid
 
 
@@ -128,11 +141,13 @@ def fetch_chip(client, body, point):
                 raise ValueError("Invalid eo:cloud_cover")
             provenance["cloud_pct_label"] = SCENE_CLOUD_LABEL
         assets = ASSETS[body.sensor]
+        needs_boa_offset = body.sensor == "S2" and _needs_boa_offset(properties)
         # An S2 window can span multiple compressed 1024-pixel tiles in one range request.
         read_timeout = "60" if body.sensor == "S2" else "10"
         with rasterio.Env(GDAL_DISABLE_READDIR_ON_OPEN="EMPTY_DIR", GDAL_HTTP_CONNECTTIMEOUT="5",
                           GDAL_HTTP_TIMEOUT=read_timeout, GDAL_HTTP_MAX_RETRY="0"):
-            reads = [_read_band(item["assets"][key], point, body.sensor) for key in assets.values()]
+            reads = [_read_band(item["assets"][key], point, body.sensor, needs_boa_offset)
+                     for key in assets.values()]
         crs, affine = reads[0][1]
         if any(grid != (crs, affine) for _, grid in reads):
             raise ValueError("STAC assets have different pixel grids")

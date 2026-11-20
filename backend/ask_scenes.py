@@ -222,7 +222,7 @@ class SceneStore:
         if reference.pack_id == 'fresh-backups':
             for row in json.loads((BACKUPS / 'manifest.json').read_text()):
                 if row['id'] == reference.patch_id:
-                    path = BACKUPS / (row['id'] + '.tif')
+                    path = BACKUPS / row.get('file', row['id'] + '.tif')
                     self.verify(path, row['sha256'])
                     return self.raster(path.read_bytes(), fresh_mode='cached')
             raise SceneNotFound('Unknown cached scene')
