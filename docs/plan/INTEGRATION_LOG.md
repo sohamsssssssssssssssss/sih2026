@@ -592,3 +592,17 @@ Full suite in the existing Python 3.11 venv (`python3.11 -m pytest -q -rs`):
 **1,366 passed, 47 skipped, 0 failed, 0 errors** in 66.32 s. The
 baseline had 1,354 passed and 47 skipped. The skip reasons match the
 baseline.
+
+## 2026-11-20 — Sentinel-2 BOA offset and regenerated backups
+
+Earth Search reported its Ludhiana optical chip as already offset-corrected, while the asset metadata advertised an additional −0.1 reflectance offset. Fresh S2 acquisition now honours the applied flag, checks the processing baseline when the flag is false or absent, and refuses live acquisition when metadata cannot establish the offset rule. The manifest points to new Ludhiana, Delhi and Mumbai v2 files with the original item IDs and pixel grids; the superseded files and their SHA-256 values are retained. Ludhiana v2 mean reflectance in B02/B03/B04/B08 order is 0.09153165 / 0.10402494 / 0.11323595 / 0.15472317.
+
+Verification: pytest 1,398 passed, 47 skipped, 0 failed. Vitest 49 passed in 11 files. TypeScript no-emit check passed with zero diagnostics. Playwright live rerun 8 passed and 1 offline-only skip. The offline-only case passed separately, so all 9 cases passed across the two modes. The initial live run timed out at the 30-second browser assertion while the S2 fetch was pending.
+
+Ports 3000 and 8000 were free before each launch. Both sessions ran through `bash scripts/run-demo.sh` and were stopped after verification. API results below are from the Europe S2 checkpoint.
+
+| Scene | Source and item | Verbatim API answer | Highest score |
+|---|---|---|---|
+| Ludhiana | Live Earth Search, `S2B_43REQ_20261028_0_L2A` | Uncalibrated coarse land-cover presence scores. | Built 0.954770 |
+| Delhi | Live Earth Search, `S2B_43RGM_20261005_0_L2A` | Uncalibrated coarse land-cover presence scores. | Built 0.949291 |
+| Punjab | Local WorldCover demo fixture, patch 0, no STAC item | Uncalibrated coarse land-cover presence scores. Cloud cover not checked (no cloud metadata). | Cropland 0.378211 |
