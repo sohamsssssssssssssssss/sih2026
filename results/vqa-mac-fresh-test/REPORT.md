@@ -1,6 +1,6 @@
 # Mac VQA fresh test
 
-**FAIL**
+**PASS**
 
 The official RSVQA-LR test sample comes from [Zenodo record 6344334](https://zenodo.org/records/6344334).
 There are 400 questions on 100 image clusters. Annotation and archive hashes are recorded in the frozen sources file.
@@ -26,7 +26,7 @@ There are 400 questions on 100 image clusters. Annotation and archive hashes are
 | G3 | PASS | B13 minus constant +0.1175, 95% CI [+0.0750, +0.1600] |
 | G4 | PASS | 0/400 malformed (limit 4) |
 | G5 | PASS | Median 0.393 s, 0 recorded crashes, 30/30 soak questions, growth GiB {'mlx_bytes': 0.0, 'rss_bytes': 0.0} |
-| G6 | FAIL | Minimum available was 1.463 GiB, below 3 GiB. Antigravity and Claude were open. The soak was diagnostic because the registered demo setup was unverified. |
+| G6 | PASS | Run 2 reached a 3.227 GiB minimum under the verified setup (3 GiB required). |
 
 | Condition | Load (s) | First (s) | Median (s) | p95 (s) | Peak MLX (GiB) | Peak RSS (GiB) |
 |---|---:|---:|---:|---:|---:|---:|
@@ -41,3 +41,13 @@ Swap during the soak, first to last sample: `total = 6144.00M  used = 4875.62M  
 Full vm_stat and swap snapshots are in results.json.
 
 The frozen evaluator initially averaged across images only, leaving four scores per bootstrap draw. The reported intervals use one macro score per draw, averaging across images and question types as registered. Model outputs and gate criteria are unchanged.
+
+## G6 run 1 invalid (registered setup not met: Antigravity + Claude open; 1.463 GiB)
+
+Run 1 remains diagnostic. Its original measurements are in `results.json` and the swap snapshots above.
+
+## G6 run 2
+
+The demo ran with Finder, Terminal, and Safari. The controlling Codex terminal session and its claude-mem helpers remained active, including the worker, Python helper and launcher, and the worker's Claude CLI child. The Chrome DevTools MCP helper was active without a Chrome browser. Both demo ports were free before launch, and both demo servers responded before and after the soak.
+
+All 30 selected questions completed on one loaded 8-bit B13 worker. Across 45 samples at the registered 0.25-second polling interval, available memory was **3.227 GiB minimum** and **3.493 GiB median**. Swap used went from **0 MiB** before the worker loaded to **0.25 MiB** after the soak. See [G6 run 2](g6-run2.json) for snapshots, process inventories, and pinned inputs.
