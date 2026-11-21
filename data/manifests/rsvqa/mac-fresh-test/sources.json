@@ -1,0 +1,37 @@
+{
+  "zenodo_record": "6344334",
+  "sha256": {
+    "LR_split_train_questions.json": "2f45ac269a78392fc54fff1d7903e48696ec668347f41b02aaecd27f7d863255",
+    "LR_split_train_answers.json": "5ef12c010d6c1d6361340523abd89dedb81061948fa76c7c280e8ae91ae3a3b6",
+    "LR_split_train_images.json": "7eb9b47bf5f2ac13c15e654b96d86d4a94f95cb24c0b0f2871e1d322a0f30950",
+    "LR_split_val_questions.json": "d53c4e575f2ccae9460ed415adb2031a1dd2fcf7a0a6ee0698bda34bbde80921",
+    "LR_split_val_answers.json": "427607204dae7fbf461a45405c3e6eb5961ee6e54637194b63b280b94e70ffa1",
+    "LR_split_val_images.json": "c9b14cc8d21a7dd113f658ca0ea9ebee067be784861c27f7c4786cc5b958eb7f",
+    "LR_split_test_questions.json": "70ce4be36c0b162c58453c7c7f3de2d2cf42dbd3915ac82f527a9a8361ec134f",
+    "LR_split_test_answers.json": "422f926999a99bbae4e590c055949b42192497a2aa93b0a0d4452972f827ddfd",
+    "LR_split_test_images.json": "bfc6362bbc727b51465091e84ee9299f62990b7c7986aa02d40b4c763fb0c562",
+    "Images_LR.zip": "56c6cdbea32318ee3e181b3f3243748de1ae1b78b148817a9579e1d8d1240da8"
+  },
+  "train_majority": {
+    "presence": {
+      "answer": "yes",
+      "count": 12372,
+      "n": 17008
+    },
+    "comp": {
+      "answer": "no",
+      "count": 15038,
+      "n": 22554
+    },
+    "count": {
+      "answer": "0",
+      "count": 4649,
+      "n": 17089
+    },
+    "rural_urban": {
+      "answer": "rural",
+      "count": 330,
+      "n": 572
+    }
+  }
+}
