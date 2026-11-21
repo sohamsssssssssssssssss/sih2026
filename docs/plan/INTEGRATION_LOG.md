@@ -616,3 +616,20 @@ The Mumbai fixture was introduced on 2026-11-18 in `78e577e`. Its source, Earth 
 Verification: pytest **1,401 passed, 47 skipped, 0 failed**. Vitest **50 passed** in 12 files. TypeScript no-emit passed with zero diagnostics. Playwright live run **8 passed, 1 offline-only skip**, and the offline case **1 passed** separately.
 
 The default-budget Ludhiana request first fell back at 20.04 seconds and then returned live on retry in 0.89 seconds. The one-second run returned cached in 1.03 seconds with “Live fetch timed out after 1s — showing cached scene from 2026-10-28”. Both used item `S2B_43REQ_20261028_0_L2A` and answered “Uncalibrated coarse land-cover presence scores.” Built areas ranked first at 0.954770 in both. Ports 3000 and 8000 were free before each launch, and the owned demo sessions were stopped after verification.
+
+## 22 Nov 2026 — Mac MLX B13 VQA
+
+G6 run 2 passed at `8231a76` with 3.227 GiB minimum and 3.493 GiB median available against the 3 GiB threshold. Swap used rose from 0 MiB to 0.25 MiB. Finder, Terminal, and Safari were open. The controlling Codex session and claude-mem helpers were present. The passing gate report and 45 raw samples were pushed in `cca98d0`. G1–G5 use the original run. [G6 report](../../results/vqa-mac-fresh-test/REPORT.md)
+
+The feature-enabled demo used the same app setup. Three cached-image questions and one count question went through the running `/ask` endpoint, with the frontend open in Safari. All four traces verified. Worker latency is the value in the tool trace. HTTP latency includes scene loading, gating, and transport.
+
+| Cached scene | Question | Answer (verbatim) | Tool latency | HTTP latency |
+|---|---|---|---:|---:|
+| Ludhiana S2 | Are there agricultural fields in the image? | `yes` | 529 ms | 574.0 ms |
+| Delhi S2 | Are there more buildings than water areas? | `yes` | 362 ms | 384.8 ms |
+| Ludhiana S2 | Is this a rural or an urban area? | `urban` | 366 ms | 388.0 ms |
+| Delhi S2 | How many buildings are there? | `counting is not image-based in this model` | — | 20.0 ms |
+
+Pytest passed 1,414 tests with 47 skips, including a pass for the opt-in real MLX worker test. Vitest passed 50 tests across 12 files. TypeScript passed the no-emit check with zero diagnostics. The backend venv reported PyArrow 22.0.0.
+
+The full flag-on Playwright run passed 8 cases, including real Mac VQA and the count refusal. It failed 1 live STAC case and skipped the offline-only case. The offline case passed in a separate run. On the live retries, Ludhiana and Silchar loaded live while Mumbai hit the 20-second fetch deadline, fell back to its cached scene, and correctly refused on cloud cover. The Mumbai timeout also occurred with MLX disabled. The live assertion still requires the Live scene badge.

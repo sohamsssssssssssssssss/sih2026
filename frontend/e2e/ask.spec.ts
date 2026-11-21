@@ -16,7 +16,7 @@ for (const [name, outcome, phrases] of examples) {
     const capabilities = page.getByRole("complementary", { name: "Capabilities" });
     await expect(capabilities.getByText("Experimental", { exact: true }).first()).toBeVisible();
     await expect(capabilities.getByText("Change QA")).toHaveCount(0);
-    await expect(capabilities.getByText("Requires CUDA")).toHaveCount(2);
+    await expect(capabilities.getByText("Requires CUDA")).toHaveCount(process.env.SATQUERY_VQA_MLX === "1" ? 1 : 2);
 
     const upcomingAnswer = page.waitForResponse((response) =>
       response.request().method() === "POST" && new URL(response.url()).pathname === "/ask",
@@ -59,6 +59,27 @@ async function askAt(page: Page, { place, start, end, sensor = "S2" }: {
   await page.getByRole("button", { name: "Ask", exact: true }).click();
   return page.getByRole("region", { name: "Result", exact: true });
 }
+
+test("Mac VQA answers a presence question and refuses counting", async ({ page }) => {
+  test.skip(process.env.SATQUERY_VQA_MLX !== "1", "Enable the pinned Mac VQA worker");
+  await page.goto("/ask");
+  await page.getByLabel("Upload GeoTIFF").setInputFiles(resolve("../tests/fixtures/punjab-s2.tif"));
+  await expect(page.getByRole("combobox", { name: "Scene", exact: true })).toHaveValue(/^upload_/);
+  const question = page.getByRole("textbox", { name: "Question" });
+  const submit = page.getByRole("button", { name: "Ask", exact: true });
+  const result = page.getByRole("region", { name: "Result", exact: true });
+  await question.fill("Are there roads in the image?");
+  const response = page.waitForResponse((reply) =>
+    reply.request().method() === "POST" && new URL(reply.url()).pathname === "/ask");
+  await submit.click();
+  const answer = await (await response).json();
+  expect(answer.primary?.tool).toBe("vqa_b13_mlx");
+  expect(answer.primary.value.answer.trim()).toMatch(/^(yes|no)$/i);
+  await expect(result.getByText(/RSVQA-LR fresh test \(n=400\): B13 73\.25%/)).toBeVisible();
+  await question.fill("How many roads are there?");
+  await submit.click();
+  await expect(result.getByText("counting is not image-based in this model", { exact: true })).toBeVisible();
+});
 
 test("acquire live Sentinel-2 and Sentinel-1 chips from STAC and answer through the gate", async ({ page, request }) => {
   test.skip(process.env.SATQUERY_OFFLINE === "1", "Backend is in offline mode");

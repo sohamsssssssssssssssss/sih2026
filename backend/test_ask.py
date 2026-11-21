@@ -1,6 +1,7 @@
 from dataclasses import replace
 import json
 from pathlib import Path
+import threading
 import time
 from typing import get_args
 
@@ -490,3 +491,51 @@ def test_fresh_backup_manifest_matches_every_chip(api):
         assert scene.scene.acquired.isoformat() == record['date']
         assert transform_bounds(scene.scene.crs, 'EPSG:4326', *scene.scene.bounds) == pytest.approx(record['bbox'])
         assert scene.preview_image().size == (120, 120)
+
+
+@pytest.mark.parametrize("question", [
+    "Is water visible in the scene?",
+    "Compare cropland and built-up areas in the image",
+    "Which covers more of the image, cropland versus forest?",
+    "Is this rural or urban?",
+    "What is visible?",
+])
+def test_mlx_vqa_routes_visual_questions(api, question):
+    from unittest.mock import Mock
+
+    from core.tools.vqa_b13_mlx import ADAPTER_SHA, LABEL, MODEL_REV, B13MLXTool
+
+    client, service, _ = api
+    worker = Mock(ready=True)
+    worker.ask.return_value = "yes"
+    tool = service.registry.register(B13MLXTool(worker))
+    service.locks[tool.name] = threading.Lock()
+    scene = {"pack_id": "fresh-backups", "patch_id": "ludhiana-s2"}
+    answer = ask(client, scene, question).json()
+    assert answer["status"] == "low_confidence"
+    assert answer["primary"]["value"] == {"answer": "yes", "label": LABEL}
+    assert answer["primary"]["checkpoint_sha"] == ADAPTER_SHA
+    worker.ask.assert_called_once()
+    events = client.get(f"/trace/{answer['trace_id']}").json()["events"]
+    event = next(e for e in events if e.get("runtime") == "8-bit MLX")
+    assert event["model_revision"] == MODEL_REV
+    assert event["adapter_sha256"] == ADAPTER_SHA
+    assert event["latency_ms"] >= 0
+
+
+def test_mlx_vqa_refuses_count_and_unavailable_worker(api):
+    from unittest.mock import Mock
+
+    from core.tools.vqa_b13_mlx import B13MLXTool, UNAVAILABLE
+
+    client, service, _ = api
+    worker = Mock(ready=False)
+    tool = service.registry.register(B13MLXTool(worker))
+    scene = {"pack_id": "fresh-backups", "patch_id": "ludhiana-s2"}
+    count = ask(client, scene, "How many roads are there?").json()
+    assert (count["status"], count["text"]) == ("refused", "counting is not image-based in this model")
+    missing = ask(client, scene, "Is there water?").json()
+    assert (missing["refusal_reason"], missing["text"]) == ("tool_missing", UNAVAILABLE)
+    capability = next(c for c in client.get("/capabilities").json()["capabilities"] if c["tool"] == tool.name)
+    assert not capability["available"] and capability["reason"] == UNAVAILABLE
+    worker.ask.assert_not_called()

@@ -151,6 +151,8 @@ function AskResult({ answer, trace, traceError, preview, fallback, previewError 
         .sort((a, b) => b[1] - a[1])
     : [];
   const water = answer.primary?.value.water_fraction;
+  const vqaLabel = answer.primary?.tool === "vqa_b13_mlx" ? answer.primary.value.label : undefined;
+  const vqaRefusal = answer.evidence.some(({ summary }) => summary.policy === "vqa_unavailable");
   let summary = answer.text;
   if (answer.refusal_reason === "cloud") {
     const detail = typeof cloud?.observed === "number" && typeof cloud.threshold === "number"
@@ -158,7 +160,7 @@ function AskResult({ answer, trace, traceError, preview, fallback, previewError 
     summary = `Too cloudy to answer reliably${detail}.`;
   } else if (answer.refusal_reason === "not_answerable" && !answer.evidence.some((e) => e.summary.detail)) {
     summary = "This question can’t be answered from the available satellite imagery.";
-  } else if (answer.refusal_reason) {
+  } else if (answer.refusal_reason && !vqaRefusal) {
     summary = REFUSALS[answer.refusal_reason] ?? answer.text;
   } else if (scores.length > 0) {
     summary = `The model’s strongest land-cover signals were for ${scores.slice(0, 2).map(([name]) => classNameFor(name)).join(" and ")}.`;
@@ -173,6 +175,7 @@ function AskResult({ answer, trace, traceError, preview, fallback, previewError 
         {label === "validated" && <span className={`${badge} border-green-300 bg-green-50 text-green-900`}>Validated</span>}
         {label === "experimental_unvalidated" && <ExperimentalBadge />}
       </div>
+      {typeof vqaLabel === "string" && <p className="mt-2 text-sm text-deepgray">{vqaLabel}</p>}
       {sensors.length > 0 && <p className="mt-2 text-sm font-semibold">Try imagery from {sensors.map((sensor) => sensor === "S1" ? "Sentinel-1 (S1)" : sensor === "S2" ? "Sentinel-2 (S2)" : sensor).join(", ")}.</p>}
       {preview && <Preview preview={preview} fallback={fallback} />}
       {previewError && <p className="mt-2 text-sm text-deepgray">{previewError}</p>}

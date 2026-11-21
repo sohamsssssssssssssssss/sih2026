@@ -192,8 +192,15 @@ def get_trace(request:Request,trace_id:str|None=None):
 def health(request:Request):
     runtime=service(request)
     checks, disabled, host_limits = health_capabilities()
+    loaded = runtime.loaded.copy()
+    if runtime.vqa is not None:
+        reason = runtime.vqa.unavailable_reason
+        checks['single_image_vqa'] = {'available': not reason, 'reason_code': reason}
+        host_limits.pop('qwen2.5vl-3b', None)
+        if reason:
+            loaded.pop(runtime.vqa.name, None)
     return {'status':'ready' if all(check['available'] for check in checks.values()) else 'degraded',
             'disabled_by_decision':disabled,'unavailable_on_host':host_limits,'capability_checks':checks,
-            'schema_version':SCHEMA_VERSION,'code_commit':runtime.commit,'tools_loaded':runtime.loaded,
+            'schema_version':SCHEMA_VERSION,'code_commit':runtime.commit,'tools_loaded':loaded,
             'tools_registered':list(runtime.registry.names()),'timeout_s':runtime.config.timeout,
             'packs':['worldcover','sen1floods11-hand-v1'],**memory()}

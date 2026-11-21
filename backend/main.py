@@ -8,8 +8,10 @@ from fastapi import FastAPI, Response
 from fastapi.middleware.cors import CORSMiddleware
 
 from backend.routes import analyze, resolution, sar, sentinel1, traces, ask
+from backend.ask_service import AskService
 from backend.schemas import HealthResponse
 from backend.services import health_capabilities
+from core.tools.vqa_b13_mlx import enabled as vqa_mlx_enabled
 from orchestrator import trace as trace_store
 
 CORS_ORIGINS_ENV = "SATQUERY_CORS_ORIGINS"
@@ -47,10 +49,14 @@ def cors_origins(raw: str | None) -> list[str]:
 
 @asynccontextmanager
 async def lifespan(application):
-    yield
-    runtime = getattr(application.state, "ask_service", None)
-    if runtime is not None:
-        runtime.close()
+    if vqa_mlx_enabled():
+        application.state.ask_service = AskService()
+    try:
+        yield
+    finally:
+        runtime = getattr(application.state, "ask_service", None)
+        if runtime is not None:
+            runtime.close()
 
 
 app = FastAPI(

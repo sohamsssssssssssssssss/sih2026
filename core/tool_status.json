@@ -1,6 +1,19 @@
 {
   "schema_version": 1,
   "tools": {
+    "vqa_b13_mlx": {
+      "status": "experimental_unvalidated",
+      "evidence_refs": [
+        {
+          "commit": "78cf3fcd8b2d205ea22a07315396d622d85177fe",
+          "results": "docs/gates/VQA-MAC-FRESH-TEST.md"
+        },
+        {
+          "commit": "cca98d0a522c3c28c9d9a914ffab1fbb1fdab0b6",
+          "results": "results/vqa-mac-fresh-test/REPORT.md"
+        }
+      ]
+    },
     "qwen2.5vl-3b": {
       "status": "experimental_unvalidated",
       "evidence_refs": [

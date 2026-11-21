@@ -7,7 +7,7 @@ from pathlib import Path
 
 from core.gate import OUTSIDE_INDIA, GateDecision, evaluate
 from core.registry import ToolRegistry
-from core.router import CHANGE_UNSUPPORTED, Route, route
+from core.router import CHANGE_UNSUPPORTED, Route, VQA_MLX, route
 from core.schema import Answer, Evidence, Query, Scene, ToolResult, ToolStatus
 from orchestrator.trace import append_record
 
@@ -79,6 +79,10 @@ def assemble(result: ToolResult | None, gate: GateDecision, status: ToolStatus |
                 text = CHANGE_UNSUPPORTED
             elif "out_of_region" in policies:
                 text = OUTSIDE_INDIA
+        for item in evidence:
+            if item.summary.get("policy") in {"vqa_count_unsupported", "vqa_unavailable"}:
+                text = item.summary["detail"]
+                break
         return Answer(status="refused", text=text, refusal_reason=reason,
                       evidence=evidence, trace_id=trace_id)
     experimental = status.status != "validated"
@@ -109,7 +113,8 @@ def assemble(result: ToolResult | None, gate: GateDecision, status: ToolStatus |
 
 
 def decide(query: Query, scene: Scene, registry: ToolRegistry, *, trace_id: str, **gate_inputs) -> tuple[Route, GateDecision]:
-    choice = route(query, scene, has_second_scene=gate_inputs.get("second_scene") is not None)
+    choice = route(query, scene, has_second_scene=gate_inputs.get("second_scene") is not None,
+                   vqa_mlx=VQA_MLX in registry.names())
     record_events(trace_id, "route", [{"intent": choice.intent, "reason": choice.reason}])
     record_events(trace_id, "route", [{"rank": i, "tool": name, "reason": choice.reason}
                                       for i, name in enumerate(choice.tools, 1)])

@@ -15,7 +15,9 @@ from backend.config import AskConfig, ROOT
 from core.answer import assemble, decide, record_events
 from core.gate import GateDecision, OUTSIDE_INDIA, Thresholds
 from core import registry as registry_module
+from core.router import VQA_MLX
 from core.schema import Answer, Evidence, Query, ToolResult
+from core.tools.vqa_b13_mlx import B13MLXTool, enabled
 from orchestrator import trace
 
 logger=logging.getLogger('uvicorn.error')
@@ -49,13 +51,25 @@ class AskService:
         self.config.trace_dir.mkdir(parents=True,exist_ok=True)
         trace.TRACE_PATH=self.config.trace_dir/'trace.jsonl'
         self.registry=registry
+        self.vqa = None
         if self.registry is None:
             registry_module.register_default_tools()
             self.registry=registry_module._DEFAULT
+            if enabled():
+                self.registry = registry_module.ToolRegistry()
+                for tool in registry_module.list_tools():
+                    self.registry.register(tool)
+                self.vqa = self.registry.register(B13MLXTool())
         for tool in self.registry.list():
             if tool.name=='landcover': tool.cloud_threshold=self.thresholds.cloud_pct
         self.locks={t.name:threading.Lock() for t in self.registry.list()}
         self.loaded={}
+        if self.vqa is not None:
+            try:
+                self.vqa.worker.start()
+                self.loaded[VQA_MLX] = ['ready']
+            except (OSError, ValueError, RuntimeError) as error:
+                logger.warning('Mac VQA startup failed: %s', error)
         self.upload_lock=asyncio.Lock()
         self.executor=ThreadPoolExecutor(max_workers=4,thread_name_prefix='ask')
         try:
@@ -64,6 +78,9 @@ class AskService:
 
     def close(self):
         self.executor.shutdown(wait=False,cancel_futures=True)
+        if self.vqa is not None:
+            with self.locks[VQA_MLX]:
+                self.vqa.worker.close()
 
     def verified_trace(self,trace_id=None):
         with trace._LOCK:
@@ -156,6 +173,18 @@ class AskService:
                     return None  # timed-out native work retains the tool lock and cannot publish an answer
                 if after-before:
                     record_events(state.trace_id,'load',[{'tool':tool.name,'modes':sorted(after-before),**memory()}])
+                if tool.name == VQA_MLX:
+                    if tool.unavailable_reason:
+                        self.loaded.pop(VQA_MLX, None)
+                        unavailable = Evidence(kind='text', summary={'rule': 'tool_available',
+                            'outcome': 'refused', 'policy': 'vqa_unavailable', 'detail': tool.unavailable_reason})
+                        record_events(state.trace_id, 'execution', [unavailable.summary])
+                        gate = GateDecision(tool.name, gate.mode, 'tool_missing', (*gate.evidence, unavailable))
+                    else:
+                        record_events(state.trace_id, 'execution', [
+                            {'tool': tool.name, **e.summary, 'latency_ms': result.latency_ms}
+                            for e in result.evidence
+                        ])
                 answer=assemble(result,gate,tool.status,trace_id=state.trace_id)
                 state.closed=True
                 return answer

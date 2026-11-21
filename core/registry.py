@@ -15,7 +15,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Protocol, runtime_checkable
 
-from core.router import CHANGE_UNSUPPORTED
+from core.router import CHANGE_UNSUPPORTED, VQA_MLX
 from core.schema import Query, Scene, ToolResult, ToolStatus
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -274,6 +274,8 @@ def capability_state(capability: str, *, registry: ToolRegistry | None = None) -
         _ensure_defaults()
         active = _DEFAULT
     tool_name = CAPABILITY_TOOLS.get(capability)
+    if capability == "single_image_vqa" and VQA_MLX in active.names():
+        tool_name = VQA_MLX
     if capability == "change_vqa":
         return {
             "capability": capability, "tool": tool_name,
@@ -301,6 +303,11 @@ def capability_state(capability: str, *, registry: ToolRegistry | None = None) -
             "label": None,
         }
     maturity = tool.status.status
+    if tool_name == VQA_MLX and maturity != "disabled" and (reason := tool.unavailable_reason):
+        return {
+            "capability": capability, "tool": VQA_MLX, "registered": True,
+            "state": "UNAVAILABLE", "available": False, "label": "experimental", "reason": reason,
+        }
     if maturity == "validated":
         state, label, available = "AVAILABLE", None, True
     elif maturity == "experimental_unvalidated":

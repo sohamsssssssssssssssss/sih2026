@@ -51,6 +51,12 @@ class LoadedScene:
             return self.context() if self.context else {'s1':self.arrays['s1']}
         if tool=='change-deterministic' and mode=='S1':
             raise ValueError('Legacy S1 change provider requires linear backscatter, not dB')
+        if tool == 'vqa_b13_mlx':
+            from io import BytesIO
+
+            with BytesIO() as image:
+                self.preview_image().save(image, format='PNG')
+                return image.getvalue()
         if self.native:
             return str(self.native)
         # The existing VLM/DINO adapters consume display images, not spectral tensors.

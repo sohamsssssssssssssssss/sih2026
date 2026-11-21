@@ -14,6 +14,7 @@ export default defineConfig({
   },
   webServer: {
     command: "bash ../scripts/run-demo.sh",
+    env: { SATQUERY_VQA_MLX: process.env.SATQUERY_VQA_MLX ?? "0" },
     url: "http://127.0.0.1:3000/ask",
     reuseExistingServer: true,
     timeout: 120_000,
