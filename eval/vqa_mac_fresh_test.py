@@ -171,7 +171,7 @@ def bootstrap(matrix, rows):
     indices = {(r["cluster"], r["question_type"]): i for i, r in enumerate(rows)}
     order = [[indices[c, k] for k in KINDS] for c in clusters]
     draws = np.random.default_rng(17).integers(len(clusters), size=(2000, len(clusters)))
-    return {name: np.asarray(values)[order][draws].mean(axis=1)
+    return {name: np.asarray(values)[order][draws].mean(axis=(1, 2))
             for name, values in matrix.items()}
 
 
