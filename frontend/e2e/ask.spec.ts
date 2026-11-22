@@ -1,5 +1,5 @@
 import { resolve } from "node:path";
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test, type Locator, type Page } from "@playwright/test";
 
 const screenshots = resolve("../docs/screens/p17");
 const examples = [
@@ -81,7 +81,21 @@ test("Mac VQA answers a presence question and refuses counting", async ({ page }
   await expect(result.getByText("counting is not image-based in this model", { exact: true })).toBeVisible();
 });
 
-test("acquire live Sentinel-2 and Sentinel-1 chips from STAC and answer through the gate", async ({ page, request }) => {
+async function expectSceneProvenance(result: Locator, strictLive: boolean) {
+  const live = result.getByText("Live scene", { exact: true });
+  if (strictLive) {
+    await expect(live).toBeVisible();
+    return true;
+  }
+
+  const cached = result.getByText("Cached scene (offline)", { exact: true });
+  await expect(live.or(cached)).toBeVisible();
+  if (await live.isVisible()) return true;
+  await expect(result.getByText(/^Live fetch timed out after \d+(?:\.\d+)?s — showing cached scene from \d{4}-\d{2}-\d{2}$/)).toBeVisible();
+  return false;
+}
+
+test("acquire Sentinel-2 and Sentinel-1 chips with a visible deadline fallback", async ({ page, request }) => {
   test.skip(process.env.SATQUERY_OFFLINE === "1", "Backend is in offline mode");
   const catalogs = [
     "https://earth-search.aws.element84.com/v1",
@@ -99,34 +113,42 @@ test("acquire live Sentinel-2 and Sentinel-1 chips from STAC and answer through 
       throw error;
     }
   }
+  await checkStacScenes(page, false);
+});
 
+test("acquire Sentinel-2 and Sentinel-1 chips in strict live mode", async ({ page }) => {
+  test.skip(process.env.SATQUERY_E2E_STRICT_LIVE !== "1", "Set SATQUERY_E2E_STRICT_LIVE=1 to require live STAC scenes");
+  await checkStacScenes(page, true);
+});
+
+async function checkStacScenes(page: Page, strictLive: boolean) {
   let result = await askAt(page, { place: "30.90, 75.86", start: "2026-10-01", end: "2026-11-17" });
   await expect(result.getByText(/strongest land-cover signals/)).toBeVisible();
   await expect(result.getByText("uncalibrated score", { exact: true })).toHaveCount(5);
   await expect(result.getByRole("img", { name: "S2 RGB quicklook" })).toBeVisible();
-  await expect(result.getByText("Live scene", { exact: true })).toBeVisible();
+  const ludhianaLive = await expectSceneProvenance(result, strictLive);
   await expect(result.getByText(/Earth Search · sentinel-2-l2a/)).toBeVisible();
   await expect(result.getByText("Chain verified ✓", { exact: true })).toBeVisible();
-  await page.screenshot({ path: resolve(screenshots, "live-s2.png"), fullPage: true, animations: "disabled" });
+  if (ludhianaLive) await page.screenshot({ path: resolve(screenshots, "live-s2.png"), fullPage: true, animations: "disabled" });
 
   await result.locator("summary").click();
   await expect(result.getByRole("list", { name: "Trace events" })).toBeVisible();
-  await page.screenshot({ path: resolve(screenshots, "expanded-trace.png"), fullPage: true, animations: "disabled" });
+  if (ludhianaLive) await page.screenshot({ path: resolve(screenshots, "expanded-trace.png"), fullPage: true, animations: "disabled" });
 
   result = await askAt(page, { place: "24.795, 92.795", start: "2026-11-17", sensor: "S1" });
   await expect(result.getByText(/strongest land-cover signals/)).toBeVisible();
   await expect(result.getByRole("img", { name: "S1 VV grayscale" })).toBeVisible();
-  await expect(result.getByText("Live scene", { exact: true })).toBeVisible();
+  const silcharLive = await expectSceneProvenance(result, strictLive);
   await expect(result.getByText(/Microsoft Planetary Computer · sentinel-1-rtc/)).toBeVisible();
   await expect(result.getByText("Chain verified ✓", { exact: true })).toBeVisible();
-  await page.screenshot({ path: resolve(screenshots, "live-s1.png"), fullPage: true, animations: "disabled" });
+  if (silcharLive) await page.screenshot({ path: resolve(screenshots, "live-s1.png"), fullPage: true, animations: "disabled" });
 
   result = await askAt(page, { place: "19.025, 72.835", start: "2025-08-29" });
   await expect(result.getByText(/Too cloudy to answer reliably \(scene-level cloud cover .*limit 50%\)/)).toBeVisible();
-  await expect(result.getByText("Live scene", { exact: true })).toBeVisible();
+  const mumbaiLive = await expectSceneProvenance(result, strictLive);
   await expect(result.getByText("Chain verified ✓", { exact: true })).toBeVisible();
-  await page.screenshot({ path: resolve(screenshots, "cloud-refusal.png"), fullPage: true, animations: "disabled" });
-});
+  if (mumbaiLive) await page.screenshot({ path: resolve(screenshots, "cloud-refusal.png"), fullPage: true, animations: "disabled" });
+}
 
 test("refuse an outside-India point before acquisition", async ({ page }) => {
   const result = await askAt(page, { place: "48.45, 16.15", start: "2026-10-28" });
