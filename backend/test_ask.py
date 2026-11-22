@@ -1,6 +1,7 @@
 from dataclasses import replace
 import json
 from pathlib import Path
+import threading
 import time
 from typing import get_args
 
@@ -65,6 +66,89 @@ def upload(client,data=None):
 
 def ask(client,ref,question='Map flood water',**extra):
     return client.post('/ask',json={'question':question,'scene_ref':ref,**extra})
+
+
+def test_s2_fetch_allows_slow_tile_transfer(monkeypatch):
+    from backend import fresh_scenes as fresh
+    from rasterio.env import getenv
+
+    item = {"id": "slow-s2", "properties": {"datetime": "2026-10-28T00:00:00Z", "eo:cloud_cover": 0,
+                                           "earthsearch:boa_offset_applied": True},
+            "assets": {key: {} for key in ("blue", "green", "red", "nir")}}
+    monkeypatch.setattr(fresh, "_item_for", lambda client, body, point: item)
+
+    def read_band(asset, point, sensor, needs_boa_offset):
+        if int(getenv()["GDAL_HTTP_TIMEOUT"]) < 20:
+            raise OSError("simulated 20-second tile transfer timed out")
+        return np.ones((120, 120), dtype=np.float32), ("EPSG:32643", from_origin(500000, 2400000, 10, 10))
+
+    monkeypatch.setattr(fresh, "_read_band", read_band)
+    body = fresh.FreshRequest(place="Ludhiana", sensor="S2", start_date="2026-10-28")
+    with MemoryFile(fresh.fetch_chip(None, body, (75.86, 30.9))) as buf, buf.open() as scene:
+        assert scene.descriptions == ("B02", "B03", "B04", "B08")
+        assert json.loads(scene.tags()["satquery_provenance"])["mode"] == "live"
+
+
+@pytest.mark.parametrize("properties,delta", [
+    ({"earthsearch:boa_offset_applied": True, "s2:processing_baseline": "05.10"}, 0),
+    ({"earthsearch:boa_offset_applied": False, "s2:processing_baseline": "05.10"}, -1000),
+    ({"s2:processing_baseline": "04.00"}, -1000),
+    ({"earthsearch:boa_offset_applied": False, "s2:processing_baseline": "03.01"}, 0),
+    ({"earthsearch:boa_offset_applied": False}, None),
+    ({"earthsearch:boa_offset_applied": None, "s2:processing_baseline": "05.10"}, None),
+    ({"s2:processing_baseline": "unknown"}, None),
+])
+def test_s2_fetch_boa_offset(monkeypatch, properties, delta):
+    import rasterio
+    from backend import fresh_scenes as fresh
+
+    fixture = Path(__file__).resolve().parents[1] / "tests/fixtures/punjab-s2.tif"
+    open_raster = rasterio.open
+    with open_raster(fixture) as src:
+        x, y = src.xy(60, 60)
+        (lon,), (lat,) = rasterio.warp.transform(src.crs, "EPSG:4326", [x], [y])
+        original = src.read(1).astype(np.float32)
+    point = (lon, lat)
+    body = fresh.FreshRequest(lon=lon, lat=lat, start_date="2026-10-28")
+    asset = {"href": "https://example.invalid/asset.tif",
+             "raster:bands": [{"scale": 0.0001, "offset": -0.1}]}
+    item = {"id": "mock-s2", "properties": {"datetime": "2026-10-28T00:00:00Z", "eo:cloud_cover": 0,
+                                           **properties},
+            "assets": {key: asset for key in fresh.ASSETS["S2"].values()}}
+    monkeypatch.setattr(fresh, "_item_for", lambda *args: item)
+
+    def open_asset(path):
+        assert delta is not None, "Unknown metadata must be rejected before reading the COG"
+        assert path == "/vsicurl/" + asset["href"]
+        return open_raster(fixture)
+
+    monkeypatch.setattr(rasterio, "open", open_asset)
+    if delta is None:
+        with pytest.raises(fresh.ProviderError, match="BOA offset state is unknown"):
+            fresh.fetch_chip(None, body, point)
+        return
+    with MemoryFile(fresh.fetch_chip(None, body, point)) as buf, buf.open() as scene:
+        np.testing.assert_allclose(scene.read(), np.stack([original + delta] * 4), atol=0.001)
+
+
+@pytest.mark.parametrize("patch_id,expected", [("ludhiana-s2", "built"), (None, "cropland")])
+def test_europe_landcover_on_s2_demonstrations(api, patch_id, expected):
+    from core.tools.landcover import LandcoverTool
+
+    _, runtime, _ = api
+    tool = LandcoverTool()
+    checkpoint = Path(json.loads(tool.config_path.read_text())["checkpoints"]["s2"]).expanduser()
+    if not checkpoint.is_file():
+        pytest.skip("Europe S2 checkpoint is absent")
+    if patch_id:
+        scene = runtime.scenes.load(PackRef(pack_id="fresh-backups", patch_id=patch_id))
+    else:
+        fixture = Path(__file__).resolve().parents[1] / "tests/fixtures/punjab-s2.tif"
+        scene = runtime.scenes.raster(fixture.read_bytes())
+    result = tool.run(scene.scene, None, scene.pixels("landcover", "S2", None))
+    assert "scores" in result.value, result.value
+    scores = result.value["scores"]
+    assert expected in sorted(scores, key=scores.get, reverse=True)[:2], scores
 
 
 def test_answered_and_trace_and_health(api):
@@ -249,7 +333,7 @@ def test_real_cpu_end_to_end(tmp_path,monkeypatch,pack,patch,question):
 
 
 def test_real_mumbai_s2_cloud_metadata_refuses_without_inference(tmp_path, monkeypatch):
-    fixture = Path(__file__).resolve().parents[1] / 'tests/fixtures/mumbai-s2-cloudy.tif'
+    fixture = Path(__file__).resolve().parents[1] / 'tests/fixtures/mumbai-s2-cloudy-v2.tif'
     runtime = AskService(AskConfig(data_dir=tmp_path/'data', trace_dir=tmp_path/'trace'))
     monkeypatch.setattr(app.state, 'ask_service', runtime, raising=False)
     with TestClient(app) as client:
@@ -338,7 +422,7 @@ def test_fresh_fallback_has_provenance_and_uses_the_same_gate(api, monkeypatch, 
     client, _, tool = api
     monkeypatch.setenv('SATQUERY_OFFLINE', '1' if offline_mode else '0')
 
-    def failed_fetch(*args):
+    def failed_fetch(*args, **kwargs):
         assert not offline_mode, 'Offline mode must not call STAC'
         raise ProviderError('Earth Search unavailable.')
 
@@ -357,6 +441,41 @@ def test_fresh_fallback_has_provenance_and_uses_the_same_gate(api, monkeypatch, 
     assert tool.calls == 0
 
 
+@pytest.mark.parametrize("place,slow,status", [
+    ("Ludhiana", True, 200), ("Pune", True, 504), ("Ludhiana", False, 200),
+])
+def test_live_fetch_deadline(api, monkeypatch, place, slow, status):
+    from threading import Event
+    from backend.fresh_scenes import BACKUPS
+
+    client, runtime, _ = api
+    monkeypatch.setenv("SATQUERY_OFFLINE", "0")
+    runtime.config = replace(runtime.config, live_fetch_timeout=0.05 if slow else 2)
+    monkeypatch.setattr("backend.routes.ask.resolve_point", lambda *_: ((75.86, 30.9), None))
+    release = Event()
+    data = (BACKUPS / "ludhiana-s2-v2.tif").read_bytes()
+
+    def fetch(*args, **kwargs):
+        if slow:
+            assert release.wait(3), "The response must arrive without waiting for the live read"
+        return data
+
+    monkeypatch.setattr("backend.routes.ask.fetch_chip", fetch)
+    try:
+        response = client.post("/scenes/fetch", json={"place": place, "start_date": "2026-10-28"})
+    finally:
+        release.set()
+    assert response.status_code == status
+    result = response.json()
+    if status == 504:
+        assert result["detail"] == "Live fetch timed out after 0.05s. No cached scene is available for this location."
+    else:
+        assert result["provenance"]["mode"] == ("cached" if slow else "live")
+        assert result["fallback_reason"] == (
+            "Live fetch timed out after 0.05s — showing cached scene from 2026-10-28" if slow else None)
+    assert (runtime.config.data_dir / "fresh").exists() is not slow
+
+
 def test_fresh_backup_manifest_matches_every_chip(api):
     from backend.fresh_scenes import BACKUPS
     from rasterio.warp import transform_bounds
@@ -372,3 +491,51 @@ def test_fresh_backup_manifest_matches_every_chip(api):
         assert scene.scene.acquired.isoformat() == record['date']
         assert transform_bounds(scene.scene.crs, 'EPSG:4326', *scene.scene.bounds) == pytest.approx(record['bbox'])
         assert scene.preview_image().size == (120, 120)
+
+
+@pytest.mark.parametrize("question", [
+    "Is water visible in the scene?",
+    "Compare cropland and built-up areas in the image",
+    "Which covers more of the image, cropland versus forest?",
+    "Is this rural or urban?",
+    "What is visible?",
+])
+def test_mlx_vqa_routes_visual_questions(api, question):
+    from unittest.mock import Mock
+
+    from core.tools.vqa_b13_mlx import ADAPTER_SHA, LABEL, MODEL_REV, B13MLXTool
+
+    client, service, _ = api
+    worker = Mock(ready=True)
+    worker.ask.return_value = "yes"
+    tool = service.registry.register(B13MLXTool(worker))
+    service.locks[tool.name] = threading.Lock()
+    scene = {"pack_id": "fresh-backups", "patch_id": "ludhiana-s2"}
+    answer = ask(client, scene, question).json()
+    assert answer["status"] == "low_confidence"
+    assert answer["primary"]["value"] == {"answer": "yes", "label": LABEL}
+    assert answer["primary"]["checkpoint_sha"] == ADAPTER_SHA
+    worker.ask.assert_called_once()
+    events = client.get(f"/trace/{answer['trace_id']}").json()["events"]
+    event = next(e for e in events if e.get("runtime") == "8-bit MLX")
+    assert event["model_revision"] == MODEL_REV
+    assert event["adapter_sha256"] == ADAPTER_SHA
+    assert event["latency_ms"] >= 0
+
+
+def test_mlx_vqa_refuses_count_and_unavailable_worker(api):
+    from unittest.mock import Mock
+
+    from core.tools.vqa_b13_mlx import B13MLXTool, UNAVAILABLE
+
+    client, service, _ = api
+    worker = Mock(ready=False)
+    tool = service.registry.register(B13MLXTool(worker))
+    scene = {"pack_id": "fresh-backups", "patch_id": "ludhiana-s2"}
+    count = ask(client, scene, "How many roads are there?").json()
+    assert (count["status"], count["text"]) == ("refused", "counting is not image-based in this model")
+    missing = ask(client, scene, "Is there water?").json()
+    assert (missing["refusal_reason"], missing["text"]) == ("tool_missing", UNAVAILABLE)
+    capability = next(c for c in client.get("/capabilities").json()["capabilities"] if c["tool"] == tool.name)
+    assert not capability["available"] and capability["reason"] == UNAVAILABLE
+    worker.ask.assert_not_called()

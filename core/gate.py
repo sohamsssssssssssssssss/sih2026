@@ -6,7 +6,7 @@ from typing import Mapping
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from core.registry import ToolRegistry, UnknownTool
-from core.router import CHANGE_UNSUPPORTED, COMPARE, NON_IMAGERY, TEMPORAL, Route
+from core.router import CHANGE_UNSUPPORTED, COUNT_UNSUPPORTED, NON_IMAGERY, VQA_MLX, Route, temporal_question
 from core.schema import Evidence, Query, RefusalReason, Scene
 
 # PROVISIONAL guards, not calibrated accuracy cutoffs; ROUTER_SPEC.md records why.
@@ -72,9 +72,11 @@ def evaluate(query: Query, scene: Scene, choice: Route, registry: ToolRegistry, 
         return GateDecision(selected, mode, reason, tuple(events))
 
     if (choice.intent == "change" or query.qtype == "change" or second_scene is not None
-            or TEMPORAL.search(query.text) or COMPARE.search(query.text)):
+            or temporal_question(query.text, vqa_mlx=choice.intent in {"vqa", "count_unsupported"})):
         selected = None
         return refuse("not_answerable", policy="change_unsupported", reference="T18", detail=CHANGE_UNSUPPORTED)
+    if choice.intent == "count_unsupported":
+        return refuse("not_answerable", policy="vqa_count_unsupported", detail=COUNT_UNSUPPORTED)
     if NON_IMAGERY.search(query.text) or choice.intent == "not_answerable":
         return refuse("not_answerable")
     event("answerability", "pass")
@@ -136,6 +138,8 @@ def evaluate(query: Query, scene: Scene, choice: Route, registry: ToolRegistry, 
         return refuse("tool_missing", tool=selected)
     if tool.status.status == "disabled":
         return refuse("tool_disabled", tool=selected)
+    if selected == VQA_MLX and (reason := tool.unavailable_reason):
+        return refuse("tool_missing", tool=selected, policy="vqa_unavailable", detail=reason)
     event("tool_available", "pass", tool=selected, status=tool.status.status)
     if selected == "landcover":
         required = (("VV", "VH", "B02", "B03", "B04", "B08") if mode == "S1S2" else

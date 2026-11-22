@@ -15,7 +15,13 @@
     ],
     "date": "2026-10-28",
     "item_id": "S2B_43REQ_20261028_0_L2A",
-    "sha256": "c8e754486d4d0bdf6c54c046ad15e22357950434184fbbb2b9f5fe6abd64d1eb"
+    "sha256": "02bd85dc9a9cd2981e13dba6d14ded347351d559faf8fc06f2db083c5eea8178",
+    "file": "ludhiana-s2-v2.tif",
+    "superseded": {
+      "file": "ludhiana-s2.tif",
+      "sha256": "c8e754486d4d0bdf6c54c046ad15e22357950434184fbbb2b9f5fe6abd64d1eb",
+      "reason": "double BOA offset"
+    }
   },
   {
     "id": "silchar-s1",
@@ -51,7 +57,13 @@
     ],
     "date": "2026-10-05",
     "item_id": "S2B_43RGM_20261005_0_L2A",
-    "sha256": "36b7d140f2dc6454f7dea49f78ce998723ce0ca63232e50c776d46a2e8ca0f41"
+    "sha256": "45a8f194ce7210fdc5fc860d90bb45447c0eb5d24f2bb019d147b8148f521d13",
+    "file": "delhi-s2-v2.tif",
+    "superseded": {
+      "file": "delhi-s2.tif",
+      "sha256": "36b7d140f2dc6454f7dea49f78ce998723ce0ca63232e50c776d46a2e8ca0f41",
+      "reason": "double BOA offset"
+    }
   },
   {
     "id": "mumbai-s2",
@@ -69,7 +81,13 @@
     ],
     "date": "2025-08-29",
     "item_id": "S2C_42QZG_20250829_0_L2A",
-    "sha256": "17e743cbc002ff09f4e6fe2acbce9d9d840ec1048aba57c5c4bf8b36b61e6eff"
+    "sha256": "eafc18a32ded95dc3e79f9fff5d07853472c9b82d5dded22069fd653aaa9e304",
+    "file": "mumbai-s2-v2.tif",
+    "superseded": {
+      "file": "mumbai-s2.tif",
+      "sha256": "17e743cbc002ff09f4e6fe2acbce9d9d840ec1048aba57c5c4bf8b36b61e6eff",
+      "reason": "double BOA offset"
+    }
   },
   {
     "id": "kosi-s1",

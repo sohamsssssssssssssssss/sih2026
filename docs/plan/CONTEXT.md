@@ -1,6 +1,8 @@
 # SatQuery AI (SIH26167): project context
 Last updated: 16 Nov 2026 (T04). Based on `SATQUERY_CONTEXT.md` (16 Nov), with every repo fact re-checked with git. Anything marked **VERIFY** could not be checked from the repo.
 
+> **Superseded in parts (20 Nov 2026).** The GUI is now the Next.js `/ask` app, not Streamlit. The last recorded full suite is 1,366 passed, 47 skipped, 0 failed (`INTEGRATION_LOG.md`). T13/T13b are done and the India land-cover promotion gate failed. For current status see [docs/STATUS.md](../STATUS.md); the rest of this file is the 16 Nov snapshot.
+
 ## 1. What this is
 - ISRO Smart India Hackathon 2026, problem SIH26167: Agentic AI-based Geospatial Intelligence for Multi-Sensor Satellite Data.
 - Product: satellite-imagery VQA + grounding system (optical + SAR), Streamlit GUI, agentic orchestrator.

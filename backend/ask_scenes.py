@@ -51,6 +51,12 @@ class LoadedScene:
             return self.context() if self.context else {'s1':self.arrays['s1']}
         if tool=='change-deterministic' and mode=='S1':
             raise ValueError('Legacy S1 change provider requires linear backscatter, not dB')
+        if tool == 'vqa_b13_mlx':
+            from io import BytesIO
+
+            with BytesIO() as image:
+                self.preview_image().save(image, format='PNG')
+                return image.getvalue()
         if self.native:
             return str(self.native)
         # The existing VLM/DINO adapters consume display images, not spectral tensors.
@@ -222,7 +228,7 @@ class SceneStore:
         if reference.pack_id == 'fresh-backups':
             for row in json.loads((BACKUPS / 'manifest.json').read_text()):
                 if row['id'] == reference.patch_id:
-                    path = BACKUPS / (row['id'] + '.tif')
+                    path = BACKUPS / row.get('file', row['id'] + '.tif')
                     self.verify(path, row['sha256'])
                     return self.raster(path.read_bytes(), fresh_mode='cached')
             raise SceneNotFound('Unknown cached scene')
