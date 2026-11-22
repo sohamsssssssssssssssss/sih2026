@@ -643,3 +643,18 @@ Cherry-picked the T18 preregistration and baseline results (`86cdf97` and `1d0cb
 - The first two MLX-enabled Playwright runs each had **8 passed, 1 skipped, 1 failed**. Ludhiana hit the 20-second live-fetch deadline and displayed its cached scene. The old test required the live badge.
 - After `ce6de54`, Playwright passed **9 default cases**, including Mac VQA and live STAC imagery for Ludhiana, Silchar and Mumbai, with **2 opt-in cases skipped**. The separate offline fallback case **passed**. Set `SATQUERY_E2E_STRICT_LIVE=1` to require live imagery for all three scenes in the strict case.
 - A 0.01-second deadline forced cached responses. The default STAC case passed and the strict-live case failed at the live badge assertion, as expected.
+
+## 22 Nov 2026 — Stage 1 smoke and production demo
+
+The failed Stage 1 smoke artifact recorded plan status `completed` with one step requested and completed. The test inverted a measured rate to set its budget exactly on the two-step boundary. On the failed run, the planner's pre-floor quotient was `1.9999999999999998`. The fixture now budgets for 2.5 batches and requires exactly two requested and completed steps. Measurement, record verification and the production planner are unchanged.
+
+- **Stage 1 proof**. The smoke test passed **20/20** consecutive isolated pytest processes. The full suite passed **3/3** times with **1,416 passed, 47 skipped, 0 failed** per run. The full runs used `SATQUERY_VQA_MLX=0 SATQUERY_TEST_VQA_MLX=1` to exercise the pinned worker test.
+- **Frontend checks**. Vitest **50 passed** across 12 files. TypeScript no-emit **0 diagnostics**. Production Playwright with Mac VQA enabled **9 passed, 2 skipped** (strict live-only and offline-only). The separate production offline case **passed**.
+- **Launcher checks**. Dev and production each responded on both ports, rejected a second launcher while the ports were occupied, and released both ports on shutdown. Production built before launching the backend and verified `frontend/.next/BUILD_ID` before starting Next.js.
+
+Frontend RSS was sampled with `ps -o rss=` for the sole listener on port 3000 after five successive `/ask` requests spaced one second apart. Both launch modes used the same Apple Silicon Mac, offline mode and a disabled Mac VQA worker. Samples exclude the backend, browser, launcher and build process.
+
+| Frontend mode | RSS samples (KiB) | Median RSS (MiB) |
+|---|---|---:|
+| `next dev` | 394576, 395296, 396176, 396864, 397104 | 386.9 |
+| `next start` | 119872, 119952, 119984, 120032, 120080 | 117.2 |
