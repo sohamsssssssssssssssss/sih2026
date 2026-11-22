@@ -87,3 +87,12 @@ The final s1 and s2 weights are trained on all five groups' train subsets with t
 ## 6. Fixed in advance
 
 No region, box, seed, split, group rule, recipe, calibrator, bound, binning, threshold or decision rule may change after any attempt-3 data, label count or result is seen. The only exception is the label-only group assignment in section 2, which is computed by the stated rule. A build or training failure is recorded as not run, never retried with changed settings. If G2 fails, the India model is not shipped with calibrated scores, and no attempt 4 follows on this data.
+
+## Amendment 1 (written before any attempt-3 data was built): G4 single-date check
+
+**Purpose.** Test whether the leave-one-group-out weights improve on the shipped Europe weights on single-date inputs like those used by Ask.
+
+- **Data.** For every region in the held-out group of each fold, use the pack's 120 × 120, 10 m UTM patch grids and their unchanged WorldCover 2021 map labels. Use the read-only integration checkout's app fetch and preprocessing code. For Sentinel-2, use Earth Search L2A acquisitions from 1 January through 30 April 2021 with scene-level cloud cover strictly below 10%, including the app's BOA-offset handling. For Sentinel-1, use Planetary Computer dual-polarisation RTC acquisitions from the same dates and apply the app's `10 * log10` conversion once. Align imagery to the exact pack grid and record the integration commit, item IDs, acquisition dates and file SHA-256s. Target at least 100 usable patches per region and record skipped patches and their reasons.
+- **Comparison.** In each mode use identical held-out patches and labels for both models. Compare the India weights trained with that group held out to the shipped Europe checkpoint in `~/ben-work/transfer-run-1/ben-landcover-{s1,s2}-checkpoint.pt`. Preprocess each model's inputs with its own frozen training statistics via the app's `make_batch` path.
+- **Decision.** Pool the five held-out groups once per mode. Use the G1 common-class macro mAP definition on this set. Compute India minus Europe with a paired bootstrap of patches using 2,000 replicates and seed 17. Use a two-sided 95% percentile interval. Pass only if the point difference is positive and the interval's lower endpoint is strictly above zero in both s1 and s2. Report per-group scores and differences for context.
+- **Promotion.** G4 is required in addition to G1–G3. A missing or failed G4 cannot support promotion. The data and decision rules above are fixed before generating any attempt-3 pack or label counts.
