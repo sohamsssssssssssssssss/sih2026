@@ -485,10 +485,11 @@ def test_sharded_smoke_produces_full_accepted_throughput(stage):
     assert full.load_throughput(path, shard_manifest_sha256=stage["manifest_sha"],
                                 config_sha256=record["config_sha256"]) == record
     config = yaml.safe_load(stage["config"].read_text())
-    config["budget_seconds"] = 2 * EFFECTIVE_BATCH / record["measured_samples_per_second"]
+    # Stay inside the two-step budget interval so float rounding cannot cross its floor.
+    config["budget_seconds"] = 2.5 * EFFECTIVE_BATCH / record["measured_samples_per_second"]
     stage["config"].write_text(yaml.safe_dump(config))
     result, _ = _run(stage, name="from-producer", throughput_json=path)
-    assert result["steps_completed"] == 2
+    assert result["steps_requested"] == result["steps_completed"] == 2
 
 
 def test_full_and_resume_rehash_before_model(stage, monkeypatch):
