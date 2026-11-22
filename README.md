@@ -19,9 +19,11 @@ Judge Q&A: [docs/judge/JUDGE-QA.md](docs/judge/JUDGE-QA.md).
 - **Gates**: scenes outside the India rectangle [68, 6, 98, 38], optical scenes above 50% cloud and scenes above 50% nodata are refused. These thresholds are provisional guards, not calibrated cutoffs (`core/gate.py:12`).
 - **Land cover — experimental**. Ask uses the Europe-trained BigEarthNet checkpoints and returns `confidence: null`. Built areas ranked first in live Ludhiana (**0.955**) and Delhi (**0.949**), and cropland ranked first on the Punjab fixture (**0.378**). These are uncalibrated presence scores. The Earth Search BOA offset fix (`84d7f57`) corrected the tested optical inputs. The India-adapted model was evaluated and is not shipped because calibration did not transfer between held-out Indian regions. [Recorded API results](docs/plan/INTEGRATION_LOG.md#2026-11-20--sentinel-2-boa-offset-and-regenerated-backups) · [India promotion decision on `feature/ben-landcover` at `90ccde3`](https://github.com/sohamsssssssssssssssss/sih2026/blob/90ccde3aa4c4d6eb0ee6e7d2d8591e4b792d905a/results/landcover-india-promotion/DECISION.md)
 - **Flood water — experimental**: per-scene Sentinel-1 Otsu open-water mask. India-test IoU 0.631 against a 0.65 gate: FAIL, method not tuned afterwards (`outputs/T07c-flood.md`). The flood U-Net is parked (`docs/plan/DECISIONS.md`).
+- **Mac single-image VQA — experimental**. The demo launcher enables the pinned 8-bit MLX B13 worker with `SATQUERY_VQA_MLX=1` (integration `1273a83`). Ask refuses counting. On the 400-question RSVQA-LR test sample, B13 scored **73.25%** macro (95% CI **69.99–76.50%**) against **54.50%** for base and **57.25%** for train-majority. The real-image advantage over a grey image was **11.75 percentage points** (95% CI **7.50–16.00**). There were **0 malformed answers**, median tool latency was **0.393 s**, and G6 run 2 kept at least **3.227 GiB** available against a **3 GiB** requirement. [Mac runbook](docs/RUNBOOK.md) · [Fresh-test gate](docs/gates/VQA-MAC-FRESH-TEST.md) · [Fresh-test results](results/vqa-mac-fresh-test/REPORT.md)
+- **Mac parity with CUDA remains failed**. The base model exceeded the CUDA malformed-answer count in both attempts. The bf16 attempt also missed the memory requirement. The fresh test evaluated the shipped 8-bit model on held-out data with its own gate. [Parity attempt 1](results/vqa-mac-parity/REPORT.md) · [Parity attempt 2](results/vqa-mac-parity/attempt2/REPORT.md)
 - **Change QA — disabled**: change questions receive `not_answerable`. T18 found CDVQA presence labels predictable from question text alone (82.8%) and pixel differencing (56.0%) below train majority (56.2%) (`docs/plan/DECISIONS.md`, commit `252ea5e`).
 
-Judge-style HTTP acceptance of these paths is recorded in [docs/plan/E2E_ACCEPTANCE.md](docs/plan/E2E_ACCEPTANCE.md). Latest recorded checks on 20 Nov 2026. pytest **1,401 passed, 47 skipped, 0 failed**. Vitest **50 passed**. TypeScript **0 diagnostics**. Playwright **9 passed** across the live and offline runs. [Integration log](docs/plan/INTEGRATION_LOG.md#2026-11-20--live-fetch-deadline-and-mumbai-fixture)
+The integration log has the latest test totals, including the production frontend Playwright runs. [Integration log](docs/plan/INTEGRATION_LOG.md) · [Judge-style HTTP acceptance](docs/plan/E2E_ACCEPTANCE.md)
 
 ### AVAILABLE (API building blocks)
 - **Controlled image ingestion**: `POST /api/scenes` validates PNG, JPEG, TIFF, and GeoTIFF uploads up to 20 MiB. Raster metadata is observed separately from user declarations.
@@ -39,9 +41,9 @@ Judge-style HTTP acceptance of these paths is recorded in [docs/plan/E2E_ACCEPTA
 Historical Kaggle Tesla T4 smoke verification passed through the repository provider path for Qwen and Grounding DINO. See `docs/gpu-smoke.md`. This proves runtime execution, not model accuracy or throughput.
 
 ### PARTIAL / BLOCKED ON GPU OR DATA
-- **Remote-sensing adaptation**: Adapters have been trained but none is used by the product. An RSVQA-LR pilot adapter scored 0.696 vs base 0.468 on validation; the CDVQA G3 adapter beat base but its controls showed it mostly ignored the image pair; the India land-cover adaptation passed T13b and then failed its promotion gate (`docs/plan/RESULTS.md`, `results/t13b/REPORT.md`, `docs/STATUS.md`).
+- **Remote-sensing adaptation**. The Mac demo serves the B13 adapter for single-image VQA. The CDVQA G3 adapter retained much of its performance on identical image pairs, and India land-cover adaptation failed promotion after passing T13b. [Mac VQA test](results/vqa-mac-fresh-test/REPORT.md) · [CDVQA results](docs/plan/RESULTS.md) · [India promotion decision](results/landcover-india-promotion/DECISION.md)
 - **Multi-step change-to-grounding execution**: The plan can be represented, but execution remains explicitly unavailable until an intermediate spatial artifact contract exists.
-- **Benchmark and ISRO/SAC evidence**: Existing frozen evaluations and runners do not establish adapted-model, CDVQA, optical-SAR, national, or ISRO/SAC performance.
+- **Benchmark and ISRO/SAC evidence**. The fresh B13 evaluation covers a sample from RSVQA-LR. CDVQA, optical-SAR, national coverage and ISRO/SAC require separate evidence. [Fresh-test results](results/vqa-mac-fresh-test/REPORT.md) · [Requirement gaps](docs/research/ps-requirement-gap-matrix.md)
 
 See `docs/research/ps-requirement-gap-matrix.md` for requirement-level status and next evidence.
 
@@ -51,7 +53,7 @@ See `docs/research/ps-requirement-gap-matrix.md` for requirement-level status an
 
 - **Python**: Declared version is **Python 3.11** (recorded in [`.python-version`](.python-version)). The system has also been verified under Python 3.14 on macOS arm64.
 - **Node.js & npm**: Node.js 18+ (tested on Node v25.9.0 with npm 11+).
-- **CUDA / GPU Acceleration**: An NVIDIA GPU with CUDA support is required for live `Qwen2.5-VL` model inference. On systems without CUDA (e.g., local macOS or CPU-only Linux), the system operates in offline-first mode, serving the verified golden query or failing closed with `503`.
+- **GPU acceleration**. The PyTorch Qwen and Grounding DINO providers use CUDA for reportable runs. Apple Silicon can run the pinned MLX B13 worker for `/ask`. [Mac runbook](docs/RUNBOOK.md) · [Provider smoke test](docs/gpu-smoke.md)
 
 ---
 
@@ -109,9 +111,9 @@ Sentinel-2 selects the least-cloudy matching Earth Search item. Its scene-level 
 
 If a provider is unavailable, Ask identifies and analyses a separate cached scene for the selected sensor. The [backup manifest](data/fresh-backups/manifest.json) lists the five chips, bounding boxes in WGS84 longitude/latitude, acquisition dates, source item IDs, and SHA-256 checksums. Live acquisition has a 20-second overall deadline including STAC and all bands. Override it in seconds with `SATQUERY_LIVE_FETCH_TIMEOUT`. On expiry, Ask shows a cached scene for the requested place when available, with its acquisition date. Run `SATQUERY_OFFLINE=1 bash scripts/run-demo.sh` to verify the fallback without contacting providers. In offline mode, the place-name field accepts the matching backup names or decimal coordinates. A working provider with no matching scene yields a no-scene message.
 
-The API runs on port 8000. Stop both servers with Ctrl+C.
+The launcher builds the frontend and starts it in production mode. Use `bash scripts/run-demo.sh --dev` for hot reload. The API runs on port 8000. Stop both servers with Ctrl+C.
 
-With Google Chrome installed, run `npm --prefix frontend run test:e2e` to exercise the local examples, upload, and live STAC flow. Playwright starts the demo when needed and writes screenshots to [Prompt 17 screenshots](docs/screens/p17/). After stopping any running demo, run `SATQUERY_OFFLINE=1 npm --prefix frontend run test:e2e -- --grep "offline fallback"` to exercise the offline case.
+With Google Chrome installed, stop any running demo and run `npm --prefix frontend run test:e2e` to exercise the local examples, upload, and live STAC flow. Playwright starts a production demo and writes screenshots to [Prompt 17 screenshots](docs/screens/p17/). Run `SATQUERY_OFFLINE=1 npm --prefix frontend run test:e2e -- --grep "offline fallback"` to exercise the offline case.
 
 ---
 
@@ -459,8 +461,8 @@ To run the full stack on one NVIDIA GPU VM behind one public URL (Docker Compose
   - **Binary Accuracy**: `0.6671`
   - **Aggregate Accuracy**: `0.5142`
   - **Binary Prediction Yes-Rate**: `0.3675` *(Passed two-sided degeneracy guard [0.15, 0.85])*
-- **Resolution Robustness Ladder**: Evaluated on 200 real LoveDA scenes degraded across 5 rungs (0.3m, 1m, 2m, 5m, 10m). Rungs at 5m and 10m exhibit collapse to the gold yes-prior and are flagged as degenerate.
-- **Post-Phase-0 progress**: Grounding, pair validation, deterministic optical-SAR, offline readiness, GPU smoke infrastructure, land cover, flood Otsu and the `/ask` flow are implemented. Learned adaptation has run (see Remote-sensing adaptation above); no adapted model is shipped. Change QA is disabled.
+- **Resolution ladder v2**. On 200 LoveDA tiles, building-presence accuracy was **0.790 at 0.3 m**. The yes-rate reached **0.970 at 5 m** and **1.000 at 10 m**, where accuracy equalled the always-yes baseline of **0.700**. Dominant-class accuracy was below its majority baseline at every rung. Ladder v3 is preregistered and awaits a run. [V2 analysis](results/ladder-v2/ANALYSIS.md) · [V3 gate](docs/gates/LADDER-V3.md)
+- **Post-Phase-0 progress**. Grounding, pair validation, deterministic optical-SAR, offline readiness, GPU smoke infrastructure, land cover, flood Otsu and the `/ask` flow are implemented. The Mac demo serves the B13 adapter. Change QA is disabled. [Current status](docs/STATUS.md)
 
 ### Next Phase
 
