@@ -1,0 +1,93 @@
+{
+  "label": "G3 on corrected inputs (record only; promotion already failed on G2)",
+  "weights": "/Users/soham/ben-work/final-run-1/ben-landcover-india-s2.pt",
+  "weights_sha256": "26e0cdfb7dd40abc93d025b4bd3db2ad6fcf0678e6b7385d218fee3f0675bdf9",
+  "integ_head": "404039f36566d924aa656b9473c9d31cf2d24d76",
+  "rule": "target class in the top two scores (attempt-1 G3 thresholds)",
+  "scenes": {
+    "Ludhiana": {
+      "file": "data/fresh-backups/ludhiana-s2-v2.tif",
+      "sha256": "02bd85dc9a9cd2981e13dba6d14ded347351d559faf8fc06f2db083c5eea8178",
+      "target": "built",
+      "raw_top3": [
+        [
+          "built",
+          0.9999845027923584
+        ],
+        [
+          "trees",
+          0.5017188787460327
+        ],
+        [
+          "cropland",
+          0.19749216735363007
+        ]
+      ],
+      "raw_scores": {
+        "trees": 0.5017188787460327,
+        "shrub_grass": 0.14974439144134521,
+        "cropland": 0.19749216735363007,
+        "built": 0.9999845027923584,
+        "water": 0.013009030371904373
+      },
+      "raw_pass": true,
+      "attempt1_platt_top3_context": [
+        [
+          "built",
+          0.999996016424796
+        ],
+        [
+          "trees",
+          0.27761424091335496
+        ],
+        [
+          "shrub_grass",
+          0.14943428578494636
+        ]
+      ],
+      "attempt1_platt_pass_context": true
+    },
+    "Punjab": {
+      "file": "tests/fixtures/punjab-s2.tif",
+      "sha256": "62ae9a395d8e4c609fe96348de3b24dc1b9f19f362a6758904061ef4a7004416",
+      "target": "cropland",
+      "raw_top3": [
+        [
+          "cropland",
+          0.9976377487182617
+        ],
+        [
+          "trees",
+          0.013360169716179371
+        ],
+        [
+          "built",
+          0.004779380280524492
+        ]
+      ],
+      "raw_scores": {
+        "trees": 0.013360169716179371,
+        "shrub_grass": 0.003844581311568618,
+        "cropland": 0.9976377487182617,
+        "built": 0.004779380280524492,
+        "water": 0.0009756692452356219
+      },
+      "raw_pass": true,
+      "attempt1_platt_top3_context": [
+        [
+          "cropland",
+          0.9995072458933199
+        ],
+        [
+          "water",
+          0.04120365237353111
+        ],
+        [
+          "trees",
+          0.017715854480619235
+        ]
+      ],
+      "attempt1_platt_pass_context": true
+    }
+  }
+}

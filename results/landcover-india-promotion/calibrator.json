@@ -1,0 +1,58 @@
+{
+  "source": "adapt-run-3/seed-1/ben-adapt-predictions-seed-1.npz",
+  "fit_npz_sha256": "1c7ba3770e063ff05f3b2d33b11c345657dc9e52c419457d049697d9a97ec15e",
+  "seed": 1,
+  "arm": "full",
+  "fit_fold": "A",
+  "clip": [
+    1e-06,
+    0.999999
+  ],
+  "method": "Platt on logit(probability)",
+  "modes": {
+    "s1": {
+      "trees": {
+        "slope": 0.96790407385277,
+        "intercept": -1.451610394094716
+      },
+      "shrub_grass": {
+        "slope": 0.36066431621873873,
+        "intercept": -0.4973379849352016
+      },
+      "cropland": {
+        "slope": 0.5186316293255366,
+        "intercept": -0.2333426009492138
+      },
+      "built": {
+        "slope": 1.7405252694951352,
+        "intercept": -0.8530573159156988
+      },
+      "water": {
+        "slope": 0.3115565288495823,
+        "intercept": -1.1048512823688725
+      }
+    },
+    "s2": {
+      "trees": {
+        "slope": 0.7099473065268675,
+        "intercept": -0.9612080337095349
+      },
+      "shrub_grass": {
+        "slope": 0.8315281623939093,
+        "intercept": -0.29500711364010207
+      },
+      "cropland": {
+        "slope": 1.344969445488435,
+        "intercept": -0.5163754298834123
+      },
+      "built": {
+        "slope": 1.2914867460145607,
+        "intercept": -1.8696760158689194
+      },
+      "water": {
+        "slope": 0.23837699341352897,
+        "intercept": -1.4948629311312898
+      }
+    }
+  }
+}

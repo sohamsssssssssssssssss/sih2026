@@ -633,3 +633,13 @@ The feature-enabled demo used the same app setup. Three cached-image questions a
 Pytest passed 1,414 tests with 47 skips, including a pass for the opt-in real MLX worker test. Vitest passed 50 tests across 12 files. TypeScript passed the no-emit check with zero diagnostics. The backend venv reported PyArrow 22.0.0.
 
 The full flag-on Playwright run passed 8 cases, including real Mac VQA and the count refusal. It failed 1 live STAC case and skipped the offline-only case. The offline case passed in a separate run. On the live retries, Ludhiana and Silchar loaded live while Mumbai hit the 20-second fetch deadline, fell back to its cached scene, and correctly refused on cloud cover. The Mumbai timeout also occurred with MLX disabled. The live assertion still requires the Live scene badge.
+
+## 22 Nov 2026 — v0.9-demo evidence import
+
+Cherry-picked the T18 preregistration and baseline results (`86cdf97` and `1d0cbaf`). Copied the India land-cover promotion results and gate documents from `feature/ben-landcover` at `4695cd9`. The gate paths did not overlap existing files. [T18 baseline report](../../results/t18/REPORT.md) · [India land-cover promotion decision](../../results/landcover-india-promotion/DECISION.md)
+
+- Full pytest: **1,414 passed, 48 skipped, 1 failed**. The Stage 1 throughput smoke test completed one step against an expectation of two. Its three isolated reruns were **pass, fail, pass**. The run used the default pytest configuration for the opt-in real MLX worker test.
+- Vitest: **50 passed** across 12 files. TypeScript no-emit: **0 diagnostics**.
+- The first two MLX-enabled Playwright runs each had **8 passed, 1 skipped, 1 failed**. Ludhiana hit the 20-second live-fetch deadline and displayed its cached scene. The old test required the live badge.
+- After `ce6de54`, Playwright passed **9 default cases**, including Mac VQA and live STAC imagery for Ludhiana, Silchar and Mumbai, with **2 opt-in cases skipped**. The separate offline fallback case **passed**. Set `SATQUERY_E2E_STRICT_LIVE=1` to require live imagery for all three scenes in the strict case.
+- A 0.01-second deadline forced cached responses. The default STAC case passed and the strict-live case failed at the live badge assertion, as expected.

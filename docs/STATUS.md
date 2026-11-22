@@ -12,7 +12,7 @@ Every line names its source. A number with no recorded source is not listed.
 ## Experimental
 
 - **Land cover**. Europe-trained BigEarthNet checkpoints serve uncalibrated scores with `confidence: null`. Built areas ranked first in live Ludhiana (**0.955**) and Delhi (**0.949**), and cropland ranked first on the Punjab fixture (**0.378**). These are uncalibrated presence scores. The transfer benchmark still records an India–Europe gap (S1 0.516 vs 0.688, S2 0.576 vs 0.915 mAP). [Recorded API results](plan/INTEGRATION_LOG.md#2026-11-20--sentinel-2-boa-offset-and-regenerated-backups) · [Transfer results](plan/RESULTS.md)
-- **India land-cover promotion closed**. G1 passed on held-out regions (S1 0.717 vs 0.689 floor, S2 0.688 vs 0.659 floor). Both calibration attempts failed (Platt and temperature scaling), with opposite biases across the region folds. The original Ludhiana G3 failure came from the BOA offset bug. Corrected Ludhiana and Punjab both passed G3 in a record-only rerun. The India weights were not shipped. [India promotion decision on `feature/ben-landcover` at `90ccde3`](https://github.com/sohamsssssssssssssssss/sih2026/blob/90ccde3aa4c4d6eb0ee6e7d2d8591e4b792d905a/results/landcover-india-promotion/DECISION.md)
+- **India land-cover promotion closed**. G1 passed on held-out regions (S1 0.717 vs 0.689 floor, S2 0.688 vs 0.659 floor). Both calibration attempts failed (Platt and temperature scaling), with opposite biases across the region folds. The original Ludhiana G3 failure came from the BOA offset bug. Corrected Ludhiana and Punjab both passed G3 in a record-only rerun. The India weights were not shipped. [India promotion decision](../results/landcover-india-promotion/DECISION.md)
 - **Flood water (Sentinel-1 per-scene Otsu)**: India-test IoU 0.631 vs gate 0.65: FAIL; not tuned afterwards. India-test is 14 chips from one event. Source: `outputs/T07c-flood.md:3`, `:21`, `:28`; `core/tool_status.json:35-36`.
 - **Qwen2.5-VL VQA and Grounding DINO**: need CUDA; unavailable on the demo Mac. Frozen Qwen RSVQA-LR open accuracy 0.165, binary 0.667. Source: `docs/plan/E2E_ACCEPTANCE.md:24`; `README.md` Baseline section; `results/RESCORE_NOTE.md:30-32`.
 - **Optical-SAR**: deterministic index and backscatter summaries, not a learned fusion model; no accuracy evaluation. Source: `core/tool_status.json:18`.
@@ -20,7 +20,7 @@ Every line names its source. A number with no recorded source is not listed.
 
 ## Disabled or parked
 
-- **Change QA**: disabled. CDVQA presence labels are predictable from question text alone (82.8%, 82.3%); pixel differencing (56.0%, 55.0%) did not beat train majority (56.2%, 55.5%). Source: `docs/plan/DECISIONS.md:57-66`; full table on branch `task/T18-change-baseline` at `1d0cbaf`, `results/t18/REPORT.md`.
+- **Change QA**: disabled. CDVQA presence labels are predictable from question text alone (82.8%, 82.3%); pixel differencing (56.0%, 55.0%) did not beat train majority (56.2%, 55.5%). [Change QA decision](plan/DECISIONS.md) · [T18 baseline report](../results/t18/REPORT.md)
 - **Flood U-Net**: parked. S1-only 0.897 vs gate > 0.9; S1+S2 worst chip 0.744 vs required > 0.95. Source: `docs/plan/DECISIONS.md:54`.
 
 ## Not evaluated
