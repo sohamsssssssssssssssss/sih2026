@@ -1,0 +1,23 @@
+[
+  {
+    "file": "raw/REPORT.md",
+    "sha256": "28ac2c2fa1e5f25ef38b6f49669acbc437deefa36d37177480f168e5cc298d76",
+    "bytes": 22499,
+    "source_zip": null,
+    "source_folder": "ladder-v3"
+  },
+  {
+    "file": "raw/curve.png",
+    "sha256": "99756f8bd63d618dcf79523b53e7821bbc5bd12b18dff64be5b631acd0884eef",
+    "bytes": 67128,
+    "source_zip": null,
+    "source_folder": "ladder-v3"
+  },
+  {
+    "file": "raw/results.json",
+    "sha256": "cc30237f757d956b1be054a8d411d86cb980ababc9e4c673df7e8246bc4366f1",
+    "bytes": 4664811,
+    "source_zip": null,
+    "source_folder": "ladder-v3"
+  }
+]

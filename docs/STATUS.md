@@ -27,7 +27,7 @@ Every line names its source. A number with no recorded source is not listed.
 
 ## Resolution evidence
 
-- **Resolution and counting**. The LoveDA v2 building question scored **0.790 at 0.3 m**. The yes-rate reached **0.970 at 5 m** and **1.000 at 10 m**, where accuracy matched the **0.700** always-yes baseline. Dominant-class accuracy stayed below majority at every rung. The DIOR counting study lacked GSD annotations, so the counting resolution gate remains untested. Ladder v3 is preregistered and has yet to run. [Ladder v2 analysis `511079c`](../results/ladder-v2/ANALYSIS.md) · [Counting limitations](https://github.com/sohamsssssssssssssssss/sih2026/blob/1837259d18fe9e96aca2339160789dd3c9c73a50/results/count-dior/ANALYSIS.md#L85-L90) · [Ladder v3 gate `0c7b878`](gates/LADDER-V3.md)
+- **Resolution and counting**. LoveDA v3 used **200 tiles** and both real and grey controls for base and B13. At **10 m**, pooled presence accuracy was **0.5029** for base and **0.5043** for B13. Both were degenerate and neither had a pooled real-minus-grey interval that excluded zero. V2 had an always-yes building result at 10 m under its own question protocol. The DIOR counting resolution gate remains untested because GSD annotations were unavailable. [Ladder v3 report](../results/ladder-v3/REPORT.md) · [Ladder v2 analysis](../results/ladder-v2/ANALYSIS.md) · [Counting limitations](https://github.com/sohamsssssssssssssssss/sih2026/blob/1837259d18fe9e96aca2339160789dd3c9c73a50/results/count-dior/ANALYSIS.md#L85-L90)
 
 ## Not evaluated
 

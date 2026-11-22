@@ -658,3 +658,9 @@ Frontend RSS was sampled with `ps -o rss=` for the sole listener on port 3000 af
 |---|---|---:|
 | `next dev` | 394576, 395296, 396176, 396864, 397104 | 386.9 |
 | `next start` | 119872, 119952, 119984, 120032, 120080 | 117.2 |
+
+## 22 Nov 2026 — Ladder v3 Kaggle results
+
+Imported three byte-verified files from the extracted Kaggle output. The raw run recorded Tesla T4 and the exact preregistration commit `0c7b8787712585868265d6fb25de9009ba449560`. The gate and question-manifest hashes matched. Each of the four conditions covered 200 frozen tiles across five rungs, giving 21,880 predictions. The existing scorer reproduced all 200 metric cells and 100 paired contrasts.
+
+Base and B13 pooled presence both failed the degeneracy rule at 5 m and 10 m. At 10 m, accuracy was 0.5029 and 0.5043 respectively. Both pooled real-minus-grey intervals included zero. B13 showed a positive building-presence image effect at 1 m and 2 m, with no pooled image-dependence pass at any rung. Full pytest passed with 1,416 passed, 47 skipped and 0 failed, including the opt-in Mac worker test. [Report](../../results/ladder-v3/REPORT.md) · [Raw manifest](../../results/ladder-v3/MANIFEST.json)

@@ -13,8 +13,8 @@ The CUDA comparison required the Mac base model to produce no extra malformed ou
 [8-bit gate](../gates/VQA-MAC-PARITY.md) · [8-bit parity report](../../results/vqa-mac-parity/REPORT.md) · [bf16 gate and near-tie diagnosis](../gates/VQA-MAC-PARITY-ATTEMPT2.md) · [bf16 parity report](../../results/vqa-mac-parity/attempt2/REPORT.md) · [Fresh-test results](../../results/vqa-mac-fresh-test/REPORT.md)
 
 **3. What happens at 10 m?**
-On LoveDA ladder v2, the model said yes to every building-presence question at 10 m and scored 0.700, exactly the always-yes baseline. At 5 m its yes-rate was 0.970. The 0.3 m rung scored 0.790 for building presence. Dominant-class accuracy stayed below its majority baseline at every rung. The preregistered v3 ladder has yet to run.
-[Ladder v2 analysis](../../results/ladder-v2/ANALYSIS.md) · [Ladder v3 gate](../gates/LADDER-V3.md)
+On the preregistered LoveDA v3 run at simulated 10 m, pooled presence accuracy was 50.29% for base and 50.43% for B13. Both were degenerate under the registered rule, and neither showed a pooled advantage from real imagery over grey. Building presence was also degenerate for both models. This measures synthetic coarsening on LoveDA. Counting and real ISRO sensor performance remain untested by this experiment.
+[Ladder v3 report](../../results/ladder-v3/REPORT.md) · [Ladder v3 preregistration](../gates/LADDER-V3.md)
 
 **4. Why isn’t the India-adapted model shipped if its recipe improved held-out mAP?**
 G1 passed, but neither Platt calibration nor temperature scaling met the region-transfer gate. One fold’s scores ran high and the other’s ran low. Corrected scene checks passed G3 in a record-only rerun. The promotion decision is closed and Ask uses the Europe-trained model.
