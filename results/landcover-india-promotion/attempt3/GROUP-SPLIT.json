@@ -1,0 +1,136 @@
+{
+  "status": "assigned",
+  "classes": [
+    "trees",
+    "shrub_grass",
+    "cropland",
+    "built",
+    "water"
+  ],
+  "worst_prevalence_gap": 0.274375,
+  "sum_squared_gaps": 0.28664319058641974,
+  "pooled_positives": {
+    "trees": 3039,
+    "shrub_grass": 2053,
+    "cropland": 2656,
+    "built": 917,
+    "water": 743
+  },
+  "groups": {
+    "A": {
+      "regions": [
+        "delhi",
+        "rajasthan",
+        "sundarbans"
+      ],
+      "patches": 900,
+      "positives": {
+        "trees": 458,
+        "shrub_grass": 276,
+        "cropland": 400,
+        "built": 253,
+        "water": 216
+      },
+      "absolute_prevalence_gaps": {
+        "trees": 0.12423611111111112,
+        "shrub_grass": 0.12104166666666667,
+        "cropland": 0.10888888888888888,
+        "built": 0.09006944444444444,
+        "water": 0.08520833333333333
+      }
+    },
+    "B": {
+      "regions": [
+        "assam",
+        "kerala",
+        "punjab"
+      ],
+      "patches": 900,
+      "positives": {
+        "trees": 607,
+        "shrub_grass": 138,
+        "cropland": 530,
+        "built": 279,
+        "water": 105
+      },
+      "absolute_prevalence_gaps": {
+        "trees": 0.04131944444444444,
+        "shrub_grass": 0.274375,
+        "cropland": 0.035555555555555556,
+        "built": 0.11895833333333333,
+        "water": 0.038125
+      }
+    },
+    "C": {
+      "regions": [
+        "bastar",
+        "chilika",
+        "hyderabad",
+        "mizoram"
+      ],
+      "patches": 1200,
+      "positives": {
+        "trees": 860,
+        "shrub_grass": 671,
+        "cropland": 543,
+        "built": 198,
+        "water": 294
+      },
+      "absolute_prevalence_gaps": {
+        "trees": 0.08354166666666667,
+        "shrub_grass": 0.13145833333333334,
+        "cropland": 0.10083333333333333,
+        "built": 0.026041666666666668,
+        "water": 0.09020833333333333
+      }
+    },
+    "D": {
+      "regions": [
+        "cauvery",
+        "kodagu",
+        "kutch"
+      ],
+      "patches": 900,
+      "positives": {
+        "trees": 541,
+        "shrub_grass": 499,
+        "cropland": 526,
+        "built": 50,
+        "water": 52
+      },
+      "absolute_prevalence_gaps": {
+        "trees": 0.03201388888888889,
+        "shrub_grass": 0.1267361111111111,
+        "cropland": 0.03111111111111111,
+        "built": 0.1354861111111111,
+        "water": 0.09701388888888889
+      }
+    },
+    "E": {
+      "regions": [
+        "gangetic",
+        "garhwal",
+        "marathwada"
+      ],
+      "patches": 900,
+      "positives": {
+        "trees": 573,
+        "shrub_grass": 469,
+        "cropland": 657,
+        "built": 137,
+        "water": 76
+      },
+      "absolute_prevalence_gaps": {
+        "trees": 0.0035416666666666665,
+        "shrub_grass": 0.09340277777777778,
+        "cropland": 0.17666666666666667,
+        "built": 0.03881944444444444,
+        "water": 0.07034722222222223
+      }
+    }
+  },
+  "manifest_sha256": {
+    "old": "5cc82c713ad76a3286afd4ad3eb66f33da3fb7ff365ab23a6371dc3ba999c40d",
+    "new": "6a7525fafdf0266951c1139a26e8346461da678dcb5bf2844cc646fc4ab13492"
+  }
+}

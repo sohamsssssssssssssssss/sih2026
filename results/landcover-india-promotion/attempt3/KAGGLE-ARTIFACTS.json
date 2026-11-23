@@ -1,0 +1,17 @@
+[
+  {
+    "file": "satquery-ben-attempt3-code.zip",
+    "bytes": 31603,
+    "sha256": "7025d61c59e2aa87adfcddf59c4cb0e584e76430dff88a0edc85b44756ed245c"
+  },
+  {
+    "file": "satquery-ben-attempt3-worldcover.zip",
+    "bytes": 366845224,
+    "sha256": "889c93aa64301394c885062fda71cba386435f811cae4251a1340406430b7b95"
+  },
+  {
+    "file": "run_attempt3_gpu.txt",
+    "bytes": 3155,
+    "sha256": "788a5bdb93ba2acaea0fd7406714b9a1043b537f99247e083caa91185cdc3052"
+  }
+]

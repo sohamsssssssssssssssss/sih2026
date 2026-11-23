@@ -1,0 +1,4607 @@
+{
+  "region": "cauvery",
+  "file": "cauvery.npz",
+  "sha256": "14e413835bed98a583f8bf6a6daf047be253a6303ca77beffe5f8d2c59ffb90f",
+  "bytes": 34564786,
+  "fetched": 100,
+  "skipped_count": 200,
+  "not_attempted_after_target": 0,
+  "patches": [
+    {
+      "patch_id": "new:2701",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "bc62c303f69bad83e767be6acdc0911799852c0d051e81711f30d24126145e0f",
+          "aligned_pixels_sha256": "1881ea4c2d5a89617bea7f41d78eabd652b24bd38a0bacb43b15d14d67886e44"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "5a601a120e2d32c74f19425c85d4c197079b257c32c47d5f2b75f6f9eba5e23a",
+          "aligned_pixels_sha256": "903543343188a281c01684f3060d26e2771c96c1e1ef3eb25164f770ab96d56d"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 314930.0,
+      "utm_y": 1188280.0
+    },
+    {
+      "patch_id": "new:2702",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "4b748fc5edfe123e4afd7ac6acda6cd96ee971828fb663db56d88d7525a7431d",
+          "aligned_pixels_sha256": "1a9a623acc56f8ceced5342036ce9bf64b8d4524082d3cb6ff7966f8e475ee7c"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "cd192673a2099c79de1e56a00bc52df05748ab0cb655c18c86b94e6c93fc14a7",
+          "aligned_pixels_sha256": "2b7d8427c5dc78efdd2dc2f4d15d67e5561f4f0fd8de0d16578cb5d881a1ef0b"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 316130.0,
+      "utm_y": 1188280.0
+    },
+    {
+      "patch_id": "new:2715",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "cc2e0cbc3db4db68e872163e34b3aab1fa9050feebe9556996d5457bb675a26a",
+          "aligned_pixels_sha256": "b95619235c443c4d015d513b64d128a994a829fbfca0135320de05758a77af76"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "3e91bf7079d2539f2562d13f1cf6009a704833c010c7ab7d9f010eb3d1494d71",
+          "aligned_pixels_sha256": "498c46011476f4985b8b23d9105127ad9a791a84595b0068e5e5264e6dd4e2ae"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 328130.0,
+      "utm_y": 1187080.0
+    },
+    {
+      "patch_id": "new:2723",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "43a09b7c9ed8858ca0d21758906954b3ba0dcbc2d2d1f424a8256919139f2882",
+          "aligned_pixels_sha256": "6ff7fd61244205a705dbc3709c441cb74f95d22d22ca76f896ae928b4ce5fe49"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "81359a3f940ff1ef42aba49e11bb44ca8368ffd0245d37a95916195050544e95",
+          "aligned_pixels_sha256": "675a12d4c341db142a32c03772ab660cae7e23a8bbecafaeda4b5f0d0090eb8d"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 316130.0,
+      "utm_y": 1185880.0
+    },
+    {
+      "patch_id": "new:2726",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "9b3d69ac007139cd0c0e1fe09e0d12a46fc7174258f625e4d718d6fd602e5f20",
+          "aligned_pixels_sha256": "2abefdf61a2ba599db2cfd6504d85c5115d0bbb1df4ba446f2b566072f07c8e3"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "187d439c022fbd2b9673e4074a9bf2bfc59d9fd8b96c7df09152891c674be487",
+          "aligned_pixels_sha256": "44caa9f07669ecd76145f90ffeb64d2dfdcf573b55ef17ea5b83aa3b00735a63"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 328130.0,
+      "utm_y": 1184680.0
+    },
+    {
+      "patch_id": "new:2730",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2B_44PKS_20210306_0_L2A",
+          "acquisition_datetime": "2021-03-06T05:16:01.812000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 0.668882,
+          "fetched_chip_sha256": "f893d41d295af7165611a4d0cb402c8261920c0293d52f5e037f2d4794be7eb4",
+          "aligned_pixels_sha256": "381aa9eaf104176e622a177c05abe058c4f35b3aea69031799e83a9d0d090433"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "3fa2bca03d37249dca717f42aa9d0ea5bff3eae441c0601ca0a231153d7732eb",
+          "aligned_pixels_sha256": "29e9ed63bfc5827896cef3308f6609cacb582e56c1892fae9c82cb71dc9186e4"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 308930.0,
+      "utm_y": 1183480.0
+    },
+    {
+      "patch_id": "new:2736",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "df5324f116cb82c970b41a4379e39148a9b76c47b2e07fc56a73f4e4b73bb274",
+          "aligned_pixels_sha256": "5bb0407b9aa4ba9bd64d5021cbed0eec680ea8467bcac452a7a9dd7ecad8cc2b"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "750bb279c46b69b159d9ba18d6d4e3a4edeaa179205d53c0307581247bc928b4",
+          "aligned_pixels_sha256": "f85fc645dc711b1756a23f54e362898ebcc3e4e0a0cdda6d1906f738fcc2dd7e"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 354530.0,
+      "utm_y": 1183480.0
+    },
+    {
+      "patch_id": "new:2741",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "21c6f899dc2af43dff2d0edf29dcd58c066143d38d6bade246d7737f8abe4bdf",
+          "aligned_pixels_sha256": "3b18eb1dbcf625110760d043b9543f21df5d47d6f6c5e2c7147452342a705724"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "eb60bddd9df2f3af80f6c0b94dfaae6159d402717399f6fa7f7f09449ca3f67d",
+          "aligned_pixels_sha256": "666f795e8e3970e69a046981f7623332b8bea77df77beeb78316c54b49a29e84"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 317330.0,
+      "utm_y": 1181080.0
+    },
+    {
+      "patch_id": "new:2746",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "237b6a7810ac631542b9c637aaa9c52d3dff73296267e2e3fc55fc86eccd272a",
+          "aligned_pixels_sha256": "b886fafa6437931b70396f03295bd5d2cb52c3848672eaac4dec851ed12e6e81"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "e9e35bc808dedd5f9f86bd9b3d1c1b6533550ddd1da9b4449d6d57de7e4252a6",
+          "aligned_pixels_sha256": "45f7279654011dee64e29b535107a81c2f09677e2711798699deb6fed5c3aadd"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 356930.0,
+      "utm_y": 1181080.0
+    },
+    {
+      "patch_id": "new:2753",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "6953b9fb9d655bc178a8afd524a408eedf91fd0f755650f4975ab0e3a27d117f",
+          "aligned_pixels_sha256": "9a9b2f3c20c7602656aea0a2bc1fa78cca2ba4d151c6e446e37eea86a17f36cc"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "f38d001e414c6deeb542beed0397e52d3f60ecc94da824851a19551f449fd5ff",
+          "aligned_pixels_sha256": "5321b769f3f3abe2bb44092ce9dd4fe6ad287b61e4c80c367eecadcd70119df0"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 314930.0,
+      "utm_y": 1178680.0
+    },
+    {
+      "patch_id": "new:2757",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "e255e96a5875dc971f79156f01ddeda70544471d2063f1b175123c0d2feb3fe2",
+          "aligned_pixels_sha256": "103ab6aa4f0723c76e408365a4536f0e0df0b2bbbebe110312a25034a55ca92c"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "5be2fddc8aba1fa55118b8efad00e4b4e1f5c15b50f08c13892b2a1c1c756a18",
+          "aligned_pixels_sha256": "ee1afdd2da4fc6496a925aea1ba626df795f00e566aedace13c9e735d33e6b11"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 335330.0,
+      "utm_y": 1178680.0
+    },
+    {
+      "patch_id": "new:2761",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "5f52655cf59d23dc7113febde78932055c376df2edb12e57dbd95588fca6a430",
+          "aligned_pixels_sha256": "46e278cfd18d9e2a4d0cb70744da335a0ea40ccca02ec9bf4962e9ba6979aedd"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "b07c0302794e07ef015dbca85f24d11696a71521ea3157bd34112d21dd29d958",
+          "aligned_pixels_sha256": "afa072c56db23883c2443d6cf602c93ad68e15208fbcbaa169bbb52f806421b9"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 360530.0,
+      "utm_y": 1178680.0
+    },
+    {
+      "patch_id": "new:2762",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "690989d9d43ceb37867479043144d083c3bf0127f78c2a03120f4a2ccd837fc1",
+          "aligned_pixels_sha256": "bd99ad75a988c1a90c7b49254f867fe936ee0581c002467e91d58e486952b8e3"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "2c5d9bad39d0f8e7d8b5fdb684a360b33700fef3c23d934a778955d4070e14c0",
+          "aligned_pixels_sha256": "cef0b0ad111fe83ead8dc53b313b6780b19401c32be91693c0ef3d420bfce07c"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 311330.0,
+      "utm_y": 1177480.0
+    },
+    {
+      "patch_id": "new:2765",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "27003335faa9e5d52ae8451b86c022ebedc5a17c10560618b26f0eb39d081ed4",
+          "aligned_pixels_sha256": "2cef20402a8c3fce13ac09282feed7d2bb32ccf8eaf188d9d97938b0b7bf2b9e"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "2b30fe5fb76ea2ebfc552b4717c9a36481d579889b50474df1ae90ac439c2962",
+          "aligned_pixels_sha256": "182d6f90ab5659de59115a0cb312c738197317617969039f6371316362feb03c"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 331730.0,
+      "utm_y": 1177480.0
+    },
+    {
+      "patch_id": "new:2766",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "2fe8e685ca0a9fdf6a2fd1a3f4fe2c2d1d97075d79b880bfd0752b2fb6ac9faf",
+          "aligned_pixels_sha256": "e916ecff9c7b24b2adf1b35f10c9ab274e5e51eb36de4982f01524e60253649f"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "2c1ae5a0d4ab67bfaf8c7a5efdc71b2e495cbf76a1360f26660cccd023efe73e",
+          "aligned_pixels_sha256": "cab045efa88c4e013644da80e93d1dacb82dfd9dad567acf03dff3927679e170"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 336530.0,
+      "utm_y": 1177480.0
+    },
+    {
+      "patch_id": "new:2768",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "08b680991bcc48fd97e9d89d7dcff443ebfda0fa289d9220ceef8d6229fd87e3",
+          "aligned_pixels_sha256": "1b52ea72b14bf1e999bdba735d8de9e078de736ac64527bbbfdf47e2a33473f8"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "127327e50c4136d193a96dcfd07b9580871a881f42f180cf1c7d89500a563322",
+          "aligned_pixels_sha256": "c0dedc31c9c11a9922b7f5fdee097703e8d87f4d2452b44a3f522e58beb0e401"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 353330.0,
+      "utm_y": 1177480.0
+    },
+    {
+      "patch_id": "new:2769",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "60f7125a4d81d3fd3a2907955e6b6b2e06726480ed282a64288016b21d467fae",
+          "aligned_pixels_sha256": "e19bb50f1bedae0ed619845d4bce51a6a39002cb90069bfe294783f05b1e2313"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "50972a3bebe030dd4f0794bef718f1a0419132e82c5c78427efddba81723ad5e",
+          "aligned_pixels_sha256": "bafbc7d4b7aff840f80b61260072cdbb9df3bfc0d3fe53c5c3e0d751714caec8"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 356930.0,
+      "utm_y": 1177480.0
+    },
+    {
+      "patch_id": "new:2770",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "464ed347b0b146ddbb244a827fe51d52f54c466501b19aeb9c22f785aea631a6",
+          "aligned_pixels_sha256": "4a75f9732ce4eb58ff05d94e17719189486996638ad582ced8c7bdeb998a0755"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "1c276b91b7b2433038418fbea5c903b765cce2a09769661806c328bf2319d634",
+          "aligned_pixels_sha256": "42d0f4a55b79c5b4ebe4fe8cd116e7ccb14c20cabe210e1f80d7aaa7def653ae"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 361730.0,
+      "utm_y": 1177480.0
+    },
+    {
+      "patch_id": "new:2771",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "17e434fc57cd4271994e6e2b2873ee660e3383ca78f3fb06891ebe2b8da6cbcf",
+          "aligned_pixels_sha256": "da8b16e0fa5b19a107a0f4182606af19ab34faf450b78d362cc9b154f48cea45"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "ed5ed6d2d0a8ea9d7902c31913714ed3d57bd900021af3c503d517cd6c00e5a2",
+          "aligned_pixels_sha256": "88a877abba912a96f83cf33006f2dbee15baf6e5d7322bb735ceca2bd3fccf23"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 317330.0,
+      "utm_y": 1176280.0
+    },
+    {
+      "patch_id": "new:2772",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "d164346d82266bfefa21e263659094d46fbf44d2164e558684d703fe1845cc8b",
+          "aligned_pixels_sha256": "a578f87b2f29850880d4664f0f02b091bbf0b27cdae3ec28a902ed59242495c0"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "527eadc5eb98ddfb4cd44f8a0857b3a0f8b6d29be5fe480468553eca51f367f4",
+          "aligned_pixels_sha256": "f66038f9feef7c699bf1d6612f6837242a84e64acf9af4867c736601f10b08a0"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 319730.0,
+      "utm_y": 1176280.0
+    },
+    {
+      "patch_id": "new:2773",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "7cddc0e08ab8e768156341757351f0c7ffc7ace08dc030aae9afc10fcc00801f",
+          "aligned_pixels_sha256": "5f1ab4410ebc49ca318ede77e7e3635f3a0c91abc8964a8fcf075766b4ddf7dd"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "120dabd7c279c841385caca71b65ae469d69352e728ffab3f33e0e143271b701",
+          "aligned_pixels_sha256": "526289a50df727127fb83130ca793faadb1414c7f6aa2c35d60ef1ca81d06113"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 335330.0,
+      "utm_y": 1176280.0
+    },
+    {
+      "patch_id": "new:2774",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "24893ba04340d73732e1e08c98e9322efc36ab4a204e53262f02b5bd1130f480",
+          "aligned_pixels_sha256": "5c0789327a4947d306c17c63dc193ed60f19d6c5c67391b3a90b868bc08d35b9"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "f26f9c861d77db2db5170d8beb0c5babefbabe7e5c6cba549c009a02d5601d9e",
+          "aligned_pixels_sha256": "82ec9704e390aacd350398663ca7bb35896963aaebded3aca34733bc536c6419"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 344930.0,
+      "utm_y": 1176280.0
+    },
+    {
+      "patch_id": "new:2775",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "7b9a4abd03b3bbca8c0157072777844b661a697cfd3f5891d288c3c3d34951dc",
+          "aligned_pixels_sha256": "6e02a6e18b3e0e715bff6e37451e14e6acd595370806770c0f31d4d043e2db39"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "1573fabb2df3564a840139ff54ad086cb241589725d381604d359d8a26df177a",
+          "aligned_pixels_sha256": "4a094fb5bf2c249e4824c841153162f5cc20dbd7c3be688bb504b42c208902d3"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 350930.0,
+      "utm_y": 1176280.0
+    },
+    {
+      "patch_id": "new:2776",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "1d28f99cf553186de637b5e92380ae8605c78ad5d771826b862cb437f4a781cf",
+          "aligned_pixels_sha256": "595da0487270bcde34bb39ba688eceb75bdf6feb1b424c0579f65820d1312c65"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "7ea4bdeefd5192a46f769a0d7e5cdb3a91a595cd47039202c937dbdf0c26ca74",
+          "aligned_pixels_sha256": "019b0ebcabc0b94a023219531b5f1c6f90dc745c92763ef12decb58f3990290d"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 361730.0,
+      "utm_y": 1176280.0
+    },
+    {
+      "patch_id": "new:2777",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "8538760980a3ad0abea559c8f293e0e963be4c1f0865447776cc35d3e788a2ce",
+          "aligned_pixels_sha256": "aaa184e82c3420b1d6c8e4b5264711f75254f51f597467b74a1c1999237391f9"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "43385bad89d75f4988b24261895b20c57394741890cfd438a2ced68bedfa1151",
+          "aligned_pixels_sha256": "ae378b5f6d88bf664180b4ccdc83db47f0108fb57b22413adf3af669f96a8863"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 312530.0,
+      "utm_y": 1175080.0
+    },
+    {
+      "patch_id": "new:2778",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "18baa3832171cd8aada60a56a422d110d4e5d3041315585455ee3425c5568254",
+          "aligned_pixels_sha256": "fe4a1493f997390e3ed12bbf1080c9f4b20fd37f09d2872422587407b819a8dd"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "e50c174bbea7b27e7245d1813c1ca8d81d137030841cf20bf92439e9f4bab25d",
+          "aligned_pixels_sha256": "f5644da4da576508591ffedb80c58baa72b839c5eeecd94796b325ac54f1588e"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 316130.0,
+      "utm_y": 1175080.0
+    },
+    {
+      "patch_id": "new:2779",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "ce7346e206bde486bf598990757316de9d895beaa3dccb63b1b211dcc0928808",
+          "aligned_pixels_sha256": "e3b6030eaab8878ef14800255bb55876423591849084ff83407acd8b716a5515"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "dc35a36c18bd03ecce4b46dc985f7d54a944e30944ef038d698f2f1798dca6c6",
+          "aligned_pixels_sha256": "462f48dc69bf9bcc493351b31d8b9782f15473f06ec471b8690996bf917ecf67"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 329330.0,
+      "utm_y": 1175080.0
+    },
+    {
+      "patch_id": "new:2780",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "d225ec4170804c0921f23bb2ce3ff46627001247edf6a73b68538552b787cd43",
+          "aligned_pixels_sha256": "991a142c4c70fef65a3ed2e318e88111866745b1ce1d7fbc4a2e902c8cbb31c5"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "c0d38088f9e7541bdb4d0382c7d0122c45a0f26e2e4d9ea265c70906272f82ad",
+          "aligned_pixels_sha256": "0ae1866b6ee85413780e1d1c9fdf4550ec43244ca63db1e5d0f58ddf191c9f25"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 331730.0,
+      "utm_y": 1175080.0
+    },
+    {
+      "patch_id": "new:2781",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "fb60fa960b578576d2862f57bd13f8ff94ce7cc2a85b7f20e553b31967504453",
+          "aligned_pixels_sha256": "7d4ceaf1f6ce37df9a0fd5430fad76c403c2efc29bc0d5d8577bf9bc08db8a43"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "542c1bc3c65303203db35d08f6ea886a9f44a86d68bad8f663cdf07e559ca85e",
+          "aligned_pixels_sha256": "b801a9b1480952fbb29b641ba2477ddd9bcca02dc65ca13bc3a68e384cea5fd8"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 342530.0,
+      "utm_y": 1175080.0
+    },
+    {
+      "patch_id": "new:2782",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2B_44PKS_20210306_0_L2A",
+          "acquisition_datetime": "2021-03-06T05:16:01.812000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 0.668882,
+          "fetched_chip_sha256": "b9847935adcaa04bd405d4b633b182ab6ed739ec96800f96ae5f6707b28502fb",
+          "aligned_pixels_sha256": "64556de216fb9ccb94c25037539279f521a3742af235eba1ab15730b9d1a6a11"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "6f12cc42281e1b87cd79adfb4c775605ab2a4b46aa6a45a9cfefbfd5d19b3896",
+          "aligned_pixels_sha256": "a1317a37ec14966c14c19eef1f10b355fae3c4cd987eb3b93f7d1c4c97cdca1b"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 308930.0,
+      "utm_y": 1173880.0
+    },
+    {
+      "patch_id": "new:2783",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "0f350eebe41b6eff450a07cc80467b6bb006201c8bd8eec6f820c194faca025b",
+          "aligned_pixels_sha256": "049411cd03b52449f06c3a95220081b1413c0997fbbbf11321cbec98e20b1f82"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "501e308ed81c5e018747e48df84ba4e71845409f89b25e793bbd8cf264686451",
+          "aligned_pixels_sha256": "2dba95f5e732040e1a4616ea1ebfc828d9940e690f487caa1b4c382bb4e699f7"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 328130.0,
+      "utm_y": 1173880.0
+    },
+    {
+      "patch_id": "new:2784",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "7d84007e8bafdfd32dd4a9ac657604458b2026c845c7c78f7d9a1da1e2196b26",
+          "aligned_pixels_sha256": "ef197a297f70ae3da0c2c85e80d987450a6ffbf34d418c6744192412c36725c3"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "1185f3d0681589232cfded69a896dbaf78b9be44c4426ed4d19426cd4cad4555",
+          "aligned_pixels_sha256": "df653e06c80a744ffb32b7abb6d73ed1ec3c0ed0682fde52748dafe3f8a0f1dd"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 330530.0,
+      "utm_y": 1173880.0
+    },
+    {
+      "patch_id": "new:2785",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "cc4fb63eff6762f9a30105594775bbd4cb4f6c2ed77414d3bf8139f9a9dd1197",
+          "aligned_pixels_sha256": "86bd992060c6eef74f876c16278214f90e39e46c159755682e05d271d142a706"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "8cc9b9f81b124a9fb084a12a56c3d54c03e264492da00b6e97b1b8f26c382a1d",
+          "aligned_pixels_sha256": "e650e73febfc8d625873242710a17e130289b1d2000f17af1d2af21edf7768e3"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 336530.0,
+      "utm_y": 1173880.0
+    },
+    {
+      "patch_id": "new:2786",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "ad16bb52883e50ef218fd5510a02a4880e6dd1b1a643c104b76604a1c365df54",
+          "aligned_pixels_sha256": "65c04c7363ccd747e832710d3f3fc838485d2e8c8439b6fc9d61c227007630e5"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "54a21d502023730c278a7ca48ba8dcce4896ece7ce2a59edda4c6bfe036e8b8a",
+          "aligned_pixels_sha256": "4a7cbe77e6b849b652fc37f1ab1e43c328f364f6e3bf3f673e9593fa0c2e2280"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 335330.0,
+      "utm_y": 1172680.0
+    },
+    {
+      "patch_id": "new:2787",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "313819565a5539b69911fbffe6d0e28a213818ab550e340ab1c00cdb8a05ecb9",
+          "aligned_pixels_sha256": "558a8204b41bdd5bcbe33440977bf276b6a530488b119161e843ca11599fd72d"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "96319c4d72ea3efe5464fe16ec263e4ea3cfe760287606b20fcc059c85ba2330",
+          "aligned_pixels_sha256": "b2c5ec7baec50b6d175618801c1ba5fd46c5d04247f5ba8e46d83ba321e2f0eb"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 344930.0,
+      "utm_y": 1172680.0
+    },
+    {
+      "patch_id": "new:2788",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "94266c66098cb8bc235e4ca65d77c1aa3878f14f3b2d59826107846e90ba05e0",
+          "aligned_pixels_sha256": "12c7480380a30a75a9f1c3d2c9e953d565d207ad629d169a0503ee188d025c79"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "4954da86c266e434ffab89d859f02a4b4260678c80904092965e7654e15799e8",
+          "aligned_pixels_sha256": "618cc57552a810335ca0f3a7f49e8f6a1c284c709d295d48e5a3800b818694e2"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 350930.0,
+      "utm_y": 1172680.0
+    },
+    {
+      "patch_id": "new:2789",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "fc058631b70047c0d5667b49aeca25ce523a592e90f1b988b09d9fbe4482c661",
+          "aligned_pixels_sha256": "4c019c62b3eba593d70be79be9c0a0d8dee52007445a1668f066d26a658eeb92"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "351a60fb08b21f6135329ac5b6c329cf4e7e48889da133adece25f9f27b398e0",
+          "aligned_pixels_sha256": "c305158eb8f5f96a7b98247c3bf2124814b07fd6f4f95a863154cc31124e5d73"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 352130.0,
+      "utm_y": 1172680.0
+    },
+    {
+      "patch_id": "new:2790",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "ab889544741fc4fb82f74f0fa26ba18648193b1dd5743574ff65dbb5d703ba54",
+          "aligned_pixels_sha256": "7378fc97ee461909dfcac9c98521f19672cce1f74cafc54282f66e4156b4d357"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "af7b9a34442800b4bda4d31dda0b5dfb35a4b34215df8210b37b9ac6d68f3b71",
+          "aligned_pixels_sha256": "646baad38ee2d6a8f1edccdc74b76107a176ee33028e074f2080d3709cfd4e1d"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 353330.0,
+      "utm_y": 1172680.0
+    },
+    {
+      "patch_id": "new:2791",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "3bcbb288578ad8aa56024d46a0c4933298667550c164adef5b399f6ca2a87df3",
+          "aligned_pixels_sha256": "9c70283b8453ccb698d681dcfc5f0ff0d3ebaa03e3ab313a146e72cf3b75a116"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "a06db82fcc34153e6e53a218ffb7bcb156f53e319f97bfd8c2533efa138571c6",
+          "aligned_pixels_sha256": "11e415f13192d3a52e3cd12efbbca0ff957dc4105b65313b28b7e4959716a8e1"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 316130.0,
+      "utm_y": 1171480.0
+    },
+    {
+      "patch_id": "new:2792",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "01c759b04299ef668be9136ee15471b55382f1fd752b5bf8f1237afd60c9450a",
+          "aligned_pixels_sha256": "a2e4c2fd3c86852d1d5cc5e45a8650cf4cb8cab27ac9954cf67bd2fac84961e0"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "ee1d99cfdb6328c0fb8a28872e553460cc98fe8597a522ce0816d47e8946b442",
+          "aligned_pixels_sha256": "3b7f8101718b6777e5a54871381cb4792031ef4a2c7acf4a0a6e6746219f8ded"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 317330.0,
+      "utm_y": 1171480.0
+    },
+    {
+      "patch_id": "new:2794",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "6dcefbc297615229f27779b3d815280dab99676a27da0ef0a156fd44cf7218ec",
+          "aligned_pixels_sha256": "646961598d1ba4c6d8660b7d1640d22468b14ee3ad92a15017789af1750fcd10"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "62c0eae216682448375f33a93a73dd728eeaf5434b8f280eb018451c1bb8b5d7",
+          "aligned_pixels_sha256": "0b712dfd6a37e489f6867863081203af80f046cae1cdca5eb9991d3d1e33903b"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 325730.0,
+      "utm_y": 1171480.0
+    },
+    {
+      "patch_id": "new:2795",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "670144c0648523f9b0ca0ce5f0be9cf717492e03f8bc888d2e5b9a41275b67e6",
+          "aligned_pixels_sha256": "3cc57ff9b83ed7e9b15adf7f40cbc20cef226a11a5599d5d7880a65084d61fa5"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "97895bf163569a688e8593a2545fba08e133347757a7e3d81319b568e40d6ffa",
+          "aligned_pixels_sha256": "f198b5954a1c718c2451312eb10c1e8626c6160492484007032745a787e964e9"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 354530.0,
+      "utm_y": 1171480.0
+    },
+    {
+      "patch_id": "new:2796",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "b169d7fc010f11303142b3c9b50237eb58738d8b97a52e60af5218cbff120726",
+          "aligned_pixels_sha256": "ece6b87a797bdceabe5d56e906b17acc71e529792ca8cc3630acba56695a42cc"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "7d9c461d298f70056f834ef1c7bb58d05b854529cc2fb36578379311014bc4eb",
+          "aligned_pixels_sha256": "5607f25e828f48b8568826c5108c2ab4f984cf55d6cd324b6abf3216ab3becf0"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 359330.0,
+      "utm_y": 1171480.0
+    },
+    {
+      "patch_id": "new:2797",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "3ec426641b4fca2e67575bedaa2fe2bcf722231f431fcc3859884bbcf18108db",
+          "aligned_pixels_sha256": "94d5e2a494c040f790cccd26e6bd5461d2e3900050a3ad740edcb97c0b3cc2d1"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "69cb4cfdc23cde0ce29f97423dd45204d7f5031d281454061641f95810fa002c",
+          "aligned_pixels_sha256": "7b687896a89842a1bfa47eb2b4aed8fa7a40417488a9c10669ae0ff1897fd777"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 310130.0,
+      "utm_y": 1170280.0
+    },
+    {
+      "patch_id": "new:2798",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "3f25f5f48bd3dca3c014d2171ff490c9860899190fa7f0f124b585390debc238",
+          "aligned_pixels_sha256": "a2550f1e7d7f082711f0fc884401b295e9a14a9865a8940d38d613b47477e2e6"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "5858dde4e6ad4420a57729753e1bc5a29449a12c75e6654bcf5e4e364c1b1fab",
+          "aligned_pixels_sha256": "12de8e7254d20e141e6e44ba572cf21277171ff05081da13183f48fefe3b475e"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 314930.0,
+      "utm_y": 1170280.0
+    },
+    {
+      "patch_id": "new:2799",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "0a3fc29ad2ef645c2618ba356643822c4355a1ffcbec3f6ad18664966fb34db2",
+          "aligned_pixels_sha256": "491a551c74eaf9cae7ed5ecef3c8d870ed9be49586f0a2dfce75380be0886ca4"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "5baed9e1b3f9c3cdf9e581ab1576271125f73f6d0359c0e4bd2d3786e96676d9",
+          "aligned_pixels_sha256": "fb687261ce6d53a751a433af0fb4bca8ed686139f5cd01e3f6845db82f7c52e0"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 326930.0,
+      "utm_y": 1170280.0
+    },
+    {
+      "patch_id": "new:2800",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "158ef5681dc561c47c773ad679323ad80f34bc34f96ec9b1f8e4034a535eb740",
+          "aligned_pixels_sha256": "01d7617d8c663ecfc5b5d025ce2b770c8f91d718a4f74e200b61e3557aee17c3"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "a8aa1dd821019596242fbec8ec6ce727a7c7ebe360437d4da2d8009612dde8c4",
+          "aligned_pixels_sha256": "7ebee249f2d2fb8c984bc51dd1f07cb8970ed2477f8e2530d41db288104a8f7b"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 352130.0,
+      "utm_y": 1170280.0
+    },
+    {
+      "patch_id": "new:2801",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "85c0b54f6dbb13f1484f7a5c81bda53e2addc9dc1c93bbb32fda6233cb817baf",
+          "aligned_pixels_sha256": "a3e4da3131101d8e1f5954853fc44d71e98cf251c4cbd879f8f7fd39b355dd31"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "421c193aaa319ebabe865bfad208ebfe0612ba1ca02bf50aebd10c50e2303e8c",
+          "aligned_pixels_sha256": "6aeb45a8a41396e3aaa4d26eb135a828ab47f0d0db9fb664880c969e55fedd20"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 356930.0,
+      "utm_y": 1170280.0
+    },
+    {
+      "patch_id": "new:2802",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "98ac03996adc8e43c97c01608ad4a806acb20e8d1ddc348bd54be6411c3dc82b",
+          "aligned_pixels_sha256": "a0d475b8aae608224e93ee0461ffcdb6a43ec73843ba8f553deddddeccc952a1"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "4e61e7c95acff5944e42c12af661670567329ff99641ab64e053a71e85ac9c1e",
+          "aligned_pixels_sha256": "7e1bc5c38f2300a0a145d79b531d340c0695e334f04470ef8f9f71a447fd41b4"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 311330.0,
+      "utm_y": 1169080.0
+    },
+    {
+      "patch_id": "new:2803",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "c83b99ccd10b68fd2dc2938bddfb5952065331c500ef145961c169d691243dfa",
+          "aligned_pixels_sha256": "b445d3f495e820d2461907239921a13d414d8846c5b9ad0557d04aaa09ce8b4f"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "6a98e1bc7af2445f9f3dca57a84c00aa7c84c93943bc861a01e46c22024b8730",
+          "aligned_pixels_sha256": "23a7764d13ef689f07d3c855c29404d6bdaff5edb80f8a6b421635dfaa38a295"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 312530.0,
+      "utm_y": 1169080.0
+    },
+    {
+      "patch_id": "new:2804",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "8b6bc6f78428e8bcb8fd8d1286e8885ed923c825574b904e5051858c02a937ca",
+          "aligned_pixels_sha256": "70a858e55c1f09c4a20061d70608fd3ecd4794a38707600df6c9f34465f50fdb"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "7efba6d222b6d3ceb71f066a1705f9214fa0924b5cde0d2609d0beb6c61d6d51",
+          "aligned_pixels_sha256": "fd93169321fb78fc51412f90ed7cfed3d8d6767972ad204019cc016ee970f0b3"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 314930.0,
+      "utm_y": 1169080.0
+    },
+    {
+      "patch_id": "new:2805",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "063717571ec5688d0c121bfc2a714ada424afa22a27f87f4f0165b11bfe0c48f",
+          "aligned_pixels_sha256": "e4cfe93ce626b3652e7115ed7dc890cedb20bc91f18ed3cb8bef9d764b8901a5"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "2c5c25d87f5be3bf15e16a89066f661bdb5c12749a928600c6bb7b967496cf9f",
+          "aligned_pixels_sha256": "4c57cf3d8724870843d5a21b66266838c1172f74c8a7fecdd07f0b3dcafe81b2"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 328130.0,
+      "utm_y": 1169080.0
+    },
+    {
+      "patch_id": "new:2806",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "30d8ecb8529346511ec54187062eaee7cf5847f39c97c0de7a1278603eb729c9",
+          "aligned_pixels_sha256": "e86afbc4a2e4a8d53b8af8a929c9a23a1b45a9adabc0f9f654305410f3185d06"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "8afdaeb21c318f60027154b24f9d23d2e028c1aa0b5c4cb7ca6a5631ce284d06",
+          "aligned_pixels_sha256": "801ad590b7e35ebadd06250a3e0a4a764c43b86f557eef17903c5bc475a45197"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 331730.0,
+      "utm_y": 1169080.0
+    },
+    {
+      "patch_id": "new:2807",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "2a23c1e1bec705373caef608fe25acdc8bb6c9d1831f6fc5631882e9463a13bd",
+          "aligned_pixels_sha256": "8acecefb5ff76d90372dc5cfa29370de6921258f2d880943a4930e95f9e64636"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "bdc6474cc77c7c4ab6bf76305c68b88073df5c8971974ce3a493572a7741fede",
+          "aligned_pixels_sha256": "4f1c7271402c4a490013cecd5dd10c20857aeb16996fbc9b35bf97fa016168c1"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 335330.0,
+      "utm_y": 1169080.0
+    },
+    {
+      "patch_id": "new:2808",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "fe9ae2d90fecb4439fae6ae1a4813edf7c17f85831ef8f011e97007d94ed2d9e",
+          "aligned_pixels_sha256": "9ceea6d25b3449b0f16b3173119d15906059b7ad2fedd729b495ccd2fba55949"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "2e6a30d9a49fe84003b3f4b5a76dd9f03fe221c0e2ba852b339905a9066bdbba",
+          "aligned_pixels_sha256": "70004b33d3862f0200d844229ebb43db81811e471f8d839a3e4f1bbc27f48ee7"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 336530.0,
+      "utm_y": 1169080.0
+    },
+    {
+      "patch_id": "new:2809",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "94afc508d63f6d1870655e755d36b979d80b70e27b20b59bd9b8c81e84331627",
+          "aligned_pixels_sha256": "f259588f07454f0c3aa1936cd195b51eb078c2bb5d4bbb261f0c7ac49d2397d4"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "88f9eac083dd19fcc4a61020077013bc9096183e8ee07ef4ecf8218bcfecfbcb",
+          "aligned_pixels_sha256": "2ce2a214b3904e01311cd6c61d2b8c32702b4ba438d3bde3f3c04b55ef2c436e"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 344930.0,
+      "utm_y": 1169080.0
+    },
+    {
+      "patch_id": "new:2810",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "08652e89dcd82a37402fab6c255d5b41be7bdfd6d7a80c9dbfbcc976ce51e11d",
+          "aligned_pixels_sha256": "169fc333fa6c9fc583d49ca166ea206fc9f2cba15623bd4359bdc2f3e1d4efbe"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "c68f604dfa20791b493020c64ffd4a8c0fd188113f5f476ff87b78a34e9bf171",
+          "aligned_pixels_sha256": "671a8f09c461f2097bf824049f322f5f50a16e02f4af63a41ebc6d0c087d19c0"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 360530.0,
+      "utm_y": 1169080.0
+    },
+    {
+      "patch_id": "new:2811",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2B_44PKS_20210306_0_L2A",
+          "acquisition_datetime": "2021-03-06T05:16:01.812000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 0.668882,
+          "fetched_chip_sha256": "e4a59487e1571e55e8195fe70915c2ff42614043f868c2aad8035f2605cef5de",
+          "aligned_pixels_sha256": "521ac302643fe81d27ae388cd7c52c41a223fa52d1337c7393c129c28a34b108"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "f1ba25c207474810b812c0ed79da7e8af86aee5072f9b598e5ab6f7c8d35b5a0",
+          "aligned_pixels_sha256": "a3da1c32a9bc09153dd296c43e7996bc91c664af2e007a4afa90d0f464af5488"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 308930.0,
+      "utm_y": 1167880.0
+    },
+    {
+      "patch_id": "new:2812",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "f54d6c10f7ae054bb5b51af67a108de39180966e392b1e8c7dbc7f3de4ec107e",
+          "aligned_pixels_sha256": "4b59e718c84c0b26e311334f57fea34b6c55111c6c1320ca287669a462104725"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "fab2405f92382b170846e408e2af3e08236c199ce3de09f9011654d79f0e12d0",
+          "aligned_pixels_sha256": "b8596cce7550740b7b7566ff8c4d85d9afd6f21e4ac7ecd845c09c95e9f2e9df"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 313730.0,
+      "utm_y": 1167880.0
+    },
+    {
+      "patch_id": "new:2814",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "8fdfb0f58d2855cda57f8d2872bc06ad26aa7774cadcc25a8b0937f13a8b8f31",
+          "aligned_pixels_sha256": "1dbc2124538fb7ab116eb24d8b8cff11252f4f634d9d8fcee92f558a961827d9"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "4b0cac003cde927611d9aaa852f221dfaa403707e3e3d6784db4ca1e73b0129c",
+          "aligned_pixels_sha256": "f8c261699d058845139ad93230478c568db9d59a587fe78a5ad01912c2367082"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 337730.0,
+      "utm_y": 1167880.0
+    },
+    {
+      "patch_id": "new:2815",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "2c1967ea5554fd8d6e27d019f270e661746cfd8c51a1f11f024ca8b68c7fab65",
+          "aligned_pixels_sha256": "5d9ddd1079aef27c498b9fa0ba413d0c6a215c1e8adcfb8e7c881f18d4c69df1"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "e4579f134280749477dc905629e8ca97357e3c47118566cfcb035d673bc4c721",
+          "aligned_pixels_sha256": "c642e3f6b3e2b9b3e7b4270bb54c2d98f07a119dd75ae6f8d730a20aebe871eb"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 343730.0,
+      "utm_y": 1167880.0
+    },
+    {
+      "patch_id": "new:2816",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "e115907683cbe7dce18e5778e84b01057f1d1746ff178c46917ee85763289c89",
+          "aligned_pixels_sha256": "1c73c8cae83fb660f07450c0dd2e5994510d007b8638d5d5f459bcc2fb7552ae"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "2789df2ab1d36c95a3b1d538575af7ff2f9255675eb013c1d777a36647037797",
+          "aligned_pixels_sha256": "18934323917cfdb0d1d29f65368795848a4d1c1620ff546e5a56fd88bfea2885"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 348530.0,
+      "utm_y": 1167880.0
+    },
+    {
+      "patch_id": "new:2817",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "6eb142a91d7fbaceccf0bdc8db35028b88c3634215017787c870327fbdce7ea2",
+          "aligned_pixels_sha256": "07f96341fa1aa24dbe92b855b9f3aaf00644b9661831a3d83c5e6f649881221c"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "eacc170a178de542124c5f3cd291ef9072e866ddb9c04a92a3a9f6727655a485",
+          "aligned_pixels_sha256": "707c906952b4d3481daf44384d4afd345286600b7c23bc13f1799632cfdb4a17"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 353330.0,
+      "utm_y": 1167880.0
+    },
+    {
+      "patch_id": "new:2818",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "a9263c22c677607c0a873f1a289f9f0c27018eba37403cf0a871d27cb428ceb8",
+          "aligned_pixels_sha256": "0a9821a0d7b379f18eb699a10c25155c59a6180cf5a102dcc0de7a6e3385c23a"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "a15e3331aa6c459ce1c46c948f081e067986290b8e00a30f66f285ba7ae39115",
+          "aligned_pixels_sha256": "d8576e6e2b922ac2b5a86cebb03a703cdf07ae6dd099017e656c00ef99c17d25"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 354530.0,
+      "utm_y": 1167880.0
+    },
+    {
+      "patch_id": "new:2819",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "80df50a6f64e1705a3d65f6ac5fc71ed243255b5e4e4c3851a73012c61328802",
+          "aligned_pixels_sha256": "1eb1218a6c12e0cf9f428e9e9b803407f56b37188b6884301b3c644b5eb3bd3d"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "f08c0beca5de88bd1df0f9a4c074ea759c80b4632b21145ed73f04d043b0c386",
+          "aligned_pixels_sha256": "8e762dd9d664f28bafdf9dc3e8cd32032f797f6592988a5327b08df61a31ecc8"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 356930.0,
+      "utm_y": 1167880.0
+    },
+    {
+      "patch_id": "new:2820",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "5797e662ab8553387096e061c4d32e5ccd06013326a6c4cfc90136b2b34552c5",
+          "aligned_pixels_sha256": "c0d9af542badf2b5398b68b59836d16c51b96a6320f94135da9e03ce95ea89f5"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "e26f8e90acd51ad8cb75a0284c27c62b91e7485b6a9bdd09059be8d4f05e5908",
+          "aligned_pixels_sha256": "e1440fd0e79f2dd18b64906687e3b133de887082c9c4adcf9c4c112b2ac56ec3"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 358130.0,
+      "utm_y": 1167880.0
+    },
+    {
+      "patch_id": "new:2821",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "e563d0c83b7181e3139f64dc0ee8fbd6d9b38b3639909c07b1645e9e0ae7c93d",
+          "aligned_pixels_sha256": "5f568c8c02518029350c58e5601ca38d596f0dddfa41fba8bbccbbb250dd4165"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "6684c9d64a920ab2b9b4d68044420e48f6f210f669ac3c3b0e0eb655a7179222",
+          "aligned_pixels_sha256": "00a5cfde8695ccb57c58c1ac21713306f904091262c7bf0520a377873edccd58"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 310130.0,
+      "utm_y": 1166680.0
+    },
+    {
+      "patch_id": "new:2824",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "500bb007468f2f5db730f9a54030fe5f3be1e15e5684de07c73b7f8800bda105",
+          "aligned_pixels_sha256": "e3af5f35ea418ace78a79edd5a9f2764c96c3978327c7fd8c344ce947c0da6bc"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "d4ddce43aa9199f070721fd01af0fb0a03e74f60d546ea89685a4d4773b0eaee",
+          "aligned_pixels_sha256": "52a2b1888b9ce39006291f0df5a9415ae194dedfdb10ce482501ad836c5954bf"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 330530.0,
+      "utm_y": 1166680.0
+    },
+    {
+      "patch_id": "new:2825",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "dcff65b232636876a366cd57ef23dd25731f81f5fc54a26032d091a830c0474c",
+          "aligned_pixels_sha256": "284a1e961b01a7b4dcdc6adca57ee0f06054d03555339943542af2029cbda85d"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "ed85ca2653d0657b2a1a909149adc09cdf90b09101198024bc89e0d95035da97",
+          "aligned_pixels_sha256": "5c80900992b1cb2f196a0bcdd00814f6a98d0f5c0bd1501c59b2abf6b4cd96f6"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 334130.0,
+      "utm_y": 1166680.0
+    },
+    {
+      "patch_id": "new:2826",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "47ea60668516ca57c86261960bc31a54fcf975efdd20a8770b8089d32da69bc7",
+          "aligned_pixels_sha256": "9ba43525ea7d77b8e31a70fbe69d02928f56dbd095d3f98fc9b0db145f034e4e"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "d9a158fb9cf2128d97cae2702992ca07ea9533143d8bc94be5ab314a62fc80ec",
+          "aligned_pixels_sha256": "1f050965eacefd0edab3bd80420f37218bc9bd8f1a623b270750a3ed80819bdc"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 340130.0,
+      "utm_y": 1166680.0
+    },
+    {
+      "patch_id": "new:2827",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "2557647cc76cb47b33affb554d22afa407a36bd86716321a29367b2442e8caed",
+          "aligned_pixels_sha256": "7bd7b95a8540b6bb5ebf34301c2ba6ed5f218b3c1531af24229121e7f506cdcd"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "ac611ff6d144d256546192f312e8f6c0febd68de350f4c2591a37be38dfcccd7",
+          "aligned_pixels_sha256": "44371fce766e96eeb912cfbde2e5976e0ec04d18edf11afd246a41905ec1a968"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 347330.0,
+      "utm_y": 1166680.0
+    },
+    {
+      "patch_id": "new:2828",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "02348852382fbc51b5f5dc87f50c93f121a5f4c3bd529010023cb5f3d0b6f25e",
+          "aligned_pixels_sha256": "676cbcb45bf7ca10d656fe003739b2d7ef25409dc6dc1d0f9929a9f09ba9ebf8"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "88d8b5b69d17caf1f3ed587b5c841ffd4df14d8f3807062ccc2137883548ab72",
+          "aligned_pixels_sha256": "4dd12b727f1ac8a97c3ffcaae9aa33c3f62cce4321dabc230584b7b82fb7f146"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 348530.0,
+      "utm_y": 1166680.0
+    },
+    {
+      "patch_id": "new:2829",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "f45621d7aae4d636c94c1253fc9d30ce38e3d4c9181bec8509a31bc6747fb8e6",
+          "aligned_pixels_sha256": "89cf2555aa46bd118ab1316ed8c346495de0cea1b12405de47efbae782c37cd9"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "20f20a6123fb9b2c7234e33ec478f187a7f779801976c1db3f764ab34b603119",
+          "aligned_pixels_sha256": "01889bef902835f39142489df296ca4c6bacb39ff2c0966f38f20140dbfebd52"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 349730.0,
+      "utm_y": 1166680.0
+    },
+    {
+      "patch_id": "new:2830",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "47d07a25ecd21e8865be3599d11917656658c268c272315729d7de3456c76b9e",
+          "aligned_pixels_sha256": "2c3cee768f15d8876bc6c846d7215c4f0051631de51655e4f40b536d18b3d1e4"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "bdbbcca1efd879f1be1e1065fdc894c4eadd0c87ec14ace56fd2be6da61b61aa",
+          "aligned_pixels_sha256": "580eae57e4e62e562a31c5d96de142c091f8fd922af6858572f202f2477db9f9"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 359330.0,
+      "utm_y": 1166680.0
+    },
+    {
+      "patch_id": "new:2833",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "5f805080d0f6633384de6a8a1bce15ed3095f07396e06c80d07e6bbb074ff315",
+          "aligned_pixels_sha256": "c465e527e339d4041e7d2a90520b9b4457cc1c3dbe1b29d0749062ef21d2b690"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "6f1f364325b4dd42fed0e9eec2aef1ed73a2912d2990a702bd26099cb43db064",
+          "aligned_pixels_sha256": "2f47eab5a66dcda86154bbcc0fef176963d9af869efddab310bf6393fbcb641c"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 323330.0,
+      "utm_y": 1165480.0
+    },
+    {
+      "patch_id": "new:2834",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "827e1330a177d9b6cd1f09ffb4b38f0a0b404f3e83489e62f049b284f871de52",
+          "aligned_pixels_sha256": "20dbacb5a76954f19fb76f30051d103b645611fd6588c8e926789e232c0703ac"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "75bf404ae8693c6623e09c53d165b2418fb8cfc7a9cc012147526bb55076714b",
+          "aligned_pixels_sha256": "1dd163e476858194287d01d27e8055e182f22913f18a648f39d059c1ca6f3694"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 324530.0,
+      "utm_y": 1165480.0
+    },
+    {
+      "patch_id": "new:2835",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "7362e0da606515c0764db31e910201982a5fd7d87b492bbd1820191d417a7b43",
+          "aligned_pixels_sha256": "3d874f1a618ee5611ad5045f34e4c4d84f17508c3e7eac3d772dc33089635c93"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "be5ed429fcbc4d3a5034e91e3ee7ff4588feecaeb213fe483483809e0fd81b1c",
+          "aligned_pixels_sha256": "b3920ef39959baac3c83d021ff768504acf28609228141b999e6054105f0b690"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 330530.0,
+      "utm_y": 1165480.0
+    },
+    {
+      "patch_id": "new:2836",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "9777a18a38a1e8065c96bc24fd3f42af4672de73e6cbae4a0ec5a376291ecdef",
+          "aligned_pixels_sha256": "e5576bb6e9b139700cd8e41aa80c778eaa547293ce8d8721e49d24c020f5fd03"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "c371ec7c831aa99beb5172f7653628c148d5019a77990a8f7381199253c43a17",
+          "aligned_pixels_sha256": "35afdceef3f06943655a90080d8010aa7ce1a253d51086f2a14e84f4a6bc3443"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 334130.0,
+      "utm_y": 1165480.0
+    },
+    {
+      "patch_id": "new:2837",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "2ea0ad9c6a4504bad05db2a2c99865057e5834b34f164ef49fe60078ee6ad5a6",
+          "aligned_pixels_sha256": "d682a89666bfc3a0fb27193967c28a4afc2dc640dba11635b4d488466c9de424"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "39afb14679a2c359da86a5e24aea6e091d17411a43ba7b060754f4039251f6dc",
+          "aligned_pixels_sha256": "6c5b02d3658512a3fb0227e199f0bb1835df9db000715e8efd5c6bfca1a13234"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 337730.0,
+      "utm_y": 1165480.0
+    },
+    {
+      "patch_id": "new:2838",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "9d38e2e3b3a539b7769ac354b6bcd71a89275a16ca049524157acb1e4b5202d9",
+          "aligned_pixels_sha256": "2d2ef86e9ec6b85321706c5db6acbff2561d4b6f8eb321122bca0fa0d9968c53"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "052c5299184999945bdc864062d774b0612dbffb07ba89bf4430b1d59cefda75",
+          "aligned_pixels_sha256": "b99e6da241e07e34a101de531f708ed1a2ece120b9d412d14d83e1d33dbf1b0e"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 353330.0,
+      "utm_y": 1165480.0
+    },
+    {
+      "patch_id": "new:2840",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "337a0e213575b2107686aef21c51a54fae5b5b8a7b9bf843db7985f0275811cb",
+          "aligned_pixels_sha256": "d0317c76c099f058d19e6537106f64f4fe995885078817f63bce7f5917e45597"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "300e52f80a3119e46ce44f79e77904308e0e8599d0e0207821ec4962a34dcb2f",
+          "aligned_pixels_sha256": "6e378efd520c871342f61d7825516729b50275a4d439ea64a32c24eab37fcf90"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 323330.0,
+      "utm_y": 1164280.0
+    },
+    {
+      "patch_id": "new:2841",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "7608d4338fad0b0edda4c8bcbfdab9fc8311b13bcace668767946fc2732e44f8",
+          "aligned_pixels_sha256": "86a3a14bff926b9eceba9e4b82979ce775101317dabdeb622b33e3a52a13a534"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "3b3211d34cd2a5bf7fed6fcc1f973febf3aa13f6adeeb809966e583594f13e25",
+          "aligned_pixels_sha256": "a341156999c86dfdf90f9bc34780b266ff2886636a5ed9ada3cf7be5a6f09ce4"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 324530.0,
+      "utm_y": 1164280.0
+    },
+    {
+      "patch_id": "new:2842",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "07da3f1ea7462477bd3bd8f04dd2165e89b5829e6a453ab922ea25d7d969651a",
+          "aligned_pixels_sha256": "f66b305c12927f6762fce3e709ed0b138ff55ae94284e19745e90915d3a5fd0f"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "a05f9f8ecc33ca31c5c58decd142e8faef4057011d7ab9f075483baacb875ced",
+          "aligned_pixels_sha256": "a2d4316c642567fad746f28e7318549aa1070d8e1030521eb4b6bedf2a79af4d"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 335330.0,
+      "utm_y": 1164280.0
+    },
+    {
+      "patch_id": "new:2843",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "d62f05b8f93bebe54947ca993a6ecd908bdba3867c581ff213f4c112abe48d32",
+          "aligned_pixels_sha256": "ea7ffafa2d03f220a18b0a58aa1d79fe9d65fc3c8095c3f6cf20469984b7642b"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "d40ccb2d3b26e32bff1448e2cfa8c442c9c1dedc99cfd26f6ea87559c753d8ec",
+          "aligned_pixels_sha256": "c1bb956f441c743fcf92f53248205c08183868230dc323e94408dd35ef62b4fc"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 336530.0,
+      "utm_y": 1164280.0
+    },
+    {
+      "patch_id": "new:2844",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "42882dc4db78903a84ff0b20db5890b3ca6d2b1bb5a4b917eb54a79c339603fd",
+          "aligned_pixels_sha256": "e6dda1f5596cd9153cc28c61d526f8db36f2b682534d51f5d136c48e8bb9d7d9"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "aa55d8588911b917071f8f257c3e7848a5c6237e578d2a9deedbd50016159baf",
+          "aligned_pixels_sha256": "da734f093772ff615ef89e289c9b7b2d74bbf95aa86ffe250e869493d3b67e9c"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 337730.0,
+      "utm_y": 1164280.0
+    },
+    {
+      "patch_id": "new:2845",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "7a8502ae36a347f6e495c4fe88efa07236e6142eb6ba84c496cb8bc91af72626",
+          "aligned_pixels_sha256": "e743293c4de599cf2bd44da462e4084527cf59b0d345b1d797f5217d42efd430"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "f2ba326fa8a9e9c86df86b7768f4489fd45d39385de06c82f4da00f48fd36f36",
+          "aligned_pixels_sha256": "7e61db77e3af734cd429dbe819dac6c7401d62d60532db073bee7c85a110304d"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 360530.0,
+      "utm_y": 1164280.0
+    },
+    {
+      "patch_id": "new:2846",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "df8e4244d54a536780f2eebc97800187a1705573dedb2035a28fa669fd58b48b",
+          "aligned_pixels_sha256": "945d5204095f4dbcfa4c7a6fae88aa3639895b67bc264f43296d6fd6127597af"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "e4a53e414dfa5f667e6d188e3339d5a4035d66f0a37e8e4e87fd54e6d3cb69cc",
+          "aligned_pixels_sha256": "ed84d23a2e83a9ad318e48c8f0fc94fe6cd398aa68c07b712a3c7c3ce20bc9c0"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 324530.0,
+      "utm_y": 1163080.0
+    },
+    {
+      "patch_id": "new:2847",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "9decbb56b4d85a63489bfc30cb170530efef9b5bb4d08fb9dadc1135041872b3",
+          "aligned_pixels_sha256": "876830b4b371a168a533a2af42763f3a1b980385a0af08dc7f37416404f5aff5"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "7f5cc73ce608b896974ec52ade6134d5c0a98acc7681cb0e6c1d701d0ba758ea",
+          "aligned_pixels_sha256": "298418c3e7683c51130cce5c69df53db4418b0e074d12dd29731c912c03f861b"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 329330.0,
+      "utm_y": 1163080.0
+    },
+    {
+      "patch_id": "new:2848",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "34bb15a11da52a5111d891ae00be43b2a017e0fc8adb12349f79973f6cd3ad80",
+          "aligned_pixels_sha256": "18409b2c2f51038fcabb33a066a1097b88139c74f8436c496901f4244bb89d54"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "afd4129254b41f8628ad5b5aceabb167f3bc7e6e5e93ddc8af71179c1e805e44",
+          "aligned_pixels_sha256": "6ba934de4bb3228a7657cb67b71b357aed5398600a21c4457851b48fbf9bd008"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 331730.0,
+      "utm_y": 1163080.0
+    },
+    {
+      "patch_id": "new:2849",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "ebedc42107c92be4c61970f8e4b52dc11f47eebf2354237b93bf54e08d06bd8d",
+          "aligned_pixels_sha256": "87e1e1ad0b72d89666eb26b64c0ff670682471f0b4d64bf19b82742bed450a57"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "b846d42de636760e2ace3b335e9afc938c263631219bed34d22a7d0a4e2a8d2f",
+          "aligned_pixels_sha256": "25c0ea8ec4f4fad82e08afd09d167d642611d8444269f616e6fd4c13f954196a"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 334130.0,
+      "utm_y": 1163080.0
+    },
+    {
+      "patch_id": "new:2850",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "618260cc845b505dbcfc9fe826c363fe3682195dcd006510b74afbf9495541b2",
+          "aligned_pixels_sha256": "6d582f2088a42507f4f02a93aa6d8d3869a925d42b048be22ae4237a93f3658d"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "dcb35836a1ba6e0d2df857ce923836a227e76cce1a8250bde1e8df1d05cd07c8",
+          "aligned_pixels_sha256": "9faa5eeddfb6eed01076d000f2c251be9d3f26a7422619083e3a23e70c3545e9"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 347330.0,
+      "utm_y": 1163080.0
+    },
+    {
+      "patch_id": "new:2851",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "6d161e709d356e92a4213d8f8931c7c2f71bd081c7eb246c2f314dbdd1ffb8cc",
+          "aligned_pixels_sha256": "be1800ecaeaa83060d1da27108fe9a338a5ebec589dd554de47725715f57743e"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "13c96b6e4890971d07e5cf2c8f71c5160320b146f217df092ddb953dc96a3204",
+          "aligned_pixels_sha256": "97db16e7524163651e4990552f231164eeb56ff0d07d8e6bfa930326e65b0788"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 348530.0,
+      "utm_y": 1163080.0
+    },
+    {
+      "patch_id": "new:2852",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "d77ceb0dc07cad2bc34cc3abe739e3f05deb22691cfb69e664336fbb399b3e2f",
+          "aligned_pixels_sha256": "b1107ffa27db58ba05baef41cb3b678df9b02656f972aeca7d632873c0031a78"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "0ca6c7366297e558f4191e55577af39dd079c26b1f47483e44fe1972fe23f6ab",
+          "aligned_pixels_sha256": "90404b43a8e1983bc6283e5ba3eb28ef9340b48ac94a1cf682de6b2457df27db"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 354530.0,
+      "utm_y": 1163080.0
+    },
+    {
+      "patch_id": "new:2853",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "91d36863dc46ccd4c0b9256634be36e432d9eead5dc1cfadf8e10be5b038c41a",
+          "aligned_pixels_sha256": "f56158e322e3081d1e3f1248cb023f0feaf66e23f1ea611e94cea4863e1b4b08"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "ef65e513982600c5561c74e958224cbbdf1dcbff9e846d62f017c1894f31a564",
+          "aligned_pixels_sha256": "9fdd84c587435c0de85a0710a91d1986e735866fa045f0551b6fcefdc1a8d7cd"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 358130.0,
+      "utm_y": 1163080.0
+    },
+    {
+      "patch_id": "new:2854",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2B_44PKS_20210306_0_L2A",
+          "acquisition_datetime": "2021-03-06T05:16:01.812000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 0.668882,
+          "fetched_chip_sha256": "be15e0a25af591cd39765266bf6129535770694b1305c97f60cc477372ab6a43",
+          "aligned_pixels_sha256": "4877b9719ecf273959d9e670bcefbc0d02416d34e6d19cb72584f443991fb263"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "2514f6f8105e8cb5aa41d54952941a7eec9a0ca63b480644fe7d218d09f28683",
+          "aligned_pixels_sha256": "dd377b5a0b0262da35977efc19e8672e38ba0847d129ac1cd8f234d7ed243412"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 308930.0,
+      "utm_y": 1161880.0
+    },
+    {
+      "patch_id": "new:2855",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "e80c84e6917f0e5117f79e3288d44f32333619410060e521e4dce6f2cf5db312",
+          "aligned_pixels_sha256": "bcba060b973041be7305ed4f1e0dcea9dd4eec25c5a43a7772348df62f71f167"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "6af8d06052cab163a10c7e91b72da59837cceedfa85f936eec016650887f64e5",
+          "aligned_pixels_sha256": "f6e50b7d718910465f6053380bc0c1682409765b02e67c15ba999ad8f1bdac3a"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 314930.0,
+      "utm_y": 1161880.0
+    },
+    {
+      "patch_id": "new:2856",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "a54cc88383b6771c298aaf3de6b14d53d792f691b980cf989c181f56d41c3c52",
+          "aligned_pixels_sha256": "73459fe1f251e41cf4451846a866cf5e2fc4bab2205fa0794825696cc11a1cbf"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "721cc33603db68196ef6517fb98671eb75c94409327c0176e0c8d9668ea4a39e",
+          "aligned_pixels_sha256": "9cb59db2c662e41ad7696f5a9245cb1b03e39fdae08599ee1408d097ab219572"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 322130.0,
+      "utm_y": 1161880.0
+    },
+    {
+      "patch_id": "new:2857",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2A_44PLS_20210331_0_L2A",
+          "acquisition_datetime": "2021-03-31T05:15:57.155000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 1.414541,
+          "fetched_chip_sha256": "a6d584210d879535fce7e0afabee0eb74d089b4c925851cac67a5cb85ea61f9a",
+          "aligned_pixels_sha256": "001d9b8df3d5599ed0cbb2e959a55ac28b3a48100097b5bda393665b02016871"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "d2e3357020c752a5bcae9299def40e16c1b0b25557bd4e4eb888831a9ca6f4a4",
+          "aligned_pixels_sha256": "411d811ab0ea15131dc75d5d57fc2cf60464e2761fcb73152f1ba756f30a56a5"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 323330.0,
+      "utm_y": 1161880.0
+    },
+    {
+      "patch_id": "new:2990",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2B_44PKS_20210306_0_L2A",
+          "acquisition_datetime": "2021-03-06T05:16:01.812000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 0.668882,
+          "fetched_chip_sha256": "a1b650769cdafd4196fcf5dd7e0deb9e9ebe09786315d3d3bb9218b150a977f6",
+          "aligned_pixels_sha256": "923d65d91af2b49f377f9f9e2314e8e6532d48ef8a38f805012324f077e405f9"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "d67c82d7d23ee5fefa6627f0590a263ad217ea38cf4e8c4e72a5e566a1dcdf37",
+          "aligned_pixels_sha256": "9a00818fed70081cb3220d0539fbbdd3c548bcbb2c17c3a63973cc26112f1cc2"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 308930.0,
+      "utm_y": 1135480.0
+    },
+    {
+      "patch_id": "new:2993",
+      "scenes": {
+        "S2": {
+          "source": "Earth Search",
+          "item_id": "S2B_44PKS_20210306_0_L2A",
+          "acquisition_datetime": "2021-03-06T05:16:01.812000+00:00",
+          "collection": "sentinel-2-l2a",
+          "mode": "live",
+          "label": "Live scene",
+          "cloud_pct_label": "scene-level cloud cover",
+          "cloud_pct": 0.668882,
+          "fetched_chip_sha256": "ae881663cfbd4abc2038e00c5c99ba03cec5d09b7e759a5b7aaf5b407b63d9f2",
+          "aligned_pixels_sha256": "d60eaec5cc7bf3c229871238e81c730ff195ad53bb8fda920f3124443dec8a42"
+        },
+        "S1": {
+          "source": "Microsoft Planetary Computer",
+          "item_id": "S1A_IW_GRDH_1SDV_20210426T003229_20210426T003254_037614_046FDA_rtc",
+          "acquisition_datetime": "2021-04-26T00:32:42.125457+00:00",
+          "collection": "sentinel-1-rtc",
+          "mode": "live",
+          "label": "Live scene",
+          "fetched_chip_sha256": "7669fc08bc53fd4fcd7b8616e3fa4cb53929411617612d747b0b65d80a88a1e1",
+          "aligned_pixels_sha256": "113b5a68149a689007f8647eaf3fe844e5ea74a996996f0af72909147c88bd57"
+        }
+      },
+      "utm_epsg": 32644,
+      "utm_x": 308930.0,
+      "utm_y": 1134280.0
+    }
+  ],
+  "skipped": [
+    {
+      "patch_id": "new:2700",
+      "skipped": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2703",
+      "skipped": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2704",
+      "skipped": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2705",
+      "skipped": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2706",
+      "skipped": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2707",
+      "skipped": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2708",
+      "skipped": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2709",
+      "skipped": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2710",
+      "skipped": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2711",
+      "skipped": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2712",
+      "skipped": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2713",
+      "skipped": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2714",
+      "skipped": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2716",
+      "skipped": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2717",
+      "skipped": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2718",
+      "skipped": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2719",
+      "skipped": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2720",
+      "skipped": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2721",
+      "skipped": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2722",
+      "skipped": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2724",
+      "skipped": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2725",
+      "skipped": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2727",
+      "skipped": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2728",
+      "skipped": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2729",
+      "skipped": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2731",
+      "skipped": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2732",
+      "skipped": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2733",
+      "skipped": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2734",
+      "skipped": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2735",
+      "skipped": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2737",
+      "skipped": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2738",
+      "skipped": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2739",
+      "skipped": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2740",
+      "skipped": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2742",
+      "skipped": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2743",
+      "skipped": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2744",
+      "skipped": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2745",
+      "skipped": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2747",
+      "skipped": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2748",
+      "skipped": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2749",
+      "skipped": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2750",
+      "skipped": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2751",
+      "skipped": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2752",
+      "skipped": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2754",
+      "skipped": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2755",
+      "skipped": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2756",
+      "skipped": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2758",
+      "skipped": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2759",
+      "skipped": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2760",
+      "skipped": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2763",
+      "skipped": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2764",
+      "skipped": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2767",
+      "skipped": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2793",
+      "skipped": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2813",
+      "skipped": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2822",
+      "skipped": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2823",
+      "skipped": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2831",
+      "skipped": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2832",
+      "skipped": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2839",
+      "skipped": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2858",
+      "skipped": "S2: Earth Search could not supply imagery (ReadTimeout)."
+    },
+    {
+      "patch_id": "new:2859",
+      "skipped": "S2: Earth Search could not supply imagery (ReadTimeout)."
+    },
+    {
+      "patch_id": "new:2860",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2861",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2862",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2863",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2864",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2865",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2866",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2867",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2868",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2869",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2870",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2871",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2872",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2873",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2874",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2875",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2876",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2877",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2878",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2879",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2880",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2881",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2882",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2883",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2884",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2885",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2886",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2887",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2888",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2889",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2890",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2891",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2892",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2893",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2894",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2895",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2896",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2897",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2898",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2899",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2900",
+      "skipped": "S2: Earth Search could not supply imagery (ReadTimeout)."
+    },
+    {
+      "patch_id": "new:2901",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2902",
+      "skipped": "S2: Earth Search could not supply imagery (ReadTimeout)."
+    },
+    {
+      "patch_id": "new:2903",
+      "skipped": "S2: Earth Search could not supply imagery (ReadTimeout)."
+    },
+    {
+      "patch_id": "new:2904",
+      "skipped": "S2: Earth Search could not supply imagery (ReadTimeout)."
+    },
+    {
+      "patch_id": "new:2905",
+      "skipped": "S2: Earth Search could not supply imagery (ReadTimeout)."
+    },
+    {
+      "patch_id": "new:2906",
+      "skipped": "S2: Earth Search could not supply imagery (ReadTimeout)."
+    },
+    {
+      "patch_id": "new:2907",
+      "skipped": "S2: Earth Search could not supply imagery (ReadTimeout)."
+    },
+    {
+      "patch_id": "new:2908",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2909",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2910",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2911",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2912",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2913",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2914",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2915",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2916",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2917",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2918",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2919",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2920",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2921",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2922",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2923",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2924",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2925",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2926",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2927",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2928",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2929",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2930",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2931",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2932",
+      "skipped": "S2: Earth Search could not supply imagery (ReadTimeout)."
+    },
+    {
+      "patch_id": "new:2933",
+      "skipped": "S2: Earth Search could not supply imagery (ReadTimeout)."
+    },
+    {
+      "patch_id": "new:2934",
+      "skipped": "S2: Earth Search could not supply imagery (ReadTimeout)."
+    },
+    {
+      "patch_id": "new:2935",
+      "skipped": "S2: Earth Search could not supply imagery (ReadTimeout)."
+    },
+    {
+      "patch_id": "new:2936",
+      "skipped": "S2: Earth Search could not supply imagery (ReadTimeout)."
+    },
+    {
+      "patch_id": "new:2937",
+      "skipped": "S2: Earth Search could not supply imagery (ReadTimeout)."
+    },
+    {
+      "patch_id": "new:2938",
+      "skipped": "S2: Earth Search could not supply imagery (ReadTimeout)."
+    },
+    {
+      "patch_id": "new:2939",
+      "skipped": "S2: Earth Search could not supply imagery (ReadTimeout)."
+    },
+    {
+      "patch_id": "new:2940",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2941",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2942",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2943",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2944",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2945",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2946",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2947",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2948",
+      "skipped": "S2: Earth Search could not supply imagery (ReadTimeout)."
+    },
+    {
+      "patch_id": "new:2949",
+      "skipped": "S2: Earth Search could not supply imagery (ReadTimeout)."
+    },
+    {
+      "patch_id": "new:2950",
+      "skipped": "S2: Earth Search could not supply imagery (ReadTimeout)."
+    },
+    {
+      "patch_id": "new:2951",
+      "skipped": "S2: Earth Search could not supply imagery (ReadTimeout)."
+    },
+    {
+      "patch_id": "new:2952",
+      "skipped": "S2: Earth Search could not supply imagery (ReadTimeout)."
+    },
+    {
+      "patch_id": "new:2953",
+      "skipped": "S2: Earth Search could not supply imagery (ReadTimeout)."
+    },
+    {
+      "patch_id": "new:2954",
+      "skipped": "S2: Earth Search could not supply imagery (ReadTimeout)."
+    },
+    {
+      "patch_id": "new:2955",
+      "skipped": "S2: Earth Search could not supply imagery (ReadTimeout)."
+    },
+    {
+      "patch_id": "new:2956",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2957",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2958",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2959",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2960",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2961",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2962",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2963",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2964",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2965",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2966",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2967",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2968",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2969",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2970",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2971",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2972",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2973",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2974",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2975",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2976",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2977",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2978",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2979",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2980",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2981",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2982",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2983",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2984",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2985",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2986",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2987",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2988",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2989",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2991",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2992",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2994",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2995",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2996",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2997",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2998",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    },
+    {
+      "patch_id": "new:2999",
+      "skipped": "S2: Earth Search could not supply imagery (RasterioIOError)."
+    }
+  ],
+  "provider_retry": {
+    "first_pass_fetched": 3,
+    "first_pass_sha256": "0080c3409deb6725b4f3363842424030c63ce27773e4a5f7660b9f655d62087f",
+    "first_pass_metadata_sha256": "16ed324dd0d1c0a0d165ea7432e4c64b063411aed324307bffc2d44984b7adc6",
+    "attempted": 157,
+    "recovered": 97,
+    "outcomes": [
+      {
+        "patch_id": "new:2700",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+      },
+      {
+        "patch_id": "new:2701",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2702",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2703",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+      },
+      {
+        "patch_id": "new:2704",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+      },
+      {
+        "patch_id": "new:2705",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+      },
+      {
+        "patch_id": "new:2706",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+      },
+      {
+        "patch_id": "new:2707",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+      },
+      {
+        "patch_id": "new:2708",
+        "first_pass": "S2: Earth Search could not supply imagery (RemoteProtocolError).",
+        "retry": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+      },
+      {
+        "patch_id": "new:2709",
+        "first_pass": "S2: Earth Search could not supply imagery (RemoteProtocolError).",
+        "retry": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+      },
+      {
+        "patch_id": "new:2710",
+        "first_pass": "S2: Earth Search could not supply imagery (RemoteProtocolError).",
+        "retry": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+      },
+      {
+        "patch_id": "new:2711",
+        "first_pass": "S2: Earth Search could not supply imagery (RemoteProtocolError).",
+        "retry": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+      },
+      {
+        "patch_id": "new:2712",
+        "first_pass": "S2: Earth Search could not supply imagery (RemoteProtocolError).",
+        "retry": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+      },
+      {
+        "patch_id": "new:2713",
+        "first_pass": "S2: Earth Search could not supply imagery (RemoteProtocolError).",
+        "retry": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+      },
+      {
+        "patch_id": "new:2714",
+        "first_pass": "S2: Earth Search could not supply imagery (RemoteProtocolError).",
+        "retry": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+      },
+      {
+        "patch_id": "new:2715",
+        "first_pass": "S2: Earth Search could not supply imagery (RemoteProtocolError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2716",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+      },
+      {
+        "patch_id": "new:2717",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+      },
+      {
+        "patch_id": "new:2718",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+      },
+      {
+        "patch_id": "new:2719",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+      },
+      {
+        "patch_id": "new:2720",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+      },
+      {
+        "patch_id": "new:2721",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+      },
+      {
+        "patch_id": "new:2722",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+      },
+      {
+        "patch_id": "new:2723",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2724",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+      },
+      {
+        "patch_id": "new:2725",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+      },
+      {
+        "patch_id": "new:2726",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2727",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+      },
+      {
+        "patch_id": "new:2728",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+      },
+      {
+        "patch_id": "new:2729",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+      },
+      {
+        "patch_id": "new:2731",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+      },
+      {
+        "patch_id": "new:2732",
+        "first_pass": "S2: Earth Search could not supply imagery (ReadTimeout).",
+        "retry": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+      },
+      {
+        "patch_id": "new:2733",
+        "first_pass": "S2: Earth Search could not supply imagery (ReadTimeout).",
+        "retry": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+      },
+      {
+        "patch_id": "new:2734",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+      },
+      {
+        "patch_id": "new:2735",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+      },
+      {
+        "patch_id": "new:2736",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2737",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+      },
+      {
+        "patch_id": "new:2738",
+        "first_pass": "S2: Earth Search could not supply imagery (ReadTimeout).",
+        "retry": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+      },
+      {
+        "patch_id": "new:2739",
+        "first_pass": "S2: Earth Search could not supply imagery (ReadTimeout).",
+        "retry": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+      },
+      {
+        "patch_id": "new:2740",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+      },
+      {
+        "patch_id": "new:2741",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2742",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+      },
+      {
+        "patch_id": "new:2743",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+      },
+      {
+        "patch_id": "new:2744",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+      },
+      {
+        "patch_id": "new:2745",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+      },
+      {
+        "patch_id": "new:2746",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2747",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+      },
+      {
+        "patch_id": "new:2748",
+        "first_pass": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError).",
+        "retry": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+      },
+      {
+        "patch_id": "new:2749",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+      },
+      {
+        "patch_id": "new:2750",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+      },
+      {
+        "patch_id": "new:2751",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+      },
+      {
+        "patch_id": "new:2752",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+      },
+      {
+        "patch_id": "new:2753",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2754",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+      },
+      {
+        "patch_id": "new:2755",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+      },
+      {
+        "patch_id": "new:2756",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+      },
+      {
+        "patch_id": "new:2757",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2758",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+      },
+      {
+        "patch_id": "new:2759",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+      },
+      {
+        "patch_id": "new:2760",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+      },
+      {
+        "patch_id": "new:2761",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2762",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2763",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+      },
+      {
+        "patch_id": "new:2764",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+      },
+      {
+        "patch_id": "new:2765",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2766",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2767",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+      },
+      {
+        "patch_id": "new:2768",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2769",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2770",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2771",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2772",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2773",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2774",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2775",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2776",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2777",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2778",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2779",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2780",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2781",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2782",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2783",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2784",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2785",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2786",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2787",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2788",
+        "first_pass": "S2: Earth Search could not supply imagery (ReadTimeout).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2789",
+        "first_pass": "S2: Earth Search could not supply imagery (ReadTimeout).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2790",
+        "first_pass": "S2: Earth Search could not supply imagery (ReadTimeout).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2791",
+        "first_pass": "S2: Earth Search could not supply imagery (ReadTimeout).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2792",
+        "first_pass": "S2: Earth Search could not supply imagery (ReadTimeout).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2793",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+      },
+      {
+        "patch_id": "new:2794",
+        "first_pass": "S2: Earth Search could not supply imagery (ReadTimeout).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2795",
+        "first_pass": "S2: Earth Search could not supply imagery (ReadTimeout).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2796",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2797",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2798",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2799",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2800",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2801",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2802",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2803",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2804",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2805",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2806",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2807",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2808",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2809",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2810",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2811",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2812",
+        "first_pass": "S2: Earth Search could not supply imagery (RemoteProtocolError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2813",
+        "first_pass": "S2: Earth Search could not supply imagery (RemoteProtocolError).",
+        "retry": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+      },
+      {
+        "patch_id": "new:2814",
+        "first_pass": "S2: Earth Search could not supply imagery (RemoteProtocolError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2815",
+        "first_pass": "S2: Earth Search could not supply imagery (RemoteProtocolError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2816",
+        "first_pass": "S2: Earth Search could not supply imagery (RemoteProtocolError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2817",
+        "first_pass": "S2: Earth Search could not supply imagery (RemoteProtocolError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2818",
+        "first_pass": "S2: Earth Search could not supply imagery (RemoteProtocolError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2819",
+        "first_pass": "S2: Earth Search could not supply imagery (RemoteProtocolError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2820",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2821",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2822",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+      },
+      {
+        "patch_id": "new:2823",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+      },
+      {
+        "patch_id": "new:2824",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2825",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2826",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2827",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2828",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2829",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2830",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2831",
+        "first_pass": "S2: Earth Search could not supply imagery (ReadTimeout).",
+        "retry": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+      },
+      {
+        "patch_id": "new:2832",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+      },
+      {
+        "patch_id": "new:2833",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2834",
+        "first_pass": "S2: Earth Search could not supply imagery (ReadTimeout).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2835",
+        "first_pass": "S2: Earth Search could not supply imagery (ReadTimeout).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2836",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2837",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2838",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2839",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "S1: Microsoft Planetary Computer could not supply imagery (RasterioIOError)."
+      },
+      {
+        "patch_id": "new:2840",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2841",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2842",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2843",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2844",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2845",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2846",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2847",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2848",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2849",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2850",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2851",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2852",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2853",
+        "first_pass": "S2: Earth Search could not supply imagery (ReadTimeout).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2854",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2855",
+        "first_pass": "S2: Earth Search could not supply imagery (RasterioIOError).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2856",
+        "first_pass": "S2: Earth Search could not supply imagery (ReadTimeout).",
+        "retry": "paired"
+      },
+      {
+        "patch_id": "new:2857",
+        "first_pass": "S2: Earth Search could not supply imagery (ReadTimeout).",
+        "retry": "paired"
+      }
+    ]
+  }
+}

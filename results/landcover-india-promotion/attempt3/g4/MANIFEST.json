@@ -1,0 +1,220 @@
+{
+  "integration_commit": "2f66a93e1391f44628f1edcab43b7db2836b316f",
+  "season": [
+    "2021-01-01",
+    "2021-04-30"
+  ],
+  "source_chip_pixels": 128,
+  "target_chip_pixels": 120,
+  "target_per_region": 100,
+  "group_sha256": "d14b345b6f4cabae4d713864244ea8f55d5fd0f08e1f7bb272c8240009ec6f8f",
+  "label_classes": [
+    "trees",
+    "shrub_grass",
+    "cropland",
+    "built",
+    "water",
+    "wetland"
+  ],
+  "regions": [
+    {
+      "region": "delhi",
+      "file": "delhi.npz",
+      "sha256": "c75a6065b05884be556b1ec288c9554653d30e4f00228060f1be4d006c0623a9",
+      "bytes": 34564386,
+      "fetched": 100,
+      "skipped_count": 16,
+      "not_attempted_after_target": 184,
+      "group": "A",
+      "metadata": "delhi.json",
+      "metadata_sha256": "a83956dded392dcc68c9caaf594f7d9755bc9de39cbab65a9f59f4e6ce8324d3"
+    },
+    {
+      "region": "rajasthan",
+      "file": "rajasthan.npz",
+      "sha256": "c6474089ce3b6b515a92efca08571cac942a95a0d314749246365015b1380d2d",
+      "bytes": 34564786,
+      "fetched": 100,
+      "skipped_count": 16,
+      "not_attempted_after_target": 184,
+      "group": "A",
+      "metadata": "rajasthan.json",
+      "metadata_sha256": "0d8866d55f770156ca50a557af52ffe3c18349a3733e883182f18dab87c2ffc2"
+    },
+    {
+      "region": "sundarbans",
+      "file": "sundarbans.npz",
+      "sha256": "231ab42abd16795c6e9e6943083ee165bd806e542e880f8cd151ae015dc6d2c9",
+      "bytes": 34564786,
+      "fetched": 100,
+      "skipped_count": 91,
+      "not_attempted_after_target": 109,
+      "group": "A",
+      "metadata": "sundarbans.json",
+      "metadata_sha256": "88fc0bfbd406fe64b6d1c30a0addc0efa46631d211d2543d7949e5c490151694"
+    },
+    {
+      "region": "assam",
+      "file": "assam.npz",
+      "sha256": "531cbbeb09b9ef93f46b9087d63f139cc62cfdaf5c170630ae98c01bc5e2bc42",
+      "bytes": 34564786,
+      "fetched": 100,
+      "skipped_count": 17,
+      "not_attempted_after_target": 183,
+      "group": "B",
+      "metadata": "assam.json",
+      "metadata_sha256": "5c3dc071e9f56294c677c4f1ca009249da6171f7a5443e083863036f0f2c12a0"
+    },
+    {
+      "region": "kerala",
+      "file": "kerala.npz",
+      "sha256": "89800687a79fb3b2eb9602b8c56ed488afc99a6d7f20cc3b0d21c37082ce6d37",
+      "bytes": 34564386,
+      "fetched": 100,
+      "skipped_count": 6,
+      "not_attempted_after_target": 194,
+      "group": "B",
+      "metadata": "kerala.json",
+      "metadata_sha256": "203f3881ff4e44e9534737d93f29ffde0fe1af627b6f1ce3117571cb47155d96"
+    },
+    {
+      "region": "punjab",
+      "file": "punjab.npz",
+      "sha256": "c2c778a8c2fdba87a102e3fdb8b0339bf892839ab0341edaa6d33b71612ba588",
+      "bytes": 34563986,
+      "fetched": 100,
+      "skipped_count": 0,
+      "not_attempted_after_target": 200,
+      "group": "B",
+      "metadata": "punjab.json",
+      "metadata_sha256": "a44cb62c5e17f31dea74152eace8b233ff7bea73f4398f4860469594876ff11f"
+    },
+    {
+      "region": "bastar",
+      "file": "bastar.npz",
+      "sha256": "13533aea21da6310cb5f628e03e00490be61b558772fe716414a6d7b012add3a",
+      "bytes": 34564786,
+      "fetched": 100,
+      "skipped_count": 0,
+      "not_attempted_after_target": 200,
+      "group": "C",
+      "metadata": "bastar.json",
+      "metadata_sha256": "e1275e1ca981711f7d4006cb3e17c7ed633dc916b621fa2661230e9e1a616f56"
+    },
+    {
+      "region": "chilika",
+      "file": "chilika.npz",
+      "sha256": "55773da72512db5df34eebca4204963b1dd577735d5890295a156b5d8b24981a",
+      "bytes": 34564786,
+      "fetched": 100,
+      "skipped_count": 0,
+      "not_attempted_after_target": 200,
+      "group": "C",
+      "metadata": "chilika.json",
+      "metadata_sha256": "4a0014ea29cc3e13964369110ac8f0a8501dc9610cbb6478b899317527a6d834"
+    },
+    {
+      "region": "hyderabad",
+      "file": "hyderabad.npz",
+      "sha256": "6f16a8fa971aac3ef8c231b8c005ed95f978938efba7eb99525fad45c6b85d00",
+      "bytes": 34564386,
+      "fetched": 100,
+      "skipped_count": 1,
+      "not_attempted_after_target": 199,
+      "group": "C",
+      "metadata": "hyderabad.json",
+      "metadata_sha256": "412434a0d781a5a7d0854e9940127c1159b4d97c3944ed60d8dc548b263ec455"
+    },
+    {
+      "region": "mizoram",
+      "file": "mizoram.npz",
+      "sha256": "2e49c327395caae08d90a19677df9a86ed2a8c2356b70962376288dedc34491c",
+      "bytes": 34564786,
+      "fetched": 100,
+      "skipped_count": 8,
+      "not_attempted_after_target": 192,
+      "group": "C",
+      "metadata": "mizoram.json",
+      "metadata_sha256": "fa00e304a8dc4542307e450a41890463820cafb04aadc78948d71dc38ab938e7"
+    },
+    {
+      "region": "cauvery",
+      "file": "cauvery.npz",
+      "sha256": "14e413835bed98a583f8bf6a6daf047be253a6303ca77beffe5f8d2c59ffb90f",
+      "bytes": 34564786,
+      "fetched": 100,
+      "skipped_count": 200,
+      "not_attempted_after_target": 0,
+      "group": "D",
+      "metadata": "cauvery.json",
+      "metadata_sha256": "1f7879ddc6993263a83f511b27ae07cd1395e4a3718189cf5b9908614ffc3172",
+      "provider_retry": {
+        "first_pass_fetched": 3,
+        "first_pass_sha256": "0080c3409deb6725b4f3363842424030c63ce27773e4a5f7660b9f655d62087f",
+        "first_pass_metadata_sha256": "16ed324dd0d1c0a0d165ea7432e4c64b063411aed324307bffc2d44984b7adc6",
+        "attempted": 157,
+        "recovered": 97
+      }
+    },
+    {
+      "region": "kodagu",
+      "file": "kodagu.npz",
+      "sha256": "94f50483d90d30881f9ff03971a3aceb8aa461e35ffc8e0c57846435173787f9",
+      "bytes": 34564386,
+      "fetched": 100,
+      "skipped_count": 12,
+      "not_attempted_after_target": 188,
+      "group": "D",
+      "metadata": "kodagu.json",
+      "metadata_sha256": "44e189f041756e150235c4b4bc091bdfc7252e52f78c90f18c1abe045caa90e6"
+    },
+    {
+      "region": "kutch",
+      "file": "kutch.npz",
+      "sha256": "50feb3636aa3675118e374d1a5180f4d21191d6dd8aa1a7c6770e55f447a5368",
+      "bytes": 34564786,
+      "fetched": 100,
+      "skipped_count": 9,
+      "not_attempted_after_target": 191,
+      "group": "D",
+      "metadata": "kutch.json",
+      "metadata_sha256": "9c5ad0ac894b46f066ed6634def7b897f4ace48c7d26a64cefdffbcc374b5bf4"
+    },
+    {
+      "region": "gangetic",
+      "file": "gangetic.npz",
+      "sha256": "0a1fc63d7601f5ccdc8a0f060e0e7516b5d17a92d3a8344301b018302894775d",
+      "bytes": 34564786,
+      "fetched": 100,
+      "skipped_count": 118,
+      "not_attempted_after_target": 82,
+      "group": "E",
+      "metadata": "gangetic.json",
+      "metadata_sha256": "b1b818826676b40607fb11fd4ca247a9ea5bb4a2652e1a11a25c43443fa6e96b"
+    },
+    {
+      "region": "garhwal",
+      "file": "garhwal.npz",
+      "sha256": "b6871fad75d32d99f94c3182a396b5c5a14b61570dedff78e84d3b7a3f21f041",
+      "bytes": 34564786,
+      "fetched": 100,
+      "skipped_count": 52,
+      "not_attempted_after_target": 148,
+      "group": "E",
+      "metadata": "garhwal.json",
+      "metadata_sha256": "c1b5e1f06c958cc31bf5068611e829b388d3f1f1856bc1a5895b80a7a9657bac"
+    },
+    {
+      "region": "marathwada",
+      "file": "marathwada.npz",
+      "sha256": "e623585ad6ab995424bf2a6898a4b3e477b9066726f8943b69ab0a8ca6fd704b",
+      "bytes": 34564386,
+      "fetched": 100,
+      "skipped_count": 2,
+      "not_attempted_after_target": 198,
+      "group": "E",
+      "metadata": "marathwada.json",
+      "metadata_sha256": "9c0180c768059381e5433d11c44e528fd950793bb29650223f5c87c5c15cf836"
+    }
+  ]
+}

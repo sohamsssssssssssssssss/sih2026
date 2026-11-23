@@ -1,0 +1,42 @@
+[
+  {
+    "file": "classes.json",
+    "bytes": 13464,
+    "sha256": "0e3b923b0b36ff994403937a3492d87bd0109ce97eb9fe445c5f9363f1e4f951"
+  },
+  {
+    "file": "fractions.npy",
+    "bytes": 72128,
+    "sha256": "2813bed8ccefe82b73865f07ee1d335c72897d90af7e9bbbd33086653d32ee48"
+  },
+  {
+    "file": "labels_coarse.npy",
+    "bytes": 18128,
+    "sha256": "607af5b74bfad19a376ce89fcdda10c7d016a1f123c97ef2c3e4146da28595c9"
+  },
+  {
+    "file": "meta.parquet",
+    "bytes": 91806,
+    "sha256": "005ff0a55b8e899b6a4383e48c982289473fe300920f6a4c84836cd0c4bfa3a1"
+  },
+  {
+    "file": "s1.npy",
+    "bytes": 172800128,
+    "sha256": "0fa96f12eef5e42132b9e4af62282bab6858f2b1f198d29564311b126bf52ace"
+  },
+  {
+    "file": "s2_10m.npy",
+    "bytes": 345600128,
+    "sha256": "fcb79d6b517be4a0045e9db4fe82636c7c230ff1edf125ef78d012df931b20a8"
+  },
+  {
+    "file": "wc_class_fractions.npy",
+    "bytes": 132128,
+    "sha256": "d095cbbe998ce7f930aef5994f0c5c352d6d2e38f21477b5f18f138585fe3be5"
+  },
+  {
+    "file": "worldcover_map.npy",
+    "bytes": 43200128,
+    "sha256": "efc338c55c7fb531647aefebf6e934a1f1ea8c5f1a9772afe171ffd5758c76f0"
+  }
+]

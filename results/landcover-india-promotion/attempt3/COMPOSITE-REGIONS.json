@@ -1,0 +1,313 @@
+[
+  {
+    "region": "bastar",
+    "patches": 300,
+    "class_counts": {
+      "trees": 292,
+      "shrub_grass": 264,
+      "cropland": 216,
+      "built": 2,
+      "water": 6,
+      "wetland": 0
+    },
+    "download_bytes": 348323081,
+    "transport": "verified source COG byte ranges",
+    "elapsed_s": 445.6,
+    "sources": {
+      "map": [
+        "https://esa-worldcover.s3.eu-central-1.amazonaws.com/v200/2021/map/ESA_WorldCover_10m_2021_v200_N18E081_Map.tif"
+      ],
+      "s1": [
+        "https://esa-worldcover-s1.s3.eu-central-1.amazonaws.com/vvvhratio/2021/N19/ESA_WorldCover_10m_2021_v200_N19E081_S1VVVHratio.tif"
+      ],
+      "s2": [
+        "https://esa-worldcover-s2.s3.eu-central-1.amazonaws.com/rgbnir/2021/N19/ESA_WorldCover_10m_2021_v200_N19E081_S2RGBNIR.tif"
+      ]
+    },
+    "raw_tiles": [
+      "raw/bastar/ESA_WorldCover_10m_2021_v200_N18E081_Map.tif",
+      "raw/bastar/ESA_WorldCover_10m_2021_v200_N19E081_S1VVVHratio.tif",
+      "raw/bastar/ESA_WorldCover_10m_2021_v200_N19E081_S2RGBNIR.tif"
+    ]
+  },
+  {
+    "region": "cauvery",
+    "patches": 300,
+    "class_counts": {
+      "trees": 222,
+      "shrub_grass": 150,
+      "cropland": 257,
+      "built": 29,
+      "water": 47,
+      "wetland": 20
+    },
+    "download_bytes": 327040228,
+    "transport": "verified source COG byte ranges",
+    "elapsed_s": 397.3,
+    "sources": {
+      "map": [
+        "https://esa-worldcover.s3.eu-central-1.amazonaws.com/v200/2021/map/ESA_WorldCover_10m_2021_v200_N09E078_Map.tif"
+      ],
+      "s1": [
+        "https://esa-worldcover-s1.s3.eu-central-1.amazonaws.com/vvvhratio/2021/N10/ESA_WorldCover_10m_2021_v200_N10E079_S1VVVHratio.tif"
+      ],
+      "s2": [
+        "https://esa-worldcover-s2.s3.eu-central-1.amazonaws.com/rgbnir/2021/N10/ESA_WorldCover_10m_2021_v200_N10E079_S2RGBNIR.tif"
+      ]
+    },
+    "raw_tiles": [
+      "raw/cauvery/ESA_WorldCover_10m_2021_v200_N09E078_Map.tif",
+      "raw/cauvery/ESA_WorldCover_10m_2021_v200_N10E079_S1VVVHratio.tif",
+      "raw/cauvery/ESA_WorldCover_10m_2021_v200_N10E079_S2RGBNIR.tif"
+    ]
+  },
+  {
+    "region": "chilika",
+    "patches": 300,
+    "class_counts": {
+      "trees": 61,
+      "shrub_grass": 75,
+      "cropland": 83,
+      "built": 3,
+      "water": 275,
+      "wetland": 37
+    },
+    "download_bytes": 164023774,
+    "transport": "verified source COG byte ranges",
+    "elapsed_s": 224.5,
+    "sources": {
+      "map": [
+        "https://esa-worldcover.s3.eu-central-1.amazonaws.com/v200/2021/map/ESA_WorldCover_10m_2021_v200_N18E084_Map.tif"
+      ],
+      "s1": [
+        "https://esa-worldcover-s1.s3.eu-central-1.amazonaws.com/vvvhratio/2021/N19/ESA_WorldCover_10m_2021_v200_N19E085_S1VVVHratio.tif"
+      ],
+      "s2": [
+        "https://esa-worldcover-s2.s3.eu-central-1.amazonaws.com/rgbnir/2021/N19/ESA_WorldCover_10m_2021_v200_N19E085_S2RGBNIR.tif"
+      ]
+    },
+    "raw_tiles": [
+      "raw/chilika/ESA_WorldCover_10m_2021_v200_N18E084_Map.tif",
+      "raw/chilika/ESA_WorldCover_10m_2021_v200_N19E085_S1VVVHratio.tif",
+      "raw/chilika/ESA_WorldCover_10m_2021_v200_N19E085_S2RGBNIR.tif"
+    ]
+  },
+  {
+    "region": "gangetic",
+    "patches": 300,
+    "class_counts": {
+      "trees": 183,
+      "shrub_grass": 79,
+      "cropland": 295,
+      "built": 101,
+      "water": 29,
+      "wetland": 11
+    },
+    "download_bytes": 320499689,
+    "transport": "verified source COG byte ranges",
+    "elapsed_s": 401.5,
+    "sources": {
+      "map": [
+        "https://esa-worldcover.s3.eu-central-1.amazonaws.com/v200/2021/map/ESA_WorldCover_10m_2021_v200_N24E084_Map.tif"
+      ],
+      "s1": [
+        "https://esa-worldcover-s1.s3.eu-central-1.amazonaws.com/vvvhratio/2021/N25/ESA_WorldCover_10m_2021_v200_N25E085_S1VVVHratio.tif"
+      ],
+      "s2": [
+        "https://esa-worldcover-s2.s3.eu-central-1.amazonaws.com/rgbnir/2021/N25/ESA_WorldCover_10m_2021_v200_N25E085_S2RGBNIR.tif"
+      ]
+    },
+    "raw_tiles": [
+      "raw/gangetic/ESA_WorldCover_10m_2021_v200_N24E084_Map.tif",
+      "raw/gangetic/ESA_WorldCover_10m_2021_v200_N25E085_S1VVVHratio.tif",
+      "raw/gangetic/ESA_WorldCover_10m_2021_v200_N25E085_S2RGBNIR.tif"
+    ]
+  },
+  {
+    "region": "garhwal",
+    "patches": 300,
+    "class_counts": {
+      "trees": 296,
+      "shrub_grass": 230,
+      "cropland": 75,
+      "built": 10,
+      "water": 18,
+      "wetland": 0
+    },
+    "download_bytes": 326056900,
+    "transport": "verified source COG byte ranges",
+    "elapsed_s": 561.2,
+    "sources": {
+      "map": [
+        "https://esa-worldcover.s3.eu-central-1.amazonaws.com/v200/2021/map/ESA_WorldCover_10m_2021_v200_N30E078_Map.tif"
+      ],
+      "s1": [
+        "https://esa-worldcover-s1.s3.eu-central-1.amazonaws.com/vvvhratio/2021/N30/ESA_WorldCover_10m_2021_v200_N30E078_S1VVVHratio.tif"
+      ],
+      "s2": [
+        "https://esa-worldcover-s2.s3.eu-central-1.amazonaws.com/rgbnir/2021/N30/ESA_WorldCover_10m_2021_v200_N30E078_S2RGBNIR.tif"
+      ]
+    },
+    "raw_tiles": [
+      "raw/garhwal/ESA_WorldCover_10m_2021_v200_N30E078_Map.tif",
+      "raw/garhwal/ESA_WorldCover_10m_2021_v200_N30E078_S1VVVHratio.tif",
+      "raw/garhwal/ESA_WorldCover_10m_2021_v200_N30E078_S2RGBNIR.tif"
+    ]
+  },
+  {
+    "region": "hyderabad",
+    "patches": 300,
+    "class_counts": {
+      "trees": 207,
+      "shrub_grass": 286,
+      "cropland": 240,
+      "built": 188,
+      "water": 13,
+      "wetland": 0
+    },
+    "download_bytes": 1342559425,
+    "download_s": 1310.5,
+    "elapsed_s": 1321.8,
+    "sources": {
+      "map": [
+        "https://esa-worldcover.s3.eu-central-1.amazonaws.com/v200/2021/map/ESA_WorldCover_10m_2021_v200_N15E078_Map.tif"
+      ],
+      "s1": [
+        "https://esa-worldcover-s1.s3.eu-central-1.amazonaws.com/vvvhratio/2021/N17/ESA_WorldCover_10m_2021_v200_N17E078_S1VVVHratio.tif"
+      ],
+      "s2": [
+        "https://esa-worldcover-s2.s3.eu-central-1.amazonaws.com/rgbnir/2021/N17/ESA_WorldCover_10m_2021_v200_N17E078_S2RGBNIR.tif"
+      ]
+    },
+    "raw_tiles": [
+      "raw/hyderabad/ESA_WorldCover_10m_2021_v200_N15E078_Map.tif",
+      "raw/hyderabad/ESA_WorldCover_10m_2021_v200_N17E078_S1VVVHratio.tif",
+      "raw/hyderabad/ESA_WorldCover_10m_2021_v200_N17E078_S2RGBNIR.tif"
+    ]
+  },
+  {
+    "region": "kodagu",
+    "patches": 300,
+    "class_counts": {
+      "trees": 300,
+      "shrub_grass": 76,
+      "cropland": 8,
+      "built": 6,
+      "water": 1,
+      "wetland": 0
+    },
+    "download_bytes": 326126377,
+    "transport": "verified source COG byte ranges",
+    "elapsed_s": 485.0,
+    "sources": {
+      "map": [
+        "https://esa-worldcover.s3.eu-central-1.amazonaws.com/v200/2021/map/ESA_WorldCover_10m_2021_v200_N12E075_Map.tif"
+      ],
+      "s1": [
+        "https://esa-worldcover-s1.s3.eu-central-1.amazonaws.com/vvvhratio/2021/N12/ESA_WorldCover_10m_2021_v200_N12E075_S1VVVHratio.tif"
+      ],
+      "s2": [
+        "https://esa-worldcover-s2.s3.eu-central-1.amazonaws.com/rgbnir/2021/N12/ESA_WorldCover_10m_2021_v200_N12E075_S2RGBNIR.tif"
+      ]
+    },
+    "raw_tiles": [
+      "raw/kodagu/ESA_WorldCover_10m_2021_v200_N12E075_Map.tif",
+      "raw/kodagu/ESA_WorldCover_10m_2021_v200_N12E075_S1VVVHratio.tif",
+      "raw/kodagu/ESA_WorldCover_10m_2021_v200_N12E075_S2RGBNIR.tif"
+    ]
+  },
+  {
+    "region": "kutch",
+    "patches": 300,
+    "class_counts": {
+      "trees": 19,
+      "shrub_grass": 273,
+      "cropland": 261,
+      "built": 15,
+      "water": 4,
+      "wetland": 5
+    },
+    "download_bytes": 339002134,
+    "transport": "verified source COG byte ranges",
+    "elapsed_s": 641.0,
+    "sources": {
+      "map": [
+        "https://esa-worldcover.s3.eu-central-1.amazonaws.com/v200/2021/map/ESA_WorldCover_10m_2021_v200_N21E069_Map.tif"
+      ],
+      "s1": [
+        "https://esa-worldcover-s1.s3.eu-central-1.amazonaws.com/vvvhratio/2021/N23/ESA_WorldCover_10m_2021_v200_N23E069_S1VVVHratio.tif"
+      ],
+      "s2": [
+        "https://esa-worldcover-s2.s3.eu-central-1.amazonaws.com/rgbnir/2021/N23/ESA_WorldCover_10m_2021_v200_N23E069_S2RGBNIR.tif"
+      ]
+    },
+    "raw_tiles": [
+      "raw/kutch/ESA_WorldCover_10m_2021_v200_N21E069_Map.tif",
+      "raw/kutch/ESA_WorldCover_10m_2021_v200_N23E069_S1VVVHratio.tif",
+      "raw/kutch/ESA_WorldCover_10m_2021_v200_N23E069_S2RGBNIR.tif"
+    ]
+  },
+  {
+    "region": "marathwada",
+    "patches": 300,
+    "class_counts": {
+      "trees": 94,
+      "shrub_grass": 160,
+      "cropland": 287,
+      "built": 26,
+      "water": 29,
+      "wetland": 0
+    },
+    "download_bytes": 326368416,
+    "transport": "verified source COG byte ranges",
+    "elapsed_s": 671.9,
+    "sources": {
+      "map": [
+        "https://esa-worldcover.s3.eu-central-1.amazonaws.com/v200/2021/map/ESA_WorldCover_10m_2021_v200_N18E075_Map.tif"
+      ],
+      "s1": [
+        "https://esa-worldcover-s1.s3.eu-central-1.amazonaws.com/vvvhratio/2021/N19/ESA_WorldCover_10m_2021_v200_N19E075_S1VVVHratio.tif"
+      ],
+      "s2": [
+        "https://esa-worldcover-s2.s3.eu-central-1.amazonaws.com/rgbnir/2021/N19/ESA_WorldCover_10m_2021_v200_N19E075_S2RGBNIR.tif"
+      ]
+    },
+    "raw_tiles": [
+      "raw/marathwada/ESA_WorldCover_10m_2021_v200_N18E075_Map.tif",
+      "raw/marathwada/ESA_WorldCover_10m_2021_v200_N19E075_S1VVVHratio.tif",
+      "raw/marathwada/ESA_WorldCover_10m_2021_v200_N19E075_S2RGBNIR.tif"
+    ],
+    "late_raw_cleanup_allocated_bytes": 12795904
+  },
+  {
+    "region": "mizoram",
+    "patches": 300,
+    "class_counts": {
+      "trees": 300,
+      "shrub_grass": 46,
+      "cropland": 4,
+      "built": 5,
+      "water": 0,
+      "wetland": 0
+    },
+    "download_bytes": 325000220,
+    "transport": "verified source COG byte ranges",
+    "elapsed_s": 369.1,
+    "sources": {
+      "map": [
+        "https://esa-worldcover.s3.eu-central-1.amazonaws.com/v200/2021/map/ESA_WorldCover_10m_2021_v200_N21E090_Map.tif"
+      ],
+      "s1": [
+        "https://esa-worldcover-s1.s3.eu-central-1.amazonaws.com/vvvhratio/2021/N23/ESA_WorldCover_10m_2021_v200_N23E092_S1VVVHratio.tif"
+      ],
+      "s2": [
+        "https://esa-worldcover-s2.s3.eu-central-1.amazonaws.com/rgbnir/2021/N23/ESA_WorldCover_10m_2021_v200_N23E092_S2RGBNIR.tif"
+      ]
+    },
+    "raw_tiles": [
+      "raw/mizoram/ESA_WorldCover_10m_2021_v200_N21E090_Map.tif",
+      "raw/mizoram/ESA_WorldCover_10m_2021_v200_N23E092_S1VVVHratio.tif",
+      "raw/mizoram/ESA_WorldCover_10m_2021_v200_N23E092_S2RGBNIR.tif"
+    ]
+  }
+]
