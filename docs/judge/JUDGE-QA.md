@@ -16,9 +16,9 @@ The CUDA comparison required the Mac base model to produce no extra malformed ou
 On the preregistered LoveDA v3 run at simulated 10 m, pooled presence accuracy was 50.29% for base and 50.43% for B13. Both were degenerate under the registered rule, and neither showed a pooled advantage from real imagery over grey. Building presence was also degenerate for both models. This measures synthetic coarsening on LoveDA. Counting and real ISRO sensor performance remain untested by this experiment.
 [Ladder v3 report](../../results/ladder-v3/REPORT.md) · [Ladder v3 preregistration](../gates/LADDER-V3.md)
 
-**4. Why isn’t the India-adapted model shipped if its recipe improved held-out mAP?**
-G1 passed, but neither Platt calibration nor temperature scaling met the region-transfer gate. One fold’s scores ran high and the other’s ran low. Corrected scene checks passed G3 in a record-only rerun. The promotion decision is closed and Ask uses the Europe-trained model.
-Source: [India promotion decision on `feature/ben-landcover` at `90ccde3`](https://github.com/sohamsssssssssssssssss/sih2026/blob/90ccde3aa4c4d6eb0ee6e7d2d8591e4b792d905a/results/landcover-india-promotion/DECISION.md)
+**4. Why isn’t the India-adapted model shipped?**
+We ran three attempts with preregistered gates and fixed thresholds. Attempt 3 cleared both held-out composite accuracy floors (S1 0.8834, S2 0.8828 mAP) and both scene sanity checks. Calibration lowered error in only 2 of 10 comparisons, against a requirement of 10 of 10. On paired single-date imagery, India minus Europe was −0.0406 mAP for S1 (95% CI [−0.0678, −0.0170]) and +0.1471 for S2 (95% CI [+0.1262, +0.1680]). Both modes needed a positive gain with the entire interval above zero. Ask still uses the Europe BigEarthNet checkpoints.
+[Attempt 3 score report](https://github.com/sohamsssssssssssssssss/sih2026/blob/2ed45bdfadd9c5767ecd6f78a9b6fbca3ad980c4/results/landcover-india-promotion/attempt3/REPORT.md#attempt-3-scored-results-24-nov-2026) · [Promotion decision](https://github.com/sohamsssssssssssssssss/sih2026/blob/2ed45bdfadd9c5767ecd6f78a9b6fbca3ad980c4/results/landcover-india-promotion/DECISION.md#attempt-3-decision-24-nov-2026) · [Registered G1–G4 protocol](https://github.com/sohamsssssssssssssssss/sih2026/blob/2ed45bdfadd9c5767ecd6f78a9b6fbca3ad980c4/docs/gates/LANDCOVER-INDIA-PROMOTION-ATTEMPT3.md)
 
 **5. Change detection is in the problem statement. Why is it switched off?**
 We tested it and it did not work. On CDVQA, the question text alone predicts the "did it change?" answer 82.8% of the time, and our pixel-differencing baseline (56.0%) did not beat the train-majority answer (56.2%). Our adapter also kept much of its accuracy when both images were identical, so it was not using the images. We refuse change questions instead of guessing.
@@ -75,8 +75,8 @@ Only partly. The intervals are patch-level bootstrap and leave out seed and regi
 Source: integ:results/t13b/REPORT.md:169, :283
 
 **17. Were thresholds or gates changed after you saw results?**
-Thresholds were never changed. After the first India promotion attempt failed calibration (Platt), we preregistered a second attempt (temperature scaling) before computing new results. The first failure stays on record. Attempt 2 also failed, and we stopped there; the model was not shipped. Flood Otsu was not tuned and its threshold was not relaxed after it failed. The Otsu clamp was set before the run, not learned from test.
-Source: ben:docs/gates/LANDCOVER-INDIA-PROMOTION.md:3, :23; ben:docs/gates/LANDCOVER-INDIA-PROMOTION-ATTEMPT2.md (gate `db6e127`, before results `ce8449e`); integ:docs/plan/DECISIONS.md:55; integ:outputs/T07c-flood.md:30
+No. The three India promotion attempts were preregistered. Attempt 3 added the single-date requirement before any attempt-3 data were built. The thresholds stayed fixed and the failed attempts are on record. The Flood Otsu clamp was also fixed before the run, and the threshold stayed fixed after it failed.
+[Promotion decision](https://github.com/sohamsssssssssssssssss/sih2026/blob/2ed45bdfadd9c5767ecd6f78a9b6fbca3ad980c4/results/landcover-india-promotion/DECISION.md#attempt-3-decision-24-nov-2026) · [Registered G1–G4 protocol](https://github.com/sohamsssssssssssssssss/sih2026/blob/2ed45bdfadd9c5767ecd6f78a9b6fbca3ad980c4/docs/gates/LANDCOVER-INDIA-PROMOTION-ATTEMPT3.md) · [Flood decision](../plan/DECISIONS.md) · [Flood report](../../outputs/T07c-flood.md)
 
 **18. Can you count objects?**
 Not reliably. On a frozen 1,000-pair DIOR sample, Grounding DINO is right on 32.4% of counts, while always answering 0 scores 50.0%. Its MAE (1.53) is no better than always-0 (1.48). A presence gate on top also failed to beat always-0.
@@ -143,8 +143,8 @@ Source: integ:`84d7f57`, `404039f`, `980cab7`; integ:docs/plan/INTEGRATION_LOG.m
 ## Follow-up questions
 
 **32. Why are your scores uncalibrated?**
-The India region folds have opposite score biases and different class frequencies. Both tested calibration methods failed the transfer requirement. The Europe-trained checkpoint therefore serves uncalibrated presence scores with a null confidence field.
-Source: [India promotion decision on `feature/ben-landcover` at `90ccde3`](https://github.com/sohamsssssssssssssssss/sih2026/blob/90ccde3aa4c4d6eb0ee6e7d2d8591e4b792d905a/results/landcover-india-promotion/DECISION.md)
+All three India calibration attempts failed the region-transfer requirement. The third method lowered calibration error in only 2 of 10 held-out group-mode comparisons. The Europe checkpoints serve uncalibrated presence scores and the API reports `confidence: null`.
+[Promotion decision](https://github.com/sohamsssssssssssssssss/sih2026/blob/2ed45bdfadd9c5767ecd6f78a9b6fbca3ad980c4/results/landcover-india-promotion/DECISION.md#attempt-3-decision-24-nov-2026) · [Attempt 3 score report](https://github.com/sohamsssssssssssssssss/sih2026/blob/2ed45bdfadd9c5767ecd6f78a9b6fbca3ad980c4/results/landcover-india-promotion/attempt3/REPORT.md#attempt-3-scored-results-24-nov-2026)
 
 **33. How did you find the offset bug?**
 We compared the exact Earth Search window with the same acquisition from Planetary Computer and checked the ESA L2A metadata. Earth Search had already removed 1,000 DN, and the old fetch removed it again. The corrected input restored built areas to first place on live Ludhiana.
