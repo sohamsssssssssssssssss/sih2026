@@ -37,3 +37,16 @@ The corrected scene resolves the Ludhiana sanity check. Both calibration failure
 - Any new attempt needs a new gate registered before results, as attempts 1 and 2 had.
 
 Sources: [attempt 1 report](REPORT.md), [attempt 2 report](attempt2/REPORT.md), [attempt 1 gate](../../docs/gates/LANDCOVER-INDIA-PROMOTION.md), [attempt 2 gate](../../docs/gates/LANDCOVER-INDIA-PROMOTION-ATTEMPT2.md), attempt-1 code in [ben/promotion/attempt1/](../../ben/promotion/attempt1/).
+
+## Attempt 3 decision (24 Nov 2026)
+
+**Decision: NOT PROMOTED.** Ask continues to use the Europe BigEarthNet checkpoints.
+
+Attempt 3 passed G1 on held-out annual composites and passed G3 on both sanity scenes. G2 and G4 failed their joint requirements. Calibration lowered macro ECE in 2 of 10 comparisons, against a requirement of 10 of 10. On paired single-date inputs, India minus Europe was −0.0406 mAP for S1 (95% CI [−0.0678, −0.0170]) and +0.1471 for S2 (95% CI [+0.1262, +0.1680]). Both modes needed a positive delta with the entire interval above zero.
+
+The scoring thresholds stayed fixed. The pre-data amendment that registered G4 was already part of the frozen protocol. No amendments were applied during scoring.
+
+- **May say:** India S2 beat Europe by +0.147 mAP on the registered single-date pairs. Calibration did not transfer across the held-out groups.
+- **May not say:** The India model is better overall, shipped, or calibrated.
+
+Sources: [attempt 3 report](attempt3/REPORT.md#attempt-3-scored-results-24-nov-2026) and [preregistered gates](../../docs/gates/LANDCOVER-INDIA-PROMOTION-ATTEMPT3.md).

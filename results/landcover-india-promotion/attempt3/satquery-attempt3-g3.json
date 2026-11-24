@@ -1,0 +1,30 @@
+{
+  "Ludhiana": {
+    "file": "data/fresh-backups/ludhiana-s2-v2.tif",
+    "sha256": "02bd85dc9a9cd2981e13dba6d14ded347351d559faf8fc06f2db083c5eea8178",
+    "target": "built",
+    "rank": 1,
+    "scores": {
+      "trees": 0.22974043905825492,
+      "shrub_grass": 0.3731112990923183,
+      "cropland": 0.13892667740568942,
+      "built": 0.9999977587497034,
+      "water": 0.0005703257525287107
+    },
+    "pass": true
+  },
+  "Punjab": {
+    "file": "tests/fixtures/punjab-s2.tif",
+    "sha256": "62ae9a395d8e4c609fe96348de3b24dc1b9f19f362a6758904061ef4a7004416",
+    "target": "cropland",
+    "rank": 1,
+    "scores": {
+      "trees": 0.0024916110580265917,
+      "shrub_grass": 0.0018307020609401425,
+      "cropland": 0.9984106204197384,
+      "built": 0.00799436662619595,
+      "water": 0.00027571868737959735
+    },
+    "pass": true
+  }
+}

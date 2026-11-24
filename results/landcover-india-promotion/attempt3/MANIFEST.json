@@ -1,0 +1,92 @@
+[
+  {
+    "file": "G1.json",
+    "sha256": "449c6c395b0e8bd67e28398a2c4fe598e619f5167a8649e330c22e50a610d2b4",
+    "bytes": 813
+  },
+  {
+    "file": "SHA256SUMS",
+    "sha256": "8048f17b6ef7dc9b44f5d86cf7ac3ad29ed4e06fb3815cc2991309b75ba17968",
+    "bytes": 1392
+  },
+  {
+    "file": "attempt3-s1-held-out.npz",
+    "sha256": "61fcdd74a1932ed246916586334da520ce661f3341a6d48a1b2d5edc270e0f51",
+    "bytes": 84776
+  },
+  {
+    "file": "attempt3-s2-held-out.npz",
+    "sha256": "45c5bc042e1394691f97591f4113471dfe7e987bf4a63602c3c003539857e869",
+    "bytes": 84814
+  },
+  {
+    "file": "ben-landcover-india-s1-A.pt",
+    "sha256": "54b7e9139e955323c82c6589541c2b211cc8f162f63af04e3c92efc4845a807f",
+    "bytes": 44808587
+  },
+  {
+    "file": "ben-landcover-india-s1-B.pt",
+    "sha256": "159ea2fded7c7aeb763564f9d5991aaae2286df896235281d83b8b63025b790d",
+    "bytes": 44808587
+  },
+  {
+    "file": "ben-landcover-india-s1-C.pt",
+    "sha256": "cbcd7e8be3e05aba4af4ad364ff09eb20daeed5077d80bd08e8c27295d928df3",
+    "bytes": 44808587
+  },
+  {
+    "file": "ben-landcover-india-s1-D.pt",
+    "sha256": "cfd25792e976b6ba0ae0027163a1d57c60a83d74ac9e70ba4029c8a3ccbf343a",
+    "bytes": 44808587
+  },
+  {
+    "file": "ben-landcover-india-s1-E.pt",
+    "sha256": "0d1efd15ce74f21e845d4ffaef12c9928b8b71dfe9a98a5662825882f3ddcde2",
+    "bytes": 44808587
+  },
+  {
+    "file": "ben-landcover-india-s1-final.pt",
+    "sha256": "c5003b975ae1ad5359041b0a87343539e661b8e1f0a59831c88fc8ed2c9fc4b5",
+    "bytes": 44808587
+  },
+  {
+    "file": "ben-landcover-india-s2-A.pt",
+    "sha256": "97afb00856b412dbc54c3116fb3c588776bc3a1cbfed03cc4813ed2b51ba2f10",
+    "bytes": 44833675
+  },
+  {
+    "file": "ben-landcover-india-s2-B.pt",
+    "sha256": "b744860b2edcaad9b18846df50ffbd73c54ff992b13baee64b36405e966cf2ec",
+    "bytes": 44833675
+  },
+  {
+    "file": "ben-landcover-india-s2-C.pt",
+    "sha256": "09a6fb5db06e07de268a8da673ae1e273308bc53e7da684fe69285675b8aba5f",
+    "bytes": 44833675
+  },
+  {
+    "file": "ben-landcover-india-s2-D.pt",
+    "sha256": "ed4fd2d5f9ceb666a83e6c93409e59b7db5b759f29bdd9bfc1805cf8d72a8cc6",
+    "bytes": 44833675
+  },
+  {
+    "file": "ben-landcover-india-s2-E.pt",
+    "sha256": "3948709e9397ca306608c49e6e666b3f276d2ca009dbcf8dd677eb985d92d277",
+    "bytes": 44833675
+  },
+  {
+    "file": "ben-landcover-india-s2-final.pt",
+    "sha256": "5da15785f148aeab0e33ca3ecc4ed33a2b52737d81c89256fd134e043ecfdb39",
+    "bytes": 44833675
+  },
+  {
+    "file": "satquery-attempt3-g3.json",
+    "sha256": "0ea34965324e88dc53ca81c8614fbddc2216d095a67a22d352620d6cbfe4caf0",
+    "bytes": 845
+  },
+  {
+    "file": "satquery-attempt3-scores.json",
+    "sha256": "ea58cb62f1055f898f2fecb651dccb52eabad5fa6ce01d10b22b06d1dbe0eefb",
+    "bytes": 6272
+  }
+]
