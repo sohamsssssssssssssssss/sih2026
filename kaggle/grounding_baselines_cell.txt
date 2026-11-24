@@ -1,0 +1,82 @@
+%%bash
+set -euo pipefail
+trap 'echo "HARD STOP: grounding baseline cell failed on line $LINENO" >&2' ERR
+
+commit=e6d9101ea84d1d6a9b6fa6488f47a25225d34d71
+pack_sha=d995c51dd7a3581045b38e9bc55243f18ffe3448d42cbc3f1da721e8416dce96
+output=/kaggle/working/grounding-baselines
+work=$(mktemp -d /tmp/satquery-grounding.XXXXXX)
+export TMPDIR="$work/tmp" HF_HOME="$work/hf" XDG_CACHE_HOME="$work/cache"
+export CUDA_VISIBLE_DEVICES=0
+export PIP_CACHE_DIR="$work/pip" PYTHONDONTWRITEBYTECODE=1 HF_HUB_DISABLE_IMPLICIT_TOKEN=1
+mkdir -p "$TMPDIR"
+
+[[ ! -e "$output" ]] || { echo "HARD STOP: output already exists" >&2; exit 1; }
+mapfile -t packs < <(find -L /kaggle/input -name satquery-grounding-baseline-pack.zip -type f)
+[[ ${#packs[@]} -eq 1 ]] || { echo "HARD STOP: attach the private baseline pack exactly once" >&2; exit 1; }
+pack=${packs[0]}
+printf '%s  %s\n' "$pack_sha" "$pack" | sha256sum -c -
+mapfile -t qwen_shards < <(find -L /kaggle/input -path '*/satquery-qwen-pinned/*' -name model-00001-of-00002.safetensors -type f)
+[[ ${#qwen_shards[@]} -eq 1 ]] || { echo "HARD STOP: attach sohamssssss/satquery-qwen-pinned exactly once" >&2; exit 1; }
+qwen_dir=$(dirname "${qwen_shards[0]}")
+
+git clone --no-checkout https://github.com/sohamsssssssssssssssss/sih2026.git "$work/repo"
+git -C "$work/repo" checkout --detach "$commit"
+[[ "$(git -C "$work/repo" rev-parse HEAD)" == "$commit" ]]
+cd "$work/repo"
+python - "$qwen_dir" <<'PYTHON'
+from hashlib import file_digest
+import json
+from pathlib import Path
+import sys
+
+directory = Path(sys.argv[1])
+pins = json.loads(Path("kaggle/grounding_qwen_hashes.json").read_text())
+if {p.name for p in directory.iterdir() if p.is_file()} != pins.keys():
+    raise SystemExit("HARD STOP: Qwen dataset file list mismatch")
+for name, expected in pins.items():
+    with (directory / name).open("rb") as stream:
+        if file_digest(stream, "sha256").hexdigest() != expected:
+            raise SystemExit(f"HARD STOP: Qwen file mismatch: {name}")
+PYTHON
+
+python -m venv --system-site-packages --without-pip "$work/venv"
+python -m pip --python "$work/venv/bin/python" install --no-cache-dir \
+  'transformers==4.49.0' 'groundingdino-py==0.4.0' 'huggingface-hub==0.30.2'
+py="$work/venv/bin/python"
+"$py" - <<'PYTHON'
+from pathlib import Path
+
+import torch
+from huggingface_hub import hf_hub_download
+from kaggle.run_grounding_baselines import DINO_ID, DINO_REVISION, DINO_SHA, DINO_WEIGHT, digest, require
+
+require(torch.cuda.is_available() and torch.cuda.device_count() == 1 and "T4" in torch.cuda.get_device_name(0),
+        "select exactly one visible T4")
+require(DINO_ID == "ShilongLiu/GroundingDINO"
+        and DINO_REVISION == "a94c9b567a2a374598f05c584e96798a170c56fb"
+        and DINO_SHA == "3b3ca2563c77c69f651d7bd133e97139c186df06231157a64c507099c52bc799",
+        "DINO model pin mismatch")
+weight = Path(hf_hub_download(DINO_ID, DINO_WEIGHT, revision=DINO_REVISION))
+require(digest(weight) == DINO_SHA, "DINO weight mismatch")
+bert_rev = "86b5e0934494bd15c9632b12f734a8a67f723594"
+bert_hashes = {
+    "config.json": "7160e1553ad2ca51d8c1cb066be533db31826e12d173824c1bb0cb1a4f187d20",
+    "tokenizer.json": "ce64fce797c24f68df90b40a3f74f579b336a493db14bd583fd520ea0d8c9a98",
+    "tokenizer_config.json": "a025160ef0431f1a392f6f050c1310f4c5d9fb6f275932dbccba73c4d214bf10",
+    "vocab.txt": "07eced375cec144d27c900241f3e339478dec958f92fddbc551f295c992038a3",
+    "model.safetensors": "68d45e234eb4a928074dfd868cead0219ab85354cc53d20e772753c6bb9169d3",
+}
+for name, expected in bert_hashes.items():
+    path = Path(hf_hub_download("bert-base-uncased", name, revision=bert_rev))
+    require(digest(path) == expected, f"DINO text encoder mismatch: {name}")
+refs = path.parents[2] / "refs"
+refs.mkdir(exist_ok=True)
+(refs / "main").write_text(bert_rev)
+PYTHON
+export HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1
+"$py" -m kaggle.run_grounding_baselines --pack "$pack" --pack-sha256 "$pack_sha" \
+  --qwen-dir "$qwen_dir" --qwen-hashes kaggle/grounding_qwen_hashes.json --output "$output"
+(cd "$output" && sha256sum -c SHA256SUMS)
+[[ "$(find "$output" -maxdepth 1 -type f -printf '%s\n' | awk '{size += $1} END {print size}')" -lt 200000000 ]]
+echo "CELL DONE"
