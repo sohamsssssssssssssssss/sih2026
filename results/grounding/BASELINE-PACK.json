@@ -1,0 +1,15 @@
+{
+  "file": "satquery-grounding-baseline-pack.zip",
+  "bytes": 1199715658,
+  "sha256": "d995c51dd7a3581045b38e9bc55243f18ffe3448d42cbc3f1da721e8416dce96",
+  "image_counts": {
+    "dior-rsvg": {
+      "eval": 1000,
+      "select": 500
+    },
+    "vrsbench": {
+      "eval": 1000,
+      "select": 500
+    }
+  }
+}
