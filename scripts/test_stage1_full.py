@@ -350,6 +350,18 @@ def test_plan_arithmetic_is_floored_and_explicit():
     assert plan["epochs"] == pytest.approx((675 * 8) / 150000)
 
 
+def test_plan_exact_two_batch_budget():
+    rate = 3.7
+    budget = 16 / rate
+    config = _plan_config(budget_seconds=budget, wall_clock_limit_seconds=budget,
+                          wall_clock_reserve_seconds=0)
+    assert budget * rate / 8 == 1.9999999999999998
+    plan = full.plan_from_throughput(config, {"measured_samples_per_second": rate,
+                                              "shard_manifest_sha256": "a" * 64,
+                                              "config_sha256": "b" * 64}, n_available=100)
+    assert plan["max_optimizer_steps"] == plan["max_steps_per_session"] == 2
+
+
 def test_plan_budget_override_and_zero_step_refusal():
     with pytest.raises(ValueError, match="zero optimizer steps"):
         full.plan_from_throughput(_plan_config(), {"measured_samples_per_second": 0.0001,

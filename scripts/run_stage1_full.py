@@ -96,6 +96,14 @@ def load_throughput(path: Path, *, shard_manifest_sha256: str, config_sha256: st
     return payload
 
 
+def _whole_batches(seconds: float, rate: float, batch: int) -> int:
+    batches = seconds * rate / batch
+    if batches.is_integer():
+        return int(batches)
+    # A budget computed from a whole batch count can round one float below it.
+    return math.floor(math.nextafter(batches, math.inf))
+
+
 def plan_from_throughput(config: dict, throughput: dict, n_available: int,
                         *, budget_seconds: float | None = None) -> dict:
     """Turn measured throughput into the session plan, with no placeholder steps.
@@ -110,14 +118,14 @@ def plan_from_throughput(config: dict, throughput: dict, n_available: int,
                    else config["budget_seconds"])
     if budget <= 0:
         raise ValueError("budget_seconds must be positive")
-    total_steps = int(budget * rate // batch)
+    total_steps = _whole_batches(budget, rate, batch)
     if total_steps <= 0:
         raise ValueError(
             f"Computed plan allows zero optimizer steps: budget_seconds={budget}, "
             f"samples_per_second={rate}, effective_batch={batch}")
     limit = float(config.get("wall_clock_limit_seconds", 39600))
     reserve = float(config.get("wall_clock_reserve_seconds", 300))
-    session_steps = int(max(limit - reserve, 0) * rate // batch)
+    session_steps = _whole_batches(max(limit - reserve, 0), rate, batch)
     n_used = int(n_available)
     consumed = total_steps * batch
     epochs = consumed / n_used if n_used else None
