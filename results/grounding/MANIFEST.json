@@ -1,0 +1,107 @@
+{
+  "files": {
+    "dior-rsvg-eval.jsonl": {
+      "images": 1000,
+      "items": 1000,
+      "parent_images": 1000,
+      "sha256": "e783b07164adc7fcdc1a194e0a119b9d3f3f7967891ca7577ea07377c85a351d",
+      "tasks": {
+        "grounding": 1000
+      }
+    },
+    "dior-rsvg-select.jsonl": {
+      "images": 500,
+      "items": 500,
+      "parent_images": 500,
+      "sha256": "7027cf55a4cffb4625d102c88b92bd482a6becceb4e73deb7491da64a3c89505",
+      "tasks": {
+        "grounding": 500
+      }
+    },
+    "dior-rsvg-train.jsonl": {
+      "images": 5000,
+      "items": 5000,
+      "parent_images": 5000,
+      "sha256": "527a4c51ff75cf120aa4f578181cdc8a4af5d213ab5c3e824bd088335bb37b1c",
+      "tasks": {
+        "grounding": 5000
+      }
+    },
+    "vrsbench-eval.jsonl": {
+      "images": 1000,
+      "items": 2000,
+      "parent_images": 1000,
+      "sha256": "7300056e83992c71d5471f088305610530c185244b83cea669a7ebe393d84860",
+      "tasks": {
+        "caption": 1000,
+        "grounding": 1000
+      }
+    },
+    "vrsbench-select.jsonl": {
+      "images": 500,
+      "items": 500,
+      "parent_images": 500,
+      "sha256": "49dfad527b04a0e69213306f888e59b6e03784e0b23b1b7facb3b5bf79d4b036",
+      "tasks": {
+        "grounding": 500
+      }
+    },
+    "vrsbench-train.jsonl": {
+      "images": 2500,
+      "items": 5000,
+      "parent_images": 2500,
+      "sha256": "c70a6deeef47c0211502712fa74ef0862496aeea6ece76935f142ce415a2396a",
+      "tasks": {
+        "caption": 2500,
+        "grounding": 2500
+      }
+    }
+  },
+  "invalid_annotation_rows": {
+    "eval_grounding": 13,
+    "train_grounding": 10751
+  },
+  "seed": 17,
+  "source_files": {
+    "dior-rsvg/Annotations.zip": {
+      "bytes": 7774359,
+      "sha256": "cecbf38add026dcfef9e5505c6594090cb11912c4801e6aa98514aa469024e4c"
+    },
+    "dior-rsvg/JPEGImages.zip": {
+      "bytes": 5386728679,
+      "sha256": "1c0a52b10c9471cb02c801590d87ab23035fb82fe776ed825682a0e3270e690e"
+    },
+    "dior-rsvg/test.txt": {
+      "bytes": 42873,
+      "sha256": "d1d0b200fc2be1c5c1ca776601278adb3566d0efc6ea7a690ba927ce1877e5f8"
+    },
+    "dior-rsvg/train.txt": {
+      "bytes": 154012,
+      "sha256": "d55036d5dd9b234e74439cda910c8c0119894fbfcf72386412aef8be208c436b"
+    },
+    "dior-rsvg/val.txt": {
+      "bytes": 21925,
+      "sha256": "6324ad50498948e791e714cc03cb2ac7af4872e333087a48912f714141e979f9"
+    },
+    "vrsbench/Images_train.zip": {
+      "bytes": 8359313269,
+      "sha256": "ece04d7e402621b924e5be9865fd0c725afb59cc96fbf0392409196a50c60481"
+    },
+    "vrsbench/Images_val.zip": {
+      "bytes": 3976656690,
+      "sha256": "67f99c1dd437fdab94fea1f54e049ad56d198c3c873237c79d9b944200d248b1"
+    },
+    "vrsbench/VRSBench_EVAL_Cap.json": {
+      "bytes": 4809521,
+      "sha256": "d45fea7288bd7b243c968add4f9d1d2fae473826a4dccb32df0663e209826be2"
+    },
+    "vrsbench/VRSBench_EVAL_referring.json": {
+      "bytes": 10277680,
+      "sha256": "fd63f7c6b77a158f4cc933a1ead88fa63aa23ebcf30f2ec9be111f3567ff1b44"
+    },
+    "vrsbench/VRSBench_train.json": {
+      "bytes": 64923606,
+      "sha256": "8a126b8342eeeb364e5673c166be09f92ebaae81a60dd43885d64dc084be7e73"
+    }
+  }
+}
