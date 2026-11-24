@@ -35,8 +35,8 @@ VRSBench uses publisher revision `6cee2968fd752a6d51c6cb2d18dded2bc0baa218`. The
 | DIOR-RSVG `test.txt` | 42,873 | `d1d0b200fc2be1c5c1ca776601278adb3566d0efc6ea7a690ba927ce1877e5f8` | Matches official-download audit |
 | VRSBench `Images_train.zip` | 8,359,313,269 | `ece04d7e402621b924e5be9865fd0c725afb59cc96fbf0392409196a50c60481` | Publisher hash recorded, full local verification pending |
 | VRSBench `Images_val.zip` | 3,976,656,690 | `67f99c1dd437fdab94fea1f54e049ad56d198c3c873237c79d9b944200d248b1` | Publisher hash recorded, full local verification pending |
-| VRSBench `Annotations_train.zip` | 28,571,512 | `836ea7b2c4b19be27edea393331f3d4ab4d5abb0ce4715fc8b4bdb4c9bdc74b9` | Publisher hash recorded, full local verification pending |
-| VRSBench `Annotations_val.zip` | 12,789,474 | `c63f7d5c2bef15572a14794bec7d5773ad45c8e8447df5c601a9e036bba04ffb` | Publisher hash recorded, full local verification pending |
+| VRSBench `Annotations_train.zip` | 28,571,512 | `836ea7b2c4b19be27edea393331f3d4ab4d5abb0ce4715fc8b4bdb4c9bdc74b9` | Local bytes match publisher SHA-256 |
+| VRSBench `Annotations_val.zip` | 12,789,474 | `c63f7d5c2bef15572a14794bec7d5773ad45c8e8447df5c601a9e036bba04ffb` | Local bytes match publisher SHA-256 |
 | VRSBench `VRSBench_train.json` | 64,923,606 | `8a126b8342eeeb364e5673c166be09f92ebaae81a60dd43885d64dc084be7e73` | Matches publisher SHA-256 |
 | VRSBench `VRSBench_EVAL_referring.json` | 10,277,680 | `fd63f7c6b77a158f4cc933a1ead88fa63aa23ebcf30f2ec9be111f3567ff1b44` | Matches publisher Git blob ID |
 | VRSBench `VRSBench_EVAL_Cap.json` | 4,809,521 | `d45fea7288bd7b243c968add4f9d1d2fae473826a4dccb32df0663e209826be2` | Matches publisher Git blob ID |
