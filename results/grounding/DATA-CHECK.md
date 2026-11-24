@@ -29,19 +29,19 @@ VRSBench uses publisher revision `6cee2968fd752a6d51c6cb2d18dded2bc0baa218`. The
 | Dataset / source file | Bytes | SHA-256 | Local verification |
 |---|---:|---|---|
 | DIOR-RSVG `Annotations.zip` | 7,774,359 | `cecbf38add026dcfef9e5505c6594090cb11912c4801e6aa98514aa469024e4c` | Matches official-download audit |
-| DIOR-RSVG `JPEGImages.zip` | 5,386,728,679 | `1c0a52b10c9471cb02c801590d87ab23035fb82fe776ed825682a0e3270e690e` | Publisher/mirror hash recorded, full local verification pending |
+| DIOR-RSVG `JPEGImages.zip` | 5,386,728,679 | `1c0a52b10c9471cb02c801590d87ab23035fb82fe776ed825682a0e3270e690e` | Local bytes match official-download audit |
 | DIOR-RSVG `train.txt` | 154,012 | `d55036d5dd9b234e74439cda910c8c0119894fbfcf72386412aef8be208c436b` | Matches official-download audit |
 | DIOR-RSVG `val.txt` | 21,925 | `6324ad50498948e791e714cc03cb2ac7af4872e333087a48912f714141e979f9` | Matches official-download audit |
 | DIOR-RSVG `test.txt` | 42,873 | `d1d0b200fc2be1c5c1ca776601278adb3566d0efc6ea7a690ba927ce1877e5f8` | Matches official-download audit |
-| VRSBench `Images_train.zip` | 8,359,313,269 | `ece04d7e402621b924e5be9865fd0c725afb59cc96fbf0392409196a50c60481` | Publisher hash recorded, full local verification pending |
-| VRSBench `Images_val.zip` | 3,976,656,690 | `67f99c1dd437fdab94fea1f54e049ad56d198c3c873237c79d9b944200d248b1` | Publisher hash recorded, full local verification pending |
+| VRSBench `Images_train.zip` | 8,359,313,269 | `ece04d7e402621b924e5be9865fd0c725afb59cc96fbf0392409196a50c60481` | Local bytes match publisher SHA-256 |
+| VRSBench `Images_val.zip` | 3,976,656,690 | `67f99c1dd437fdab94fea1f54e049ad56d198c3c873237c79d9b944200d248b1` | Local bytes match publisher SHA-256 |
 | VRSBench `Annotations_train.zip` | 28,571,512 | `836ea7b2c4b19be27edea393331f3d4ab4d5abb0ce4715fc8b4bdb4c9bdc74b9` | Local bytes match publisher SHA-256 |
 | VRSBench `Annotations_val.zip` | 12,789,474 | `c63f7d5c2bef15572a14794bec7d5773ad45c8e8447df5c601a9e036bba04ffb` | Local bytes match publisher SHA-256 |
 | VRSBench `VRSBench_train.json` | 64,923,606 | `8a126b8342eeeb364e5673c166be09f92ebaae81a60dd43885d64dc084be7e73` | Matches publisher SHA-256 |
 | VRSBench `VRSBench_EVAL_referring.json` | 10,277,680 | `fd63f7c6b77a158f4cc933a1ead88fa63aa23ebcf30f2ec9be111f3567ff1b44` | Matches publisher Git blob ID |
 | VRSBench `VRSBench_EVAL_Cap.json` | 4,809,521 | `d45fea7288bd7b243c968add4f9d1d2fae473826a4dccb32df0663e209826be2` | Matches publisher Git blob ID |
 
-The manifest was frozen from the verified annotation sources and the ZIP central directories read from the pinned remote archives. The ZIP indexes establish member names, sizes and CRCs. Full image archive hashes must match the manifest before evaluation.
+The manifest was frozen from the verified annotation sources and the ZIP central directories read from the pinned remote archives. The ZIP indexes establish member names, sizes and CRCs. The downloaded image archives match the pinned manifest hashes.
 
 ## Frozen seed-17 samples
 
@@ -50,3 +50,9 @@ The six [manifest files](MANIFEST.json) identify rows and ZIP members by stable 
 For VRSBench grounding, the sampler requires a single nonempty expression and one valid positive-area xyxy gold box in 0–100. The released training JSON had 4,298 refer rows without a single box in the published format, 6,451 with out-of-range or nonpositive-area boxes, and two with no tagged expression. The evaluation JSON had 13 unusable grounding rows. These rows were excluded before selecting any evaluation IDs. No evaluation ran.
 
 The selected training data total 10,000 items on 7,500 immediate image files. VRSBench caption rows reuse its selected training images. The selected training members account for 2,591,173,640 compressed bytes across the image ZIPs, excluding archive metadata, and can be extracted by the listed IDs for a later approved run.
+
+## Full local verification
+
+The complete DIOR-RSVG archives and split files are in `~/datasets/satquery-grounding-v1/dior-rsvg/xet/`. The complete VRSBench source files are accessible from `~/datasets/satquery-grounding-v1/vrsbench/`. The dataset root is private and outside Git.
+
+The manifest builder regenerated all six JSONL splits and `MANIFEST.json` byte for byte from the complete local archives. The split test suite passed 5/5.
