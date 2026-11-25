@@ -2,7 +2,7 @@
 set -euo pipefail
 trap 'echo "HARD STOP: grounding baseline cell failed on line $LINENO" >&2' ERR
 
-commit=8628cdc91486d0be6c2912a606301cf257d243aa
+commit=c52ed19ba9e0cafc20117aa16f5ec55d625724fc
 pack_sha=d995c51dd7a3581045b38e9bc55243f18ffe3448d42cbc3f1da721e8416dce96
 manifest_sha=0feb52a6f339d2c4404c6cc8022550593f569ae52de2b78a2c832c67a046f292
 output=/kaggle/working/grounding-baselines
