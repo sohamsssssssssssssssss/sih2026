@@ -18,24 +18,14 @@ git -C "$work/repo" checkout --detach "$commit"
 [[ "$(git -C "$work/repo" rev-parse HEAD)" == "$commit" ]]
 cd "$work/repo"
 qwen_dir=$(python - <<'PYTHON'
-from hashlib import file_digest
 import json
 from pathlib import Path
 
-root = Path("/kaggle/input")
-mounts = [root / "satquery-qwen-pinned",
-          root / "datasets/sohamssssss/satquery-qwen-pinned"]
-shards = [p for mount in mounts for p in mount.rglob("model-00001-of-00002.safetensors") if p.is_file()]
-if len(shards) != 1:
-    raise SystemExit(f"HARD STOP: expected one Qwen shard under the supported mounts, found {len(shards)}")
-directory = shards[0].parent
+from kaggle.grounding_qwen_inputs import find_qwen_directory, verify_qwen_directory
+
+directory = find_qwen_directory(Path("/kaggle/input"))
 pins = json.loads(Path("kaggle/grounding_qwen_hashes.json").read_text())
-if {p.name for p in directory.iterdir() if p.is_file()} != pins.keys():
-    raise SystemExit("HARD STOP: Qwen dataset file list mismatch")
-for name, expected in pins.items():
-    with (directory / name).open("rb") as stream:
-        if file_digest(stream, "sha256").hexdigest() != expected:
-            raise SystemExit(f"HARD STOP: Qwen file mismatch: {name}")
+verify_qwen_directory(directory, pins)
 print(directory)
 PYTHON
 )

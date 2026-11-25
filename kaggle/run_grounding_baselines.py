@@ -14,6 +14,8 @@ import zipfile
 
 from PIL import Image
 
+from kaggle.grounding_qwen_inputs import verify_qwen_directory
+
 SEED = 17
 DINO_ID = "ShilongLiu/GroundingDINO"
 DINO_REVISION = "a94c9b567a2a374598f05c584e96798a170c56fb"
@@ -211,12 +213,9 @@ def run(args):
     if not args.stub:
         require(args.qwen_dir and args.qwen_hashes, "Qwen directory and checksum list required")
         hashes = json.loads(args.qwen_hashes.read_bytes())
-        require(all(hashes.get(name) == sha for name, sha in config["weight_sha256"].items()), "Qwen shard pins")
+        require(all(hashes.get(name, {}).get("sha256") == sha for name, sha in config["weight_sha256"].items()), "Qwen shard pins")
         require(set(config["required_files"] + ["model.safetensors.index.json"]) <= hashes.keys(), "incomplete Qwen checksum list")
-        files = {p.name for p in args.qwen_dir.iterdir() if p.is_file()}
-        require(files == hashes.keys(), "Qwen file list mismatch")
-        for name, sha in hashes.items():
-            require(digest(args.qwen_dir / name) == sha, f"Qwen file mismatch: {name}")
+        verify_qwen_directory(args.qwen_dir, hashes)
 
     with open_pack(path, args.pack_sha256, args.manifest_sha256) as pack:
         items = pack_items(pack)
@@ -280,7 +279,7 @@ def main():
     parser.add_argument("--pack-sha256", required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--qwen-dir", type=Path)
-    parser.add_argument("--qwen-hashes", type=Path, help="Pinned JSON mapping filename to SHA-256")
+    parser.add_argument("--qwen-hashes", type=Path, help="Pinned JSON mapping filename to size and SHA-256")
     parser.add_argument("--stub", action="store_true", help="Exercise serialization with 20 selected inputs")
     run(parser.parse_args())
 
