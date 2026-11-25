@@ -51,6 +51,8 @@ services:
         NODE_IMAGE: ${NODE_IMAGE:-node:22-slim}
         NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-}
     image: satquery-frontend:latest
+    environment:
+      SATQUERY_INTERNAL_API_URL: http://backend:8000
     restart: unless-stopped
     expose:
       - "3000"

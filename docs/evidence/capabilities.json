@@ -1,0 +1,72 @@
+[
+  {
+    "name": "Mac VQA",
+    "status": "live",
+    "why": "The demo serves B13 on MLX. The held-out RSVQA-LR test measured 73.25% macro accuracy.",
+    "evidence_path": "results/vqa-mac-fresh-test/REPORT.md",
+    "commit": "cca98d0a522c3c28c9d9a914ffab1fbb1fdab0b6"
+  },
+  {
+    "name": "Resolution ladder",
+    "status": "experimental",
+    "why": "On LoveDA presence, base gained from imagery through 2 m and both models neared chance at 5–10 m. B13 had a 0.9510 yes-rate at 0.3 m.",
+    "evidence_path": "results/ladder-v3/REPORT.md",
+    "commit": "2f66a93e1391f44628f1edcab43b7db2836b316f"
+  },
+  {
+    "name": "Land cover",
+    "status": "live",
+    "why": "The Europe BigEarthNet checkpoints serve uncalibrated presence scores.",
+    "evidence_path": "docs/STATUS.md",
+    "commit": "13564f49a59f0094fa0256e4e6c1afaf4eccd85b"
+  },
+  {
+    "name": "India land-cover adaptation",
+    "status": "off",
+    "why": "Attempt 3 failed the calibration and single-date transfer gates.",
+    "evidence_path": "results/landcover-india-promotion/attempt3/REPORT.md",
+    "commit": "2ed45bdfadd9c5767ecd6f78a9b6fbca3ad980c4"
+  },
+  {
+    "name": "Change detection",
+    "status": "off",
+    "why": "CDVQA controls did not establish image dependence.",
+    "evidence_path": "results/t18/REPORT.md",
+    "commit": "5b741b963430ac2b797c52a3bb4a57689e3f6a9f"
+  },
+  {
+    "name": "Counting",
+    "status": "off",
+    "why": "Grounding DINO counting scored below the always-zero baseline.",
+    "evidence_path": "results/count-dior/ANALYSIS.md",
+    "commit": "1837259d18fe9e96aca2339160789dd3c9c73a50"
+  },
+  {
+    "name": "Grounding and captioning",
+    "status": "in-progress",
+    "why": "Grounding v1 is preregistered and baseline evaluation is underway.",
+    "evidence_path": "docs/gates/GROUNDING-V1.md",
+    "commit": "0ab417a53ecef200ac05ec4ad0c49fd408908d44"
+  },
+  {
+    "name": "Flood water",
+    "status": "experimental",
+    "why": "The Sentinel-1 Otsu method scored 0.631 IoU against a 0.65 gate.",
+    "evidence_path": "outputs/T07c-flood.md",
+    "commit": "7ffe13027e5e09d92ddb44bff220f485c23c880a"
+  },
+  {
+    "name": "Optical–SAR fusion",
+    "status": "experimental",
+    "why": "The provider computes deterministic indices and backscatter summaries.",
+    "evidence_path": "core/tool_status.json",
+    "commit": "1273a83ef58c8a4b6857ba1e24c560d3ede4f638"
+  },
+  {
+    "name": "Audit trail",
+    "status": "live",
+    "why": "The app records executions in a hash-chained trace history.",
+    "evidence_path": "orchestrator/trace.py",
+    "commit": "7bfb1790ad92a8e63225d6475f1d2975ef0e43c2"
+  }
+]

@@ -76,7 +76,10 @@ data/external/
 data/sar_gate/raw/
 
 # Not needed by the API or the GPU smoke.
-docs/
+docs/*
+!docs/evidence/
+docs/evidence/*
+!docs/evidence/capabilities.json
 reviews/
 kaggle/
 training/

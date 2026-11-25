@@ -1,5 +1,6 @@
 """Contract-based /ask routes on the existing FastAPI application."""
 import asyncio
+import json
 from pathlib import Path
 import threading
 from time import monotonic
@@ -173,7 +174,9 @@ async def upload(request:Request,file:UploadFile=File(...)):
 @router.get('/capabilities')
 def capabilities(request:Request):
     runtime=service(request)
-    return {'capabilities':[capability_state(name,registry=runtime.registry) for name in CAPABILITY_TOOLS],
+    evidence = Path(__file__).resolve().parents[2] / "docs/evidence/capabilities.json"
+    return {'evidence': json.loads(evidence.read_text(encoding="utf-8")),
+            'capabilities':[capability_state(name,registry=runtime.registry) for name in CAPABILITY_TOOLS],
             'tools':[t.status.model_dump(mode='json') for t in runtime.registry.list()]}
 
 

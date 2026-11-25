@@ -11,6 +11,7 @@ const navigation = [
   { href: "/resolution", label: "Resolution Lab", icon: Activity },
   { href: "/sar", label: "SAR Validation", icon: Radar },
   { href: "/executions", label: "Executions", icon: History },
+  { href: "/capabilities", label: "Capabilities", icon: Activity },
   { href: "/system", label: "System", icon: Settings2 },
 ];
 

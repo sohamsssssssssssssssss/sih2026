@@ -12,7 +12,7 @@ export default defineConfig({
     colorScheme: "light",
     trace: "retain-on-failure",
   },
-  webServer: {
+  webServer: process.env.SATQUERY_E2E_USE_RUNNING_DEMO === "1" ? undefined : {
     command: "bash ../scripts/run-demo.sh",
     env: { SATQUERY_VQA_MLX: process.env.SATQUERY_VQA_MLX ?? "0" },
     url: "http://127.0.0.1:3000/ask",
