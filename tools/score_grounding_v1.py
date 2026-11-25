@@ -126,7 +126,7 @@ def caption_scores(rows, predictions):
     return {"CIDEr": float(cider), "BLEU-4": float(bleu[3]), "METEOR": float(meteor)}, values
 
 
-def score(items, raw, pack_sha, adapter=None):
+def score(items, raw, pack_sha, adapter=None, *, smoke=False):
     baseline_names = [f"{model}-{condition}" for model in ("qwen", "dino") for condition in CONDITIONS]
     stub = verify_output(raw, baseline_names + ["dino-select", "qwen-caption"], pack_sha)
     select = [r for r in items if r["split"] == "select"]
@@ -136,9 +136,10 @@ def score(items, raw, pack_sha, adapter=None):
     threshold = select_threshold([r for r in select if r["id"] in selected], selected)
     inputs = {name: read_predictions(raw, name, ground, stub) for name in baseline_names}
     if adapter:
-        require(not stub and not verify_output(adapter, [f"adapter-{c}" for c in CONDITIONS] + ["adapter-caption"], pack_sha),
+        adapter_stub = verify_output(adapter, [f"adapter-{c}" for c in CONDITIONS] + ["adapter-caption"], pack_sha)
+        require(stub == adapter_stub and (smoke if stub else not smoke),
                 "adapter scoring requires real predictions")
-        inputs.update({f"adapter-{c}": read_predictions(adapter, f"adapter-{c}", ground, False) for c in CONDITIONS})
+        inputs.update({f"adapter-{c}": read_predictions(adapter, f"adapter-{c}", ground, stub) for c in CONDITIONS})
     ground = [r for r in ground if r["id"] in inputs["qwen-eval"]]
     require(all(set(predictions) == {r["id"] for r in ground} for predictions in inputs.values()), "unaligned eval conditions")
     by_dataset = [[r for r in ground if r["dataset"] == dataset] for dataset in DATASETS]
@@ -174,10 +175,13 @@ def score(items, raw, pack_sha, adapter=None):
     result = {"stub": stub, "dino_threshold": threshold, "grounding": summaries, "controls": controls,
               "base_vs_dino": compare("qwen-eval", "dino-eval"), "captioning": {"qwen": qwen_caption}}
     if adapter:
-        adapter_caption, values = caption_scores(captions, read_predictions(adapter, "adapter-caption", captions, False))
+        adapter_caption, values = caption_scores(captions, read_predictions(adapter, "adapter-caption", captions, stub))
         delta = paired([values-base_values], draws_for([len(captions)]))
         comparisons = {model: compare("adapter-eval", f"{model}-eval") for model in ("qwen", "dino")}
-        result["captioning"].update(adapter=adapter_caption, cider_gain=delta, passed=positive_ci(delta))
+        result["captioning"].update(adapter=adapter_caption, cider_gain=delta)
+        if stub:
+            return result
+        result["captioning"]["passed"] = positive_ci(delta)
         result["adapter"] = {"comparisons": comparisons, "passed": all(map(positive_ci, comparisons.values()))
                              and all(control_pass(controls["adapter"][c]) for c in CONDITIONS[1:])}
     return result
@@ -216,10 +220,11 @@ def main():
     parser.add_argument("--pack-sha256", required=True)
     parser.add_argument("--raw", type=Path, required=True)
     parser.add_argument("--adapter", type=Path)
+    parser.add_argument("--smoke", action="store_true", help="Score paired stub outputs without issuing a verdict")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     with open_pack(args.pack, args.pack_sha256) as pack:
-        result = score(pack_items(pack), args.raw, args.pack_sha256, args.adapter)
+        result = score(pack_items(pack), args.raw, args.pack_sha256, args.adapter, smoke=args.smoke)
     args.output.mkdir()
     (args.output / "results.json").write_text(json.dumps(result, indent=2, allow_nan=False) + "\n")
     (args.output / "REPORT.md").write_text(report(result))

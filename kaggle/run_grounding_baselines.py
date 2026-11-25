@@ -42,16 +42,16 @@ PACK_NAME = "satquery-grounding-baseline-pack"
 MANIFEST_SHA = "0feb52a6f339d2c4404c6cc8022550593f569ae52de2b78a2c832c67a046f292"
 
 
-def discover_pack(root):
+def discover_pack(root, pack_name=PACK_NAME):
     archives, directories = [], []
     def fail(error):
         raise ValueError(f"HARD STOP: cannot scan input mounts: {error}") from error
 
     for directory, _, files in os.walk(root, followlinks=True, onerror=fail):
         path = Path(directory)
-        if PACK_NAME + ".zip" in files:
-            archives.append(path / (PACK_NAME + ".zip"))
-        if "MANIFEST.json" in files and any(PACK_NAME in part for part in path.relative_to(root).parts):
+        if pack_name + ".zip" in files:
+            archives.append(path / (pack_name + ".zip"))
+        if "MANIFEST.json" in files and any(pack_name in part for part in path.relative_to(root).parts):
             # The pack also ships a frozen/MANIFEST.json. Only the pack root qualifies.
             if path.name != "frozen":
                 directories.append(path)
@@ -101,12 +101,12 @@ def verify_manifest(pack):
         require(len(data) == row["bytes"] and sha256(data).hexdigest() == row["sha256"], row["file"])
 
 
-def pack_items(pack):
+def pack_items(pack, splits=("select", "eval")):
     verify_manifest(pack)
     frozen = REPO / "results/grounding"
     require(pack.read("frozen/MANIFEST.json") == (frozen / "MANIFEST.json").read_bytes(), "frozen manifest mismatch")
     items = [json.loads(line) for line in pack.read("items.jsonl").splitlines()]
-    for dataset, split in product(("dior-rsvg", "vrsbench"), ("select", "eval")):
+    for dataset, split in product(("dior-rsvg", "vrsbench"), splits):
         name = f"{dataset}-{split}.jsonl"
         data = pack.read(f"frozen/{name}")
         require(data == (frozen / name).read_bytes(), name)
@@ -142,7 +142,7 @@ def shuffled(rows):
     return donors
 
 
-def qwen_backend(path):
+def qwen_backend(path, adapter=None):
     import torch
     from transformers import AutoProcessor, Qwen2_5_VLForConditionalGeneration
 
@@ -150,6 +150,10 @@ def qwen_backend(path):
     model = Qwen2_5_VLForConditionalGeneration.from_pretrained(
         path, torch_dtype=torch.float16, attn_implementation="sdpa", local_files_only=True
     ).eval().to("cuda")
+
+    if adapter:
+        from peft import PeftModel
+        model = PeftModel.from_pretrained(model, adapter, local_files_only=True).eval()
 
     def predict(image, prompt, tokens):
         messages = [{"role": "user", "content": [{"type": "image"}, {"type": "text", "text": prompt}]}]
@@ -217,6 +221,10 @@ def run(args):
         require(set(config["required_files"] + ["model.safetensors.index.json"]) <= hashes.keys(), "incomplete Qwen checksum list")
         verify_qwen_directory(args.qwen_dir, hashes)
 
+    if args.adapter_eval and not args.stub:
+        require(args.adapter_dir and args.adapter_receipt_sha256, "adapter directory and receipt pin required")
+        from kaggle.train_grounding_adapter import verify_tree
+        verify_tree(args.adapter_dir, args.adapter_receipt_sha256)
     with open_pack(path, args.pack_sha256, args.manifest_sha256) as pack:
         items = pack_items(pack)
         if args.stub:
@@ -230,10 +238,10 @@ def run(args):
         captions = [r for r in items if r["task"] == "caption"]
         donors = shuffled(ground)
         args.output.mkdir()
-        for model in ("qwen", "dino"):
-            infer = None if args.stub else (qwen_backend(args.qwen_dir) if model == "qwen" else dino_backend())
+        for model in (("adapter",) if args.adapter_eval else ("qwen", "dino")):
+            infer = None if args.stub else (qwen_backend(args.qwen_dir, args.adapter_dir) if model != "dino" else dino_backend())
             jobs = [("eval", ground), ("shuffled", ground), ("grey", ground)]
-            jobs.append(("caption", captions) if model == "qwen" else ("select", select))
+            jobs.append(("caption", captions) if model != "dino" else ("select", select))
             for condition, rows in jobs:
                 with (args.output / f"{model}-{condition}.jsonl").open("x") as output:
                     for index, row in enumerate(rows, 1):
@@ -244,7 +252,7 @@ def run(args):
                         expression = donor["expression"]
                         result = {"id": row["id"], "donor_id": donor["id"],
                                   "donor_same_wording": expression == row["expression"], "dataset": row["dataset"]}
-                        if model == "qwen":
+                        if model != "dino":
                             prompt = CAPTION if condition == "caption" else PROMPT.format(expression=expression)
                             raw = "[250,250,750,750]" if args.stub else infer(image, prompt, 256 if condition == "caption" else 64)
                             result["raw_text"] = raw
@@ -262,8 +270,8 @@ def run(args):
     info = {"commit": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=REPO, text=True).strip(),
             "seed": SEED, "stub": args.stub, "gpu": None if args.stub else torch.cuda.get_device_name(0),
             "cuda": torch.version.cuda, "pack_sha256": args.pack_sha256, "qwen_revision": config["revision"],
-            "dino_revision": DINO_REVISION, "versions": {name: version(name) for name in
-                (("torch", "Pillow") if args.stub else ("torch", "Pillow", "transformers", "groundingdino-py", "huggingface-hub"))}}
+            "dino_revision": None if args.adapter_eval else DINO_REVISION, "adapter_receipt_sha256": args.adapter_receipt_sha256, "versions": {name: version(name) for name in
+                (("torch", "Pillow") if args.stub else ("torch", "Pillow", "transformers", "peft", "huggingface-hub") if args.adapter_eval else ("torch", "Pillow", "transformers", "groundingdino-py", "huggingface-hub"))}}
     (args.output / "run-info.json").write_text(json.dumps(info, indent=2) + "\n")
     files = sorted(args.output.iterdir())
     require(sum(path.stat().st_size for path in files) < 200_000_000, "raw output exceeds 200 MB")
@@ -280,8 +288,13 @@ def main():
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--qwen-dir", type=Path)
     parser.add_argument("--qwen-hashes", type=Path, help="Pinned JSON mapping filename to size and SHA-256")
+    parser.add_argument("--adapter-eval", action="store_true")
+    parser.add_argument("--adapter-dir", type=Path)
+    parser.add_argument("--adapter-receipt-sha256")
     parser.add_argument("--stub", action="store_true", help="Exercise serialization with 20 selected inputs")
-    run(parser.parse_args())
+    args = parser.parse_args()
+    require(not args.adapter_dir or args.adapter_eval, "--adapter-dir requires --adapter-eval")
+    run(args)
 
 
 if __name__ == "__main__":
