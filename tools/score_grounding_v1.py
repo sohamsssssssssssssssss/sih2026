@@ -4,11 +4,10 @@ from importlib.metadata import version
 import json
 import math
 from pathlib import Path
-import zipfile
 
 import numpy as np
 
-from kaggle.run_grounding_baselines import GRID, digest, pack_items, parse_box, require
+from kaggle.run_grounding_baselines import GRID, digest, open_pack, pack_items, parse_box, require
 
 CENTER = [0.25, 0.25, 0.75, 0.75]
 DATASETS = ("dior-rsvg", "vrsbench")
@@ -219,8 +218,7 @@ def main():
     parser.add_argument("--adapter", type=Path)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
-    require(digest(args.pack) == args.pack_sha256, "pack SHA-256")
-    with zipfile.ZipFile(args.pack) as pack:
+    with open_pack(args.pack, args.pack_sha256) as pack:
         result = score(pack_items(pack), args.raw, args.pack_sha256, args.adapter)
     args.output.mkdir()
     (args.output / "results.json").write_text(json.dumps(result, indent=2, allow_nan=False) + "\n")

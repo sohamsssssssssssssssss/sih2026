@@ -1,5 +1,6 @@
 """Produce raw grounding-v1 predictions from a checksum-pinned private pack."""
 import argparse
+from contextlib import contextmanager
 from hashlib import file_digest, sha256
 from importlib.metadata import version
 from io import BytesIO
@@ -35,13 +36,71 @@ def require(condition, message):
         raise ValueError(f"HARD STOP: {message}")
 
 
-def pack_items(pack):
+PACK_NAME = "satquery-grounding-baseline-pack"
+MANIFEST_SHA = "0feb52a6f339d2c4404c6cc8022550593f569ae52de2b78a2c832c67a046f292"
+
+
+def discover_pack(root):
+    archives, directories = [], []
+    def fail(error):
+        raise ValueError(f"HARD STOP: cannot scan input mounts: {error}") from error
+
+    for directory, _, files in os.walk(root, followlinks=True, onerror=fail):
+        path = Path(directory)
+        if PACK_NAME + ".zip" in files:
+            archives.append(path / (PACK_NAME + ".zip"))
+        if "MANIFEST.json" in files and any(PACK_NAME in part for part in path.relative_to(root).parts):
+            # The pack also ships a frozen/MANIFEST.json. Only the pack root qualifies.
+            if path.name != "frozen":
+                directories.append(path)
+    candidates = archives + directories
+    require(len(candidates) == 1, f"attach exactly one baseline pack (found {len(archives)} ZIPs and {len(directories)} extracted packs)")
+    return candidates[0]
+
+
+class ExtractedPack:
+    def __init__(self, root):
+        self.root = root
+
+    def read(self, name):
+        return (self.root / name).read_bytes()
+
+    def namelist(self):
+        return [path.relative_to(self.root).as_posix() for path in self.root.rglob("*")
+                if not path.is_dir() or path.is_symlink()]
+
+
+@contextmanager
+def open_pack(path, zip_sha, manifest_sha=MANIFEST_SHA):
+    try:
+        if path.is_dir():
+            pack = ExtractedPack(path)
+            require(digest(path / "MANIFEST.json") == manifest_sha, "extracted MANIFEST.json SHA-256 mismatch")
+            require(not any(p.is_symlink() for p in path.rglob("*")), "unexpected symlink in extracted pack")
+            yield pack
+        else:
+            require(digest(path) == zip_sha, "pack ZIP SHA-256 mismatch")
+            with zipfile.ZipFile(path) as pack:
+                yield pack
+    except (OSError, zipfile.BadZipFile) as error:
+        raise ValueError(f"HARD STOP: cannot read pack: {error}") from error
+
+
+def verify_manifest(pack):
     manifest = json.loads(pack.read("MANIFEST.json"))
     names = [row["file"] for row in manifest]
-    require(len(names) == len(set(names)) and sorted(pack.namelist()) == sorted([*names, "MANIFEST.json"]), "pack file list mismatch")
+    actual = pack.namelist()
+    expected = set(names) | {"MANIFEST.json"}
+    require(len(actual) == len(set(actual)) and len(names) == len(set(names))
+            and set(actual) == expected,
+            f"pack file list mismatch (missing={sorted(expected-set(actual))}, extra={sorted(set(actual)-expected)})")
     for row in manifest:
         data = pack.read(row["file"])
         require(len(data) == row["bytes"] and sha256(data).hexdigest() == row["sha256"], row["file"])
+
+
+def pack_items(pack):
+    verify_manifest(pack)
     frozen = REPO / "results/grounding"
     require(pack.read("frozen/MANIFEST.json") == (frozen / "MANIFEST.json").read_bytes(), "frozen manifest mismatch")
     items = [json.loads(line) for line in pack.read("items.jsonl").splitlines()]
@@ -147,7 +206,7 @@ def run(args):
     random.seed(SEED)
     torch.manual_seed(SEED)
     require(args.stub or torch.cuda.is_available(), "CUDA required")
-    require(digest(args.pack) == args.pack_sha256, "pack SHA-256")
+    path = args.pack if args.pack else discover_pack(args.input_root)
     config = json.loads((REPO / "configs/model_artifacts.json").read_bytes())["providers"]["qwen2.5vl-3b"]
     if not args.stub:
         require(args.qwen_dir and args.qwen_hashes, "Qwen directory and checksum list required")
@@ -159,7 +218,7 @@ def run(args):
         for name, sha in hashes.items():
             require(digest(args.qwen_dir / name) == sha, f"Qwen file mismatch: {name}")
 
-    with zipfile.ZipFile(args.pack) as pack:
+    with open_pack(path, args.pack_sha256, args.manifest_sha256) as pack:
         items = pack_items(pack)
         if args.stub:
             items = [row for dataset, split, task, count in
@@ -214,7 +273,10 @@ def run(args):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--pack", type=Path, required=True)
+    source = parser.add_mutually_exclusive_group(required=True)
+    source.add_argument("--pack", type=Path)
+    source.add_argument("--input-root", type=Path)
+    parser.add_argument("--manifest-sha256", default=MANIFEST_SHA, choices=[MANIFEST_SHA])
     parser.add_argument("--pack-sha256", required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--qwen-dir", type=Path)
