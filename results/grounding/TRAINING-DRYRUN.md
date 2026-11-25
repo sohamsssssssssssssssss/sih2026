@@ -2,7 +2,7 @@
 
 The private train ZIP has 7,500 images and 10,000 rows. The build checked the frozen inputs and found zero training overlaps with eval or select by parent ID, qualified image path, or image SHA-256. The image payload before compression was 2,696,238,619 bytes.
 
-The local pinned Qwen processor formatted eight grounding and eight caption examples. All 16 passed the assistant-token boundary and loss-mask assertions. A synthetic checkpoint receipt loaded once and rejected a deliberately changed state file. This exercised receipt loading only. No optimizer or model weights were used on CPU.
+The local pinned Qwen processor formatted eight grounding and eight caption examples. All 16 passed the assistant-token boundary and loss-mask assertions. All 10,000 target rows passed native target formatting. A CPU-only linear stub ran on 16 synthetic items, stopped at optimizer step 4, sealed and verified its checkpoint, then resumed once to step 8. A separate fixture rejected a deliberately changed checkpoint state file. The local smoke used Transformers 5.23.0 and Accelerate 1.16.0. No Qwen model weights were used on CPU.
 
 The prediction stubs processed 20 selected inputs. The adapter produced all three grounding conditions on ten eval expressions and four caption predictions. The scorer verified the output checksums and produced both report files in smoke mode without issuing a gate verdict.
 
