@@ -1,0 +1,62 @@
+%%bash
+set -euo pipefail
+trap 'echo "HARD STOP: grounding adapter evaluation cell failed on line $LINENO" >&2' ERR
+
+commit=9aef2fe6fa6f7e3742c685eef630bf68a59f7e0b
+pack_sha=d995c51dd7a3581045b38e9bc55243f18ffe3448d42cbc3f1da721e8416dce96
+manifest_sha=0feb52a6f339d2c4404c6cc8022550593f569ae52de2b78a2c832c67a046f292
+output=/kaggle/working/grounding-adapter-eval
+work=$(mktemp -d /tmp/satquery-grounding.XXXXXX)
+export TMPDIR="$work/tmp" HF_HOME="$work/hf" XDG_CACHE_HOME="$work/cache"
+export CUDA_VISIBLE_DEVICES=0
+export PIP_CACHE_DIR="$work/pip" PYTHONDONTWRITEBYTECODE=1 HF_HUB_DISABLE_IMPLICIT_TOKEN=1
+mkdir -p "$TMPDIR"
+
+[[ ! -e "$output" ]] || { echo "HARD STOP: output already exists" >&2; exit 1; }
+git clone --no-checkout https://github.com/sohamsssssssssssssssss/sih2026.git "$work/repo"
+git -C "$work/repo" checkout --detach "$commit"
+[[ "$(git -C "$work/repo" rev-parse HEAD)" == "$commit" ]]
+cd "$work/repo"
+[[ -n "${SATQUERY_ADAPTER_RECEIPT_SHA256:-}" ]] || { echo "HARD STOP: set SATQUERY_ADAPTER_RECEIPT_SHA256" >&2; exit 1; }
+qwen_dir=$(python - <<'PYTHON'
+from pathlib import Path
+from kaggle.grounding_qwen_inputs import find_qwen_directory
+
+print(find_qwen_directory(Path("/kaggle/input")))
+PYTHON
+)
+artifact_dir() {
+  python - "$1" <<'PYTHON'
+from pathlib import Path
+import re
+import sys
+from kaggle.run_grounding_baselines import digest, require
+
+pin = sys.argv[1]
+require(re.fullmatch(r"[0-9a-f]{64}", pin), "expected an ARTIFACT.json SHA-256")
+matches = [file.parent for file in Path("/kaggle/input").rglob("ARTIFACT.json")
+           if file.is_file() and digest(file) == pin]
+require(len(matches) == 1, f"attach exactly one directory with the pinned artifact receipt (found {len(matches)})")
+print(matches[0])
+PYTHON
+}
+adapter=$(artifact_dir "$SATQUERY_ADAPTER_RECEIPT_SHA256")
+[[ -f "$adapter/adapter_model.safetensors" && -f "$adapter/adapter_config.json" ]] ||
+  { echo "HARD STOP: attach the sealed final adapter directory" >&2; exit 1; }
+python -m venv --system-site-packages --without-pip "$work/venv"
+python -m pip --python "$work/venv/bin/python" install --no-cache-dir \
+  'transformers==4.49.0' 'peft==0.15.2' 'accelerate==1.5.2' 'huggingface-hub==0.30.2'
+py="$work/venv/bin/python"
+"$py" - <<'PYTHON'
+import torch
+from kaggle.run_grounding_baselines import require
+
+require(torch.cuda.is_available() and torch.cuda.device_count() == 1 and "T4" in torch.cuda.get_device_name(0),
+        "select exactly one visible T4")
+PYTHON
+export HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1
+"$py" -m kaggle.run_grounding_baselines --input-root /kaggle/input --pack-sha256 "$pack_sha" --manifest-sha256 "$manifest_sha" \
+  --qwen-dir "$qwen_dir" --qwen-hashes kaggle/grounding_qwen_hashes.json --output "$output" \
+  --adapter-eval --adapter-dir "$adapter" --adapter-receipt-sha256 "$SATQUERY_ADAPTER_RECEIPT_SHA256"
+(cd "$output" && sha256sum -c SHA256SUMS)
+echo "CELL DONE"
