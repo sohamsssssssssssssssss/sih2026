@@ -1,4 +1,4 @@
-"""Build a private baseline ZIP from verified grounding-v1 sources."""
+"""Build a private grounding ZIP from verified grounding-v1 sources."""
 import argparse
 from contextlib import ExitStack
 from hashlib import sha256, file_digest
@@ -11,8 +11,45 @@ import zipfile
 FROZEN = Path(__file__).resolve().parents[1] / "results/grounding"
 
 
-def build(root, output):
-    manifest = json.loads((FROZEN / "MANIFEST.json").read_bytes())
+def verify_train_separation(train_rows, held_out_rows, train_hashes, held_out_hashes):
+    if ({row["parent"] for row in train_rows} & {row["parent"] for row in held_out_rows}
+            or {row["image"] for row in train_rows} & {row["image"] for row in held_out_rows}
+            or set(train_hashes) & set(held_out_hashes)):
+        raise ValueError("HARD STOP: train image overlaps eval/select")
+
+
+def train_preflight(root, sources):
+    baseline = root / "satquery-grounding-baseline-pack.zip"
+    expected = json.loads((FROZEN / "BASELINE-PACK.json").read_bytes())["sha256"]
+    with baseline.open("rb") as stream:
+        if file_digest(stream, "sha256").hexdigest() != expected:
+            raise ValueError("HARD STOP: baseline pack SHA-256 mismatch")
+    with zipfile.ZipFile(baseline) as pack:
+        held_out = [json.loads(line) for line in pack.read("items.jsonl").splitlines()]
+        held_out_hashes = [item["sha256"] for item in json.loads(pack.read("MANIFEST.json"))
+                           if item["file"].startswith("images/")]
+    members, train_rows = {}, []
+    for dataset, archive, folder in (("dior-rsvg", "JPEGImages.zip", "JPEGImages"),
+                                     ("vrsbench", "Images_train.zip", "Images_train")):
+        for line in (FROZEN / f"{dataset}-train.jsonl").read_bytes().splitlines():
+            row = json.loads(line)
+            path = f"images/{dataset}/{row['image']}"
+            members[path] = sources[f"{dataset}/{archive}"], f"{folder}/{row['image']}"
+            train_rows.append(dict(row, image=path))
+    verify_train_separation(train_rows, held_out, (), ())
+    size = sum(archive.getinfo(member).file_size for archive, member in members.values())
+    print(f"Training archive image payload before zipping: {size:,} bytes across {len(members):,} images", flush=True)
+    if size >= 15_000_000_000:
+        raise ValueError("HARD STOP: train pack would exceed 15 GB")
+    train_hashes = [sha256(archive.read(member)).hexdigest() for archive, member in members.values()]
+    verify_train_separation(train_rows, held_out, train_hashes, held_out_hashes)
+
+
+def build(root, output, *, train=False):
+    frozen_manifest = (FROZEN / "MANIFEST.json").read_bytes()
+    if train and sha256(frozen_manifest).hexdigest() != "6970604866b45d25849a256c432f11d968ff345e076e9b59c07fd131441337df":
+        raise ValueError("HARD STOP: frozen manifest SHA-256 mismatch")
+    manifest = json.loads(frozen_manifest)
     receipt = []
     written = set()
     with ExitStack() as stack:
@@ -25,6 +62,12 @@ def build(root, output):
                 if path.stat().st_size != info["bytes"] or file_digest(stream, "sha256").hexdigest() != info["sha256"]:
                     raise ValueError(f"Source mismatch: {name}")
             sources[name] = stack.enter_context(zipfile.ZipFile(path)) if path.suffix == ".zip" else path
+        if train:
+            for dataset in ("dior-rsvg", "vrsbench"):
+                name = f"{dataset}-train.jsonl"
+                if sha256((FROZEN / name).read_bytes()).hexdigest() != manifest["files"][name]["sha256"]:
+                    raise ValueError(f"HARD STOP: frozen train split mismatch: {name}")
+            train_preflight(root, sources)
         destination = stack.enter_context(zipfile.ZipFile(output, "x"))
 
         def add(name, data):
@@ -38,7 +81,7 @@ def build(root, output):
                        if isinstance(path, Path) and path.suffix == ".json"}
         rows = []
         for dataset in ("dior-rsvg", "vrsbench"):
-            for split in ("select", "eval"):
+            for split in (("train",) if train else ("select", "eval")):
                 name = f"{dataset}-{split}.jsonl"
                 frozen = (FROZEN / name).read_bytes()
                 if sha256(frozen).hexdigest() != manifest["files"][name]["sha256"]:
@@ -56,12 +99,12 @@ def build(root, output):
                         archive, folder = "JPEGImages.zip", "JPEGImages"
                     else:
                         item = annotations[source][row["index"]]
-                        archive, folder = ("Images_train.zip", "Images_train") if split == "select" else ("Images_val.zip", "Images_val")
+                        archive, folder = ("Images_train.zip", "Images_train") if split in ("select", "train") else ("Images_val.zip", "Images_val")
                         expression = item.get("question")
                         gold = item.get("ground_truth")
-                        if split == "select":
+                        if split in ("select", "train"):
                             prompt, gold = [turn["value"] for turn in item["conversations"]]
-                            expression = re.search(r"<p>(.*?)</p>", prompt, re.S)[1]
+                            expression = re.search(r"<p>(.*?)</p>", prompt, re.S)[1] if row["task"] == "grounding" else None
                         if row["task"] == "grounding":
                             gold = [int(v) / 100 for v in re.findall(r"<(\d+)>", gold)]
                     if image not in written:
@@ -76,5 +119,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("root", type=Path)
     parser.add_argument("output", type=Path)
+    parser.add_argument("--train", action="store_true")
     args = parser.parse_args()
-    build(args.root, args.output)
+    build(args.root, args.output, train=args.train)
