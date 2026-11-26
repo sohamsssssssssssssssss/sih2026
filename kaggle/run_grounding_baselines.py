@@ -9,6 +9,7 @@ import json
 import os
 from pathlib import Path
 import random
+import re
 import subprocess
 import zipfile
 
@@ -26,6 +27,8 @@ PROMPT = ("Locate the object described by: {expression}. Return exactly one JSON
           "[x_min, y_min, x_max, y_max] with integer coordinates normalized to 0–1000. Return no other text.")
 CAPTION = "Describe this aerial image in one detailed paragraph."
 REPO = Path(__file__).resolve().parents[1]
+OUTPUT_LIMIT = 200_000_000
+REUSE_COMMIT = "0641ab77c94a6e39c50bf4d30c25e01eb3bc2d15"
 
 
 def digest(path):
@@ -165,6 +168,26 @@ def qwen_backend(path, adapter=None):
     return predict
 
 
+class CachedForward:
+    """Cache one forward pass for a single image, caption and device."""
+
+    def __init__(self, model):
+        self.model = model
+        self.output = None
+
+    def __getattr__(self, name):
+        return getattr(self.model, name)
+
+    def to(self, device):
+        # The provider already put the model on the inference device.
+        return self
+
+    def __call__(self, *args, **kwargs):
+        if self.output is None:
+            self.output = self.model(*args, **kwargs)
+        return self.output
+
+
 def dino_backend():
     import torch
     import groundingdino.datasets.transforms as transforms
@@ -185,30 +208,83 @@ def dino_backend():
     def detections(image, expression):
         tensor, _ = transform(image, None)
 
-        class CachedForward:
-            output = None
-
-            def to(self, device):
-                return self
-
-            def __call__(self, *args, **kwargs):
-                if self.output is None:
-                    self.output = provider._model(*args, **kwargs)
-                return self.output
-
-        cached = CachedForward()
+        cached = CachedForward(provider._model)
         for box_threshold, text_threshold in GRID:
             with torch.inference_mode():
                 boxes, scores, phrases = predict(cached, tensor, expression, box_threshold, text_threshold, device="cuda")
             items = []
-            for (cx, cy, w, h), score, phrase in zip(boxes.tolist(), scores.tolist(), phrases):
+            for (cx, cy, w, h), score, phrase in zip(boxes.tolist(), scores.tolist(), phrases, strict=True):
                 items.append({"box": [cx-w/2, cy-h/2, cx+w/2, cy+h/2], "score": score, "phrase": phrase})
             yield {"box_threshold": box_threshold, "text_threshold": text_threshold, "detections": items}
     return detections
 
 
+def prediction_line(pack, row, condition, model, donors, infer, stub):
+    image = Image.open(BytesIO(pack.read(row["image"]))).convert("RGB")
+    if condition == "grey":
+        image = Image.new("RGB", image.size, (128, 128, 128))
+    donor = donors[row["id"]] if condition == "shuffled" else row
+    expression = donor["expression"]
+    result = {"id": row["id"], "donor_id": donor["id"],
+              "donor_same_wording": expression == row["expression"], "dataset": row["dataset"]}
+    if model != "dino":
+        prompt = CAPTION if condition == "caption" else PROMPT.format(expression=expression)
+        raw = "[250,250,750,750]" if stub else infer(image, prompt, 256 if condition == "caption" else 64)
+        result["raw_text"] = raw
+        if condition != "caption":
+            result["box"] = parse_box(raw)
+    else:
+        result["grid"] = list(infer(image, expression)) if infer else [
+            {"box_threshold": b, "text_threshold": t, "detections": []} for b, t in GRID]
+    return (json.dumps(result, allow_nan=False) + "\n").encode("utf-8")
+
+
+def preflight(pack, rows, model, infer, stub):
+    print(f"PREFLIGHT {model}: starting", flush=True)
+    try:
+        require(len(rows) == (2 if model == "dino" else 1), "insufficient eval items")
+        for row in rows:
+            result = json.loads(prediction_line(pack, row, "eval", model, {}, infer, stub))
+            if model == "dino":
+                require([(r["box_threshold"], r["text_threshold"]) for r in result["grid"]] == list(GRID),
+                        "incomplete DINO threshold grid")
+            else:
+                require(isinstance(result["raw_text"], str) and result["raw_text"].strip(),
+                        "Qwen returned empty text")
+    except Exception as error:
+        raise RuntimeError(f"HARD STOP: {model} preflight failed: {error}") from error
+    print(f"PREFLIGHT {model}: {len(rows)} eval items passed", flush=True)
+
+
+def reusable_files(args, counts):
+    if args.reuse_dir is None:
+        return {}
+    require(args.reuse_dir.is_dir(), "reuse directory missing")
+    manifest_bytes = args.reuse_manifest.read_bytes()
+    require(sha256(manifest_bytes).hexdigest() == args.reuse_manifest_sha256, "reuse manifest SHA-256 mismatch")
+    manifest = json.loads(manifest_bytes)
+    require(isinstance(manifest, dict) and manifest.get("commit") == REUSE_COMMIT, "reuse producing commit mismatch")
+    pins = manifest.get("files")
+    require(isinstance(pins, dict) and pins and pins.keys() <= counts.keys(), "unexpected reuse file pins")
+    files = {}
+    for name, expected in pins.items():
+        require(isinstance(expected, str) and re.fullmatch(r"[0-9a-f]{64}", expected), f"invalid reuse pin: {name}")
+        path = args.reuse_dir / name
+        require(path.is_file() and not path.is_symlink(), f"missing or unsafe reuse file: {name}")
+        require(path.stat().st_size < OUTPUT_LIMIT, f"reuse file exceeds 200 MB: {name}")
+        data = path.read_bytes()
+        require(sha256(data).hexdigest() == expected, f"reuse SHA-256 mismatch: {name}")
+        require(len(data.splitlines()) == counts[name], f"reuse line count mismatch: {name}")
+        files[name] = (data, {"commit": REUSE_COMMIT, "sha256": expected, "lines": counts[name]})
+    require(sum(len(data) for data, _ in files.values()) < OUTPUT_LIMIT, "reuse files exceed 200 MB")
+    return files
+
+
 def run(args):
     import torch
+    require(len({bool(args.reuse_dir), bool(args.reuse_manifest), bool(args.reuse_manifest_sha256)}) == 1,
+            "--reuse-dir, --reuse-manifest and --reuse-manifest-sha256 must be supplied together")
+    require(not args.reuse_dir or not (args.adapter_eval or args.stub), "reuse requires a real baseline run")
     random.seed(SEED)
     torch.manual_seed(SEED)
     require(args.stub or torch.cuda.is_available(), "CUDA required")
@@ -237,45 +313,70 @@ def run(args):
         select = [r for r in items if r["split"] == "select"]
         captions = [r for r in items if r["task"] == "caption"]
         donors = shuffled(ground)
-        args.output.mkdir()
+        qwen_jobs = [("eval", ground), ("shuffled", ground), ("grey", ground), ("caption", captions)]
+        dino_jobs = [("eval", ground), ("shuffled", ground), ("grey", ground), ("select", select)]
+        reuse = reusable_files(args, {f"qwen-{condition}.jsonl": len(rows) for condition, rows in qwen_jobs})
+        if not args.adapter_eval:
+            try:
+                infer = None if args.stub else dino_backend()
+            except Exception as error:
+                raise RuntimeError(f"HARD STOP: DINO preflight load failed: {error}") from error
+            preflight(pack, ground[:2], "dino", infer, args.stub)
+            del infer
+            if not args.stub:
+                torch.cuda.empty_cache()
+            random.seed(SEED)
+            torch.manual_seed(SEED)
+        size = 0
         for model in (("adapter",) if args.adapter_eval else ("qwen", "dino")):
-            infer = None if args.stub else (qwen_backend(args.qwen_dir, args.adapter_dir) if model != "dino" else dino_backend())
-            jobs = [("eval", ground), ("shuffled", ground), ("grey", ground)]
-            jobs.append(("caption", captions) if model != "dino" else ("select", select))
+            jobs = dino_jobs if model == "dino" else qwen_jobs
+            if model == "dino":
+                infer = None if args.stub else dino_backend()
+            else:
+                try:
+                    infer = None if args.stub else qwen_backend(args.qwen_dir, args.adapter_dir)
+                except Exception as error:
+                    raise RuntimeError(f"HARD STOP: {model} preflight load failed: {error}") from error
+                with torch.random.fork_rng(devices=[] if args.stub else [torch.cuda.current_device()]):
+                    preflight(pack, ground[:1], model, infer, args.stub)
+                args.output.mkdir()
             for condition, rows in jobs:
-                with (args.output / f"{model}-{condition}.jsonl").open("x") as output:
+                name = f"{model}-{condition}.jsonl"
+                destination = args.output / name
+                if name in reuse:
+                    data, _ = reuse[name]
+                    size += len(data)
+                    require(size < OUTPUT_LIMIT, "raw output exceeds 200 MB")
+                    destination.write_bytes(data)
+                    print(f"{model}-{condition} {len(rows)}/{len(rows)} reused", flush=True)
+                    continue
+                partial = destination.with_suffix(".jsonl.partial")
+                with partial.open("xb") as output:
                     for index, row in enumerate(rows, 1):
-                        image = Image.open(BytesIO(pack.read(row["image"]))).convert("RGB")
-                        if condition == "grey":
-                            image = Image.new("RGB", image.size, (128, 128, 128))
-                        donor = donors[row["id"]] if condition == "shuffled" else row
-                        expression = donor["expression"]
-                        result = {"id": row["id"], "donor_id": donor["id"],
-                                  "donor_same_wording": expression == row["expression"], "dataset": row["dataset"]}
-                        if model != "dino":
-                            prompt = CAPTION if condition == "caption" else PROMPT.format(expression=expression)
-                            raw = "[250,250,750,750]" if args.stub else infer(image, prompt, 256 if condition == "caption" else 64)
-                            result["raw_text"] = raw
-                            if condition != "caption":
-                                result["box"] = parse_box(raw)
-                        else:
-                            result["grid"] = list(infer(image, expression)) if infer else [
-                                {"box_threshold": b, "text_threshold": t, "detections": []} for b, t in GRID]
-                        output.write(json.dumps(result, allow_nan=False) + "\n")
+                        line = prediction_line(pack, row, condition, model, donors, infer, args.stub)
+                        size += len(line)
+                        require(size < OUTPUT_LIMIT, "raw output exceeds 200 MB")
+                        output.write(line)
                         if index % 25 == 0 or index == len(rows):
                             print(f"{model}-{condition} {index}/{len(rows)}", flush=True)
+                partial.rename(destination)
             del infer
             if not args.stub:
                 torch.cuda.empty_cache()
     info = {"commit": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=REPO, text=True).strip(),
+            "reused": {name: provenance for name, (_, provenance) in reuse.items()},
+            "reuse_manifest_sha256": args.reuse_manifest_sha256,
             "seed": SEED, "stub": args.stub, "gpu": None if args.stub else torch.cuda.get_device_name(0),
             "cuda": torch.version.cuda, "pack_sha256": args.pack_sha256, "qwen_revision": config["revision"],
             "dino_revision": None if args.adapter_eval else DINO_REVISION, "adapter_receipt_sha256": args.adapter_receipt_sha256, "versions": {name: version(name) for name in
                 (("torch", "Pillow") if args.stub else ("torch", "Pillow", "transformers", "peft", "huggingface-hub") if args.adapter_eval else ("torch", "Pillow", "transformers", "groundingdino-py", "huggingface-hub"))}}
-    (args.output / "run-info.json").write_text(json.dumps(info, indent=2) + "\n")
-    files = sorted(args.output.iterdir())
-    require(sum(path.stat().st_size for path in files) < 200_000_000, "raw output exceeds 200 MB")
-    (args.output / "SHA256SUMS").write_text("".join(f"{digest(path)}  {path.name}\n" for path in files))
+    receipt = (json.dumps(info, indent=2) + "\n").encode("utf-8")
+    checksums = {path.name: digest(path) for path in args.output.iterdir()}
+    checksums["run-info.json"] = sha256(receipt).hexdigest()
+    sums = "".join(f"{checksums[name]}  {name}\n" for name in sorted(checksums)).encode("utf-8")
+    require(size + len(receipt) + len(sums) < OUTPUT_LIMIT, "raw output exceeds 200 MB")
+    (args.output / "run-info.json").write_bytes(receipt)
+    (args.output / "SHA256SUMS").write_bytes(sums)
 
 
 def main():
@@ -288,6 +389,9 @@ def main():
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--qwen-dir", type=Path)
     parser.add_argument("--qwen-hashes", type=Path, help="Pinned JSON mapping filename to size and SHA-256")
+    parser.add_argument("--reuse-dir", type=Path)
+    parser.add_argument("--reuse-manifest", type=Path, help="JSON containing the producing commit and filename-to-SHA-256 pins")
+    parser.add_argument("--reuse-manifest-sha256")
     parser.add_argument("--adapter-eval", action="store_true")
     parser.add_argument("--adapter-dir", type=Path)
     parser.add_argument("--adapter-receipt-sha256")
