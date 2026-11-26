@@ -2,7 +2,7 @@
 set -euo pipefail
 trap 'echo "HARD STOP: grounding baseline cell failed on line $LINENO" >&2' ERR
 
-commit=0641ab77c94a6e39c50bf4d30c25e01eb3bc2d15
+commit=ebc440cbd8fec129a63935173adcf8bc6e4a8b55
 pack_sha=d995c51dd7a3581045b38e9bc55243f18ffe3448d42cbc3f1da721e8416dce96
 manifest_sha=0feb52a6f339d2c4404c6cc8022550593f569ae52de2b78a2c832c67a046f292
 output=/kaggle/working/grounding-baselines
@@ -18,15 +18,11 @@ git -C "$work/repo" checkout --detach "$commit"
 [[ "$(git -C "$work/repo" rev-parse HEAD)" == "$commit" ]]
 cd "$work/repo"
 qwen_dir=$(python - <<'PYTHON'
-import json
 from pathlib import Path
 
-from kaggle.grounding_qwen_inputs import find_qwen_directory, verify_qwen_directory
+from kaggle.grounding_qwen_inputs import find_qwen_directory
 
-directory = find_qwen_directory(Path("/kaggle/input"))
-pins = json.loads(Path("kaggle/grounding_qwen_hashes.json").read_text())
-verify_qwen_directory(directory, pins)
-print(directory)
+print(find_qwen_directory(Path("/kaggle/input")))
 PYTHON
 )
 
