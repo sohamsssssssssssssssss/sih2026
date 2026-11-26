@@ -18,16 +18,16 @@ git clone --no-checkout https://github.com/sohamsssssssssssssssss/sih2026.git "$
 git -C "$work/repo" checkout --detach "$commit"
 [[ "$(git -C "$work/repo" rev-parse HEAD)" == "$commit" ]]
 cd "$work/repo"
-# Fill all four SHA-256s from the recovered 0641ab77 Kaggle artifacts.
+# SHA-256 pins for the four recovered 0641ab77 Kaggle artifacts.
 reuse_manifest="$work/reuse.json"
 cat > "$reuse_manifest" <<'JSON'
 {
   "commit": "0641ab77c94a6e39c50bf4d30c25e01eb3bc2d15",
   "files": {
-    "qwen-eval.jsonl": "FILL_QWEN_EVAL_SHA256",
-    "qwen-shuffled.jsonl": "FILL_QWEN_SHUFFLED_SHA256",
-    "qwen-grey.jsonl": "FILL_QWEN_GREY_SHA256",
-    "qwen-caption.jsonl": "FILL_QWEN_CAPTION_SHA256"
+    "qwen-eval.jsonl": "ce2fc13b947d058003682d69f8ae7d92e8171d2c3efd94f02cb7688d06022bd2",
+    "qwen-shuffled.jsonl": "1e86b103e0ae47621a2ba87b62cc79f08b1b60631933049c130323ad906a565c",
+    "qwen-grey.jsonl": "1d5947691da817343c020c1d07e40b216f654607d7257aea1c6909952e86be74",
+    "qwen-caption.jsonl": "e0a640674696bdcdabd5fbfa8f3b58962eaea34715172329d5067db89d9036d7"
   }
 }
 JSON
