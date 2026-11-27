@@ -56,3 +56,5 @@ Captioning requires CIDEr strictly above **0.00134279990555146** and a paired ga
 ## Provenance
 
 The Kaggle receipt, all nine checksums, all four reuse pins, and exact frozen ID coverage passed verification. The raw outputs and original checksum file are retained locally because the GitHub repository is public. Use the published manifest to verify the original checksum file before checking the raw files. [Run manifest](MANIFEST.json) · [Scores](scores.json)
+
+[Post-hoc parsing and CIDEr-D diagnostics](POSTHOC.md) are informational and outside the gate.
