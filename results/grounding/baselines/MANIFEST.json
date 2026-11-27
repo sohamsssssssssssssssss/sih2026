@@ -1,0 +1,25 @@
+{
+  "date": "2026-11-27",
+  "runner_commit": "075d51c1f4e48dce9c438103bcaefce44ef35ecc",
+  "kaggle_notebook": "notebook8e7303f008",
+  "qwen_reuse_source_commit": "0641ab77c94a6e39c50bf4d30c25e01eb3bc2d15",
+  "input_pack_sha256": "d995c51dd7a3581045b38e9bc55243f18ffe3448d42cbc3f1da721e8416dce96",
+  "scorer": "tools/score_grounding_v1.py",
+  "qwen_reuse_manifest_sha256": "30b6e2deebe06a1a2e92545bdb7a6b2becdbd01704b4268efa3dae8d0fcb00f2",
+  "dataset_rows": {
+    "grounding_eval": {
+      "dior-rsvg": 1000,
+      "vrsbench": 1000
+    },
+    "dino_select": {
+      "dior-rsvg": 500,
+      "vrsbench": 500
+    },
+    "caption_eval": {
+      "vrsbench": 1000
+    }
+  },
+  "raw_directory": "raw/",
+  "raw_sha256sums_sha256": "866bbb3904ad79fd6752edf2f237dec59432dbfd5fde65eeea1d5060b38a7bb1",
+  "raw_committed": false
+}

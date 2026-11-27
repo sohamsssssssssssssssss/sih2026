@@ -1,0 +1,341 @@
+{
+  "stub": false,
+  "dino_threshold": [
+    0.25,
+    0.25
+  ],
+  "grounding": {
+    "qwen-eval": {
+      "dior-rsvg": {
+        "n": 1000,
+        "acc@0.5": 0.0,
+        "acc@0.25": 0.0,
+        "mean_iou": 0.0,
+        "malformed_rate": 1.0,
+        "missing": 0,
+        "invalid": 1000
+      },
+      "vrsbench": {
+        "n": 1000,
+        "acc@0.5": 0.0,
+        "acc@0.25": 0.0,
+        "mean_iou": 0.00031223907353057824,
+        "malformed_rate": 0.995,
+        "missing": 0,
+        "invalid": 995
+      },
+      "equal_weight": {
+        "acc@0.5": 0.0,
+        "acc@0.25": 0.0,
+        "mean_iou": 0.00015611953676528912,
+        "malformed_rate": 0.9975
+      }
+    },
+    "qwen-shuffled": {
+      "dior-rsvg": {
+        "n": 1000,
+        "acc@0.5": 0.0,
+        "acc@0.25": 0.0,
+        "mean_iou": 0.0,
+        "malformed_rate": 0.999,
+        "missing": 0,
+        "invalid": 999
+      },
+      "vrsbench": {
+        "n": 1000,
+        "acc@0.5": 0.0,
+        "acc@0.25": 0.0,
+        "mean_iou": 6.507258095568132e-05,
+        "malformed_rate": 0.999,
+        "missing": 0,
+        "invalid": 999
+      },
+      "equal_weight": {
+        "acc@0.5": 0.0,
+        "acc@0.25": 0.0,
+        "mean_iou": 3.253629047784066e-05,
+        "malformed_rate": 0.999
+      }
+    },
+    "qwen-grey": {
+      "dior-rsvg": {
+        "n": 1000,
+        "acc@0.5": 0.0,
+        "acc@0.25": 0.0,
+        "mean_iou": 0.0,
+        "malformed_rate": 1.0,
+        "missing": 0,
+        "invalid": 1000
+      },
+      "vrsbench": {
+        "n": 1000,
+        "acc@0.5": 0.0,
+        "acc@0.25": 0.0,
+        "mean_iou": 0.0,
+        "malformed_rate": 1.0,
+        "missing": 0,
+        "invalid": 1000
+      },
+      "equal_weight": {
+        "acc@0.5": 0.0,
+        "acc@0.25": 0.0,
+        "mean_iou": 0.0,
+        "malformed_rate": 1.0
+      }
+    },
+    "dino-eval": {
+      "dior-rsvg": {
+        "n": 1000,
+        "acc@0.5": 0.184,
+        "acc@0.25": 0.271,
+        "mean_iou": 0.2001504631419132,
+        "malformed_rate": 0.049,
+        "missing": 15,
+        "invalid": 34
+      },
+      "vrsbench": {
+        "n": 1000,
+        "acc@0.5": 0.22,
+        "acc@0.25": 0.285,
+        "mean_iou": 0.21497309627709119,
+        "malformed_rate": 0.444,
+        "missing": 10,
+        "invalid": 434
+      },
+      "equal_weight": {
+        "acc@0.5": 0.202,
+        "acc@0.25": 0.278,
+        "mean_iou": 0.20756177970950218,
+        "malformed_rate": 0.2465
+      }
+    },
+    "dino-shuffled": {
+      "dior-rsvg": {
+        "n": 1000,
+        "acc@0.5": 0.082,
+        "acc@0.25": 0.148,
+        "mean_iou": 0.1068309154922531,
+        "malformed_rate": 0.073,
+        "missing": 39,
+        "invalid": 34
+      },
+      "vrsbench": {
+        "n": 1000,
+        "acc@0.5": 0.13,
+        "acc@0.25": 0.176,
+        "mean_iou": 0.1351345632708801,
+        "malformed_rate": 0.54,
+        "missing": 30,
+        "invalid": 510
+      },
+      "equal_weight": {
+        "acc@0.5": 0.10600000000000001,
+        "acc@0.25": 0.16199999999999998,
+        "mean_iou": 0.1209827393815666,
+        "malformed_rate": 0.3065
+      }
+    },
+    "dino-grey": {
+      "dior-rsvg": {
+        "n": 1000,
+        "acc@0.5": 0.0,
+        "acc@0.25": 0.0,
+        "mean_iou": 0.0,
+        "malformed_rate": 1.0,
+        "missing": 88,
+        "invalid": 912
+      },
+      "vrsbench": {
+        "n": 1000,
+        "acc@0.5": 0.0,
+        "acc@0.25": 0.0,
+        "mean_iou": 0.0,
+        "malformed_rate": 1.0,
+        "missing": 30,
+        "invalid": 970
+      },
+      "equal_weight": {
+        "acc@0.5": 0.0,
+        "acc@0.25": 0.0,
+        "mean_iou": 0.0,
+        "malformed_rate": 1.0
+      }
+    },
+    "centre": {
+      "dior-rsvg": {
+        "n": 1000,
+        "acc@0.5": 0.059,
+        "acc@0.25": 0.199,
+        "mean_iou": 0.12178850549091773,
+        "malformed_rate": 0.0,
+        "missing": 0,
+        "invalid": 0
+      },
+      "vrsbench": {
+        "n": 1000,
+        "acc@0.5": 0.007,
+        "acc@0.25": 0.155,
+        "mean_iou": 0.10210690986094602,
+        "malformed_rate": 0.0,
+        "missing": 0,
+        "invalid": 0
+      },
+      "equal_weight": {
+        "acc@0.5": 0.033,
+        "acc@0.25": 0.177,
+        "mean_iou": 0.11194770767593187,
+        "malformed_rate": 0.0
+      }
+    }
+  },
+  "controls": {
+    "qwen": {
+      "shuffled": {
+        "delta": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "grey": {
+        "delta": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "same_wording": 2
+    },
+    "dino": {
+      "shuffled": {
+        "delta": 0.096,
+        "ci95": [
+          0.078,
+          0.11399999999999999
+        ]
+      },
+      "grey": {
+        "delta": 0.202,
+        "ci95": [
+          0.1845,
+          0.2195
+        ]
+      },
+      "same_wording": 2
+    }
+  },
+  "base_vs_dino": {
+    "delta": -0.202,
+    "ci95": [
+      -0.2195,
+      -0.1845
+    ]
+  },
+  "captioning": {
+    "qwen": {
+      "CIDEr": 0.00134279990555146,
+      "BLEU-4": 0.024820656786637165,
+      "METEOR": 0.1703330728430782
+    }
+  },
+  "acc_at_0_5_ci95": {
+    "qwen-eval": {
+      "dior-rsvg": [
+        0.0,
+        0.0
+      ],
+      "vrsbench": [
+        0.0,
+        0.0
+      ],
+      "equal_weight": [
+        0.0,
+        0.0
+      ]
+    },
+    "dino-eval": {
+      "dior-rsvg": [
+        0.16,
+        0.209
+      ],
+      "vrsbench": [
+        0.194,
+        0.246
+      ],
+      "equal_weight": [
+        0.1845,
+        0.2195
+      ]
+    },
+    "centre": {
+      "dior-rsvg": [
+        0.045,
+        0.074
+      ],
+      "vrsbench": [
+        0.002,
+        0.013
+      ],
+      "equal_weight": [
+        0.0255,
+        0.040999999999999995
+      ]
+    },
+    "qwen-shuffled": {
+      "dior-rsvg": [
+        0.0,
+        0.0
+      ],
+      "vrsbench": [
+        0.0,
+        0.0
+      ],
+      "equal_weight": [
+        0.0,
+        0.0
+      ]
+    },
+    "qwen-grey": {
+      "dior-rsvg": [
+        0.0,
+        0.0
+      ],
+      "vrsbench": [
+        0.0,
+        0.0
+      ],
+      "equal_weight": [
+        0.0,
+        0.0
+      ]
+    },
+    "dino-shuffled": {
+      "dior-rsvg": [
+        0.065,
+        0.1
+      ],
+      "vrsbench": [
+        0.109,
+        0.151
+      ],
+      "equal_weight": [
+        0.0925,
+        0.12
+      ]
+    },
+    "dino-grey": {
+      "dior-rsvg": [
+        0.0,
+        0.0
+      ],
+      "vrsbench": [
+        0.0,
+        0.0
+      ],
+      "equal_weight": [
+        0.0,
+        0.0
+      ]
+    }
+  }
+}
