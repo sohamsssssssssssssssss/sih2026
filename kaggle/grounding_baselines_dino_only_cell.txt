@@ -46,7 +46,8 @@ require(all(re.fullmatch(r"[0-9a-f]{64}", pin) for pin in pins.values()), "fill 
 mounts = [root / slug, *(root / "datasets").glob(f"*/{slug}")]
 mounts = [path for path in mounts if path.is_dir()]
 require(len(mounts) == 1, "attach exactly one Qwen reuse dataset")
-require({path.name for path in mounts[0].iterdir()} == pins.keys(), "reuse dataset file list mismatch")
+require({path.name for path in mounts[0].iterdir()} - {"MANIFEST.json"} == pins.keys(),
+        "reuse dataset file list mismatch")
 print(mounts[0])
 PYTHON
 )
